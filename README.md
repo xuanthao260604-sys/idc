@@ -11,11 +11,11 @@ Core hỗ trợ 25 quái thường; 5 hiệu ứng Pot of Greed, Fissure, Trap H
 Man-Eater Bug được mở bằng hồ sơ review và kiểm thử trong scope giới hạn.
 
 Đã hoàn tất [hotseat nội bộ 20 lá](docs/milestones/hotseat-20.md) và [xây/lưu deck A/B](docs/beta/deck-builder.md) trong scope giới hạn.
-Đã đạt [kiểm chứng Windows CI](docs/platform/windows-ci-result.md); còn ca Windows 11 desktop chưa chạy.
+Đã đạt [Windows CI cho catalog 30](docs/data/classic-30.md); còn ca Windows 11 desktop chưa chạy.
 Không coi việc cấu hình CI Windows hoặc chạy Linux là đã kiểm chứng Windows.
 
-Windows CI đã đạt 278 test ở [mốc xây deck](docs/beta/deck-builder.md).
-Mục đang chốt: [catalog 30 lá](docs/data/classic-30.md); kết quả kiểm chứng cập nhật riêng tại đó.
+295/295 test đạt trên Linux và Windows CI. Đã chốt [catalog 30 lá](docs/data/classic-30.md):
+21/21 bước, 11 browser run bằng Edge, gồm hồi quy pilot 20 và trận mới với catalog 30.
 Browser regression tính riêng: xây/lưu deck, 5 hiệu ứng, xem Mộ, tạo trận A/B/ngẫu nhiên, bỏ bài,
 Pot với deck 0/1/2 lá, đầu hàng/hủy và tạo trận sau kết thúc, trận tự nhiên đầy đủ.
 Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không phải game hoàn tất mọi luật Yu-Gi-Oh!.
@@ -45,10 +45,10 @@ Người dùng chưa cần nhận beta hoặc tự kiểm thử ở thời đi�
 [Pipeline nhập](docs/data/pipeline.md) bảo vệ dữ liệu cũ khi nhập lại lỗi, giữ raw/evidence/overlay
 riêng. [Pilot 20 lá](docs/data/pilot-20.md) có snapshot 15 verified và 5 historical printed-text
 pending. Các số implemented/tested/playable=0 trong snapshot nhập là metadata lần nhập,
-không phải runtime capability. Không sửa bundle tay để nâng trạng thái.
+không phải runtime capability. Lô classic-10 riêng bổ sung 10 normal verified; tổng catalog có 25 verified data và 5 pending lịch sử. Không sửa bundle tay để nâng trạng thái.
 `cards:import` nhập offline; `cards:fetch` chỉ dùng khi chủ động refresh nguồn.
 
-Registry nạp đủ hồ sơ review mới mở cả 20 definitions trong scope. Xem
+Runtime hợp nhất hai bundle, nạp đủ hồ sơ review để mở 30 definitions trong scope. Xem
 [Phép](docs/engine/reviewed-spells.md), [FLIP](docs/engine/reviewed-flips.md),
 [Trap Hole](docs/engine/reviewed-trap.md) và [core vanilla](docs/engine/vanilla-core.md).
 Các tài liệu mốc cũ giữ số test/phạm vi tại thời điểm viết, không thay báo cáo hiện hành.
@@ -61,7 +61,7 @@ hoặc mọi tương tác bài. Bài tự tạo giữ ở [kế hoạch mở r�
 
 `npm run validate:platform` chạy bộ kiểm chứng tổng hợp, ghi report JSON và log từng bước
 vào artifacts/platform-validation/ (Git bỏ qua). Lỗi dừng ngay, phần còn lại ghi chưa chạy.
-Windows CI đã chạy cùng lệnh, đạt 19/19 bước và giữ artifact; report Linux vẫn chỉ xác nhận Linux.
+Windows CI đã chạy cùng lệnh, đạt 21/21 bước và giữ artifact; report Linux vẫn chỉ xác nhận Linux.
 
 ## Kiểm thử giao diện
 
@@ -90,7 +90,7 @@ Xem [Windows browser checks](docs/platform/windows-browser-checks.md),
 
 ## Các mục sau
 
-Đã hoàn tất [xây/lưu deck](docs/beta/deck-builder.md); đang chốt [mở rộng 20 → 30](docs/data/classic-30.md).
+Đã hoàn tất [xây/lưu deck](docs/beta/deck-builder.md); đã hoàn tất [mở rộng 20 → 30](docs/data/classic-30.md).
 Online và trình tạo bài riêng là các mục chưa triển khai. Nhánh work đã được commit/push theo phép người dùng; chưa phát hành beta.
 
 Đã bổ sung `npm run beta:startup-smoke` để kiểm tra lỗi cổng, cwd Unicode, HTTP/lệnh

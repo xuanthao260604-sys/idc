@@ -65,3 +65,6 @@ không sửa trận hiện tại và dùng deck khi reset; xem ../beta/deck-buil
 
 Mục xây deck đã đạt Edge Windows ở [run 38874697590](https://github.com/xuanthao260604-sys/idc/actions/runs/38874697590),
 278 test, 19 bước và 9 browser run. Chi tiết ../beta/deck-builder.md.
+
+Đã thêm expanded-catalog và expanded-duel vào cùng bộ validate:platform. Mốc catalog 30
+đã đạt 295 test, 21 bước, 11 browser run trên Edge Windows; xem ../data/classic-30.md.

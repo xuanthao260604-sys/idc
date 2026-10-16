@@ -1,6 +1,6 @@
 # Mở rộng catalog 20 → 30 lá
 
-Trạng thái: đã nhập lô classic-10 riêng và nối vào game; kết quả kiểm chứng cuối mục ở cuối tài liệu.
+Trạng thái: hoàn tất mục mở rộng 20 → 30; đã nhập lô classic-10 riêng, nối vào game và kiểm chứng trên Linux/Windows CI.
 25 quái thường và 5 lá hiệu ứng trong các scope cũ. Không bổ sung handler hiệu ứng hoặc artwork.
 
 ## Mười lá mới đã đối chiếu
@@ -76,3 +76,24 @@ Windows CI cho mốc mở rộng được đối chiếu riêng sau khi chạy, 
 
 Bộ tổng hợp Linux đã đạt 295/295 test (22 file), 21/21 bước và 11 browser run,
 bao gồm cả baseline 20 lẫn catalog 30. Chưa gộp kết quả Linux thành bằng chứng Windows.
+
+## Kết quả Windows và chốt mục
+
+[Run Windows/Ubuntu](https://github.com/xuanthao260604-sys/idc/actions/runs/38876718294) đều đạt trên commit
+c1a8f816693c837eeb3f0bbf9cfcdda9794133a8, nhánh work. Windows win32/x64,
+OS release 10.0.26100, Node 24.19.0, npm 11.17.0, Edge Edg/154.0.4258.62.
+Đã tải và đọc report/test/capability log: 295/295 test, 22 file; 21/21 bước;
+11 browser report, không có runtime exception. Runtime 30 supported, 25 normal;
+importedSnapshots tách pilot 20 (15 verified/5 pending lịch sử) và classic10 (10 verified).
+Metadata implementation/testing ở cả hai snapshot giữ 0, không bị nâng theo runtime.
+
+Windows kiểm tra đủ 10 preview, Gaia tribute/battle 800 damage; expanded natural duel
+11 lượt/221 lệnh, A thắng LP 6500/0, 10 attack, 2 decision, dùng 2 effect như Linux.
+Baseline pilot 20 vẫn 16 lượt/339 lệnh và dùng đủ 5 effect. Không nói trận mới đã dùng
+cả 30 loại hay cả 5 effect; đó là các kiểm chứng riêng với phạm vi rõ ràng.
+
+Artifact windows-validation-38876718294-1 giữ report/log 14 ngày; bản tải local ở
+artifacts/ci-classic30/ bị Git bỏ qua. Không phải kiểm tra Windows 11 desktop trực tiếp;
+windows11DesktopVerified vẫn false. Chưa phát hành beta, tải artwork hoặc làm online.
+
+**Dừng sau mục catalog 30 theo yêu cầu người dùng.** Chưa bắt đầu lô 40 lá hoặc tính năng kế tiếp.

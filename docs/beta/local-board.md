@@ -1,5 +1,9 @@
 # Bàn đấu beta trên cùng máy
 
+> Cập nhật catalog: ứng dụng hiện hợp nhất pilot 20 và classic-10 thành 30 loại.
+> Deck cũ giữ nguyên; deck mẫu mới 40 lá có đủ 30 loại. Xem ../data/classic-30.md.
+> Các số 20 và các mốc test bên dưới ghi giai đoạn khởi tạo hotseat.
+
 Đã có giao diện tại apps/beta/public, server Node ở tools/beta-server.ts và CLI tools/beta.ts.
 Bản đầu dùng hai người thay phiên trên cùng máy, một trận trong bộ nhớ. Không có tài khoản,
 đấu online, AI hoặc lưu trận khi dừng process. Chọn seat là chức năng chuyển góc nhìn cố ý,
