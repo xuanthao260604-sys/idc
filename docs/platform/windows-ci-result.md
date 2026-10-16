@@ -1,6 +1,10 @@
 # Kết quả Windows CI — 16/10/2026
 
-> Mốc hiện hành: [catalog 30 lá](../data/classic-30.md) đạt [run 38876718294](https://github.com/xuanthao260604-sys/idc/actions/runs/38876718294)
+> Mốc hiện hành: [catalog 40 lá](../data/classic-40.md), [run 38877923439](https://github.com/xuanthao260604-sys/idc/actions/runs/38877923439), commit d902d0a.
+> 308/308 test, 21/21 bước, 11 browser run bằng Edge 154.0.4258.62; Windows và Ubuntu đều đạt.
+> Windows 11 desktop chưa chạy; các kết quả dưới đây là lịch sử.
+
+> Mốc trước: [catalog 30 lá](../data/classic-30.md) đạt [run 38876718294](https://github.com/xuanthao260604-sys/idc/actions/runs/38876718294)
 > trên commit c1a8f81: 295 test, 21 bước, 11 browser run. Windows 11 desktop chưa chạy.
 
 > Kết quả tiếp theo: [mục xây deck](../beta/deck-builder.md) đã đạt Windows/Ubuntu CI

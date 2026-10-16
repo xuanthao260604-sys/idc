@@ -39,5 +39,11 @@ và reload deck đã lưu từ catalog 20/30 mà không sửa file. Main Deck 11
 20 quái của hai lô mở rộng được kiểm thử riêng: số hiến tế đúng/sai, triệu hồi, direct attack theo ATK Konami và invariant.
 Browser kiểm tra preview đủ 20 lá mở rộng; hồi quy Gaia hiến tế hai lá/đánh Armored Lizard vẫn giữ.
 
-Linux: đang hoàn tất bộ validation. Windows CI: chờ chạy trên commit nguồn.
+Linux: 21/21 bước, 11 browser run, không runtime exception. Bộ aggregate ban đầu chạy 305 test; sau bổ sung ba ca bảo toàn/migration, bộ test riêng đạt 308/308.
+Trận tự nhiên catalog 40: 9 lượt, 170 lệnh, 8 attack, 1 decision, chỉ Hane-Hane được dùng; B thắng với LP 0/8000. Không chỉnh state trong lúc chơi. Hồi quy pilot 20 vẫn đạt 16 lượt/339 lệnh và đủ 5 hiệu ứng.
+Windows và Ubuntu CI đã đạt trên commit `d902d0a80f252891cf60105651bfd96e9aa1b3d4`, [run 38877923439](https://github.com/xuanthao260604-sys/idc/actions/runs/38877923439).
+Artifact Windows đã tải và đối chiếu: win32/x64, OS release 10.0.26100, Node 24.19.0, npm 11.17.0,
+Microsoft Edge 154.0.4258.62; 308/308 test, 22 test file, 21/21 bước và 11 browser report, runtimeExceptions 0.
+Hai trận tự nhiên và các số liệu trên trùng Linux. Các ca reimport chạy offline trên snapshot đã lưu.
+Artifacts chỉ là bằng chứng kiểm thử, được gitignore; không phải gói beta.
 Windows 11 desktop chưa chạy; chưa đóng gói/bàn giao beta.
