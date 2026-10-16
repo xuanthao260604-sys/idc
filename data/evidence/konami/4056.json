@@ -1,0 +1,22 @@
+{
+  "passcode": "89091579",
+  "konamiId": 4056,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4056&request_locale=en",
+  "accessedOn": "2026-10-16",
+  "htmlSha256": "42bd4fb87eb3e964b88752b399f77b5602facb614ee36349d7a59f735c284033",
+  "currentFacts": {
+    "name": "Basic Insect",
+    "text": "Usually found traveling in swarms, this creature's ideal environment is the forest.",
+    "kind": "normal-monster",
+    "race": "Insect",
+    "attribute": "EARTH",
+    "level": 2,
+    "attack": 500,
+    "defense": 700
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-008",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

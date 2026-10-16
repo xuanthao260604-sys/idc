@@ -20,8 +20,9 @@ export function combineCatalogBundles(inputs: readonly unknown[]) {
 export function loadRuntimeCatalog(root = projectRoot) {
   const read = (path: string) => JSON.parse(readFileSync(join(root, path), 'utf8'));
   const pilot = read('data/generated/pilot.json'), classic10 = read('data/generated/classic-10.json');
-  const cards = combineCatalogBundles([pilot, classic10]);
+  const classic10b = read('data/generated/classic-10b.json');
+  const cards = combineCatalogBundles([pilot, classic10, classic10b]);
   const registry = createRegistry(cards, goat200508Format, {}, read('data/reviews/pilot.spell-effects.json'),
     read('data/reviews/pilot.flip-effects.json'), read('data/reviews/pilot.trap-effects.json'));
-  return { cards, registry, importedSnapshots: { pilot: pilot.summary, classic10: classic10.summary } };
+  return { cards, registry, importedSnapshots: { pilot: pilot.summary, classic10: classic10.summary, classic10b: classic10b.summary } };
 }

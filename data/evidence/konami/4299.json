@@ -1,0 +1,22 @@
+{
+  "passcode": "44287299",
+  "konamiId": 4299,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4299&request_locale=en",
+  "accessedOn": "2026-10-16",
+  "htmlSha256": "9638c50cd8917778a8d618603c028bf7771dd365f1979c4aa43b514f7e56da8c",
+  "currentFacts": {
+    "name": "Masaki the Legendary Swordsman",
+    "text": "Legendary swordmaster Masaki is a veteran of over 100 battles.",
+    "kind": "normal-monster",
+    "race": "Warrior",
+    "attribute": "EARTH",
+    "level": 4,
+    "attack": 1100,
+    "defense": 1100
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-038",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

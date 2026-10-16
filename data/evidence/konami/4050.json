@@ -1,0 +1,22 @@
+{
+  "passcode": "91939608",
+  "konamiId": 4050,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4050&request_locale=en",
+  "accessedOn": "2026-10-16",
+  "htmlSha256": "7b5273e1d6db99e4a32bd3a764bde4a1cb459f60aeb0979aa1b2f095593ad39f",
+  "currentFacts": {
+    "name": "Rogue Doll",
+    "text": "A deadly doll gifted with mystical power, it is particularly powerful when attacking against dark forces.",
+    "kind": "normal-monster",
+    "race": "Spellcaster",
+    "attribute": "LIGHT",
+    "level": 4,
+    "attack": 1600,
+    "defense": 1000
+  },
+  "printing": {
+    "date": "2002-03-29",
+    "setCode": "SDK-008",
+    "product": "STARTER DECK KAIBA"
+  }
+}

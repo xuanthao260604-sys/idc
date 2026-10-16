@@ -1,0 +1,22 @@
+{
+  "passcode": "53375573",
+  "konamiId": 4175,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4175&request_locale=en",
+  "accessedOn": "2026-10-16",
+  "htmlSha256": "83e8302e12993d1f4c9f6af5faaace9458fed36a3ae2f7f4aa4d66eb02308873",
+  "currentFacts": {
+    "name": "Dark King of the Abyss",
+    "text": "It's said that this King of the Netherworld once had the power to rule over the dark.",
+    "kind": "normal-monster",
+    "race": "Fiend",
+    "attribute": "DARK",
+    "level": 3,
+    "attack": 1200,
+    "defense": 800
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-020",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

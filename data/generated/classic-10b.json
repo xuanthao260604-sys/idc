@@ -1,0 +1,875 @@
+{
+  "schemaVersion": 1,
+  "format": {
+    "id": "goat-2005-08-17",
+    "revision": 4
+  },
+  "provenance": {
+    "upstreamSha256": "0ab3046bbaa73cc4131d36b89f9ab09ff46473b33c5a5d8e05a22ce2019727d6",
+    "manifestSha256": "e25925502ae3de5946fc9fafbdf4e4a11deac0bb37b0c2843a7bfc9ca998078d",
+    "reviewSha256": "13909e7c14b300abab2dcdc174fe8bd3b7b1fb8477ff93ae1c3aea37e4711900",
+    "officialEvidenceSha256": "cc1aaefaa9f214ab3d96527833612c521738ce7897dfaf0b678e238a7a9016bb"
+  },
+  "cards": [
+    {
+      "schemaVersion": 1,
+      "id": "official:01784619",
+      "origin": "official",
+      "revision": 1,
+      "name": "Uraby",
+      "passcode": "01784619",
+      "text": "Fast on its feet, this dinosaur rips enemies to shreds with its sharp claws.",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=23771716,44287299,50930991,50005633,1784619,91939608,68516705,48365709,53375573,89091579&misc=yes",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4086&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 4086."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4086&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4086&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+        }
+      ],
+      "verification": "verified",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4086&request_locale=en",
+            "accessedOn": "2026-10-16",
+            "scope": "release",
+            "notes": "Reviewed North American print LOB-069, 2002-03-08, LEGEND OF BLUE EYES WHITE DRAGON; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "release",
+            "notes": "Previously reviewed Goat cardpool includes LOB, SDK, SDY and MRD; classic-10b uses individually reviewed original North American print rows from these sets."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "attribute": "EARTH",
+      "race": "Dinosaur",
+      "level": 4,
+      "attack": 1500,
+      "defense": 800,
+      "kind": "normal-monster"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "official:23771716",
+      "origin": "official",
+      "revision": 1,
+      "name": "7 Colored Fish",
+      "passcode": "23771716",
+      "text": "A rare rainbow fish that has never been caught by mortal man.",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=23771716,44287299,50930991,50005633,1784619,91939608,68516705,48365709,53375573,89091579&misc=yes",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4446&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 4446."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4446&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4446&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+        }
+      ],
+      "verification": "verified",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4446&request_locale=en",
+            "accessedOn": "2026-10-16",
+            "scope": "release",
+            "notes": "Reviewed North American print MRD-098, 2002-06-26, METAL RAIDERS; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "release",
+            "notes": "Previously reviewed Goat cardpool includes LOB, SDK, SDY and MRD; classic-10b uses individually reviewed original North American print rows from these sets."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "attribute": "WATER",
+      "race": "Fish",
+      "level": 4,
+      "attack": 1800,
+      "defense": 800,
+      "kind": "normal-monster"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "official:44287299",
+      "origin": "official",
+      "revision": 1,
+      "name": "Masaki the Legendary Swordsman",
+      "passcode": "44287299",
+      "text": "Legendary swordmaster Masaki is a veteran of over 100 battles.",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=23771716,44287299,50930991,50005633,1784619,91939608,68516705,48365709,53375573,89091579&misc=yes",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4299&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 4299."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4299&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4299&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+        }
+      ],
+      "verification": "verified",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4299&request_locale=en",
+            "accessedOn": "2026-10-16",
+            "scope": "release",
+            "notes": "Reviewed North American print LOB-038, 2002-03-08, LEGEND OF BLUE EYES WHITE DRAGON; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "release",
+            "notes": "Previously reviewed Goat cardpool includes LOB, SDK, SDY and MRD; classic-10b uses individually reviewed original North American print rows from these sets."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "attribute": "EARTH",
+      "race": "Warrior",
+      "level": 4,
+      "attack": 1100,
+      "defense": 1100,
+      "kind": "normal-monster"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "official:48365709",
+      "origin": "official",
+      "revision": 1,
+      "name": "Ansatsu",
+      "passcode": "48365709",
+      "text": "A silent and deadly warrior specializing in assassinations.",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=23771716,44287299,50930991,50005633,1784619,91939608,68516705,48365709,53375573,89091579&misc=yes",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4133&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 4133."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4133&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4133&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+        }
+      ],
+      "verification": "verified",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4133&request_locale=en",
+            "accessedOn": "2026-10-16",
+            "scope": "release",
+            "notes": "Reviewed North American print SDY-016, 2002-03-29, STARTER DECK YUGI; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "release",
+            "notes": "Previously reviewed Goat cardpool includes LOB, SDK, SDY and MRD; classic-10b uses individually reviewed original North American print rows from these sets."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "attribute": "EARTH",
+      "race": "Warrior",
+      "level": 5,
+      "attack": 1700,
+      "defense": 1200,
+      "kind": "normal-monster"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "official:50005633",
+      "origin": "official",
+      "revision": 1,
+      "name": "Swordstalker",
+      "passcode": "50005633",
+      "text": "A monster formed by the vengeful souls of those who passed away in battle.",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=23771716,44287299,50930991,50005633,1784619,91939608,68516705,48365709,53375573,89091579&misc=yes",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4384&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 4384."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4384&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4384&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+        }
+      ],
+      "verification": "verified",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4384&request_locale=en",
+            "accessedOn": "2026-10-16",
+            "scope": "release",
+            "notes": "Reviewed North American print SDK-025, 2002-03-29, STARTER DECK KAIBA; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "release",
+            "notes": "Previously reviewed Goat cardpool includes LOB, SDK, SDY and MRD; classic-10b uses individually reviewed original North American print rows from these sets."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "attribute": "DARK",
+      "race": "Warrior",
+      "level": 6,
+      "attack": 2000,
+      "defense": 1600,
+      "kind": "normal-monster"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "official:50930991",
+      "origin": "official",
+      "revision": 1,
+      "name": "Neo the Magic Swordsman",
+      "passcode": "50930991",
+      "text": "A dimensional drifter who not only practices sorcery, but is also a sword and martial arts master.",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=23771716,44287299,50930991,50005633,1784619,91939608,68516705,48365709,53375573,89091579&misc=yes",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4881&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 4881."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4881&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4881&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+        }
+      ],
+      "verification": "verified",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4881&request_locale=en",
+            "accessedOn": "2026-10-16",
+            "scope": "release",
+            "notes": "Reviewed North American print SDY-035, 2002-03-29, STARTER DECK YUGI; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "release",
+            "notes": "Previously reviewed Goat cardpool includes LOB, SDK, SDY and MRD; classic-10b uses individually reviewed original North American print rows from these sets."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "attribute": "LIGHT",
+      "race": "Spellcaster",
+      "level": 4,
+      "attack": 1700,
+      "defense": 1000,
+      "kind": "normal-monster"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "official:53375573",
+      "origin": "official",
+      "revision": 1,
+      "name": "Dark King of the Abyss",
+      "passcode": "53375573",
+      "text": "It's said that this King of the Netherworld once had the power to rule over the dark.",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=23771716,44287299,50930991,50005633,1784619,91939608,68516705,48365709,53375573,89091579&misc=yes",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4175&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 4175."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4175&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4175&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+        }
+      ],
+      "verification": "verified",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4175&request_locale=en",
+            "accessedOn": "2026-10-16",
+            "scope": "release",
+            "notes": "Reviewed North American print LOB-020, 2002-03-08, LEGEND OF BLUE EYES WHITE DRAGON; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "release",
+            "notes": "Previously reviewed Goat cardpool includes LOB, SDK, SDY and MRD; classic-10b uses individually reviewed original North American print rows from these sets."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "attribute": "DARK",
+      "race": "Fiend",
+      "level": 3,
+      "attack": 1200,
+      "defense": 800,
+      "kind": "normal-monster"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "official:68516705",
+      "origin": "official",
+      "revision": 1,
+      "name": "Mystic Horseman",
+      "passcode": "68516705",
+      "text": "Half man and half horse, this monster is known for its extreme speed.",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=23771716,44287299,50930991,50005633,1784619,91939608,68516705,48365709,53375573,89091579&misc=yes",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4097&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 4097."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4097&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4097&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+        }
+      ],
+      "verification": "verified",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4097&request_locale=en",
+            "accessedOn": "2026-10-16",
+            "scope": "release",
+            "notes": "Reviewed North American print SDK-012, 2002-03-29, STARTER DECK KAIBA; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "release",
+            "notes": "Previously reviewed Goat cardpool includes LOB, SDK, SDY and MRD; classic-10b uses individually reviewed original North American print rows from these sets."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "attribute": "EARTH",
+      "race": "Beast",
+      "level": 4,
+      "attack": 1300,
+      "defense": 1550,
+      "kind": "normal-monster"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "official:89091579",
+      "origin": "official",
+      "revision": 1,
+      "name": "Basic Insect",
+      "passcode": "89091579",
+      "text": "Usually found traveling in swarms, this creature's ideal environment is the forest.",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=23771716,44287299,50930991,50005633,1784619,91939608,68516705,48365709,53375573,89091579&misc=yes",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4056&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 4056."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4056&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4056&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+        }
+      ],
+      "verification": "verified",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4056&request_locale=en",
+            "accessedOn": "2026-10-16",
+            "scope": "release",
+            "notes": "Reviewed North American print LOB-008, 2002-03-08, LEGEND OF BLUE EYES WHITE DRAGON; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "release",
+            "notes": "Previously reviewed Goat cardpool includes LOB, SDK, SDY and MRD; classic-10b uses individually reviewed original North American print rows from these sets."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "attribute": "EARTH",
+      "race": "Insect",
+      "level": 2,
+      "attack": 500,
+      "defense": 700,
+      "kind": "normal-monster"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "official:91939608",
+      "origin": "official",
+      "revision": 1,
+      "name": "Rogue Doll",
+      "passcode": "91939608",
+      "text": "A deadly doll gifted with mystical power, it is particularly powerful when attacking against dark forces.",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=23771716,44287299,50930991,50005633,1784619,91939608,68516705,48365709,53375573,89091579&misc=yes",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4050&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 4050."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4050&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4050&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+        }
+      ],
+      "verification": "verified",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4050&request_locale=en",
+            "accessedOn": "2026-10-16",
+            "scope": "release",
+            "notes": "Reviewed North American print SDK-008, 2002-03-29, STARTER DECK KAIBA; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "release",
+            "notes": "Previously reviewed Goat cardpool includes LOB, SDK, SDY and MRD; classic-10b uses individually reviewed original North American print rows from these sets."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "attribute": "LIGHT",
+      "race": "Spellcaster",
+      "level": 4,
+      "attack": 1600,
+      "defense": 1000,
+      "kind": "normal-monster"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "official:01784619",
+      "fingerprint": "555feb6b4143b133d1c2a50f07db549ba6a1ee5adf5c114a2176ace8bf1b4239",
+      "historicalTextReview": "not-required-normal-flavor",
+      "upstreamText": "Fast on its feet, this dinosaur rips enemies to shreds with its sharp claws.",
+      "referenceText": "Fast on its feet, this dinosaur rips enemies to shreds with its sharp claws.",
+      "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+      "printing": {
+        "date": "2002-03-08",
+        "setCode": "LOB-069",
+        "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+      },
+      "upstreamTcgDate": "2002-03-08"
+    },
+    {
+      "id": "official:23771716",
+      "fingerprint": "ac783bc1c5806450e4c273bbd4343eb778520c4a19f979d7becc33fda9d49562",
+      "historicalTextReview": "not-required-normal-flavor",
+      "upstreamText": "A rare rainbow fish that has never been caught by mortal man.",
+      "referenceText": "A rare rainbow fish that has never been caught by mortal man.",
+      "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+      "printing": {
+        "date": "2002-06-26",
+        "setCode": "MRD-098",
+        "product": "METAL RAIDERS"
+      },
+      "upstreamTcgDate": "2002-06-26"
+    },
+    {
+      "id": "official:44287299",
+      "fingerprint": "25cea609ffccd441b774e76c591707e7f2e10f33a08db73eaa9618d73d2321fc",
+      "historicalTextReview": "not-required-normal-flavor",
+      "upstreamText": "Legendary swordmaster Masaki is a veteran of over 100 battles.",
+      "referenceText": "Legendary swordmaster Masaki is a veteran of over 100 battles.",
+      "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+      "printing": {
+        "date": "2002-03-08",
+        "setCode": "LOB-038",
+        "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+      },
+      "upstreamTcgDate": "2002-03-08"
+    },
+    {
+      "id": "official:48365709",
+      "fingerprint": "5fe836f2c89411d5eef29f2ff7a1abb5aee803ec7aac1dd791ca9a28c81d5c22",
+      "historicalTextReview": "not-required-normal-flavor",
+      "upstreamText": "A silent and deadly warrior specializing in assassinations.",
+      "referenceText": "A silent and deadly warrior specializing in assassinations.",
+      "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+      "printing": {
+        "date": "2002-03-29",
+        "setCode": "SDY-016",
+        "product": "STARTER DECK YUGI"
+      },
+      "upstreamTcgDate": "2002-03-29"
+    },
+    {
+      "id": "official:50005633",
+      "fingerprint": "de8618868de8a417a9459a54940d9c562b3a0fb6f91147373d840db2212d4489",
+      "historicalTextReview": "not-required-normal-flavor",
+      "upstreamText": "A monster formed by the vengeful souls of those who passed away in battle.",
+      "referenceText": "A monster formed by the vengeful souls of those who passed away in battle.",
+      "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+      "printing": {
+        "date": "2002-03-29",
+        "setCode": "SDK-025",
+        "product": "STARTER DECK KAIBA"
+      },
+      "upstreamTcgDate": "2002-03-29"
+    },
+    {
+      "id": "official:50930991",
+      "fingerprint": "a532715af64041c2a8708fce49adf64a283c81ff5ce6daf7a87d67e831fde7c8",
+      "historicalTextReview": "not-required-normal-flavor",
+      "upstreamText": "A dimensional drifter who not only practices sorcery, but is also a sword and martial arts master.",
+      "referenceText": "A dimensional drifter who not only practices sorcery, but is also a sword and martial arts master.",
+      "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+      "printing": {
+        "date": "2002-03-29",
+        "setCode": "SDY-035",
+        "product": "STARTER DECK YUGI"
+      },
+      "upstreamTcgDate": "2002-03-29"
+    },
+    {
+      "id": "official:53375573",
+      "fingerprint": "f56e2ddbc7a368c946f334d3c095c005420fc3c2a63a88d3b4103c816b6533aa",
+      "historicalTextReview": "not-required-normal-flavor",
+      "upstreamText": "It's said that this King of the Netherworld once had the power to rule over the dark.",
+      "referenceText": "It's said that this King of the Netherworld once had the power to rule over the dark.",
+      "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+      "printing": {
+        "date": "2002-03-08",
+        "setCode": "LOB-020",
+        "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+      },
+      "upstreamTcgDate": "2002-03-08"
+    },
+    {
+      "id": "official:68516705",
+      "fingerprint": "e657d2af4180acd9202b56843c65e27a626d79f84859c3ee16a002d80268f07c",
+      "historicalTextReview": "not-required-normal-flavor",
+      "upstreamText": "Half man and half horse, this monster is known for its extreme speed.",
+      "referenceText": "Half man and half horse, this monster is known for its extreme speed.",
+      "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+      "printing": {
+        "date": "2002-03-29",
+        "setCode": "SDK-012",
+        "product": "STARTER DECK KAIBA"
+      },
+      "upstreamTcgDate": "2002-03-29"
+    },
+    {
+      "id": "official:89091579",
+      "fingerprint": "59be9e82c1c982db34c1d83c75cf7c75b976c012427b7f818ef1b518fda1c373",
+      "historicalTextReview": "not-required-normal-flavor",
+      "upstreamText": "Usually found traveling in swarms, this creature's ideal environment is the forest.",
+      "referenceText": "Usually found traveling in swarms, this creature's ideal environment is the forest.",
+      "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+      "printing": {
+        "date": "2002-03-08",
+        "setCode": "LOB-008",
+        "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+      },
+      "upstreamTcgDate": "2002-03-08"
+    },
+    {
+      "id": "official:91939608",
+      "fingerprint": "03229fca63fa886aef776fd0db43fa39a3d2eca031bce4f81f6c8c0aad3314d2",
+      "historicalTextReview": "not-required-normal-flavor",
+      "upstreamText": "A deadly doll gifted with mystical power, it is particularly powerful when attacking against dark forces.",
+      "referenceText": "A deadly doll gifted with mystical power, it is particularly powerful when attacking against dark forces.",
+      "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+      "printing": {
+        "date": "2002-03-29",
+        "setCode": "SDK-008",
+        "product": "STARTER DECK KAIBA"
+      },
+      "upstreamTcgDate": "2002-03-29"
+    }
+  ],
+  "summary": {
+    "imported": 10,
+    "verifiedData": 10,
+    "historicalReviewPending": 0,
+    "implemented": 0,
+    "testedEffects": 0,
+    "playable": 0
+  }
+}

@@ -1,3 +1,5 @@
+Catalog runtime hiện tại gồm 40 loại; xem [mốc dữ liệu 40](../data/classic-40.md). Các số 30/20 bên dưới mô tả mốc trước.
+
 # Bàn đấu beta trên cùng máy
 
 > Cập nhật catalog: ứng dụng hiện hợp nhất pilot 20 và classic-10 thành 30 loại.

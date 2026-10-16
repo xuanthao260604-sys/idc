@@ -6,16 +6,16 @@ Game đấu bài hai người theo Goat Format Bắc Mỹ: cutoff 17/8/2005, ban
 
 ## Tiến độ hiện tại
 
-Đã có bàn đấu hotseat hai người thay phiên cùng máy, catalog 30 loại và deck mẫu hợp lệ 40 lá; deck A/B tự xây vẫn được giữ.
-Core hỗ trợ 25 quái thường; 5 hiệu ứng Pot of Greed, Fissure, Trap Hole, Hane-Hane và
+Đã có bàn đấu hotseat hai người thay phiên cùng máy, catalog 40 loại và deck mẫu hợp lệ 40 lá; deck A/B tự xây vẫn được giữ.
+Core hỗ trợ 35 quái thường; 5 hiệu ứng Pot of Greed, Fissure, Trap Hole, Hane-Hane và
 Man-Eater Bug được mở bằng hồ sơ review và kiểm thử trong scope giới hạn.
 
 Đã hoàn tất [hotseat nội bộ 20 lá](docs/milestones/hotseat-20.md) và [xây/lưu deck A/B](docs/beta/deck-builder.md) trong scope giới hạn.
-Đã đạt [Windows CI cho catalog 30](docs/data/classic-30.md); còn ca Windows 11 desktop chưa chạy.
+Đang hoàn tất [catalog 40](docs/data/classic-40.md); mốc [Windows CI catalog 30](docs/data/classic-30.md) đã đạt; còn ca Windows 11 desktop chưa chạy.
 Không coi việc cấu hình CI Windows hoặc chạy Linux là đã kiểm chứng Windows.
 
-295/295 test đạt trên Linux và Windows CI. Đã chốt [catalog 30 lá](docs/data/classic-30.md):
-21/21 bước, 11 browser run bằng Edge, gồm hồi quy pilot 20 và trận mới với catalog 30.
+308/308 test đạt trên Linux cho catalog 40; kiểm thử trình duyệt và Windows CI đang được hoàn tất.
+Mốc trước catalog 30 đạt 21/21 bước và 11 browser run; xem tài liệu lịch sử.
 Browser regression tính riêng: xây/lưu deck, 5 hiệu ứng, xem Mộ, tạo trận A/B/ngẫu nhiên, bỏ bài,
 Pot với deck 0/1/2 lá, đầu hàng/hủy và tạo trận sau kết thúc, trận tự nhiên đầy đủ.
 Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không phải game hoàn tất mọi luật Yu-Gi-Oh!.

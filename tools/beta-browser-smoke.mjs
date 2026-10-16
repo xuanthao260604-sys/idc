@@ -242,10 +242,10 @@ try {
   await send('Runtime.enable'); await send('Page.enable'); await send('Page.navigate', { url: `http://127.0.0.1:${server.address().port}` });
   await wait(`document.getElementById('seat-dialog')?.open`); await seat('a');
   if (expanded && !fullDuel) {
-    assert.equal(await evaluate('catalog.size'), 30);
-    assert.match(await evaluate(`document.getElementById('catalog-count').textContent`), /30/);
+    assert.equal(await evaluate('catalog.size'), 40);
+    assert.match(await evaluate(`document.getElementById('catalog-count').textContent`), /40/);
     await click(`document.getElementById('deck-builder')`); await wait(`!busy && document.getElementById('deck-dialog').open`);
-    const added = (await read('data/generated/classic-10.json')).cards;
+    const added = [...(await read('data/generated/classic-10.json')).cards, ...(await read('data/generated/classic-10b.json')).cards];
     for (const card of added) {
       await click(`document.querySelector('#deck-catalog [data-card-id="${card.id}"] .deck-name')`);
       assert.equal(await evaluate(`document.querySelector('#deck-preview h2').textContent`), card.name);
@@ -264,7 +264,7 @@ try {
     assert.equal(await evaluate('view.players[1].lifePoints'), 7200);
     assert.equal(await evaluate(`view.players[1].graveyard.some(c=>catalog.get(c.definition.id).name==='Armored Lizard')`), true);
     assert.equal(errors.length, 0);
-    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'expanded-catalog', catalog: 30, reviewedNewCardPreviews: 10, tributeSummon: 'Gaia The Fierce Knight', battleTarget: 'Armored Lizard', battleDamage: 800, fixtureOnlyAtSetup: true, runtimeExceptions: errors.length }));
+    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'expanded-catalog', catalog: 40, reviewedNewCardPreviews: 20, tributeSummon: 'Gaia The Fierce Knight', battleTarget: 'Armored Lizard', battleDamage: 800, fixtureOnlyAtSetup: true, runtimeExceptions: errors.length }));
   } else if (deckBuilder) {
     const openDeck = async () => { await click(`document.getElementById('deck-builder')`); await wait(`!busy && document.getElementById('deck-dialog').open`); };
     const change = (id, direction) => click(`document.querySelector('#deck-catalog [data-card-id="${id}"] [data-change="${direction}"]')`);

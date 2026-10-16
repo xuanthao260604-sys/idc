@@ -1,3 +1,5 @@
+Mốc hiện tại: [catalog 40](classic-40.md), thêm batch độc lập `classic-10b`; nội dung 30/20 dưới đây là lịch sử.
+
 # Quy trình nhập dữ liệu — Giai đoạn 3
 
 > Cập nhật: đã thêm [lô classic-10](classic-30.md) riêng để runtime có 30 lá.

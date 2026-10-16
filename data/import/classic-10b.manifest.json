@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "formatId": "goat-2005-08-17",
+  "cards": [
+    {
+      "passcode": "01784619",
+      "expectedName": "Uraby",
+      "konamiId": 4086
+    },
+    {
+      "passcode": "23771716",
+      "expectedName": "7 Colored Fish",
+      "konamiId": 4446
+    },
+    {
+      "passcode": "44287299",
+      "expectedName": "Masaki the Legendary Swordsman",
+      "konamiId": 4299
+    },
+    {
+      "passcode": "48365709",
+      "expectedName": "Ansatsu",
+      "konamiId": 4133
+    },
+    {
+      "passcode": "50005633",
+      "expectedName": "Swordstalker",
+      "konamiId": 4384
+    },
+    {
+      "passcode": "50930991",
+      "expectedName": "Neo the Magic Swordsman",
+      "konamiId": 4881
+    },
+    {
+      "passcode": "53375573",
+      "expectedName": "Dark King of the Abyss",
+      "konamiId": 4175
+    },
+    {
+      "passcode": "68516705",
+      "expectedName": "Mystic Horseman",
+      "konamiId": 4097
+    },
+    {
+      "passcode": "89091579",
+      "expectedName": "Basic Insect",
+      "konamiId": 4056
+    },
+    {
+      "passcode": "91939608",
+      "expectedName": "Rogue Doll",
+      "konamiId": 4050
+    }
+  ],
+  "eligibleSetPrefixes": [
+    "LOB",
+    "SDK",
+    "SDY",
+    "MRD"
+  ],
+  "eligibilitySource": {
+    "url": "https://www.goatformat.com/cardpool.html",
+    "accessedOn": "2026-10-15",
+    "scope": "release",
+    "notes": "Previously reviewed Goat cardpool includes LOB, SDK, SDY and MRD; classic-10b uses individually reviewed original North American print rows from these sets."
+  }
+}

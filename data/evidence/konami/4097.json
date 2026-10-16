@@ -1,0 +1,22 @@
+{
+  "passcode": "68516705",
+  "konamiId": 4097,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4097&request_locale=en",
+  "accessedOn": "2026-10-16",
+  "htmlSha256": "db128287f0482bec75efa8267c1f23af4dfd1c3e7377fccebeb62f11becc1bde",
+  "currentFacts": {
+    "name": "Mystic Horseman",
+    "text": "Half man and half horse, this monster is known for its extreme speed.",
+    "kind": "normal-monster",
+    "race": "Beast",
+    "attribute": "EARTH",
+    "level": 4,
+    "attack": 1300,
+    "defense": 1550
+  },
+  "printing": {
+    "date": "2002-03-29",
+    "setCode": "SDK-012",
+    "product": "STARTER DECK KAIBA"
+  }
+}

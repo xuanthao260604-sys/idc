@@ -10,10 +10,10 @@ import type { EngineAction } from '../packages/engine/src/actions.js';
 type Mutable<T>={-readonly[K in keyof T]:Mutable<T[K]>};
 const {registry}=loadRuntimeCatalog();
 const load=(p:string)=>JSON.parse(readFileSync(join(projectRoot,p),'utf8'));
-const manifest=load('data/import/classic-10.manifest.json') as {cards:{passcode:string;konamiId:number;expectedName:string}[]};
+const manifest={cards:['classic-10','classic-10b'].flatMap(batch=>load(`data/import/${batch}.manifest.json`).cards)} as {cards:{passcode:string;konamiId:number;expectedName:string}[]};
 function step(s:DuelState,actorId:string,action:EngineAction){const result=applyAction(registry,s,{actorId,expectedStateVersion:s.stateVersion,action});if(!result.accepted)throw new Error(result.message);return result.state;}
 function settle(s:DuelState){for(let n=0;s.timing.window!=='open';n++){if(n>4)throw new Error('Response did not settle');s=step(s,s.timing.priorityPlayer!,{type:'pass'});}return s;}
-describe('Ten sourced normal monsters through summon and battle transitions',()=>{
+describe('Twenty sourced expansion normal monsters through summon and battle transitions',()=>{
   it.each(manifest.cards)('$expectedName uses reviewed tribute count and printed ATK for direct battle damage',entry=>{
     const proof=load(`data/evidence/konami/${entry.konamiId}.json`), deck=defaultDeck(registry);
     const s=structuredClone(createDuel(registry,{duelId:'classic10',players:[{id:'a',deck},{id:'b',deck}],firstPlayerId:'a',seedHex:'23'.repeat(32)}).state) as Mutable<DuelState>;

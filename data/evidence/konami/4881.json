@@ -1,0 +1,22 @@
+{
+  "passcode": "50930991",
+  "konamiId": 4881,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4881&request_locale=en",
+  "accessedOn": "2026-10-16",
+  "htmlSha256": "7fd687e7a385c1ed90c5d0a923cb4cd30e5f9ee227b4950f2e1e4ae6090220d4",
+  "currentFacts": {
+    "name": "Neo the Magic Swordsman",
+    "text": "A dimensional drifter who not only practices sorcery, but is also a sword and martial arts master.",
+    "kind": "normal-monster",
+    "race": "Spellcaster",
+    "attribute": "LIGHT",
+    "level": 4,
+    "attack": 1700,
+    "defense": 1000
+  },
+  "printing": {
+    "date": "2002-03-29",
+    "setCode": "SDY-035",
+    "product": "STARTER DECK YUGI"
+  }
+}

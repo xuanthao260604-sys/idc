@@ -1,0 +1,22 @@
+{
+  "passcode": "23771716",
+  "konamiId": 4446,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4446&request_locale=en",
+  "accessedOn": "2026-10-16",
+  "htmlSha256": "448b97dc36be13cf4e1d508807de64e8cfe2c2484ba3b6922b1afb997989c8c1",
+  "currentFacts": {
+    "name": "7 Colored Fish",
+    "text": "A rare rainbow fish that has never been caught by mortal man.",
+    "kind": "normal-monster",
+    "race": "Fish",
+    "attribute": "WATER",
+    "level": 4,
+    "attack": 1800,
+    "defense": 800
+  },
+  "printing": {
+    "date": "2002-06-26",
+    "setCode": "MRD-098",
+    "product": "METAL RAIDERS"
+  }
+}

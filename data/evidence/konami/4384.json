@@ -1,0 +1,22 @@
+{
+  "passcode": "50005633",
+  "konamiId": 4384,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4384&request_locale=en",
+  "accessedOn": "2026-10-16",
+  "htmlSha256": "d51f81dccbd648787cec642b324531bd7a823c76e465b0ffe71b99885db0d1f1",
+  "currentFacts": {
+    "name": "Swordstalker",
+    "text": "A monster formed by the vengeful souls of those who passed away in battle.",
+    "kind": "normal-monster",
+    "race": "Warrior",
+    "attribute": "DARK",
+    "level": 6,
+    "attack": 2000,
+    "defense": 1600
+  },
+  "printing": {
+    "date": "2002-03-29",
+    "setCode": "SDK-025",
+    "product": "STARTER DECK KAIBA"
+  }
+}
