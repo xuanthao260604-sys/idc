@@ -1,6 +1,6 @@
 # Kiểm thử giao diện bằng trình duyệt trên Windows
 
-> Mốc hiện hành: [catalog 40](../data/classic-40.md) đã đạt 308 test, 21 bước, 11 browser run bằng Edge trên Windows CI.
+> Mốc hiện hành: [catalog 50](../data/classic-50.md) đã đạt 321 test, 21 bước, 11 browser run bằng Edge trên Windows CI.
 > Windows 11 desktop chưa chạy. Các mốc bên dưới giữ lại làm lịch sử.
 
 > Cập nhật 16/10/2026: [Windows CI đã đạt](windows-ci-result.md) trên commit 7294e60,

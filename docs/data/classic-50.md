@@ -46,5 +46,17 @@ không gọi đó là trận từ deck mặc định 40. Hồi quy pilot 20 dùn
 
 ## Kết quả
 
-Đang kiểm chứng Linux và Windows CI. Windows 11 desktop chưa chạy.
+Linux: 321/321 test (22 file), typecheck/build/data check/startup và 21/21 bước validation đạt.
+11 browser run bằng Chromium 154.0.8037.57, runtimeExceptions 0.
+Trận expanded: 9 lượt, 181 lệnh, 8 attack, 2 decision; Fissure/Hane-Hane/Man-Eater Bug được dùng,
+A thắng với LP 6400/0, không chỉnh state trong lúc chơi.
+Hồi quy pilot 20: 16 lượt, 339 lệnh, 15 attack, 4 decision và đủ 5 effect; B thắng LP 0/4200.
+Kiểm tra bổ sung từng phát hiện deck mặc định bị thay bởi thứ tự ID; đã sửa bằng starter cố định và test đạt.
+
+Windows và Ubuntu CI đã đạt trên commit `c1c1d3897278eb50653d02d585e35a3b877504d8`, [run 38878802549](https://github.com/xuanthao260604-sys/idc/actions/runs/38878802549).
+Đã tải và đọc artifact Windows: win32/x64, OS release 10.0.26100, Node 24.19.0, npm 11.17.0,
+Microsoft Edge 154.0.4258.62; 321/321 test, 22 file, 21/21 bước và 11 browser report, runtimeExceptions 0.
+Preview catalog 50/30 lá mở rộng và trận tự nhiên 9 lượt/181 lệnh/2 decision khớp kết quả Linux.
+Artifacts chỉ là bằng chứng kiểm thử, được gitignore; không phải gói beta.
+Windows 11 desktop chưa chạy.
 Chưa đóng gói, phát hành hoặc bàn giao beta. Hoàn thành mục này sẽ dừng trước lô/tính năng tiếp theo.
