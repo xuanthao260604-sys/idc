@@ -1,0 +1,4 @@
+# Keep generated JSON and source deterministic across Windows/Linux checkouts.
+* text=auto eol=lf
+# Content-addressed source snapshots must retain their original bytes.
+data/raw/** -text
