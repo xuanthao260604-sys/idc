@@ -1,5 +1,9 @@
 # Yêu cầu nền tảng: Windows 11
 
+> Cập nhật 16/10/2026: [Windows CI đã đạt](windows-ci-result.md) trên commit 7294e60,
+> gồm 267 test và 8 browser run bằng Edge. Windows 11 desktop chưa chạy.
+> Các đoạn “chưa chạy CI” bên dưới ghi lịch sử chuẩn bị trước run này.
+
 Yêu cầu người dùng đã xác nhận: mục đích cuối cùng là chạy được trên Windows 11.
 Windows là nền tảng sản phẩm chính; Linux/cloud chỉ là môi trường phát triển và kiểm chứng hiện tại.
 Người dùng chưa cần nhận beta hoặc tự test vào thời điểm này; tiếp tục công việc độc lập,

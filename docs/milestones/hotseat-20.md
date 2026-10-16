@@ -63,3 +63,6 @@ Không mở thêm tính năng/bài, không phát hành và không yêu cầu ng�
 
 Sau mốc hotseat: đã thêm công cụ validate:platform với report/log; tổng test hiện tại
 267 (4 test mới cho báo cáo). Kết quả Windows vẫn chưa có; xem tài liệu mục kế tiếp.
+
+Cập nhật: [Windows CI đã đạt](../platform/windows-ci-result.md) trên commit 7294e60,
+267 test và 18 bước. Windows 11 desktop vẫn chưa chạy; không đồng nhất hai mốc.

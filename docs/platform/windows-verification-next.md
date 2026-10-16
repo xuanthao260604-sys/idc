@@ -1,5 +1,9 @@
 # Mục kế tiếp: kiểm chứng Windows
 
+> Cập nhật 16/10/2026: [Windows CI đã đạt](windows-ci-result.md) trên commit 7294e60,
+> gồm 267 test và 8 browser run bằng Edge. Windows 11 desktop chưa chạy.
+> Các đoạn “chưa chạy CI” bên dưới ghi lịch sử chuẩn bị trước run này.
+
 Đầu vào: mốc hotseat nội bộ 20 lá ở ../milestones/hotseat-20.md.
 Không thêm bài hoặc đổi engine trước khi có lỗi tái hiện cụ thể ở mục này.
 

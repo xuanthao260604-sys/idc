@@ -1,5 +1,9 @@
 # Kiểm thử giao diện bằng trình duyệt trên Windows
 
+> Cập nhật 16/10/2026: [Windows CI đã đạt](windows-ci-result.md) trên commit 7294e60,
+> gồm 267 test và 8 browser run bằng Edge. Windows 11 desktop chưa chạy.
+> Các đoạn “chưa chạy CI” bên dưới ghi lịch sử chuẩn bị trước run này.
+
 Windows 11 vẫn là nền tảng sản phẩm chính. Thay đổi này chuẩn bị kiểm thử bằng trình duyệt cài sẵn,
 không yêu cầu người dùng nhận beta, cài Linux/WSL, tải Chromium hoặc chạy thử vào lúc này.
 

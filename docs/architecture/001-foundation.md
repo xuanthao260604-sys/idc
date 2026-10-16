@@ -50,3 +50,6 @@ node_modules hay output build. Chưa tạo commit trong lần khởi tạo này.
 Windows 11 là đích chạy sản phẩm chính; Linux/cloud chỉ là môi trường phát triển hiện tại.
 Không yêu cầu người dùng Linux/WSL. Theo dõi kiểm chứng thực tế và CI riêng tại
 docs/platform/windows11.md. Người dùng hiện chưa cần nhận hoặc tự test beta.
+
+Ngày 16/10/2026 người dùng đã cho phép commit và push nhánh work để chạy/sửa Windows CI.
+Đã thực hiện trong phạm vi đó; không phát hành beta. Kết quả: ../platform/windows-ci-result.md.

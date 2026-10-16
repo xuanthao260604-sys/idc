@@ -2,7 +2,7 @@
 
 Game đấu bài hai người theo Goat Format Bắc Mỹ: cutoff 17/8/2005, banlist TCG tháng 4/2005.
 **Windows 11 là nền tảng sản phẩm chính.** Cloud/Linux dùng phát triển và kiểm thử;
-chưa xác nhận chạy Windows 11 thực tế. Chưa đóng gói hoặc bàn giao beta.
+đã đạt Windows CI bằng Edge; chưa kiểm tra trực tiếp Windows 11 desktop. Chưa đóng gói hoặc bàn giao beta.
 
 ## Tiến độ hiện tại
 
@@ -11,10 +11,10 @@ Core hỗ trợ 15 quái thường; 5 hiệu ứng Pot of Greed, Fissure, Trap H
 Man-Eater Bug được mở bằng hồ sơ review và kiểm thử trong scope giới hạn.
 
 Mục đang chốt: [hoàn thiện hotseat nội bộ 20 lá](docs/milestones/hotseat-20.md).
-Mục kế tiếp: [kiểm chứng Windows](docs/platform/windows-verification-next.md).
+Đã đạt [kiểm chứng Windows CI](docs/platform/windows-ci-result.md); còn ca Windows 11 desktop chưa chạy.
 Không coi việc cấu hình CI Windows hoặc chạy Linux là đã kiểm chứng Windows.
 
-267/267 test thư viện/pipeline/HTTP/công cụ đạt trên Linux, gồm 9 HTTP integration test.
+267/267 test thư viện/pipeline/HTTP/công cụ đạt trên Linux và Windows CI, gồm 9 HTTP integration test.
 Browser regression tính riêng: 5 hiệu ứng, xem Mộ, tạo trận A/B/ngẫu nhiên, bỏ bài,
 Pot với deck 0/1/2 lá, đầu hàng/hủy và tạo trận sau kết thúc, trận tự nhiên đầy đủ.
 Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không phải game hoàn tất mọi luật Yu-Gi-Oh!.
@@ -60,7 +60,7 @@ hoặc mọi tương tác bài. Bài tự tạo giữ ở [kế hoạch mở r�
 
 `npm run validate:platform` chạy bộ kiểm chứng tổng hợp, ghi report JSON và log từng bước
 vào artifacts/platform-validation/ (Git bỏ qua). Lỗi dừng ngay, phần còn lại ghi chưa chạy.
-Report Linux không xác nhận Windows; Windows CI được cấu hình dùng cùng lệnh và giữ artifact.
+Windows CI đã chạy cùng lệnh, đạt 18/18 bước và giữ artifact; report Linux vẫn chỉ xác nhận Linux.
 
 ## Kiểm thử giao diện
 
