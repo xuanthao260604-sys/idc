@@ -4,23 +4,22 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { projectRoot } from './project-root.js';
 import { z } from 'zod';
+import { createDeckStore } from './deck-store.js';
+import type { DeckStore } from './deck-store.js';
 import { createCommandAdapter } from '../packages/engine/src/command-adapter.js';
 import { createDuel } from '../packages/engine/src/duel.js';
 import type { DuelState } from '../packages/protocol/src/duel.js';
 import type { Registry } from '../packages/engine/src/registry.js';
 
 /** Loopback hotseat beta. Seat selection is intentional local switching, not user authentication. */
-export function createBetaServer(registry: Registry, publicRoot = resolve(projectRoot, 'apps/beta/public'), testInitialState?: DuelState) {
-  const deck: string[] = [];
-  for (let copy = 1; copy <= 3 && deck.length < 40; copy++)
-    for (const card of Object.values(registry.cards)) if (deck.length < 40 && card.legality.maxCopies! >= copy) deck.push(card.id);
+export function createBetaServer(registry: Registry, publicRoot = resolve(projectRoot, 'apps/beta/public'), testInitialState?: DuelState, deckStore: DeckStore = createDeckStore(registry)) {
   const newGame = (firstPlayer: 'a' | 'b' | 'random' = 'a') => createCommandAdapter(registry, createDuel(registry, {
-    duelId: randomBytes(16).toString('hex'), players: [{ id: 'a', deck }, { id: 'b', deck }], ...(firstPlayer === 'random' ? {} : { firstPlayerId: firstPlayer }),
+    duelId: randomBytes(16).toString('hex'), players: [{ id: 'a', deck: [...deckStore.get('a').cards] }, { id: 'b', deck: [...deckStore.get('b').cards] }], ...(firstPlayer === 'random' ? {} : { firstPlayerId: firstPlayer }),
   }).state);
   // Trusted constructor input for browser fixtures; never configurable through HTTP or beta CLI.
   let game = testInitialState ? createCommandAdapter(registry, testInitialState) : newGame();
   const seats = new Map<string, 'a' | 'b'>();
-  const catalog = Object.values(registry.cards).map(c => ({ id: c.id, revision: c.revision, name: c.name, text: c.text, kind: c.kind,
+  const catalog = Object.values(registry.cards).map(c => ({ id: c.id, revision: c.revision, name: c.name, text: c.text, kind: c.kind, maxCopies: Math.min(registry.rules.deck.combinedCopyLimit, c.legality.maxCopies!),
     ...('level' in c ? { level: c.level, attack: c.attack, defense: c.defense, attribute: c.attribute, race: c.race } : { subtype: c.subtype }) }));
   const assets: Record<string, [string, string]> = { '/': ['index.html', 'text/html'], '/app.js': ['app.js', 'text/javascript'], '/style.css': ['style.css', 'text/css'] };
   return createServer(async (req, res) => {
@@ -39,12 +38,16 @@ export function createBetaServer(registry: Registry, publicRoot = resolve(projec
         const [file, mime] = assets[url.pathname]!;
         const body = await readFile(resolve(publicRoot, file)); res.writeHead(200, { 'Content-Type': `${mime}; charset=utf-8` }); res.end(body); return;
       }
-      if (req.method === 'GET' && url.pathname === '/api/catalog') { json(200, { cards: catalog }); return; }
+      if (req.method === 'GET' && url.pathname === '/api/catalog') { json(200, { cards: catalog, deckRules: registry.rules.deck }); return; }
       if (req.method === 'GET' && url.pathname === '/api/view') {
         if (!actor) { json(401, { error: 'Hãy chọn người chơi.' }); return; }
         json(200, game.getView(actor, true)); return;
       }
-      if (req.method !== 'POST' || !['/api/seat', '/api/command', '/api/reset'].includes(url.pathname)) { json(404, { error: 'Không tìm thấy.' }); return; }
+      if (req.method === 'GET' && url.pathname === '/api/deck') {
+        if (!actor) { json(401, { error: 'Hãy chọn người chơi.' }); return; }
+        json(200, { ...deckStore.get(actor), defaultCards: deckStore.defaults }); return;
+      }
+      if (req.method !== 'POST' || !['/api/seat', '/api/command', '/api/reset', '/api/deck'].includes(url.pathname)) { json(404, { error: 'Không tìm thấy.' }); return; }
       if (!req.headers['content-type']?.startsWith('application/json')) { json(415, { error: 'Yêu cầu phải là JSON.' }); return; }
       let length = 0; const chunks: Buffer[] = [];
       for await (const chunk of req) { length += chunk.length; if (length > 16384) { json(413, { error: 'Yêu cầu quá lớn.' }); return; } chunks.push(chunk); }
@@ -60,6 +63,14 @@ export function createBetaServer(registry: Registry, publicRoot = resolve(projec
         json(200, game.refreshView(parsed.data.seat, true)); return;
       }
       if (!actor) { json(401, { error: 'Hãy chọn người chơi.' }); return; }
+      if (url.pathname === '/api/deck') {
+        const parsed = z.strictObject({ seat: z.enum(['a', 'b']), revision: z.number().int().nonnegative().safe(), cards: z.array(z.string().min(1).max(128)) }).safeParse(body);
+        if (!parsed.success) { json(400, { error: 'Dữ liệu deck không hợp lệ.' }); return; }
+        if (parsed.data.seat !== actor) { json(409, { error: 'Người chơi đã thay đổi ở cửa sổ khác. Đóng rồi mở lại deck.' }); return; }
+        const result = await deckStore.save(actor, parsed.data.revision, parsed.data.cards);
+        if (!result.ok) { json(result.status, { error: result.error }); return; }
+        json(200, result.deck); return;
+      }
       if (url.pathname === '/api/reset') {
         const settings = z.strictObject({ firstPlayer: z.enum(['a', 'b', 'random']).default('a') }).safeParse(body);
         if (!settings.success) { json(400, { error: 'Thiết lập người đi trước không hợp lệ.' }); return; }

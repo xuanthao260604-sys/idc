@@ -23,6 +23,7 @@
     "engine:mixed-smoke": "npm run build && node dist/tools/engine-mixed-smoke.js",
     "beta": "npm run environment:check && npm run build && node dist/tools/beta.js",
     "beta:browser-smoke": "npm run build && node tools/beta-browser-smoke.mjs",
+    "beta:browser-deck-builder": "npm run build && node tools/beta-browser-smoke.mjs --deck-builder",
     "beta:browser-concede": "npm run build && node tools/beta-browser-smoke.mjs --concede",
     "beta:browser-deck-out": "npm run build && node tools/beta-browser-smoke.mjs --deck-out=0 && node tools/beta-browser-smoke.mjs --deck-out=1 && node tools/beta-browser-smoke.mjs --deck-out=2",
     "beta:browser-discard": "npm run build && node tools/beta-browser-smoke.mjs --discard",

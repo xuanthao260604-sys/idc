@@ -21,7 +21,7 @@ async function reservePort() {
 }
 async function withBeta(port, check) {
   const child = spawn(process.execPath, [join(root, 'dist', 'tools', 'beta.js')], {
-    cwd, env: { ...process.env, YGO_BETA_PORT: String(port) }, shell: false, windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'],
+    cwd, env: { ...process.env, YGO_BETA_PORT: String(port), YGO_BETA_DECK_DIR: join(cwd, 'decks') }, shell: false, windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'],
   });
   let stdout = '', stderr = '', launchError;
   child.stdout.on('data', chunk => { stdout = (stdout + chunk).slice(-65536); });
@@ -68,6 +68,7 @@ try {
     const seat = await post('/api/seat', { seat: 'a' }); assert.equal(seat.status, 200);
     const cookie = seat.headers.get('set-cookie').split(';')[0], view = await seat.json();
     assert.equal(view.selfHand.length, 6); assert.equal(view.opponentHandCount, 5); assert.equal(view.stateVersion, 0);
+    assert.equal(view.selfHand.length + view.players[0].deckCount, run ? 41 : 40);
     if (run) assert.notEqual(view.duelId, previousDuel, 'Restart must create a fresh in-memory duel');
     previousDuel = view.duelId;
     const cmd = { commandId: 'startup-pass', duelId: view.duelId, expectedStateVersion: 0, action: { type: 'pass' } };
@@ -75,8 +76,17 @@ try {
     const retry = await (await post('/api/command', cmd, cookie)).json();
     assert.equal(accepted.outcome.accepted, true); assert.equal(accepted.view.stateVersion, 1);
     assert.deepEqual(retry.outcome, accepted.outcome); assert.equal(retry.view.stateVersion, 1);
+    const saved = await (await request('/api/deck', { headers: { Cookie: cookie } })).json();
+    if (!run) {
+      const catalog = await (await request('/api/catalog')).json();
+      const add = catalog.cards.find(c => saved.cards.filter(id => id === c.id).length < c.maxCopies);
+      assert.ok(add);
+      const response = await post('/api/deck', { seat: 'a', revision: saved.revision, cards: [...saved.cards, add.id] }, cookie);
+      assert.equal(response.status, 200); assert.equal((await response.json()).cards.length, 41);
+      assert.deepEqual(await (await request('/api/view', { headers: { Cookie: cookie } })).json(), retry.view);
+    } else { assert.equal(saved.revision, 1); assert.equal(saved.cards.length, 41); }
   });
   console.log(JSON.stringify({ platform: process.platform, node: process.versions.node, mode: 'beta-cli-startup',
-    cases: ['invalid-port-exit', 'occupied-port-exit', 'unicode-cwd', 'static-assets', 'private-view', 'command-and-retry', 'stop-and-restart'],
+    cases: ['invalid-port-exit', 'occupied-port-exit', 'unicode-cwd', 'static-assets', 'private-view', 'command-and-retry', 'stop-and-restart', 'deck-save-and-reload'],
     launches: 4, windows11DesktopVerified: false }));
 } finally { await rm(cwd, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 }); }

@@ -59,3 +59,6 @@ xem [mốc tổng hợp](../milestones/hotseat-20.md); kế tiếp là windows-v
 
 CI Windows hiện thu report/log qua upload-artifact, giữ 14 ngày và chỉ chạy sau khi
 workflow được trigger. Không có run Windows trong phiên này.
+
+Đã bổ sung browser-deck-builder vào validate:platform để kiểm tra editor/lưu A-B/
+không sửa trận hiện tại và dùng deck khi reset; xem ../beta/deck-builder.md.

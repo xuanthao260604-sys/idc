@@ -64,4 +64,43 @@ describe('Loopback beta HTTP boundary', () => {
     expect((await post('/api/reset', { firstPlayer: 'b' })).status).toBe(401);
   });
 
+  it('requires a seat and binds deck edits to the cookie seat even across shared-cookie tabs', async () => {
+    expect((await fetch(base+'/api/deck')).status).toBe(401);
+    expect((await post('/api/deck', {})).status).toBe(401);
+    const seat=await post('/api/seat',{seat:'a'}), cookie=seat.headers.get('set-cookie')!.split(';')[0]!;
+    const own=await (await fetch(base+'/api/deck?seat=b',{headers:{Cookie:cookie}})).json();
+    expect(own.seat).toBe('a');
+    const saved=await post('/api/deck',{seat:'b',revision:own.revision,cards:own.cards},cookie);
+    expect(saved.status).toBe(409);
+    expect(await (await fetch(base+'/api/deck',{headers:{Cookie:cookie}})).json()).toEqual(own);
+  });
+  it('rejects invalid decks and extra fields without changing saved deck or duel', async () => {
+    const seat=await post('/api/seat',{seat:'a'}), cookie=seat.headers.get('set-cookie')!.split(';')[0]!, beforeView=await seat.json();
+    const own=await (await fetch(base+'/api/deck',{headers:{Cookie:cookie}})).json();
+    const normals=Object.values(registry.cards).filter(c=>c.kind==='normal-monster').map(c=>c.id);
+    const normalDeck=[...normals,...normals,...normals].slice(0,40);
+    for (const cards of [own.cards.slice(0,39),[...normalDeck,'official:55144522','official:55144522'],[...normalDeck,'__proto__']]) {
+      expect((await post('/api/deck',{seat:'a',revision:own.revision,cards},cookie)).status).toBe(422);
+    }
+    expect((await post('/api/deck',{seat:'a',revision:own.revision,cards:own.cards,path:'forged'},cookie)).status).toBe(400);
+    expect(await (await fetch(base+'/api/deck',{headers:{Cookie:cookie}})).json()).toEqual(own);
+    expect(await (await fetch(base+'/api/view',{headers:{Cookie:cookie}})).json()).toEqual(beforeView);
+  });
+  it('keeps the running duel unchanged on save and uses independent saved decks only on reset', async () => {
+    const seat=await post('/api/seat',{seat:'a'}), cookie=seat.headers.get('set-cookie')!.split(';')[0]!, beforeView=await seat.json();
+    const own=await (await fetch(base+'/api/deck',{headers:{Cookie:cookie}})).json();
+    const normals=Object.values(registry.cards).filter(c=>c.kind==='normal-monster').map(c=>c.id);
+    const cards=[...normals,...normals,...normals].slice(0,40).concat('official:55144522');
+    const saved=await post('/api/deck',{seat:'a',revision:own.revision,cards},cookie); expect(saved.status).toBe(200);
+    expect((await saved.json()).revision).toBe(own.revision+1);
+    expect(await (await fetch(base+'/api/view',{headers:{Cookie:cookie}})).json()).toEqual(beforeView);
+    expect((await post('/api/deck',{seat:'a',revision:own.revision,cards:own.cards},cookie)).status).toBe(409);
+    const reset=await (await post('/api/reset',{firstPlayer:'a'},cookie)).json();
+    expect(reset.selfHand.length+reset.players[0].deckCount).toBe(41);
+    expect(reset.opponentHandCount+reset.players[1].deckCount).toBe(40);
+    expect(reset.duelId).not.toBe(beforeView.duelId);
+    const b=await post('/api/seat',{seat:'b'}), cookieB=b.headers.get('set-cookie')!.split(';')[0]!;
+    expect((await (await fetch(base+'/api/deck',{headers:{Cookie:cookieB}})).json()).cards).toHaveLength(40);
+  });
+
 });

@@ -1,6 +1,6 @@
 // Optional browser regression check. Requires an installed Chromium, no Playwright dependency.
 import { spawn } from 'node:child_process';
-import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { mkdtemp, readFile, rm, mkdir, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import assert from 'node:assert/strict';
@@ -20,6 +20,7 @@ const fullDuel = process.argv.includes('--full-duel');
 const newGame = process.argv.includes('--new-game');
 const discard = process.argv.includes('--discard');
 const concede = process.argv.includes('--concede');
+const deckBuilder = process.argv.includes('--deck-builder');
 const deckOutArg = process.argv.find(arg => /^--deck-out=[012]$/.test(arg));
 const deckOut = deckOutArg === undefined ? null : Number(deckOutArg.split('=')[1]);
 const s = structuredClone(createDuel(r, { duelId: fullDuel ? 'mixed-smoke' : 'browser-fixture', players: [{ id: 'a', deck }, { id: 'b', deck }], firstPlayerId: 'a', seedHex: fullDuel ? '08'.padStart(64, '0') : '12'.repeat(32) }).state);
@@ -33,7 +34,7 @@ function move(name, owner, zone, slot = 0, down = false) {
   c.location = { kind: zone, playerId: owner, slot }; c.position = down ? zone === 'monster' ? 'face-down-defense' : 'face-down' : 'face-up-attack';
   if (down) c.markers.setOnTurn = 2;
 }
-if (!fullDuel && !newGame && !discard && !concede && deckOut === null) {
+if (!fullDuel && !newGame && !discard && !concede && !deckBuilder && deckOut === null) {
 move('Pot of Greed', 'a', 'hand'); move('Fissure', 'a', 'hand'); move('Battle Ox', 'a', 'hand');
 move('La Jinn the Mystical Genie of the Lamp', 'a', 'monster', 0); move('Celtic Guardian', 'a', 'monster', 1);
 move('Mystical Elf', 'b', 'monster', 0); move('Hane-Hane', 'b', 'monster', 1, true); move('Man-Eater Bug', 'b', 'monster', 2, true); move('Trap Hole', 'b', 'spell-trap', 0, true);
@@ -54,7 +55,7 @@ if (deckOut !== null) {
   s.turn.phase = 'main1'; s.timing.window = 'open'; s.timing.consecutivePasses = 0;
 }
 assertDuelInvariants(s, r);
-const server = createBetaServer(r, undefined, newGame || concede ? undefined : s), directory = await mkdtemp(join(tmpdir(), 'ygo-browser-'));
+const server = createBetaServer(r, undefined, newGame || concede || deckBuilder ? undefined : s), directory = await mkdtemp(join(tmpdir(), 'ygo-browser-'));
 let chrome, ws, closeBrowser, browser, dialogAnswer; const nativeDialogs = []; const pending = new Map(), errors = []; let nextId = 0;
 const timeout = setTimeout(() => { console.error('Browser regression timed out'); chrome?.kill(); server.closeAllConnections(); process.exit(1); }, fullDuel ? 240000 : 90000);
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -231,7 +232,70 @@ try {
   }
   await send('Runtime.enable'); await send('Page.enable'); await send('Page.navigate', { url: `http://127.0.0.1:${server.address().port}` });
   await wait(`document.getElementById('seat-dialog')?.open`); await seat('a');
-  if (concede) {
+  if (deckBuilder) {
+    const openDeck = async () => { await click(`document.getElementById('deck-builder')`); await wait(`!busy && document.getElementById('deck-dialog').open`); };
+    const change = (id, direction) => click(`document.querySelector('#deck-catalog [data-card-id="${id}"] [data-change="${direction}"]')`);
+    const saveDeck = async () => { await click(`document.getElementById('deck-save')`); await wait(`!busy && !document.getElementById('deck-dialog').open`); };
+    const before = await evaluate('JSON.stringify(view)');
+    await openDeck();
+    assert.equal(await evaluate('deckDraft.cards.length'), 40);
+    assert.equal(await evaluate(`document.querySelector('#deck-catalog [data-card-id="official:55144522"] [data-change="add"]').disabled`), true);
+    await change('official:05053103', 'remove');
+    assert.equal(await evaluate(`document.getElementById('deck-save').disabled`), true);
+    assert.match(await evaluate(`document.getElementById('deck-issues').textContent`), /còn thiếu 1/);
+    await change('official:05053103', 'add');
+    await change('official:89631139', 'add');
+    assert.equal(await evaluate(`document.querySelector('#deck-catalog [data-card-id="official:89631139"] [data-change="add"]').disabled`), true);
+    await click(`document.querySelector('#deck-catalog [data-card-id="official:89631139"] .deck-name')`);
+    assert.equal(await evaluate(`document.querySelector('#deck-preview h2').textContent`), 'Blue-Eyes White Dragon');
+    assert.equal(await evaluate(`document.querySelector('#deck-preview p').textContent`), r.cards['official:89631139'].text);
+    if (process.argv.includes('--screenshots')) {
+      const screenshots = join(projectRoot, 'artifacts', 'deck-builder'); await mkdir(screenshots, { recursive: true });
+      for (const [label, width, height] of [['desktop', 1440, 1000], ['narrow', 390, 844]]) {
+        await send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile: false });
+        assert.equal(await evaluate(`(()=>{const d=document.getElementById('deck-dialog'),r=d.getBoundingClientRect();return r.left>=0 && r.right<=innerWidth+1 && d.scrollWidth<=d.clientWidth+1})()`), true);
+        const capture = await send('Page.captureScreenshot', { format: 'png' });
+        await writeFile(join(screenshots, label+'.png'), Buffer.from(capture.data,'base64'));
+      }
+      await send('Emulation.clearDeviceMetricsOverride');
+    }
+
+    await send('Network.enable');
+    await send('Network.emulateNetworkConditions', { offline: true, latency: 0, downloadThroughput: 0, uploadThroughput: 0 });
+    await click(`document.getElementById('deck-save')`);
+    await wait(`!busy && document.getElementById('deck-error').textContent.length>0`);
+    assert.equal(await evaluate(`document.getElementById('deck-dialog').open`), true);
+    assert.equal(await evaluate('deckDraft.cards.length'), 41);
+    await send('Network.emulateNetworkConditions', { offline: false, latency: 0, downloadThroughput: -1, uploadThroughput: -1 });
+    assert.equal(await evaluate(`(async()=> (await api('/api/deck')).cards.length)()`), 40);
+    await saveDeck(); assert.equal(await evaluate('JSON.stringify(view)'), before);
+    await openDeck(); assert.equal(await evaluate('deckDraft.cards.length'), 41);
+    await change('official:05053103', 'remove');
+    await click(`document.getElementById('deck-close')`);
+    await openDeck(); assert.equal(await evaluate('deckDraft.cards.length'), 41);
+    await evaluate(`document.getElementById('deck-search').value='not a real card name'; document.getElementById('deck-search').dispatchEvent(new Event('input'))`);
+    assert.match(await evaluate(`document.getElementById('deck-catalog').textContent`), /Không có lá phù hợp/);
+    await click(`document.getElementById('deck-search')`);
+    await send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13 });
+    await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13 });
+    await wait('!busy'); assert.equal(await evaluate(`document.getElementById('deck-dialog').open`), true);
+
+    await evaluate(`document.getElementById('deck-search').value=''; document.getElementById('deck-kind').value='spell'; document.getElementById('deck-kind').dispatchEvent(new Event('change'))`);
+    assert.equal(await evaluate(`document.querySelectorAll('#deck-catalog .deck-row').length`), 2);
+    await click(`document.getElementById('deck-close')`);
+    await seat('b'); await openDeck(); assert.equal(await evaluate('deckDraft.cards.length'), 40);
+    await change('official:97590747', 'add'); await change('official:05053103', 'add'); await saveDeck();
+    const oldId = await evaluate('view.duelId');
+    await click(`document.getElementById('reset')`); await click(`document.querySelector('#new-game-form input[value="a"]')`);
+    await click(`document.querySelector('#new-game-form button[type="submit"]')`);
+    await wait(`!busy && view.duelId!==${JSON.stringify(oldId)} && !document.getElementById('new-game-dialog').open`);
+    assert.equal(await evaluate('view.players[0].deckCount + view.opponentHandCount'), 41);
+    assert.equal(await evaluate('view.players[1].deckCount + view.selfHand.length'), 42);
+    await seat('a'); await openDeck(); assert.equal(await evaluate('deckDraft.cards.length'), 41);
+    await click(`document.getElementById('deck-close')`);
+    assert.equal(errors.length, 0);
+    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'deck-builder', decks: [41,42], invalidSizeBlocked: true, copyLimits: true, cancelPreservesSaved: true, networkErrorPreservesDraft: true, savePreservesDuel: true, appliedOnNewDuel: true, runtimeExceptions: errors.length }));
+  } else if (concede) {
     const before = await evaluate('JSON.stringify(view)');
     dialogAnswer = false; await click(`document.getElementById('concede')`);
     assert.equal(nativeDialogs.length, 1); assert.equal(nativeDialogs[0].type, 'confirm');

@@ -14,7 +14,8 @@ Mục đang chốt: [hoàn thiện hotseat nội bộ 20 lá](docs/milestones/ho
 Đã đạt [kiểm chứng Windows CI](docs/platform/windows-ci-result.md); còn ca Windows 11 desktop chưa chạy.
 Không coi việc cấu hình CI Windows hoặc chạy Linux là đã kiểm chứng Windows.
 
-267/267 test thư viện/pipeline/HTTP/công cụ đạt trên Linux và Windows CI, gồm 9 HTTP integration test.
+278/278 test thư viện/pipeline/HTTP/công cụ đạt trên Linux, gồm 12 HTTP integration test.
+Windows CI đã đạt 267 test ở mốc trước; kết quả mục xây deck được ghi tại tài liệu tính năng.
 Browser regression tính riêng: 5 hiệu ứng, xem Mộ, tạo trận A/B/ngẫu nhiên, bỏ bài,
 Pot với deck 0/1/2 lá, đầu hàng/hủy và tạo trận sau kết thúc, trận tự nhiên đầy đủ.
 Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không phải game hoàn tất mọi luật Yu-Gi-Oh!.
@@ -54,7 +55,7 @@ Các tài liệu mốc cũ giữ số test/phạm vi tại thời điểm viết
 
 [PlayerView](docs/engine/player-view.md) giữ kín tay/deck/bài úp đối thủ;
 [adapter](docs/engine/command-adapter.md) dùng mã tạm, kiểm tra lệnh và chống xử lý trùng
-trong bộ nhớ. Chưa có online/auth, lưu trận, xây deck, artwork chính thức hoặc custom editor.
+trong bộ nhớ. Đã có xây/lưu deck riêng A/B. Chưa có online/auth, lưu trận, artwork chính thức hoặc custom editor.
 Chưa có Chain hỗn hợp/negate/SEGOC/modifier/replacement tổng quát, Special/Fusion/Ritual Summon
 hoặc mọi tương tác bài. Bài tự tạo giữ ở [kế hoạch mở rộng](docs/architecture/001-foundation.md).
 
@@ -68,6 +69,7 @@ Các lệnh cần Edge/Chrome/Chromium đã cài; người chơi bình thường
 
 ```sh
 npm run beta:browser-smoke
+npm run beta:browser-deck-builder
 npm run beta:browser-setup
 npm run beta:browser-discard
 npm run beta:browser-deck-out
@@ -86,8 +88,11 @@ Xem [Windows browser checks](docs/platform/windows-browser-checks.md),
 
 ## Các mục sau
 
-Sau kiểm chứng Windows và chốt điều kiện bàn giao nội bộ mới mở xây deck/mở rộng catalog.
+Đang chốt [xây/lưu deck 20 lá](docs/beta/deck-builder.md); chỉ mở rộng catalog ở mục riêng tiếp theo.
 Online và trình tạo bài riêng là các mục chưa triển khai. Không tự push/publish/phát hành.
 
 Đã bổ sung `npm run beta:startup-smoke` để kiểm tra lỗi cổng, cwd Unicode, HTTP/lệnh
 và dừng/khởi động lại process. Xem [điểm dừng phần chuẩn bị Windows](docs/platform/beta-startup-check.md).
+
+Xây deck lưu riêng cho A/B và dùng khi tạo trận mới; sửa deck không đổi trận đang chơi.
+Deck được lưu local qua restart, còn trận đấu vẫn chỉ trong bộ nhớ.
