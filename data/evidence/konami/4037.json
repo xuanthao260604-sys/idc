@@ -1,0 +1,22 @@
+{
+  "passcode": "67724379",
+  "konamiId": 4037,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4037&request_locale=en",
+  "accessedOn": "2026-10-16",
+  "htmlSha256": "5260b2d38b4b6dd176d4b89ad840490767a463d2f41005b613e2776a09823941",
+  "currentFacts": {
+    "name": "Koumori Dragon",
+    "text": "A vicious, fire-breathing dragon whose wicked flame corrupts the souls of its victims.",
+    "kind": "normal-monster",
+    "race": "Dragon",
+    "attribute": "DARK",
+    "level": 4,
+    "attack": 1500,
+    "defense": 1200
+  },
+  "printing": {
+    "date": "2002-03-29",
+    "setCode": "SDK-006",
+    "product": "STARTER DECK KAIBA"
+  }
+}

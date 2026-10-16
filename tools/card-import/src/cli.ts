@@ -7,9 +7,10 @@ import { assertRevisionProgress, canonical, importBatch, sha256, validateUpstrea
 import { atomicWrite, readIfExists, saveImmutableSnapshot } from './files.js';
 
 const json = async (path: string): Promise<unknown> => JSON.parse(await readFile(path, 'utf8'));
-export async function run(command: string, root = process.cwd()) {
-  const manifest = ManifestSchema.parse(await json(resolve(root, 'data/import/pilot.manifest.json')));
-  const receiptPath = resolve(root, 'data/import/pilot.receipt.json');
+export async function run(command: string, root = process.cwd(), batchInput = 'pilot') {
+  const batch = z.enum(['pilot', 'classic-10']).parse(batchInput);
+  const manifest = ManifestSchema.parse(await json(resolve(root, `data/import/${batch}.manifest.json`)));
+  const receiptPath = resolve(root, `data/import/${batch}.receipt.json`);
   if (command === 'fetch') {
     const url = new URL('https://db.ygoprodeck.com/api/v7/cardinfo.php');
     url.searchParams.set('id', manifest.cards.map(c => String(Number(c.passcode))).join(','));
@@ -26,14 +27,14 @@ export async function run(command: string, root = process.cwd()) {
     console.log(`Cached ${manifest.cards.length} requested cards; SHA-256 ${hash}. Reviews/generated bundle were not changed.`);
     return;
   }
-  if (command !== 'import' && command !== 'check') throw new Error('Usage: card-import [fetch|import|check]');
+  if (command !== 'import' && command !== 'check') throw new Error('Usage: card-import [fetch|import|check] [pilot|classic-10]');
   const receipt = ReceiptSchema.parse(await json(receiptPath));
   const raw = await readFile(resolve(root, `data/raw/ygoprodeck/${receipt.sha256}.json`), 'utf8');
-  const overlays = await json(resolve(root, 'data/reviews/pilot.overlays.json'));
+  const overlays = await json(resolve(root, `data/reviews/${batch}.overlays.json`));
   const official = await Promise.all(manifest.cards.map(c => json(resolve(root, `data/evidence/konami/${c.konamiId}.json`))));
   const bundle = importBatch({ raw, receipt, manifest, overlays, official });
   const contents = JSON.stringify(bundle, null, 2) + '\n';
-  const outputPath = resolve(root, 'data/generated/pilot.json');
+  const outputPath = resolve(root, `data/generated/${batch}.json`);
   const previous = await readIfExists(outputPath);
   if (command === 'check') {
     if (previous === undefined || canonical(JSON.parse(previous)) !== canonical(bundle))
@@ -49,7 +50,7 @@ export async function run(command: string, root = process.cwd()) {
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
-  run(process.argv[2] ?? '').catch(error => {
+  run(process.argv[2] ?? '', process.cwd(), process.argv[3] ?? 'pilot').catch(error => {
     console.error(error instanceof Error ? error.message : 'Card import failed');
     process.exitCode = 1;
   });

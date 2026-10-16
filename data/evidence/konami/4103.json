@@ -1,0 +1,22 @@
+{
+  "passcode": "66672569",
+  "konamiId": 4103,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4103&request_locale=en",
+  "accessedOn": "2026-10-16",
+  "htmlSha256": "f53a4faec9161058840585b5fa47097db6613d5d2c2a0a71fbed9fcdb26c9380",
+  "currentFacts": {
+    "name": "Dragon Zombie",
+    "text": "A dragon revived by sorcery. Its breath is highly corrosive.",
+    "kind": "normal-monster",
+    "race": "Zombie",
+    "attribute": "DARK",
+    "level": 3,
+    "attack": 1600,
+    "defense": 0
+  },
+  "printing": {
+    "date": "2002-03-29",
+    "setCode": "SDY-014",
+    "product": "STARTER DECK YUGI"
+  }
+}

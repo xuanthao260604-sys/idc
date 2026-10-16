@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "formatId": "goat-2005-08-17",
+  "cards": [
+    {
+      "passcode": "06368038",
+      "expectedName": "Gaia The Fierce Knight",
+      "konamiId": 4044
+    },
+    {
+      "passcode": "15480588",
+      "expectedName": "Armored Lizard",
+      "konamiId": 4057
+    },
+    {
+      "passcode": "18246479",
+      "expectedName": "Battle Steer",
+      "konamiId": 4020
+    },
+    {
+      "passcode": "28279543",
+      "expectedName": "Curse of Dragon",
+      "konamiId": 4045
+    },
+    {
+      "passcode": "30113682",
+      "expectedName": "Judge Man",
+      "konamiId": 4039
+    },
+    {
+      "passcode": "32274490",
+      "expectedName": "Skull Servant",
+      "konamiId": 4030
+    },
+    {
+      "passcode": "66672569",
+      "expectedName": "Dragon Zombie",
+      "konamiId": 4103
+    },
+    {
+      "passcode": "67494157",
+      "expectedName": "Crawling Dragon",
+      "konamiId": 4100
+    },
+    {
+      "passcode": "67724379",
+      "expectedName": "Koumori Dragon",
+      "konamiId": 4037
+    },
+    {
+      "passcode": "74677422",
+      "expectedName": "Red-Eyes Black Dragon",
+      "konamiId": 4088
+    }
+  ],
+  "eligibleSetPrefixes": [
+    "LOB",
+    "SDK",
+    "SDY",
+    "MRD"
+  ],
+  "eligibilitySource": {
+    "url": "https://www.goatformat.com/cardpool.html",
+    "accessedOn": "2026-10-15",
+    "scope": "release",
+    "notes": "Previously reviewed Goat cardpool includes LOB, SDK, SDY and MRD; classic-10 uses individually reviewed original North American print rows from these sets."
+  }
+}

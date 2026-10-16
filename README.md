@@ -6,16 +6,16 @@ Game đấu bài hai người theo Goat Format Bắc Mỹ: cutoff 17/8/2005, ban
 
 ## Tiến độ hiện tại
 
-Đã có bàn đấu hotseat hai người thay phiên cùng máy, dùng deck hợp lệ 40 lá chứa 20 loại.
-Core hỗ trợ 15 quái thường; 5 hiệu ứng Pot of Greed, Fissure, Trap Hole, Hane-Hane và
+Đã có bàn đấu hotseat hai người thay phiên cùng máy, catalog 30 loại và deck mẫu hợp lệ 40 lá; deck A/B tự xây vẫn được giữ.
+Core hỗ trợ 25 quái thường; 5 hiệu ứng Pot of Greed, Fissure, Trap Hole, Hane-Hane và
 Man-Eater Bug được mở bằng hồ sơ review và kiểm thử trong scope giới hạn.
 
 Đã hoàn tất [hotseat nội bộ 20 lá](docs/milestones/hotseat-20.md) và [xây/lưu deck A/B](docs/beta/deck-builder.md) trong scope giới hạn.
 Đã đạt [kiểm chứng Windows CI](docs/platform/windows-ci-result.md); còn ca Windows 11 desktop chưa chạy.
 Không coi việc cấu hình CI Windows hoặc chạy Linux là đã kiểm chứng Windows.
 
-278/278 test thư viện/pipeline/HTTP/công cụ đạt trên Linux và Windows CI, gồm 12 HTTP integration test.
-Kết quả mới nhất: [mục xây deck](docs/beta/deck-builder.md), 19 bước và 9 browser run bằng Edge.
+Windows CI đã đạt 278 test ở [mốc xây deck](docs/beta/deck-builder.md).
+Mục đang chốt: [catalog 30 lá](docs/data/classic-30.md); kết quả kiểm chứng cập nhật riêng tại đó.
 Browser regression tính riêng: xây/lưu deck, 5 hiệu ứng, xem Mộ, tạo trận A/B/ngẫu nhiên, bỏ bài,
 Pot với deck 0/1/2 lá, đầu hàng/hủy và tạo trận sau kết thúc, trận tự nhiên đầy đủ.
 Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không phải game hoàn tất mọi luật Yu-Gi-Oh!.
@@ -70,6 +70,8 @@ Các lệnh cần Edge/Chrome/Chromium đã cài; người chơi bình thường
 ```sh
 npm run beta:browser-smoke
 npm run beta:browser-deck-builder
+npm run beta:browser-expanded
+npm run beta:browser-expanded-duel
 npm run beta:browser-setup
 npm run beta:browser-discard
 npm run beta:browser-deck-out
@@ -88,7 +90,7 @@ Xem [Windows browser checks](docs/platform/windows-browser-checks.md),
 
 ## Các mục sau
 
-Đã hoàn tất [xây/lưu deck 20 lá](docs/beta/deck-builder.md); chỉ mở rộng catalog ở mục riêng tiếp theo.
+Đã hoàn tất [xây/lưu deck](docs/beta/deck-builder.md); đang chốt [mở rộng 20 → 30](docs/data/classic-30.md).
 Online và trình tạo bài riêng là các mục chưa triển khai. Nhánh work đã được commit/push theo phép người dùng; chưa phát hành beta.
 
 Đã bổ sung `npm run beta:startup-smoke` để kiểm tra lỗi cổng, cwd Unicode, HTTP/lệnh
@@ -96,3 +98,5 @@ và dừng/khởi động lại process. Xem [điểm dừng phần chuẩn bị
 
 Xây deck lưu riêng cho A/B và dùng khi tạo trận mới; sửa deck không đổi trận đang chơi.
 Deck được lưu local qua restart, còn trận đấu vẫn chỉ trong bộ nhớ.
+
+Catalog runtime hợp nhất pilot 20 và classic-10; giữ nguyên định nghĩa/hồ sơ hiệu ứng cũ.

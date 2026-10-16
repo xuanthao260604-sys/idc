@@ -1,0 +1,166 @@
+[
+  {
+    "id": "official:06368038",
+    "baseFingerprint": "acf5733388fcaba54a225d06751165215a426950231930ac3391c7b32e1cc499",
+    "revision": 1,
+    "patch": {
+      "text": "A knight whose horse travels faster than the wind. His battle-charge is a force to be reckoned with."
+    },
+    "historicalTextReview": "not-required-normal-flavor",
+    "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause in reference text. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4044&request_locale=en",
+        "accessedOn": "2026-10-16",
+        "scope": "text",
+        "notes": "Corrected API wrapping quotation marks to the actual current Konami flavor text. Not a historical text substitution."
+      }
+    ]
+  },
+  {
+    "id": "official:15480588",
+    "baseFingerprint": "1183f8d06f0e73f635e345cc55952c0ecdf2646b055f03f8a1270db50d83cb9f",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "not-required-normal-flavor",
+    "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause in reference text. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4057&request_locale=en",
+        "accessedOn": "2026-10-16",
+        "scope": "text",
+        "notes": "Compared current Konami flavor text; not a claim of original 2005 wording."
+      }
+    ]
+  },
+  {
+    "id": "official:18246479",
+    "baseFingerprint": "a742b7f5d615acac17f11243462209a9884d6a4b5c21026020721c21ca0262a5",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "not-required-normal-flavor",
+    "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause in reference text. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4020&request_locale=en",
+        "accessedOn": "2026-10-16",
+        "scope": "text",
+        "notes": "Compared current Konami flavor text; not a claim of original 2005 wording."
+      }
+    ]
+  },
+  {
+    "id": "official:28279543",
+    "baseFingerprint": "2ef7da1dc3d2781a9714b7c0b1f2db8eaad46b99e2d3a98dd53b92b2797e87f7",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "not-required-normal-flavor",
+    "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause in reference text. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4045&request_locale=en",
+        "accessedOn": "2026-10-16",
+        "scope": "text",
+        "notes": "Compared current Konami flavor text; not a claim of original 2005 wording."
+      }
+    ]
+  },
+  {
+    "id": "official:30113682",
+    "baseFingerprint": "d84e23adc766132669eeafab757ba9d79b11fa52a98522834e060d1cfa3f31ee",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "not-required-normal-flavor",
+    "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause in reference text. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4039&request_locale=en",
+        "accessedOn": "2026-10-16",
+        "scope": "text",
+        "notes": "Compared current Konami flavor text; not a claim of original 2005 wording."
+      }
+    ]
+  },
+  {
+    "id": "official:32274490",
+    "baseFingerprint": "bbce4a0cb2f6a0261d93dadce40c2d79b5c59601986ab43d0a09d52e70630e6a",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "not-required-normal-flavor",
+    "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause in reference text. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4030&request_locale=en",
+        "accessedOn": "2026-10-16",
+        "scope": "text",
+        "notes": "Compared current Konami flavor text; not a claim of original 2005 wording."
+      }
+    ]
+  },
+  {
+    "id": "official:66672569",
+    "baseFingerprint": "a639f6ea4d145f31bfae6013bda77be6b36e08c0fac5f386075d007aae0d1432",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "not-required-normal-flavor",
+    "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause in reference text. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4103&request_locale=en",
+        "accessedOn": "2026-10-16",
+        "scope": "text",
+        "notes": "Compared current Konami flavor text; not a claim of original 2005 wording."
+      }
+    ]
+  },
+  {
+    "id": "official:67494157",
+    "baseFingerprint": "495f70d0109d18f49983bca38e2207968945925a0f551a26276931e925db67c0",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "not-required-normal-flavor",
+    "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause in reference text. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4100&request_locale=en",
+        "accessedOn": "2026-10-16",
+        "scope": "text",
+        "notes": "Compared current Konami flavor text; not a claim of original 2005 wording."
+      }
+    ]
+  },
+  {
+    "id": "official:67724379",
+    "baseFingerprint": "ddcedc0cd0f5395230043069fabb7c338b32d0543a74e54a23f6ef5d210b9c95",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "not-required-normal-flavor",
+    "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause in reference text. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4037&request_locale=en",
+        "accessedOn": "2026-10-16",
+        "scope": "text",
+        "notes": "Compared current Konami flavor text; not a claim of original 2005 wording."
+      }
+    ]
+  },
+  {
+    "id": "official:74677422",
+    "baseFingerprint": "9822155f43c83fd08bb391885bb397a358747875e1d7740b15f5834d83f498f8",
+    "revision": 1,
+    "patch": {
+      "text": "A ferocious dragon with a deadly attack."
+    },
+    "historicalTextReview": "not-required-normal-flavor",
+    "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause in reference text. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4088&request_locale=en",
+        "accessedOn": "2026-10-16",
+        "scope": "text",
+        "notes": "Corrected API wrapping quotation marks to the actual current Konami flavor text. Not a historical text substitution."
+      }
+    ]
+  }
+]

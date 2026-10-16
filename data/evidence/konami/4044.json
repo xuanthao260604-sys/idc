@@ -1,0 +1,22 @@
+{
+  "passcode": "06368038",
+  "konamiId": 4044,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4044&request_locale=en",
+  "accessedOn": "2026-10-16",
+  "htmlSha256": "85ab4e295349a7467b20126d28370a5b5e020d65ba39cb81b0a0826df1bd11b5",
+  "currentFacts": {
+    "name": "Gaia The Fierce Knight",
+    "text": "A knight whose horse travels faster than the wind. His battle-charge is a force to be reckoned with.",
+    "kind": "normal-monster",
+    "race": "Warrior",
+    "attribute": "EARTH",
+    "level": 7,
+    "attack": 2300,
+    "defense": 2100
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-006",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

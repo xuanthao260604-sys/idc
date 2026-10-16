@@ -1,0 +1,22 @@
+{
+  "passcode": "28279543",
+  "konamiId": 4045,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4045&request_locale=en",
+  "accessedOn": "2026-10-16",
+  "htmlSha256": "e126b8335da3346529fe3399913b4d498a03155a7e6fe131278e0090d0b9a252",
+  "currentFacts": {
+    "name": "Curse of Dragon",
+    "text": "A wicked dragon that taps into dark forces to execute a powerful attack.",
+    "kind": "normal-monster",
+    "race": "Dragon",
+    "attribute": "DARK",
+    "level": 5,
+    "attack": 2000,
+    "defense": 1500
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-066",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

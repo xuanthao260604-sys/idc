@@ -46,9 +46,9 @@ async function main() {
     node('beta-startup', 'tools/beta-startup-smoke.mjs'),
     node('vanilla', 'dist/tools/engine-smoke.js'), node('capabilities', 'dist/tools/engine-capabilities.js'),
     node('mixed', 'dist/tools/engine-mixed-smoke.js'),
-    ...[['effects'], ['deck-builder', '--deck-builder'], ['setup', '--new-game'], ['discard', '--discard'],
+    ...[['effects'], ['expanded-catalog', '--expanded-catalog'], ['deck-builder', '--deck-builder'], ['setup', '--new-game'], ['discard', '--discard'],
       ['deck-out-0', '--deck-out=0'], ['deck-out-1', '--deck-out=1'], ['deck-out-2', '--deck-out=2'],
-      ['concede', '--concede'], ['full-duel', '--full-duel']].map(([id, ...args]) => node('browser-' + id, 'tools/beta-browser-smoke.mjs', ...args))];
+      ['concede', '--concede'], ['full-duel', '--full-duel'], ['expanded-duel', '--expanded-duel']].map(([id, ...args]) => node('browser-' + id, 'tools/beta-browser-smoke.mjs', ...args))];
   const reportPath = join(directory, 'report.json');
   const persist = report => writeFile(reportPath, JSON.stringify(report, null, 2) + '\n');
   const execute = step => new Promise((resolveStep, reject) => {

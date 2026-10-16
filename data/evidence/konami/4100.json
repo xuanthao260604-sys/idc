@@ -1,0 +1,22 @@
+{
+  "passcode": "67494157",
+  "konamiId": 4100,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4100&request_locale=en",
+  "accessedOn": "2026-10-16",
+  "htmlSha256": "dfe2deef6902b7ad96e8db3ca1842f8294a60b05bc54ee18fd51d2569fedebfb",
+  "currentFacts": {
+    "name": "Crawling Dragon",
+    "text": "This weakened dragon can no longer fly, but is still a deadly force to be reckoned with.",
+    "kind": "normal-monster",
+    "race": "Dragon",
+    "attribute": "EARTH",
+    "level": 5,
+    "attack": 1600,
+    "defense": 1400
+  },
+  "printing": {
+    "date": "2002-06-26",
+    "setCode": "MRD-012",
+    "product": "METAL RAIDERS"
+  }
+}

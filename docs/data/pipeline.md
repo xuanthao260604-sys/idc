@@ -1,5 +1,9 @@
 # Quy trình nhập dữ liệu — Giai đoạn 3
 
+> Cập nhật: đã thêm [lô classic-10](classic-30.md) riêng để runtime có 30 lá.
+> Tài liệu mốc 20 lá bên dưới giữ lịch sử. CLI nhận batch pilot/classic-10;
+> cards:check chạy cả hai, không thay raw/generated/review của pilot khi nhập lô mới.
+
 ## Trạng thái đã xác nhận
 
 Đã mở rộng pilot từ 11 lên **20 lá khác tên**: 15 quái thú thường, 2 quái thú FLIP,

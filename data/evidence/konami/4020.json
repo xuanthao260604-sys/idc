@@ -1,0 +1,22 @@
+{
+  "passcode": "18246479",
+  "konamiId": 4020,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4020&request_locale=en",
+  "accessedOn": "2026-10-16",
+  "htmlSha256": "2696afdb2d24a2daa4ef95569d3d402d031419662b8234f1bef97970d4d5b03c",
+  "currentFacts": {
+    "name": "Battle Steer",
+    "text": "A bull monster often found in the woods, it charges enemy monsters with a pair of deadly horns.",
+    "kind": "normal-monster",
+    "race": "Beast-Warrior",
+    "attribute": "EARTH",
+    "level": 5,
+    "attack": 1800,
+    "defense": 1300
+  },
+  "printing": {
+    "date": "2002-06-26",
+    "setCode": "MRD-064",
+    "product": "METAL RAIDERS"
+  }
+}

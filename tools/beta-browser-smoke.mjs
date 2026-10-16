@@ -7,16 +7,19 @@ import assert from 'node:assert/strict';
 import { resolveBrowser, browserLaunchArgs } from '../dist/tools/browser-executable.js';
 import { projectRoot } from '../dist/tools/project-root.js';
 import { createBetaServer } from '../dist/tools/beta-server.js';
+import { loadRuntimeCatalog } from '../dist/tools/runtime-catalog.js';
+import { defaultDeck } from '../dist/tools/deck-store.js';
 import { createRegistry } from '../dist/packages/engine/src/registry.js';
 import { createDuel, assertDuelInvariants } from '../dist/packages/engine/src/duel.js';
 import { goat200508Format } from '../dist/packages/card-data/src/formats/goat-2005-08-17.js';
 const read = async p => JSON.parse(await readFile(join(projectRoot, p), 'utf8'));
-const r = createRegistry((await read('data/generated/pilot.json')).cards, goat200508Format, {},
+const expanded = process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel');
+const r = expanded ? loadRuntimeCatalog().registry : createRegistry((await read('data/generated/pilot.json')).cards, goat200508Format, {},
   await read('data/reviews/pilot.spell-effects.json'), await read('data/reviews/pilot.flip-effects.json'), await read('data/reviews/pilot.trap-effects.json'));
-const deck = Object.keys(r.cards);
-for (const c of Object.values(r.cards)) if (c.legality.maxCopies >= 2) deck.push(c.id);
-for (const c of Object.values(r.cards)) if (deck.length < 40 && c.legality.maxCopies >= 3) deck.push(c.id);
-const fullDuel = process.argv.includes('--full-duel');
+const deck = expanded ? defaultDeck(r) : Object.keys(r.cards);
+for (const c of Object.values(r.cards)) if (!expanded && c.legality.maxCopies >= 2) deck.push(c.id);
+for (const c of Object.values(r.cards)) if (!expanded && deck.length < 40 && c.legality.maxCopies >= 3) deck.push(c.id);
+const fullDuel = process.argv.includes('--full-duel') || process.argv.includes('--expanded-duel');
 const newGame = process.argv.includes('--new-game');
 const discard = process.argv.includes('--discard');
 const concede = process.argv.includes('--concede');
@@ -34,11 +37,17 @@ function move(name, owner, zone, slot = 0, down = false) {
   c.location = { kind: zone, playerId: owner, slot }; c.position = down ? zone === 'monster' ? 'face-down-defense' : 'face-down' : 'face-up-attack';
   if (down) c.markers.setOnTurn = 2;
 }
-if (!fullDuel && !newGame && !discard && !concede && !deckBuilder && deckOut === null) {
+if (!fullDuel && !newGame && !discard && !concede && !deckBuilder && !expanded && deckOut === null) {
 move('Pot of Greed', 'a', 'hand'); move('Fissure', 'a', 'hand'); move('Battle Ox', 'a', 'hand');
 move('La Jinn the Mystical Genie of the Lamp', 'a', 'monster', 0); move('Celtic Guardian', 'a', 'monster', 1);
 move('Mystical Elf', 'b', 'monster', 0); move('Hane-Hane', 'b', 'monster', 1, true); move('Man-Eater Bug', 'b', 'monster', 2, true); move('Trap Hole', 'b', 'spell-trap', 0, true);
 s.turn.number = 3; s.turn.phase = 'main1'; s.timing.window = 'open'; s.timing.priorityPlayer = 'a'; s.timing.consecutivePasses = 0;
+}
+if (expanded && !fullDuel) {
+  move('Gaia The Fierce Knight', 'a', 'hand');
+  move('Battle Ox', 'a', 'monster', 0); move('Celtic Guardian', 'a', 'monster', 1);
+  move('Armored Lizard', 'b', 'monster', 0);
+  s.turn.number = 3; s.turn.phase = 'main1'; s.timing.window = 'open'; s.timing.priorityPlayer = 'a'; s.timing.consecutivePasses = 0;
 }
 if (discard) {
   while (s.players[0].hand.length < 8) {
@@ -149,7 +158,7 @@ try {
         assert.ok(v.activity.some(e=>e.resolution?.some(f=>f.kind==='battle-damage')));
         assert.match(await evaluate(`document.getElementById('activity').textContent`), /sát thương chiến đấu/);
         for(const entry of v.activity) assert.deepEqual(Object.keys(entry).filter(k=>k!=='resolution').sort(), ['action','actorId','phase','stateVersion','turn']);
-        console.log(JSON.stringify({ browser: browser.brand, browserVersion: browserVersion.product, platform: process.platform, mode: 'natural-full-duel', openingHands: [6, 5],
+        console.log(JSON.stringify({ browser: browser.brand, browserVersion: browserVersion.product, platform: process.platform, mode: expanded ? 'natural-expanded-duel' : 'natural-full-duel', catalogDefinitions: Object.keys(r.cards).length, openingHands: [6, 5],
           turns: v.turn.number, acceptedCommands: actions, attacks, decisions, effectsUsed: [...usedEffects].sort(),
           result: v.result, lifePoints: v.players.map(p=>p.lifePoints), stateEditedDuringPlay: false, runtimeExceptions: errors.length }));
         break;
@@ -232,7 +241,31 @@ try {
   }
   await send('Runtime.enable'); await send('Page.enable'); await send('Page.navigate', { url: `http://127.0.0.1:${server.address().port}` });
   await wait(`document.getElementById('seat-dialog')?.open`); await seat('a');
-  if (deckBuilder) {
+  if (expanded && !fullDuel) {
+    assert.equal(await evaluate('catalog.size'), 30);
+    assert.match(await evaluate(`document.getElementById('catalog-count').textContent`), /30/);
+    await click(`document.getElementById('deck-builder')`); await wait(`!busy && document.getElementById('deck-dialog').open`);
+    const added = (await read('data/generated/classic-10.json')).cards;
+    for (const card of added) {
+      await click(`document.querySelector('#deck-catalog [data-card-id="${card.id}"] .deck-name')`);
+      assert.equal(await evaluate(`document.querySelector('#deck-preview h2').textContent`), card.name);
+      assert.equal(await evaluate(`document.querySelector('#deck-preview p').textContent`), card.text);
+    }
+    await click(`document.getElementById('deck-close')`);
+    await hand('Gaia The Fierce Knight'); await click(textButton('#actions button', 'Triệu hồi'));
+    assert.equal(await evaluate(`document.querySelectorAll('#action-fields input[type="checkbox"]').length`), 2);
+    await click(`document.querySelectorAll('#action-fields input[type="checkbox"]')[0]`);
+    await click(`document.querySelectorAll('#action-fields input[type="checkbox"]')[1]`);
+    await confirm(); await pass('a'); await pass('b'); await seat('a');
+    assert.equal(await evaluate('view.players[0].graveyard.length'), 2);
+    await actionClick(textButton('#turn-actions button', 'CHIẾN ĐẤU')); await pass('b'); await seat('a');
+    await click(`document.querySelector('#self .zone-row:nth-child(2) .card')`);
+    await click(textButton('#actions button', 'Tấn công')); await chooseTarget(0); await confirm(); await pass('a'); await pass('b');
+    assert.equal(await evaluate('view.players[1].lifePoints'), 7200);
+    assert.equal(await evaluate(`view.players[1].graveyard.some(c=>catalog.get(c.definition.id).name==='Armored Lizard')`), true);
+    assert.equal(errors.length, 0);
+    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'expanded-catalog', catalog: 30, reviewedNewCardPreviews: 10, tributeSummon: 'Gaia The Fierce Knight', battleTarget: 'Armored Lizard', battleDamage: 800, fixtureOnlyAtSetup: true, runtimeExceptions: errors.length }));
+  } else if (deckBuilder) {
     const openDeck = async () => { await click(`document.getElementById('deck-builder')`); await wait(`!busy && document.getElementById('deck-dialog').open`); };
     const change = (id, direction) => click(`document.querySelector('#deck-catalog [data-card-id="${id}"] [data-change="${direction}"]')`);
     const saveDeck = async () => { await click(`document.getElementById('deck-save')`); await wait(`!busy && !document.getElementById('deck-dialog').open`); };

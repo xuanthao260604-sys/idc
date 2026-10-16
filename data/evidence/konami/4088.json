@@ -1,0 +1,22 @@
+{
+  "passcode": "74677422",
+  "konamiId": 4088,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4088&request_locale=en",
+  "accessedOn": "2026-10-16",
+  "htmlSha256": "6e35364d5b0db4c4a006df5f669aa93eb2479542db9252582db5cdbaf3606ce2",
+  "currentFacts": {
+    "name": "Red-Eyes Black Dragon",
+    "text": "A ferocious dragon with a deadly attack.",
+    "kind": "normal-monster",
+    "race": "Dragon",
+    "attribute": "DARK",
+    "level": 7,
+    "attack": 2400,
+    "defense": 2000
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-070",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

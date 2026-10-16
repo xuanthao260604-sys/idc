@@ -1,0 +1,22 @@
+{
+  "passcode": "32274490",
+  "konamiId": 4030,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4030&request_locale=en",
+  "accessedOn": "2026-10-16",
+  "htmlSha256": "a24cf8d2c9feabcb31e2ecfff3c73691beea94ee6889e9bbc476f09b5c880474",
+  "currentFacts": {
+    "name": "Skull Servant",
+    "text": "A skeletal ghost that isn't strong but can mean trouble in large numbers.",
+    "kind": "normal-monster",
+    "race": "Zombie",
+    "attribute": "DARK",
+    "level": 1,
+    "attack": 300,
+    "defense": 200
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-004",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

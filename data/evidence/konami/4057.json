@@ -1,0 +1,22 @@
+{
+  "passcode": "15480588",
+  "konamiId": 4057,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4057&request_locale=en",
+  "accessedOn": "2026-10-16",
+  "htmlSha256": "1690bcc1b45fe5a428dd34d3dfcf44d2605f65035f7945912083799c1f0c0357",
+  "currentFacts": {
+    "name": "Armored Lizard",
+    "text": "A lizard with a very tough hide and a vicious bite.",
+    "kind": "normal-monster",
+    "race": "Reptile",
+    "attribute": "EARTH",
+    "level": 4,
+    "attack": 1500,
+    "defense": 1200
+  },
+  "printing": {
+    "date": "2002-06-26",
+    "setCode": "MRD-005",
+    "product": "METAL RAIDERS"
+  }
+}

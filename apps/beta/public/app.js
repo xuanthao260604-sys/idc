@@ -264,7 +264,7 @@ $('new-game-form').addEventListener('submit', async e => {
   } catch (error) { $('new-game-error').textContent = error.message; }
   finally { busy = false; for (const c of $('new-game-form').elements) c.disabled = false; render(); }
 });
-(async () => { try { const data = await api('/api/catalog'); data.cards.forEach(c => catalog.set(c.id, c)); deckRules = data.deckRules; handoff(); } catch (e) { $('status').textContent = e.message; } })();
+(async () => { try { const data = await api('/api/catalog'); data.cards.forEach(c => catalog.set(c.id, c)); deckRules = data.deckRules; $('catalog-count').textContent = `${catalog.size} loại bài thử nghiệm`; handoff(); } catch (e) { $('status').textContent = e.message; } })();
 
 function draftIssues() {
   if (!deckDraft) return [];
