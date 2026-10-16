@@ -39,7 +39,7 @@ function move(name, owner, zone, slot = 0, down = false) {
 if (!fullDuel && !newGame && !discard && !concede && !deckBuilder && !expanded && deckOut === null) {
 move('Pot of Greed', 'a', 'hand'); move('Fissure', 'a', 'hand'); move('Battle Ox', 'a', 'hand');
 move('La Jinn the Mystical Genie of the Lamp', 'a', 'monster', 0); move('Celtic Guardian', 'a', 'monster', 1);
-move('Mystical Elf', 'b', 'monster', 0); move('Hane-Hane', 'b', 'monster', 1, true); move('Man-Eater Bug', 'b', 'monster', 2, true); move('Trap Hole', 'b', 'spell-trap', 0, true);
+move('Mystical Elf', 'b', 'monster', 0); move('Hane-Hane', 'b', 'monster', 1, true); move('Man-Eater Bug', 'b', 'monster', 2, true); move('Trap Hole', 'b', 'spell-trap', 0, true); move('Fissure', 'b', 'spell-trap', 1, true);
 s.turn.number = 3; s.turn.phase = 'main1'; s.timing.window = 'open'; s.timing.priorityPlayer = 'a'; s.timing.consecutivePasses = 0;
 }
 if (expanded && !fullDuel) {
@@ -432,6 +432,20 @@ try {
   } else {
   assert.equal(await evaluate(`['Hane-Hane','Man-Eater Bug','Trap Hole'].some(name=>document.getElementById('opponent').textContent.includes(name))`), false);
   await inspectGraveyard('opponent', []);
+  // Known fixture includes concealed monsters, a Spell and a Trap; all use the same back.
+  assert.equal(await evaluate(`document.querySelectorAll('#opponent .card.back').length`), 4);
+  assert.equal(await evaluate(`new Set([...document.querySelectorAll('#opponent .card.back')].map(b=>getComputedStyle(b.querySelector('.card-back-art')).backgroundImage)).size`), 1);
+  assert.equal(await evaluate(`[...document.querySelectorAll('#opponent .card.back')].every(b=>b.textContent==='' && !b.classList.contains('spell') && !b.classList.contains('trap') && b.getAttribute('aria-label').startsWith('Bài úp'))`), true);
+  assert.equal(await evaluate(`new Promise(resolve=>{const img=new Image();img.onload=()=>resolve(img.naturalWidth===1470 && img.naturalHeight===1070);img.onerror=()=>resolve(false);img.src='/assets/card-frames/monster-and-back.png';})`), true);
+  if (process.argv.includes('--screenshots')) {
+    const directory=join(projectRoot,'artifacts','shared-card-back'); await mkdir(directory,{recursive:true});
+    for(const [label,width,height] of [['desktop',1440,1000],['narrow',390,844]]) {
+      await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
+      const capture=await send('Page.captureScreenshot',{format:'png'});
+      await writeFile(join(directory,label+'.png'),Buffer.from(capture.data,'base64'));
+    }
+    await send('Emulation.clearDeviceMetricsOverride');
+  }
   const before = await evaluate('view.selfHand.length');
   await hand('Pot of Greed'); await click(textButton('#actions button', 'Kích hoạt')); await confirm(); await pass('b'); await pass('a');
   assert.equal(await evaluate('view.selfHand.length'), before + 1);
@@ -467,7 +481,7 @@ try {
   assert.equal(await evaluate('view.players[0].monsters.filter(Boolean).length'), 0);
   assert.equal(await evaluate(`['Pot of Greed','Hane-Hane','Man-Eater Bug','Trap Hole','Fissure'].some(name=>document.getElementById('activity').textContent.includes(name))`), false);
   assert.equal(errors.length, 0);
-  console.log(JSON.stringify({ browser: browser.brand, browserVersion: browserVersion.product, platform: process.platform, fixtureOnlyAtSetup: true, effectFlows: ['Pot of Greed', 'Fissure', 'Trap Hole', 'Hane-Hane', 'Man-Eater Bug'], interaction: 'mouse controls and dialogs', graveyard: ['empty', 'inline card text', 'top-first order', 'read-only both players'], runtimeExceptions: errors.length }));
+  console.log(JSON.stringify({ browser: browser.brand, browserVersion: browserVersion.product, platform: process.platform, fixtureOnlyAtSetup: true, sharedBack: ['monster', 'spell', 'trap'], effectFlows: ['Pot of Greed', 'Fissure', 'Trap Hole', 'Hane-Hane', 'Man-Eater Bug'], interaction: 'mouse controls and dialogs', graveyard: ['empty', 'inline card text', 'top-first order', 'read-only both players'], runtimeExceptions: errors.length }));
   }
 
 } finally {

@@ -20,6 +20,9 @@ Browser regression tính riêng: xây/lưu deck, 5 hiệu ứng, xem Mộ, tạo
 Pot với deck 0/1/2 lá, đầu hàng/hủy và tạo trận sau kết thúc, trận tự nhiên đầy đủ.
 Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không phải game hoàn tất mọi luật Yu-Gi-Oh!.
 
+Đã nhận bộ khung người dùng: [mặt sau chung](docs/beta/card-frames.md) được dùng cho bài úp của cả ba loại.
+Mặt trước và ảnh minh họa từng lá sẽ tích hợp riêng; hàng sao phải khớp level.
+
 ## Chạy và phát triển
 
 Node 24.19.0; npm 11.9.0 trên cloud và 11.17.0 trên Windows CI là các phiên bản đã kiểm tra. Lệnh npm dùng chung Windows/Linux,

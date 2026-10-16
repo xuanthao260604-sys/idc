@@ -21,7 +21,9 @@ export function createBetaServer(registry: Registry, publicRoot = resolve(projec
   const seats = new Map<string, 'a' | 'b'>();
   const catalog = Object.values(registry.cards).map(c => ({ id: c.id, revision: c.revision, name: c.name, text: c.text, kind: c.kind, maxCopies: Math.min(registry.rules.deck.combinedCopyLimit, c.legality.maxCopies!),
     ...('level' in c ? { level: c.level, attack: c.attack, defense: c.defense, attribute: c.attribute, race: c.race } : { subtype: c.subtype }) }));
-  const assets: Record<string, [string, string]> = { '/': ['index.html', 'text/html'], '/app.js': ['app.js', 'text/javascript'], '/style.css': ['style.css', 'text/css'] };
+  const assets: Record<string, [string, string]> = { '/': ['index.html', 'text/html'], '/app.js': ['app.js', 'text/javascript'], '/style.css': ['style.css', 'text/css'],
+    '/assets/card-frames/monster-and-back.png': ['assets/card-frames/monster-and-back.png', 'image/png'],
+    '/assets/card-frames/spell-and-trap.png': ['assets/card-frames/spell-and-trap.png', 'image/png'] };
   return createServer(async (req, res) => {
     const json = (status: number, body: unknown) => { res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8' }); res.end(JSON.stringify(body)); };
     res.setHeader('Cache-Control', 'no-store'); res.setHeader('X-Content-Type-Options', 'nosniff');
@@ -36,7 +38,7 @@ export function createBetaServer(registry: Registry, publicRoot = resolve(projec
     try {
       if (req.method === 'GET' && assets[url.pathname]) {
         const [file, mime] = assets[url.pathname]!;
-        const body = await readFile(resolve(publicRoot, file)); res.writeHead(200, { 'Content-Type': `${mime}; charset=utf-8` }); res.end(body); return;
+        const body = await readFile(resolve(publicRoot, file)); res.writeHead(200, { 'Content-Type': mime.startsWith('text/') ? `${mime}; charset=utf-8` : mime }); res.end(body); return;
       }
       if (req.method === 'GET' && url.pathname === '/api/catalog') { json(200, { cards: catalog, deckRules: registry.rules.deck }); return; }
       if (req.method === 'GET' && url.pathname === '/api/view') {

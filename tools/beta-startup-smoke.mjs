@@ -60,9 +60,9 @@ try {
       assert.ok(Date.now() < deadline, 'Beta did not become ready');
       await new Promise(resolve => setTimeout(resolve, 25));
     }
-    for (const [path, type] of [['/', 'text/html'], ['/app.js', 'text/javascript'], ['/style.css', 'text/css']]) {
+    for (const [path, type] of [['/', 'text/html'], ['/app.js', 'text/javascript'], ['/style.css', 'text/css'], ['/assets/card-frames/monster-and-back.png', 'image/png'], ['/assets/card-frames/spell-and-trap.png', 'image/png']]) {
       const response = await request(path); assert.equal(response.status, 200);
-      assert.ok(response.headers.get('content-type').startsWith(type)); assert.ok((await response.text()).length > 100);
+      assert.ok(response.headers.get('content-type').startsWith(type)); assert.ok((await response.arrayBuffer()).byteLength > 100);
     }
     assert.equal((await request('/api/view')).status, 401);
     const seat = await post('/api/seat', { seat: 'a' }); assert.equal(seat.status, 200);

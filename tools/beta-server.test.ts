@@ -16,6 +16,11 @@ describe('Loopback beta HTTP boundary', () => {
     const catalog = await (await fetch(base + '/api/catalog')).json(); expect(catalog.cards).toHaveLength(20);
     expect(JSON.stringify(catalog)).not.toContain('spellHandlers');
     expect((await fetch(base + '/data/generated/pilot.json')).status).toBe(404);
+    for(const name of ['monster-and-back','spell-and-trap']) {
+      const asset=await fetch(`${base}/assets/card-frames/${name}.png`);
+      expect(asset.status).toBe(200); expect(asset.headers.get('content-type')).toBe('image/png');
+      expect(Buffer.from(await asset.arrayBuffer()).equals(readFileSync(new URL(`../apps/beta/public/assets/card-frames/${name}.png`,import.meta.url)))).toBe(true);
+    }
   });
   it('requires seat selection then sends only the selected PlayerView', async () => {
     expect((await fetch(base + '/api/view')).status).toBe(401);

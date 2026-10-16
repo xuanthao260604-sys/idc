@@ -26,7 +26,7 @@ function optionLabel(handle) {
 function cardButton(card, zone, player, slot, onSelect) {
   const d = def(card), b = button('', onSelect || (() => { selected = { card, zone, player, slot }; render(); }), `card ${d?.kind === 'spell' ? 'spell' : d?.kind === 'trap' ? 'trap' : ''} ${!d ? 'back' : ''} ${selected?.card.handle === card.handle ? 'selected' : ''}`);
   b.setAttribute('aria-label', `${label(card)}${zone === 'hand' ? ' trên tay' : zone === 'graveyard' ? ` trong Mộ, vị trí ${slot + 1} từ trên xuống` : ` tại ô ${slot + 1}`}`);
-  if (!d) { b.append(node('span', 'YGO', 'card-name')); return b; }
+  if (!d) { const art = node('span', undefined, 'card-back-art'); art.setAttribute('aria-hidden', 'true'); b.append(art); return b; }
   b.append(node('span', d.name, 'card-name'), node('span', d.kind === 'spell' ? '✦' : d.kind === 'trap' ? '◇' : '✧', 'card-art'));
   b.append(node('span', d.level ? `★ ${d.level} · ${d.attack} / ${d.defense}` : d.kind === 'spell' ? 'PHÉP THUẬT' : 'CẠM BẪY', 'card-stats'));
   if (zone !== 'hand') b.append(node('span', card.position === 'face-down-defense' || card.position === 'face-down' ? 'ÚP' : card.position === 'face-up-defense' ? 'PHÒNG THỦ' : card.position === 'face-up-attack' ? 'TẤN CÔNG' : 'NGỬA', 'card-position'));
