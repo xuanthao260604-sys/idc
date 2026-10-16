@@ -1,0 +1,81 @@
+[
+  {
+    "cardId": "official:07089711",
+    "definitionSha256": "2eccf4af26e028e315c10c955069ed1c799c1344b4c855f62b0383dd56285919",
+    "revision": 1,
+    "format": {
+      "id": "goat-2005-08-17",
+      "revision": 4
+    },
+    "status": "reviewed-for-supported-scope",
+    "scope": "flip-single-link-v1",
+    "handler": "return-target-monster-to-owner-hand",
+    "evidence": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4547&request_locale=en",
+        "accessedOn": "2026-10-15",
+        "sourceKind": "official-current",
+        "quotation": "FLIP: Select 1 monster on the field and return it to its owner's hand.",
+        "historicalApplicability": "Current reference text; original 2002 LOB print recorded separately. Not claiming historical printed wording."
+      },
+      {
+        "url": "https://www.goatformat.com/basics.html",
+        "accessedOn": "2026-10-15",
+        "sourceKind": "community",
+        "quotation": "Flip Effects, other Trigger Effects that activate when a monster is flipped face-up, and many effects that activate “after damage calculation” activate here and form a Chain if necessary.",
+        "historicalApplicability": "Goat Substep 5; FLIP resolves after battle destruction determination and before End of Damage Step movement."
+      },
+      {
+        "url": "https://www.yugioh-card.com/en/downloads/rulebook/SD_RuleBook_EN_10.pdf",
+        "accessedOn": "2026-10-15",
+        "sourceKind": "official-current",
+        "quotation": "If you need to select a monster for the Flip effect to target, you cannot target a monster that has already been destroyed during damage calculation.",
+        "historicalApplicability": "Baseline targeting exclusion cross-checked against Goat substep order; not a source for modern timing overrides."
+      }
+    ],
+    "notes": "Mandatory single-target FLIP, either side and face-down monsters eligible except battle-destroyed monsters. Flip Summon activates immediately; attack flip waits until after calculation. Pass-only response, one trigger/link, no negate or replacement. Historical printed-text overlay remains pending."
+  },
+  {
+    "cardId": "official:54652250",
+    "definitionSha256": "ebc25f6dbf3539e623103eebd73bfc12635840ce8b4758e2f565ae374b3d194f",
+    "revision": 1,
+    "format": {
+      "id": "goat-2005-08-17",
+      "revision": 4
+    },
+    "status": "reviewed-for-supported-scope",
+    "scope": "flip-single-link-v1",
+    "handler": "destroy-target-monster",
+    "evidence": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4507&request_locale=en",
+        "accessedOn": "2026-10-15",
+        "sourceKind": "official-current",
+        "quotation": "FLIP: Target 1 monster on the field; destroy it.",
+        "historicalApplicability": "Current reference text; original 2002 LOB print recorded separately. Not claiming historical printed wording."
+      },
+      {
+        "url": "https://www.goatformat.com/basics.html",
+        "accessedOn": "2026-10-15",
+        "sourceKind": "community",
+        "quotation": "Flip Effects, other Trigger Effects that activate when a monster is flipped face-up, and many effects that activate “after damage calculation” activate here and form a Chain if necessary.",
+        "historicalApplicability": "Goat Substep 5; FLIP resolves after battle destruction determination and before End of Damage Step movement."
+      },
+      {
+        "url": "https://www.yugioh-card.com/en/downloads/rulebook/SD_RuleBook_EN_10.pdf",
+        "accessedOn": "2026-10-15",
+        "sourceKind": "official-current",
+        "quotation": "If you need to select a monster for the Flip effect to target, you cannot target a monster that has already been destroyed during damage calculation.",
+        "historicalApplicability": "Baseline targeting exclusion cross-checked against Goat substep order; not a source for modern timing overrides."
+      },
+      {
+        "url": "https://www.goatformat.com/rulings5.html",
+        "accessedOn": "2026-10-15",
+        "sourceKind": "community",
+        "quotation": "If \"Man-Eater Bug\" is the only monster on the field when it is flipped, it destroys itself.",
+        "historicalApplicability": "Mandatory effect includes self when no other eligible monster exists outside battle-destruction exclusion."
+      }
+    ],
+    "notes": "Mandatory single-target FLIP, either side and face-down monsters eligible except battle-destroyed monsters. Flip Summon activates immediately; attack flip waits until after calculation. Pass-only response, one trigger/link, no negate or replacement. Historical printed-text overlay remains pending."
+  }
+]

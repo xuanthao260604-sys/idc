@@ -1,0 +1,22 @@
+{
+  "passcode": "41392891",
+  "konamiId": 4012,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4012&request_locale=en",
+  "accessedOn": "2026-10-15",
+  "htmlSha256": "95a5698bd4a8535a10b625688a0b5c546b8b5b8aa4488ff96c37b9eb7f7019b0",
+  "currentFacts": {
+    "name": "Feral Imp",
+    "text": "A playful little fiend that lurks in the dark, waiting to attack an unwary enemy.",
+    "kind": "normal-monster",
+    "race": "Fiend",
+    "attribute": "DARK",
+    "level": 4,
+    "attack": 1300,
+    "defense": 1400
+  },
+  "printing": {
+    "date": "2002-03-29",
+    "setCode": "SDY-002",
+    "product": "STARTER DECK YUGI"
+  }
+}

@@ -1,0 +1,31 @@
+[
+  {
+    "cardId": "official:04206964",
+    "definitionSha256": "6bde121e8b1b4409e34d907b2d9e9d5ba5df93676a46507d205cd6d96372d35d",
+    "revision": 1,
+    "format": {
+      "id": "goat-2005-08-17",
+      "revision": 4
+    },
+    "status": "reviewed-for-supported-scope",
+    "scope": "summon-response-trap-v1",
+    "handler": "destroy-opponent-normal-or-flip-summoned-1000",
+    "evidence": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4836&request_locale=en",
+        "accessedOn": "2026-10-15",
+        "sourceKind": "official-current",
+        "quotation": "When your opponent Normal or Flip Summons a monster with 1000 or more ATK: Target that monster; destroy that target.",
+        "historicalApplicability": "Current semantics reference; 2002 LOB print evidence separate. Not claiming 2005 printed wording."
+      },
+      {
+        "url": "https://www.goatformat.com/rulings7.html",
+        "accessedOn": "2026-10-15",
+        "sourceKind": "community",
+        "quotation": "“Trap Hole” is a targeting effect.",
+        "historicalApplicability": "Goat compilation labels this Netrep ruling. Community source, not authenticated original UDE publication."
+      }
+    ],
+    "notes": "Normal Trap speed 2; Set in own Main, no same-turn activation. Respond only to opponent Normal/Tribute/Flip Summon >=1000 ATK after priority passes; target that monster. Multiple supported Traps resolve LIFO, cleanup after Chain. No ignition effects, negate, Special Summon implementation, modifiers or mixed responder effects. Rules for Trap timing/Chain from adopted format and rulebook baseline. Historical printed-text review remains pending."
+  }
+]

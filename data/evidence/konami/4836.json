@@ -1,0 +1,18 @@
+{
+  "passcode": "04206964",
+  "konamiId": 4836,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4836&request_locale=en",
+  "accessedOn": "2026-10-15",
+  "htmlSha256": "970261699d913d2336e03298aa1f3676d9afa366003829626bb153cf8bf0babf",
+  "currentFacts": {
+    "name": "Trap Hole",
+    "text": "When your opponent Normal or Flip Summons a monster with 1000 or more ATK: Target that monster; destroy that target.",
+    "kind": "trap",
+    "subtype": "normal"
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-058",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

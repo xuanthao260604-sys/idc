@@ -1,0 +1,22 @@
+{
+  "passcode": "66602787",
+  "konamiId": 4040,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4040&request_locale=en",
+  "accessedOn": "2026-10-15",
+  "htmlSha256": "25155140efb779920cd585b052640f4d069ec5ac9a0459d7803bb39359980365",
+  "currentFacts": {
+    "name": "Saggi the Dark Clown",
+    "text": "This clown appears from nowhere and executes very strange moves to avoid enemy attacks.",
+    "kind": "normal-monster",
+    "race": "Spellcaster",
+    "attribute": "DARK",
+    "level": 3,
+    "attack": 600,
+    "defense": 1500
+  },
+  "printing": {
+    "date": "2002-06-26",
+    "setCode": "MRD-066",
+    "product": "METAL RAIDERS"
+  }
+}

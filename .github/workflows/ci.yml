@@ -1,0 +1,50 @@
+name: Windows and Linux validation
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+      - name: Check runtime and source assets
+        run: npm run environment:check
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Typecheck on Linux
+        if: runner.os != 'Windows'
+        run: npm run typecheck
+      - name: Unit and loopback HTTP integration tests on Linux
+        if: runner.os != 'Windows'
+        run: npm test
+      - name: Validate offline card data and build on Linux
+        if: runner.os != 'Windows'
+        run: npm run cards:check
+      - name: Vanilla duel smoke on Linux
+        if: runner.os != 'Windows'
+        run: npm run engine:smoke
+      - name: Mixed duel smoke on Linux
+        if: runner.os != 'Windows'
+        run: npm run engine:mixed-smoke
+      - name: Complete Windows validation with step reports
+        if: runner.os == 'Windows'
+        run: npm run validate:platform
+      - name: Retain Windows validation evidence
+        if: always() && runner.os == 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-validation-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/platform-validation/
+          if-no-files-found: warn
+          retention-days: 14

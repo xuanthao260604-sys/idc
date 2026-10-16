@@ -1,0 +1,57 @@
+# Kiểm thử giao diện bằng trình duyệt trên Windows
+
+Windows 11 vẫn là nền tảng sản phẩm chính. Thay đổi này chuẩn bị kiểm thử bằng trình duyệt cài sẵn,
+không yêu cầu người dùng nhận beta, cài Linux/WSL, tải Chromium hoặc chạy thử vào lúc này.
+
+## Tìm và khởi động browser
+
+Bộ regression dùng tools/browser-executable.ts. Trên Windows, tự tìm Edge trước, rồi Chrome
+trong Program Files (x86), Program Files, LocalAppData và PATH. Xử lý tên biến môi trường không
+phân biệt hoa thường. YGO_CHROMIUM vẫn có thể chỉ định executable riêng; override sai gây lỗi,
+không âm thầm chuyển sang một browser khác.
+
+Đường dẫn có khoảng trắng/Unicode được truyền nguyên một argument với spawn, không qua shell.
+Không ghép chuỗi lệnh hoặc yêu cầu Bash/which trên Windows. Browser test không cài phần mềm.
+Linux vẫn tìm Chromium/Chrome theo PATH; nhánh macOS không phải mục tiêu kiểm chứng hiện tại.
+
+Các cờ no-sandbox/disable-dev-shm-usage chỉ dành cho Linux cloud; không truyền vào Windows.
+Profile tạm riêng và DevTools chỉ dùng loopback. Khi xong, gửi Browser.close để nhả profile/file
+trước khi dọn thư mục; nếu browser không đóng mới dùng kill dự phòng. Không chờ exit vô hạn khi
+process không spawn được hoặc đã thoát. Báo cáo ghi platform, browser và version từ CDP thực.
+
+Bộ browser regression cũng đọc tài nguyên theo project root, không theo thư mục terminal.
+Đây chỉ là công cụ kiểm thử; người chơi bình thường không cần bật DevTools hay đặt biến browser.
+
+## CI
+
+Windows job chạy validate:platform; report tách từng bước browser sau:
+
+1. beta:browser-smoke: 5 hiệu ứng qua controls trong scenario đã kiểm soát.
+2. beta:browser-duel: trận tự nhiên từ chia bài đến LP win, không sửa state trong lúc đấu.
+3. beta:browser-setup: tạo/hủy trận, chọn A/B/ngẫu nhiên.
+4. beta:browser-discard: chọn đúng số lá, giữ kín quyết định và chuyển lượt.
+5. beta:browser-deck-out: Pot với deck còn 0/1/2 lá.
+6. beta:browser-concede: hủy/đồng ý đầu hàng, tạo trận mới sau kết thúc.
+
+Không skip hoặc thay bằng test rỗng khi thiếu browser; step thất bại và báo lỗi tìm executable.
+Chưa trigger workflow/GitHub run trong phiên này. Cấu hình job không phải bằng chứng Windows CI
+đã xanh. Windows runner của GitHub cũng không thay thế kiểm tra Windows 11 desktop trước phát hành.
+
+## Kết quả hiện tại
+
+- 244/244 test thư viện/HTTP đạt trên Linux; thêm 6 test logic tìm browser/đường dẫn/tham số.
+- Typecheck, build, cards:check và syntax check đạt.
+- Chromium Linux chạy lại cả 5 hiệu ứng và trận tự nhiên; report ghi platform/version thực.
+- Full duel vẫn 16 lượt/339 command, 15 attack, 4 decision, B thắng LP [0,4200], đủ 5 effect,
+  không có runtime exception.
+- Các test tạo candidate đường dẫn Windows chỉ xác minh logic, chưa thực thi Windows filesystem,
+  Edge/Chrome Windows hoặc Windows 11. Không gộp chúng vào bằng chứng “đã chạy Windows”.
+
+Chưa đóng gói, phát hành, push hoặc yêu cầu người dùng tự kiểm thử. Tiếp tục phát triển game;
+những xác minh Windows chưa có được giữ thành tiêu chí trước bàn giao.
+
+Các số test 244 bên trên ghi mốc chuẩn bị browser Windows ban đầu. Kết quả hiện tại
+xem [mốc tổng hợp](../milestones/hotseat-20.md); kế tiếp là windows-verification-next.md.
+
+CI Windows hiện thu report/log qua upload-artifact, giữ 14 ngày và chỉ chạy sau khi
+workflow được trigger. Không có run Windows trong phiên này.

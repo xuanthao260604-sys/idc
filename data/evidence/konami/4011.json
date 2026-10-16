@@ -1,0 +1,22 @@
+{
+  "passcode": "15303296",
+  "konamiId": 4011,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4011&request_locale=en",
+  "accessedOn": "2026-10-15",
+  "htmlSha256": "be3ee300a9f6f46d8790631eb48063f3053919e78a700ee537095261be5d0582",
+  "currentFacts": {
+    "name": "Ryu-Kishin",
+    "text": "A very elusive creature that looks like a harmless statue until it attacks.",
+    "kind": "normal-monster",
+    "race": "Fiend",
+    "attribute": "DARK",
+    "level": 3,
+    "attack": 1000,
+    "defense": 500
+  },
+  "printing": {
+    "date": "2002-03-29",
+    "setCode": "SDK-003",
+    "product": "STARTER DECK KAIBA"
+  }
+}

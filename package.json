@@ -1,0 +1,40 @@
+{
+  "name": "ygo-classic-duel",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "tools/*"
+  ],
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "packageManager": "npm@11.9.0",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json",
+    "cards:fetch": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js fetch",
+    "cards:import": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js import",
+    "cards:check": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js check",
+    "engine:smoke": "npm run build && node dist/tools/engine-smoke.js",
+    "engine:capabilities": "npm run build && node dist/tools/engine-capabilities.js",
+    "engine:mixed-smoke": "npm run build && node dist/tools/engine-mixed-smoke.js",
+    "beta": "npm run environment:check && npm run build && node dist/tools/beta.js",
+    "beta:browser-smoke": "npm run build && node tools/beta-browser-smoke.mjs",
+    "beta:browser-concede": "npm run build && node tools/beta-browser-smoke.mjs --concede",
+    "beta:browser-deck-out": "npm run build && node tools/beta-browser-smoke.mjs --deck-out=0 && node tools/beta-browser-smoke.mjs --deck-out=1 && node tools/beta-browser-smoke.mjs --deck-out=2",
+    "beta:browser-discard": "npm run build && node tools/beta-browser-smoke.mjs --discard",
+    "beta:browser-setup": "npm run build && node tools/beta-browser-smoke.mjs --new-game",
+    "beta:browser-duel": "npm run build && node tools/beta-browser-smoke.mjs --full-duel",
+    "beta:startup-smoke": "npm run build && node tools/beta-startup-smoke.mjs",
+    "validate:platform": "node tools/validate-platform.mjs",
+    "environment:check": "node tools/check-environment.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "typescript": "5.9.3",
+    "vitest": "4.0.18"
+  }
+}

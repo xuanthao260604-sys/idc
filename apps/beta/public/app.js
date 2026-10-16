@@ -1,0 +1,266 @@
+'use strict';
+const $ = id => document.getElementById(id);
+const catalog = new Map();
+let view = null, selected = null, busy = false, message = 'Chọn một lá bài để bắt đầu.';
+const names = { a: 'Người chơi A', b: 'Người chơi B' };
+const phaseNames = { draw: 'BỐC BÀI', standby: 'CHUẨN BỊ', main1: 'MAIN 1', battle: 'CHIẾN ĐẤU', main2: 'MAIN 2', end: 'KẾT THÚC' };
+const reasonNames = { 'stale-state': 'Bàn đấu đã thay đổi. Hãy chọn lại bài.', 'not-your-action': 'Chưa đến quyền thao tác của bạn.', 'illegal-timing': 'Không thể dùng thao tác ở thời điểm này.', 'invalid-target': 'Lá bài hoặc mục tiêu chưa hợp lệ.', 'invalid-choice': 'Hãy chọn đúng số lá được yêu cầu.', 'quota-used': 'Bạn đã Normal Summon hoặc Set trong lượt này.', 'unpayable-tribute': 'Số bài hiến tế chưa đúng.', 'occupied-zone': 'Ô đã có bài.', 'invalid-position': 'Chưa thể đổi tư thế hoặc tấn công.', 'duel-ended': 'Trận đấu đã kết thúc.', 'invalid-action': 'Thao tác chưa được hỗ trợ trong beta.', 'command-capacity': 'Trận thử đã đạt giới hạn lệnh. Hãy bắt đầu trận mới.' };
+function node(tag, text, className) { const n = document.createElement(tag); if (text !== undefined) n.textContent = text; if (className) n.className = className; return n; }
+function button(text, action, className) { const b = node('button', text, className); b.type = 'button'; b.addEventListener('click', action); return b; }
+async function api(path, body) {
+  const response = await fetch(path, body === undefined ? {} : { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  const data = await response.json(); if (!response.ok) throw new Error(data.error || 'Không kết nối được bàn đấu.'); return data;
+}
+function def(card) { return card?.visibility === 'known' ? catalog.get(card.definition.id) : null; }
+function label(card) { return def(card)?.name || 'Bài úp'; }
+function optionLabel(handle) {
+  const hand = view.selfHand.find(c => c.handle === handle);
+  if (hand) return `Tay của bạn — ${label(hand)}`;
+  for (const p of view.players) for (const [zone, cards] of [['Quái', p.monsters], ['Phép / Bẫy', p.spellsTraps]]) {
+    const slot = cards.findIndex(c => c?.handle === handle);
+    if (slot >= 0) return `${names[p.playerId]} · ${zone} ô ${slot + 1} — ${label(cards[slot])}`;
+  }
+  return 'Lựa chọn';
+}
+function cardButton(card, zone, player, slot, onSelect) {
+  const d = def(card), b = button('', onSelect || (() => { selected = { card, zone, player, slot }; render(); }), `card ${d?.kind === 'spell' ? 'spell' : d?.kind === 'trap' ? 'trap' : ''} ${!d ? 'back' : ''} ${selected?.card.handle === card.handle ? 'selected' : ''}`);
+  b.setAttribute('aria-label', `${label(card)}${zone === 'hand' ? ' trên tay' : zone === 'graveyard' ? ` trong Mộ, vị trí ${slot + 1} từ trên xuống` : ` tại ô ${slot + 1}`}`);
+  if (!d) { b.append(node('span', 'YGO', 'card-name')); return b; }
+  b.append(node('span', d.name, 'card-name'), node('span', d.kind === 'spell' ? '✦' : d.kind === 'trap' ? '◇' : '✧', 'card-art'));
+  b.append(node('span', d.level ? `★ ${d.level} · ${d.attack} / ${d.defense}` : d.kind === 'spell' ? 'PHÉP THUẬT' : 'CẠM BẪY', 'card-stats'));
+  if (zone !== 'hand') b.append(node('span', card.position === 'face-down-defense' || card.position === 'face-down' ? 'ÚP' : card.position === 'face-up-defense' ? 'PHÒNG THỦ' : card.position === 'face-up-attack' ? 'TẤN CÔNG' : 'NGỬA', 'card-position'));
+  return b;
+}
+function row(cards, zone, player) {
+  const n = node('div', undefined, 'zone-row'); cards.forEach((c, i) => { const slot = node('div', undefined, 'slot'); slot.append(c ? cardButton(c, zone, player, i) : node('span', `${zone === 'monster' ? 'QUÁI' : 'PHÉP / BẪY'} ${i + 1}`)); n.append(slot); }); return n;
+}
+function side(p, element, own) {
+  const info = node('div', undefined, 'zone-info'); info.append(node('span', `${names[p.playerId]} ${own ? '· BẠN' : ''}`), node('span', `Deck ${p.deckCount} · Tay ${own ? view.selfHand.length : view.opponentHandCount} · Mộ ${p.graveyard.length}`));
+  info.append(button('Xem Mộ', () => {
+    $('graveyard-title').textContent = `Mộ · ${names[p.playerId]} · ${p.graveyard.length} lá`;
+    const preview = $('graveyard-detail'), cards = $('graveyard-cards');
+    preview.replaceChildren(node('p', p.graveyard.length ? 'Chọn một lá trong Mộ để đọc nội dung.' : 'Mộ đang trống.'));
+    cards.replaceChildren(...[...p.graveyard].reverse().map((c, i) => cardButton(c, 'graveyard', p.playerId, i, () => {
+      cardInfo(preview, c);
+      for (const b of cards.children) b.classList.remove('selected');
+      cards.children[i].classList.add('selected');
+    })));
+    $('graveyard-dialog').showModal();
+  }));
+  $(element).replaceChildren(info, ...(own ? [row(p.monsters, 'monster', p.playerId), row(p.spellsTraps, 'spell-trap', p.playerId)] : [row(p.spellsTraps, 'spell-trap', p.playerId), row(p.monsters, 'monster', p.playerId)]));
+}
+async function command(action) {
+  if (busy || !view) return;
+  busy = true; render();
+  try {
+    const data = await api('/api/command', { commandId: crypto.randomUUID(), duelId: view.duelId, expectedStateVersion: view.stateVersion, action });
+    view = data.view; selected = null; const entry = view.activity?.find(e => e.stateVersion === data.outcome.stateVersion);
+    const feedback = entry?.resolution?.map(resolutionText).filter(Boolean).join(' · ');
+    message = data.outcome.accepted ? (feedback || 'Đã thực hiện.') : (reasonNames[data.outcome.reason] || 'Thao tác không hợp lệ.');
+  } catch (e) { message = e.message; }
+  finally { busy = false; render(); }
+}
+function resolutionText(fact) {
+  const player = names[fact.playerId] || 'Người chơi';
+  if (fact.kind === 'draw') return `${player} bốc ${fact.count} lá`;
+  if (fact.kind === 'battle-damage') return `${player} nhận ${fact.amount} sát thương chiến đấu`;
+  if (fact.kind === 'effect-destroyed') return `${fact.count} quái bị phá bởi hiệu ứng`;
+  if (fact.kind === 'battle-destroyed') return `${fact.count} quái bị phá bởi chiến đấu`;
+  if (fact.kind === 'return-to-hand') return `${fact.count} lá trở về tay ${player}`;
+  if (fact.kind === 'discard') return `${player} bỏ ${fact.count} lá xuống Mộ`;
+  if (fact.kind === 'tribute') return `${player} hiến tế ${fact.count} quái`;
+  return '';
+}
+function matchingActions(base) {
+  return (view.availableActions || []).filter(a => Object.entries(base).every(([key, value]) => a[key] === value));
+}
+function matchesPlan(plan, action) {
+  return Object.entries(action).every(([key, value]) => Array.isArray(value)
+    ? Array.isArray(plan[key]) && new Set(value).size === value.length && value.length === plan[key].length && value.every(v => plan[key].includes(v))
+    : plan[key] === value);
+}
+let dialogEvents = new AbortController();
+function chooseAction(title, base, { slots = false, tributes = false, targets = null } = {}) {
+  dialogEvents.abort(); dialogEvents = new AbortController();
+  const fields = $('action-fields'); fields.replaceChildren(); $('action-title').textContent = title;
+  const plans = matchingActions(base);
+  if (!plans.length) { message = 'Chưa có thao tác hợp lệ cho lá này ở thời điểm hiện tại.'; $('status').textContent = message; return; }
+  let selectSlot, selectTarget; const checks = [];
+  if (slots) {
+    const l = node('label', 'Chọn ô đặt bài'); selectSlot = node('select'); selectSlot.name = 'slot';
+    const p = view.players.find(p => p.playerId === view.viewerId);
+    const board = ['normal-summon', 'set-monster'].includes(base.type) ? p.monsters : p.spellsTraps;
+    board.forEach((c, i) => { const o = node('option', `Ô ${i + 1}${c ? ' · đang có bài' : ' · trống'}`); o.value = String(i); o.disabled = !plans.some(a => a.slot === i); selectSlot.append(o); });
+    const first = [...selectSlot.options].find(o => !o.disabled); if (first) selectSlot.value = first.value; l.append(selectSlot); fields.append(l);
+  }
+  if (tributes) {
+    fields.append(node('p', plans[0].tributeHandles.length ? `Chọn đúng ${plans[0].tributeHandles.length} lá hiến tế. Ô đang có bài chỉ dùng được nếu lá tại ô đó được hiến tế.` : 'Không cần hiến tế.'));
+    (plans[0].tributeHandles.length ? view.players.find(p => p.playerId === view.viewerId).monsters.filter(Boolean) : []).forEach(c => { const l = node('label'), input = node('input'); input.type = 'checkbox'; input.value = c.handle; input.disabled = !plans.some(a => a.tributeHandles.includes(c.handle)); checks.push(input); l.append(input, document.createTextNode(` ${label(c)}`)); fields.append(l); });
+  }
+  if (targets) {
+    const l = node('label', 'Chọn mục tiêu'); selectTarget = node('select'); selectTarget.name = 'target';
+    targets.forEach(t => { const o = node('option', t.label); o.value = t.handle; o.disabled = !plans.some(a => a.targetHandle === t.handle); selectTarget.append(o); }); const first = [...selectTarget.options].find(o => !o.disabled); if (first) selectTarget.value = first.value; l.append(selectTarget); fields.append(l);
+  }
+  const assemble = () => {
+    const a = { ...base };
+    if (selectSlot) a.slot = Number(selectSlot.value);
+    if (tributes) a.tributeHandles = checks.filter(c => c.checked).map(c => c.value);
+    if (selectTarget) a.targetHandle = selectTarget.value;
+    return a;
+  };
+  const sync = () => { $('action-form').querySelector('button[type="submit"]').disabled = !plans.some(p => matchesPlan(p, assemble())); };
+  fields.addEventListener('change', sync, { signal: dialogEvents.signal });
+  sync();
+  $('action-form').onsubmit = e => {
+    e.preventDefault(); const a = assemble();
+    if (!plans.some(p => matchesPlan(p, a))) { message = 'Ô, bài hiến tế hoặc mục tiêu chưa hợp lệ.'; $('status').textContent = message; return; }
+    $('action-dialog').close(); command(a);
+  };
+  $('action-dialog').showModal();
+}
+function cardInfo(panel, card) {
+  const d = def(card);
+  if (!d) { panel.replaceChildren(node('h2', 'Bài úp'), node('p', 'Danh tính lá bài được giữ kín.')); return; }
+  panel.replaceChildren(node('h2', d.name), node('span', d.level ? `Cấp ${d.level} · ${d.attribute} · ATK ${d.attack} / DEF ${d.defense}` : d.kind === 'spell' ? 'Bài Phép' : 'Bài Bẫy', 'tag'), node('p', d.text));
+}
+function detail() {
+  const panel = $('detail'), actions = $('actions'); actions.replaceChildren();
+  if (!selected) { panel.replaceChildren(node('h2', 'Chọn một lá bài'), node('p', 'Chọn bài trên tay hoặc trên sân để xem và thực hiện thao tác.')); return; }
+  const { card, zone, player, slot } = selected, d = def(card);
+  if (!d) { panel.replaceChildren(node('h2', 'Bài úp'), node('div', '◇', 'large-symbol'), node('p', 'Danh tính lá bài được giữ kín.')); return; }
+  panel.replaceChildren(node('h2', d.name), node('div', d.kind === 'spell' ? '✦' : d.kind === 'trap' ? '◇' : '✧', 'large-symbol'), node('span', d.level ? `Cấp ${d.level} · ${d.attribute} · ATK ${d.attack} / DEF ${d.defense}` : d.kind === 'spell' ? 'Bài Phép' : 'Bài Bẫy', 'tag'), node('p', d.text));
+  if (player !== view.viewerId || view.result) return;
+  const canMain = view.turn.activePlayer === view.viewerId && ['main1', 'main2'].includes(view.turn.phase) && view.timing.window === 'open' && !view.decision;
+  const canBattle = view.turn.activePlayer === view.viewerId && view.turn.phase === 'battle' && view.timing.window === 'open' && !view.decision;
+  const h = card.handle, add = (text, fn, allowed = canMain) => {
+    const types = { 'Triệu hồi': 'normal-summon', 'Úp quái': 'set-monster', 'Úp bài': 'set-spell-trap', 'Kích hoạt': 'activate-spell', 'Flip Summon': 'flip-summon', 'Đổi tư thế': 'change-position', 'Tấn công': 'declare-attack', 'Kích hoạt Bẫy': 'activate-trap' };
+    const base = text === 'Tấn công' ? { type: types[text], attackerHandle: h } : { type: types[text], cardHandle: h };
+    const b = button(text, fn); b.disabled = busy || !allowed || !matchingActions(base).length; actions.append(b);
+  };
+  if (zone === 'hand') {
+    if (d.level) {
+      add('Triệu hồi', () => chooseAction('Normal Summon', { type: 'normal-summon', cardHandle: h }, { slots: true, tributes: true }));
+      add('Úp quái', () => chooseAction('Set quái thú', { type: 'set-monster', cardHandle: h }, { slots: true, tributes: true }));
+    } else {
+      add('Úp bài', () => chooseAction('Set Phép / Bẫy', { type: 'set-spell-trap', cardHandle: h, zone: 'spell-trap' }, { slots: true }));
+      if (d.kind === 'spell') add('Kích hoạt', () => chooseAction('Kích hoạt Phép', { type: 'activate-spell', cardHandle: h }, { slots: true }));
+    }
+  }
+  if (zone === 'monster') {
+    if (card.position === 'face-down-defense') add('Flip Summon', () => command({ type: 'flip-summon', cardHandle: h }));
+    else {
+      add('Đổi tư thế', () => command({ type: 'change-position', cardHandle: h }));
+      add('Tấn công', () => {
+        const targets = view.players.find(p => p.playerId !== view.viewerId).monsters.flatMap((c, i) => c ? [{ handle: c.handle, label: `Ô ${i + 1}: ${label(c)}` }] : []);
+        chooseAction('Chọn mục tiêu tấn công', { type: 'declare-attack', attackerHandle: h }, { targets: targets.length ? targets : [{ handle: 'direct', label: 'Tấn công trực tiếp' }] });
+      }, canBattle);
+    }
+  }
+  if (zone === 'spell-trap' && card.position === 'face-down') {
+    if (d.kind === 'spell') add('Kích hoạt', () => command({ type: 'activate-spell', cardHandle: h, slot }));
+    else add('Kích hoạt Bẫy', () => chooseAction('Chọn quái vừa triệu hồi', { type: 'activate-trap', cardHandle: h }, { targets: view.players.find(p => p.playerId !== view.viewerId).monsters.flatMap((c, i) => c ? [{ handle: c.handle, label: `Ô ${i + 1}: ${label(c)}` }] : []) }), view.timing.priorityPlayer === view.viewerId && ['summon-response', 'chain-response'].includes(view.timing.window) && !view.decision);
+  }
+}
+function renderGuide() {
+  let title = '', text = '', transfer = null;
+  const priority = view.timing.priorityPlayer;
+  if (view.result) {
+    title = view.result.winner ? `${names[view.result.winner]} thắng` : 'Trận đấu hòa';
+    const reasons = { 'life-points': 'Trận kết thúc vì điểm gốc về 0.', 'failed-draw': 'Một người chơi không thể bốc đủ bài theo yêu cầu.', concession: 'Một người chơi đã đầu hàng.', effect: 'Trận kết thúc theo hiệu ứng.', 'simultaneous-loss': 'Hai người chơi cùng đạt điều kiện thua.' };
+    text = `${reasons[view.result.reason] || 'Trận đấu đã kết thúc.'} Chọn Trận mới nếu muốn chơi tiếp.`;
+  } else if (view.decision) {
+    title = view.decision.kind === 'discard' ? 'Bạn cần bỏ bài cuối lượt' : 'Bạn cần chọn bài';
+    text = `Chọn ${view.decision.min === view.decision.max ? view.decision.min : view.decision.min + '–' + view.decision.max} lá trong mục Lựa chọn bắt buộc, rồi xác nhận. Chưa thể chuyển phase hoặc pass lúc này.`;
+  } else if (priority && priority !== view.viewerId) {
+    title = `Chờ ${names[priority]} phản hồi`;
+    text = 'Chuyển máy để người có quyền thao tác xem góc nhìn của mình. Pass là nhường quyền phản hồi, không phải tự kết thúc lượt.'; transfer = priority;
+  } else if (!priority) {
+    title = 'Người chơi còn lại đang chọn bài'; text = 'Chuyển góc nhìn để trả lời lựa chọn bắt buộc trước khi tiếp tục.';
+    transfer = view.players.find(p => p.playerId !== view.viewerId).playerId;
+  } else if (view.timing.window === 'phase-exit') {
+    title = 'Đang đề nghị chuyển phase'; text = 'Nếu không phản hồi, nhấn Pass để đồng ý chuyển phase. Lượt chơi vẫn tiếp tục theo thứ tự trên sân.';
+  } else if (view.timing.window !== 'open') {
+    title = view.chain.length ? `Bạn có quyền phản hồi · Chain ${view.chain.length}` : 'Bạn có quyền phản hồi';
+    text = 'Dùng bài phản hồi nếu đúng điều kiện, hoặc nhấn Pass. Khi hai bên nhường quyền liên tiếp, hiệu ứng hoặc bước đang chờ mới được xử lý.';
+  } else if (view.turn.phase === 'battle') {
+    title = 'Battle Phase · Chọn quái để tấn công'; text = 'Chọn quái ngửa tấn công của mình và mục tiêu. Khi đánh xong, chuyển MAIN 2 trong mục Điều khiển lượt.';
+  } else if (['main1', 'main2'].includes(view.turn.phase)) {
+    title = `${phaseNames[view.turn.phase]} · Chọn bài để thao tác`; text = 'Có thể triệu hồi hoặc úp quái theo hạn mức, đặt Phép/Bẫy và dùng Phép đủ điều kiện. Chọn phase tiếp theo khi đã xong.';
+  } else {
+    title = `${phaseNames[view.turn.phase]} · Đến lượt bạn`; text = 'Dùng nút phase trong Điều khiển lượt để tiếp tục. Đối thủ sẽ có cơ hội phản hồi trước khi phase đổi.';
+  }
+  $('guide-title').textContent = busy ? 'Đang xử lý thao tác…' : title;
+  $('guide-text').textContent = text;
+  $('handoff-next').hidden = !transfer || busy;
+  $('handoff-next').textContent = transfer ? `Chuyển cho ${names[transfer]}` : 'Chuyển máy';
+  const actionNames = { 'normal-summon': 'Triệu hồi quái', 'set-monster': 'Úp quái', 'set-spell-trap': 'Úp Phép / Bẫy', 'change-position': 'Đổi tư thế', 'flip-summon': 'Flip Summon', 'declare-attack': 'Tuyên bố tấn công', 'activate-spell': 'Kích hoạt Phép', 'activate-trap': 'Kích hoạt Bẫy', 'answer-decision': 'Xác nhận lựa chọn', pass: 'Nhường quyền', 'request-phase': 'Đề nghị chuyển phase', concede: 'Đầu hàng' };
+  const entries = (view.activity || []).slice().reverse();
+  $('activity').replaceChildren(...(entries.length ? entries.map(e => { const item = node('li', `#${e.stateVersion} · Lượt ${e.turn} · ${names[e.actorId]}: ${actionNames[e.action] || 'Thao tác'}`); if (e.resolution?.length) item.append(node('p', e.resolution.map(resolutionText).filter(Boolean).join(' · '), 'resolution')); return item; }) : [node('li', 'Chưa có thao tác.')]));
+  $('concede').disabled = busy || !!view.result;
+}
+function render() {
+  if (!view) return;
+  const self = view.players.find(p => p.playerId === view.viewerId), opponent = view.players.find(p => p.playerId !== view.viewerId);
+  $('score').replaceChildren(...[opponent, self].map(p => { const n = node('div', undefined, `score ${view.turn.activePlayer === p.playerId ? 'active' : ''}`); n.append(node('span', names[p.playerId]), node('div', undefined)); n.lastChild.append(node('small', 'LIFE POINTS'), node('strong', String(p.lifePoints))); return n; }));
+  const phases = node('div', undefined, 'phases'); for (const [key, text] of Object.entries(phaseNames)) phases.append(node('span', text, `phase ${view.turn.phase === key ? 'current' : ''}`)); $('phases').replaceChildren(phases);
+  side(opponent, 'opponent', false); side(self, 'self', true);
+  $('hand').replaceChildren(...view.selfHand.map(c => cardButton(c, 'hand', view.viewerId, 0))); $('hand-count').textContent = `(${view.selfHand.length})`;
+  $('timing').textContent = view.result ? `Kết thúc · ${view.result.winner ? names[view.result.winner] + ' thắng' : 'Hòa'}` : `Lượt ${view.turn.number} · ${names[view.turn.activePlayer]} · ${view.timing.priorityPlayer ? 'Quyền: ' + names[view.timing.priorityPlayer] : 'Đang chọn bài'}${view.chain.length ? ' · Chain ' + view.chain.length : ''}`;
+  renderGuide(); detail(); $('status').textContent = message + (!view.result && view.timing.priorityPlayer && view.timing.priorityPlayer !== view.viewerId ? ' Đổi người chơi để ' + names[view.timing.priorityPlayer] + ' phản hồi.' : ''); $('pass').disabled = busy || !matchingActions({ type: 'pass' }).length;
+  const turns = $('turn-actions'); turns.replaceChildren();
+  const next = { draw: ['standby'], standby: ['main1'], main1: view.turn.number === 1 ? ['end'] : ['battle', 'end'], battle: ['main2'], main2: ['end'], end: ['draw'] };
+  if (!view.result && view.turn.activePlayer === view.viewerId) for (const phase of next[view.turn.phase]) { const b = button(phase === 'draw' ? 'Sang lượt đối thủ' : phaseNames[phase], () => command({ type: 'request-phase', phase })); b.disabled = busy || !matchingActions({ type: 'request-phase', phase }).length; turns.append(b); }
+  $('decision-panel').hidden = !view.decision;
+  const form = $('decision-form'); form.replaceChildren();
+  if (view.decision) {
+    const d = view.decision; form.append(node('p', `Chọn ${d.min === d.max ? d.min : d.min + '–' + d.max} lá${d.kind === 'discard' ? ' để bỏ xuống Mộ' : ' để xử lý hiệu ứng'}.`));
+    d.optionIds.forEach(h => { const l = node('label'), input = node('input'); input.type = d.max === 1 ? 'radio' : 'checkbox'; input.name = 'option'; input.value = h; l.append(input, document.createTextNode(` ${optionLabel(h)}`)); form.append(l); });
+    const submit = node('button', 'Xác nhận lựa chọn', 'primary'); submit.type = 'submit'; form.append(submit);
+    const progress = node('p'); progress.id = 'decision-progress'; progress.setAttribute('aria-live', 'polite'); form.append(progress);
+    const updateSelection = () => {
+      const count = form.querySelectorAll('input:checked').length;
+      progress.textContent = `Đã chọn ${count}/${d.min === d.max ? d.min : d.min + '–' + d.max} lá.`;
+      submit.disabled = busy || count < d.min || count > d.max;
+      for (const input of form.querySelectorAll('input')) input.disabled = busy;
+    };
+    form.onchange = updateSelection; updateSelection();
+    form.onsubmit = e => { e.preventDefault(); if (busy) return; const optionIds = [...form.querySelectorAll('input:checked')].map(i => i.value); if (optionIds.length < d.min || optionIds.length > d.max) { message = 'Hãy chọn đúng số lá.'; $('status').textContent = message; return; } command({ type: 'answer-decision', decisionId: d.id, optionIds }); };
+  }
+}
+function handoff() { document.body.classList.add('concealed'); selected = null; $('seat-dialog').showModal(); }
+$('seat-dialog').addEventListener('cancel', e => e.preventDefault());
+for (const b of document.querySelectorAll('[data-seat]')) b.addEventListener('click', async () => {
+  if (busy) return; busy = true;
+  try { view = await api('/api/seat', { seat: b.dataset.seat }); message = `Bạn đang xem ${names[view.viewerId]}.`; selected = null; render(); $('seat-dialog').close(); document.body.classList.remove('concealed'); }
+  catch (e) { alert(e.message); } finally { busy = false; render(); }
+});
+$('switch').addEventListener('click', handoff);
+$('handoff-next').addEventListener('click', handoff);
+$('close-graveyard').addEventListener('click', () => $('graveyard-dialog').close());
+$('cancel-action').addEventListener('click', () => $('action-dialog').close());
+$('pass').addEventListener('click', () => command({ type: 'pass' }));
+$('refresh').addEventListener('click', async () => { if (busy) return; busy = true; try { view = await api('/api/view'); selected = null; message = 'Đã cập nhật.'; render(); } catch (e) { message = e.message; $('status').textContent = message; } finally { busy = false; render(); } });
+$('concede').addEventListener('click', () => { if (confirm('Đầu hàng trận này?')) command({ type: 'concede' }); });
+$('reset').addEventListener('click', () => {
+  if (busy || !view) return;
+  $('new-game-error').textContent = '';
+  $('new-game-warning').textContent = view.result ? 'Kết quả và lịch sử trận trước sẽ được thay bằng trận mới.' : 'Trận đang chơi sẽ bị thay thế khi xác nhận. Chọn Hủy để giữ nguyên trận.';
+  $('new-game-dialog').showModal();
+});
+$('cancel-new-game').addEventListener('click', () => { if (!busy) $('new-game-dialog').close(); });
+$('new-game-dialog').addEventListener('cancel', e => { if (busy) e.preventDefault(); });
+$('new-game-form').addEventListener('submit', async e => {
+  e.preventDefault(); if (busy || !view) return;
+  const firstPlayer = $('new-game-form').querySelector('input[name="first-player"]:checked')?.value;
+  if (!firstPlayer) return;
+  busy = true; $('new-game-error').textContent = '';
+  for (const c of $('new-game-form').elements) c.disabled = true;
+  try {
+    const next = await api('/api/reset', { firstPlayer });
+    view = next; selected = null;
+    message = `Trận mới: ${names[view.turn.activePlayer]} đi trước.`;
+    $('new-game-dialog').close();
+  } catch (error) { $('new-game-error').textContent = error.message; }
+  finally { busy = false; for (const c of $('new-game-form').elements) c.disabled = false; render(); }
+});
+(async () => { try { const data = await api('/api/catalog'); data.cards.forEach(c => catalog.set(c.id, c)); handoff(); } catch (e) { $('status').textContent = e.message; } })();

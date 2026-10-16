@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "formatId": "goat-2005-08-17",
+  "cards": [
+    {
+      "passcode": "04206964",
+      "expectedName": "Trap Hole",
+      "konamiId": 4836
+    },
+    {
+      "passcode": "05053103",
+      "expectedName": "Battle Ox",
+      "konamiId": 4032
+    },
+    {
+      "passcode": "07089711",
+      "expectedName": "Hane-Hane",
+      "konamiId": 4547
+    },
+    {
+      "passcode": "13039848",
+      "expectedName": "Giant Soldier of Stone",
+      "konamiId": 4080
+    },
+    {
+      "passcode": "15025844",
+      "expectedName": "Mystical Elf",
+      "konamiId": 4008
+    },
+    {
+      "passcode": "15303296",
+      "expectedName": "Ryu-Kishin",
+      "konamiId": 4011
+    },
+    {
+      "passcode": "32452818",
+      "expectedName": "Beaver Warrior",
+      "konamiId": 4033
+    },
+    {
+      "passcode": "36304921",
+      "expectedName": "Witty Phantom",
+      "konamiId": 4142
+    },
+    {
+      "passcode": "40374923",
+      "expectedName": "Mammoth Graveyard",
+      "konamiId": 4065
+    },
+    {
+      "passcode": "41392891",
+      "expectedName": "Feral Imp",
+      "konamiId": 4012
+    },
+    {
+      "passcode": "46986414",
+      "expectedName": "Dark Magician",
+      "konamiId": 4041
+    },
+    {
+      "passcode": "54652250",
+      "expectedName": "Man-Eater Bug",
+      "konamiId": 4507
+    },
+    {
+      "passcode": "55144522",
+      "expectedName": "Pot of Greed",
+      "konamiId": 4844
+    },
+    {
+      "passcode": "66602787",
+      "expectedName": "Saggi the Dark Clown",
+      "konamiId": 4040
+    },
+    {
+      "passcode": "66788016",
+      "expectedName": "Fissure",
+      "konamiId": 4835
+    },
+    {
+      "passcode": "76184692",
+      "expectedName": "Hitotsu-Me Giant",
+      "konamiId": 4009
+    },
+    {
+      "passcode": "89631139",
+      "expectedName": "Blue-Eyes White Dragon",
+      "konamiId": 4007
+    },
+    {
+      "passcode": "90357090",
+      "expectedName": "Silver Fang",
+      "konamiId": 4071
+    },
+    {
+      "passcode": "91152256",
+      "expectedName": "Celtic Guardian",
+      "konamiId": 4047
+    },
+    {
+      "passcode": "97590747",
+      "expectedName": "La Jinn the Mystical Genie of the Lamp",
+      "konamiId": 4385
+    }
+  ],
+  "eligibleSetPrefixes": [
+    "LOB",
+    "SDK",
+    "SDY",
+    "MRD"
+  ],
+  "eligibilitySource": {
+    "url": "https://www.goatformat.com/cardpool.html",
+    "accessedOn": "2026-10-15",
+    "scope": "release",
+    "notes": "Goat cardpool lists LOB, Yugi/Kaiba Starter Decks (SDY/SDK) and Metal Raiders (MRD); pilot uses original North American print codes only."
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "passcode": "36304921",
+  "konamiId": 4142,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4142&request_locale=en",
+  "accessedOn": "2026-10-15",
+  "htmlSha256": "1b62a037046635548325ece4d6abe6673e7c9413e795be8a77f1677f826441a6",
+  "currentFacts": {
+    "name": "Witty Phantom",
+    "text": "Dressed in a night-black tuxedo, this creature presides over the darkness.",
+    "kind": "normal-monster",
+    "race": "Fiend",
+    "attribute": "DARK",
+    "level": 4,
+    "attack": 1400,
+    "defense": 1300
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-072",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

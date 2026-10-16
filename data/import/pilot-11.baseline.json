@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "upstreamSha256": "060dad7d46972963aeeff09e4d2c8f83f54e6e0e329fcd5c30f99a333af69847",
+  "passcodes": [
+    "04206964",
+    "05053103",
+    "07089711",
+    "13039848",
+    "15025844",
+    "46986414",
+    "54652250",
+    "55144522",
+    "66788016",
+    "89631139",
+    "97590747"
+  ],
+  "notes": "Retained actual 11-card API snapshot from the first pilot. Check all identities/facts survive expansion; no fetched timestamp or receipt was reconstructed."
+}

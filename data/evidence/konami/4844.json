@@ -1,0 +1,18 @@
+{
+  "passcode": "55144522",
+  "konamiId": 4844,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4844&request_locale=en",
+  "accessedOn": "2026-10-15",
+  "htmlSha256": "ac3459aeb6b613c061fd3ccc514f4568fe943e2e26368b6324f5e601bbf5ec03",
+  "currentFacts": {
+    "name": "Pot of Greed",
+    "text": "Draw 2 cards.",
+    "kind": "spell",
+    "subtype": "normal"
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-119",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "passcode": "05053103",
+  "konamiId": 4032,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4032&request_locale=en",
+  "accessedOn": "2026-10-15",
+  "htmlSha256": "a0e2a4ab5917f6171a33c74062510a3593afffed0e627c182dde97df1402d338",
+  "currentFacts": {
+    "name": "Battle Ox",
+    "text": "A monster with tremendous power, it destroys enemies with a swing of its axe.",
+    "kind": "normal-monster",
+    "race": "Beast-Warrior",
+    "attribute": "EARTH",
+    "level": 4,
+    "attack": 1700,
+    "defense": 1000
+  },
+  "printing": {
+    "date": "2002-03-29",
+    "setCode": "SDK-005",
+    "product": "STARTER DECK KAIBA"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "passcode": "15025844",
+  "konamiId": 4008,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4008&request_locale=en",
+  "accessedOn": "2026-10-15",
+  "htmlSha256": "af5be59ed8637413c88a19fbe3a0ee0d3f8916b9549a1147b63e2c125d31640f",
+  "currentFacts": {
+    "name": "Mystical Elf",
+    "text": "A delicate elf that lacks offense, but has a terrific defense backed by mystical power.",
+    "kind": "normal-monster",
+    "race": "Spellcaster",
+    "attribute": "LIGHT",
+    "level": 4,
+    "attack": 800,
+    "defense": 2000
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-062",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

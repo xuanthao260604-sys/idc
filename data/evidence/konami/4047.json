@@ -1,0 +1,22 @@
+{
+  "passcode": "91152256",
+  "konamiId": 4047,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4047&request_locale=en",
+  "accessedOn": "2026-10-15",
+  "htmlSha256": "cce71d063ab2738805d3c105803c7e3aab5f5070aee0afb116c99db9618963bb",
+  "currentFacts": {
+    "name": "Celtic Guardian",
+    "text": "An elf who learned to wield a sword, he baffles enemies with lightning-swift attacks.",
+    "kind": "normal-monster",
+    "race": "Warrior",
+    "attribute": "EARTH",
+    "level": 4,
+    "attack": 1400,
+    "defense": 1200
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-007",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "passcode": "32452818",
+  "konamiId": 4033,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4033&request_locale=en",
+  "accessedOn": "2026-10-15",
+  "htmlSha256": "f48bf537272feca6c2f142c56302353d28db16fbbd6f8bfe5c53e11b048f7f48",
+  "currentFacts": {
+    "name": "Beaver Warrior",
+    "text": "What this creature lacks in size it makes up for in defense when battling in the prairie.",
+    "kind": "normal-monster",
+    "race": "Beast-Warrior",
+    "attribute": "EARTH",
+    "level": 4,
+    "attack": 1200,
+    "defense": 1500
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-064",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

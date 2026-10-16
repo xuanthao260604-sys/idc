@@ -1,0 +1,326 @@
+[
+  {
+    "id": "official:04206964",
+    "baseFingerprint": "9d874a4e75ef85c382dd991c20c5e1ee2701ad8e8131f771747c247bd3fba5cd",
+    "revision": 1,
+    "patch": {
+      "text": "When your opponent Normal or Flip Summons a monster with 1000 or more ATK: Target that monster; destroy that target."
+    },
+    "historicalTextReview": "pending",
+    "notes": "Reviewed current official identity/type/reference text and early LOB/SDK print. Historical effect wording/ruling review remains pending; do not execute text or treat this card as supported.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4836&request_locale=en",
+        "accessedOn": "2026-10-15",
+        "scope": "text",
+        "notes": "Manual text correction to current Konami reference, retained separately from upstream. Not a claim of 2005 text."
+      }
+    ]
+  },
+  {
+    "id": "official:05053103",
+    "baseFingerprint": "fffb1460c60b400aaed8ee2be6d44eaa648f40602967bbf9f3b02e80a3ec6256",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "not-required-normal-flavor",
+    "notes": "Reviewed current official name/type/stats and flavor-only text. Early LOB/SDK print checked; no behavior-bearing name condition identified. Engine not implemented.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4032&request_locale=en",
+        "accessedOn": "2026-10-15",
+        "scope": "text",
+        "notes": "Compared current official reference. Not a claim of original 2005 wording."
+      }
+    ]
+  },
+  {
+    "id": "official:07089711",
+    "baseFingerprint": "49dcadb8af156b24915038d42f4f7d3b2ba6a6d95718a08a96dd1e38790f098d",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "pending",
+    "notes": "Reviewed current official identity/type/reference text and early LOB/SDK print. Historical effect wording/ruling review remains pending; do not execute text or treat this card as supported.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4547&request_locale=en",
+        "accessedOn": "2026-10-15",
+        "scope": "text",
+        "notes": "Compared current official reference. Not a claim of original 2005 wording."
+      }
+    ]
+  },
+  {
+    "id": "official:13039848",
+    "baseFingerprint": "9b9db30d9b67b7cbd344ee122b2d6e431b9ea16e5cebed5193714177373c80bf",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "not-required-normal-flavor",
+    "notes": "Reviewed current official name/type/stats and flavor-only text. Early LOB/SDK print checked; no behavior-bearing name condition identified. Engine not implemented.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4080&request_locale=en",
+        "accessedOn": "2026-10-15",
+        "scope": "text",
+        "notes": "Compared current official reference. Not a claim of original 2005 wording."
+      }
+    ]
+  },
+  {
+    "id": "official:15025844",
+    "baseFingerprint": "ec2ebfde78107b81481188a740ae4da0e58117f6097a2e540a29c827f23f63ce",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "not-required-normal-flavor",
+    "notes": "Reviewed current official name/type/stats and flavor-only text. Early LOB/SDK print checked; no behavior-bearing name condition identified. Engine not implemented.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4008&request_locale=en",
+        "accessedOn": "2026-10-15",
+        "scope": "text",
+        "notes": "Compared current official reference. Not a claim of original 2005 wording."
+      }
+    ]
+  },
+  {
+    "id": "official:15303296",
+    "baseFingerprint": "e0e6e19911639634a2e8f6c2b88e2b5df4682d75cbe5feb6092ea7a98a214629",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "not-required-normal-flavor",
+    "notes": "Reviewed current official name/type/stats and flavor-only text. Original LOB/SDK/SDY/MRD print checked; no behavior-bearing name condition identified. Engine not implemented.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4011&request_locale=en",
+        "accessedOn": "2026-10-15",
+        "scope": "text",
+        "notes": "Compared current official reference; not a claim of original 2005 wording."
+      }
+    ]
+  },
+  {
+    "id": "official:32452818",
+    "baseFingerprint": "3d63c6c6b59e179d1ed786915c7ac09991f292867575beea69475458a70a883f",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "not-required-normal-flavor",
+    "notes": "Reviewed current official name/type/stats and flavor-only text. Original LOB/SDK/SDY/MRD print checked; no behavior-bearing name condition identified. Engine not implemented.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4033&request_locale=en",
+        "accessedOn": "2026-10-15",
+        "scope": "text",
+        "notes": "Compared current official reference; not a claim of original 2005 wording."
+      }
+    ]
+  },
+  {
+    "id": "official:36304921",
+    "baseFingerprint": "924c911f7a2bf800ee483cb1018953f1bb4811c0eae4ac0037e7c0d71d8053d1",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "not-required-normal-flavor",
+    "notes": "Reviewed current official name/type/stats and flavor-only text. Original LOB/SDK/SDY/MRD print checked; no behavior-bearing name condition identified. Engine not implemented.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4142&request_locale=en",
+        "accessedOn": "2026-10-15",
+        "scope": "text",
+        "notes": "Compared current official reference; not a claim of original 2005 wording."
+      }
+    ]
+  },
+  {
+    "id": "official:40374923",
+    "baseFingerprint": "ec00f803094f0fcce1a37b44c47d861fda63782868901446acf98e3fb913b852",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "not-required-normal-flavor",
+    "notes": "Reviewed current official name/type/stats and flavor-only text. Original LOB/SDK/SDY/MRD print checked; no behavior-bearing name condition identified. Engine not implemented.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4065&request_locale=en",
+        "accessedOn": "2026-10-15",
+        "scope": "text",
+        "notes": "Compared current official reference; not a claim of original 2005 wording."
+      }
+    ]
+  },
+  {
+    "id": "official:41392891",
+    "baseFingerprint": "f8aaf6d9c29c4c9f84733660335ee74e3b150a4642ae0a8f782ae7fc8b96691b",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "not-required-normal-flavor",
+    "notes": "Reviewed current official name/type/stats and flavor-only text. Original LOB/SDK/SDY/MRD print checked; no behavior-bearing name condition identified. Engine not implemented.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4012&request_locale=en",
+        "accessedOn": "2026-10-15",
+        "scope": "text",
+        "notes": "Compared current official reference; not a claim of original 2005 wording."
+      }
+    ]
+  },
+  {
+    "id": "official:46986414",
+    "baseFingerprint": "149aed66f29c187386cad02ee0a1f428e60da00de9c1b7bb157708718a4eda8f",
+    "revision": 1,
+    "patch": {
+      "text": "The ultimate wizard in terms of attack and defense."
+    },
+    "historicalTextReview": "not-required-normal-flavor",
+    "notes": "Reviewed current official name/type/stats and flavor-only text. Early LOB/SDK print checked; no behavior-bearing name condition identified. Engine not implemented.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4041&request_locale=en",
+        "accessedOn": "2026-10-15",
+        "scope": "text",
+        "notes": "Manual text correction to current Konami reference, retained separately from upstream. Not a claim of 2005 text."
+      }
+    ]
+  },
+  {
+    "id": "official:54652250",
+    "baseFingerprint": "598edc1d1e739affc338b38370e3b1a7d2ff21f8f09b3405c5bfc21866d58cbf",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "pending",
+    "notes": "Reviewed current official identity/type/reference text and early LOB/SDK print. Historical effect wording/ruling review remains pending; do not execute text or treat this card as supported.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4507&request_locale=en",
+        "accessedOn": "2026-10-15",
+        "scope": "text",
+        "notes": "Compared current official reference. Not a claim of original 2005 wording."
+      }
+    ]
+  },
+  {
+    "id": "official:55144522",
+    "baseFingerprint": "733df1ea3db191c949543cad91827c0110c500c0c1725c26806b6db51afe6d69",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "pending",
+    "notes": "Reviewed current official identity/type/reference text and early LOB/SDK print. Historical effect wording/ruling review remains pending; do not execute text or treat this card as supported.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4844&request_locale=en",
+        "accessedOn": "2026-10-15",
+        "scope": "text",
+        "notes": "Compared current official reference. Not a claim of original 2005 wording."
+      }
+    ]
+  },
+  {
+    "id": "official:66602787",
+    "baseFingerprint": "d51f5d9b04b8029ca17485c5d26c1c18cc122fa7e38b20c3e5fb17f1547580d0",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "not-required-normal-flavor",
+    "notes": "Reviewed current official name/type/stats and flavor-only text. Original LOB/SDK/SDY/MRD print checked; no behavior-bearing name condition identified. Engine not implemented.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4040&request_locale=en",
+        "accessedOn": "2026-10-15",
+        "scope": "text",
+        "notes": "Compared current official reference; not a claim of original 2005 wording."
+      }
+    ]
+  },
+  {
+    "id": "official:66788016",
+    "baseFingerprint": "6a791e7f44d77801d08510cda97a43f45f6aedf9205e4ede9b59e3eda00b0255",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "pending",
+    "notes": "Reviewed current official identity/type/reference text and early LOB/SDK print. Historical effect wording/ruling review remains pending; do not execute text or treat this card as supported.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4835&request_locale=en",
+        "accessedOn": "2026-10-15",
+        "scope": "text",
+        "notes": "Compared current official reference. Not a claim of original 2005 wording."
+      }
+    ]
+  },
+  {
+    "id": "official:76184692",
+    "baseFingerprint": "4e7899f1465d686ee4a4dae94af9b922bc055288ef7ec925703fca5b8edec330",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "not-required-normal-flavor",
+    "notes": "Reviewed current official name/type/stats and flavor-only text. Original LOB/SDK/SDY/MRD print checked; no behavior-bearing name condition identified. Engine not implemented.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4009&request_locale=en",
+        "accessedOn": "2026-10-15",
+        "scope": "text",
+        "notes": "Compared current official reference; not a claim of original 2005 wording."
+      }
+    ]
+  },
+  {
+    "id": "official:89631139",
+    "baseFingerprint": "2981673e3f6f5f5221ed89eccfc9366925e777a5e9f22b32aa80e4faca4e782e",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "not-required-normal-flavor",
+    "notes": "Reviewed current official name/type/stats and flavor-only text. Early LOB/SDK print checked; no behavior-bearing name condition identified. Engine not implemented.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4007&request_locale=en",
+        "accessedOn": "2026-10-15",
+        "scope": "text",
+        "notes": "Compared current official reference. Not a claim of original 2005 wording."
+      }
+    ]
+  },
+  {
+    "id": "official:90357090",
+    "baseFingerprint": "89be4eaa3475a43cb7382f7089999a4c2195e01772ff95511dd01537a9832a13",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "not-required-normal-flavor",
+    "notes": "Reviewed current official name/type/stats and flavor-only text. Original LOB/SDK/SDY/MRD print checked; no behavior-bearing name condition identified. Engine not implemented.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4071&request_locale=en",
+        "accessedOn": "2026-10-15",
+        "scope": "text",
+        "notes": "Compared current official reference; not a claim of original 2005 wording."
+      }
+    ]
+  },
+  {
+    "id": "official:91152256",
+    "baseFingerprint": "207329878c7a286af5d65e41e084a0ca4704ee4e8dd5f9963f040f05fd156c33",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "not-required-normal-flavor",
+    "notes": "Reviewed current official name/type/stats and flavor-only text. Original LOB/SDK/SDY/MRD print checked; no behavior-bearing name condition identified. Engine not implemented.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4047&request_locale=en",
+        "accessedOn": "2026-10-15",
+        "scope": "text",
+        "notes": "Compared current official reference; not a claim of original 2005 wording."
+      }
+    ]
+  },
+  {
+    "id": "official:97590747",
+    "baseFingerprint": "7e21345259b6a59e7dd5a8ee143a8609399d3cf0d395e0f7277a73157fdc9bd7",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "not-required-normal-flavor",
+    "notes": "Reviewed current official name/type/stats and flavor-only text. Early LOB/SDK print checked; no behavior-bearing name condition identified. Engine not implemented.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4385&request_locale=en",
+        "accessedOn": "2026-10-15",
+        "scope": "text",
+        "notes": "Compared current official reference. Not a claim of original 2005 wording."
+      }
+    ]
+  }
+]

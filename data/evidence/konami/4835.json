@@ -1,0 +1,18 @@
+{
+  "passcode": "66788016",
+  "konamiId": 4835,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4835&request_locale=en",
+  "accessedOn": "2026-10-15",
+  "htmlSha256": "6447ce763561f548954e3a3048426cf25846111b4d149329525cc0f4a5df9eb6",
+  "currentFacts": {
+    "name": "Fissure",
+    "text": "Destroy the 1 face-up monster your opponent controls that has the lowest ATK (your choice, if tied).",
+    "kind": "spell",
+    "subtype": "normal"
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-057",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

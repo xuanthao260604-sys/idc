@@ -1,0 +1,22 @@
+{
+  "passcode": "76184692",
+  "konamiId": 4009,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4009&request_locale=en",
+  "accessedOn": "2026-10-15",
+  "htmlSha256": "f1ac286b6e000fecc87feee061f40259ef901ce7e621437967d2b442e3612b04",
+  "currentFacts": {
+    "name": "Hitotsu-Me Giant",
+    "text": "A one-eyed behemoth with thick, powerful arms made for delivering punishing blows.",
+    "kind": "normal-monster",
+    "race": "Beast-Warrior",
+    "attribute": "EARTH",
+    "level": 4,
+    "attack": 1200,
+    "defense": 1000
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-002",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "passcode": "07089711",
+  "konamiId": 4547,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4547&request_locale=en",
+  "accessedOn": "2026-10-15",
+  "htmlSha256": "92d055afcaea2b93755551220cd5f374fe2b839459f3693ad16152f36dfcd588",
+  "currentFacts": {
+    "name": "Hane-Hane",
+    "text": "FLIP: Select 1 monster on the field and return it to its owner's hand.",
+    "kind": "effect-monster",
+    "race": "Beast",
+    "attribute": "EARTH",
+    "level": 2,
+    "attack": 450,
+    "defense": 500
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-110",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

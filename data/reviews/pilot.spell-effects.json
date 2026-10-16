@@ -1,0 +1,79 @@
+[
+  {
+    "cardId": "official:55144522",
+    "definitionSha256": "e267b070ff9477b340042761d189b221e471910a10cf9571ce4a770db22e7909",
+    "revision": 1,
+    "format": {
+      "id": "goat-2005-08-17",
+      "revision": 4
+    },
+    "status": "reviewed-for-supported-scope",
+    "scope": "normal-spell-single-link-vanilla-v1",
+    "handler": {
+      "handler": "draw",
+      "count": 2
+    },
+    "evidence": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4844&request_locale=en",
+        "accessedOn": "2026-10-15",
+        "sourceKind": "official-current",
+        "quotation": "Draw 2 cards.",
+        "historicalApplicability": "Current reference semantics only. Early LOB print recorded separately in existing official evidence; not claiming current wording is the printed 2005 wording."
+      },
+      {
+        "url": "https://www.goatformat.com/basics.html",
+        "accessedOn": "2026-10-15",
+        "sourceKind": "community",
+        "quotation": "in Goat Format, you can always activate an effect that will deck a player out.",
+        "historicalApplicability": "Community Goat ruling compilation; Fissure non-targeting quotation is under Freed the Matchless General. Applies to adopted 2005 Goat scope, not authenticated primary publication."
+      }
+    ],
+    "notes": "Project semantic review for normal monsters plus these two Normal Spells only: no activation cost, no targeting, speed 1 in own open Main Phase, hand or own Set zone; pass-only single-link resolution. Current text retained as reference; historical printed-text review in import overlay remains pending. No claim of all card interactions or full Chain support."
+  },
+  {
+    "cardId": "official:66788016",
+    "definitionSha256": "73cf26b24c8c287ab9c2c87c881e8b52f9cf4d821c405b55cbefe8941b8e77f0",
+    "revision": 1,
+    "format": {
+      "id": "goat-2005-08-17",
+      "revision": 4
+    },
+    "status": "reviewed-for-supported-scope",
+    "scope": "normal-spell-single-link-vanilla-v1",
+    "handler": {
+      "handler": "destroy-lowest-opposing-face-up-attack"
+    },
+    "evidence": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4835&request_locale=en",
+        "accessedOn": "2026-10-15",
+        "sourceKind": "official-current",
+        "quotation": "Destroy the 1 face-up monster your opponent controls that has the lowest ATK (your choice, if tied).",
+        "historicalApplicability": "Current reference semantics only. Early LOB print recorded separately in existing official evidence; not claiming current wording is the printed 2005 wording."
+      },
+      {
+        "url": "https://www.goatformat.com/rulings3.html",
+        "accessedOn": "2026-10-15",
+        "sourceKind": "community",
+        "quotation": "You can activate \"Fissure\" even if your opponent only has 1 monster on the field.",
+        "historicalApplicability": "Community Goat ruling compilation; Fissure non-targeting quotation is under Freed the Matchless General. Applies to adopted 2005 Goat scope, not authenticated primary publication."
+      },
+      {
+        "url": "https://www.goatformat.com/rulings3.html",
+        "accessedOn": "2026-10-15",
+        "sourceKind": "community",
+        "quotation": "If there are two or more monsters with equal ATK on your opponent’s side of the field, you (the player who activated \"Fissure\") select which monster will be destroyed.",
+        "historicalApplicability": "Community Goat ruling compilation; Fissure non-targeting quotation is under Freed the Matchless General. Applies to adopted 2005 Goat scope, not authenticated primary publication."
+      },
+      {
+        "url": "https://www.goatformat.com/rulings3.html",
+        "accessedOn": "2026-10-15",
+        "sourceKind": "community",
+        "quotation": "The effect of this card will not negate \"Creature Swap\", \"Fissure\", \"Smashing Ground\", \"Dark Hole\", \"Raigeki\", or similar Spell Cards that do not target.",
+        "historicalApplicability": "Community Goat ruling compilation; Fissure non-targeting quotation is under Freed the Matchless General. Applies to adopted 2005 Goat scope, not authenticated primary publication."
+      }
+    ],
+    "notes": "Project semantic review for normal monsters plus these two Normal Spells only: no activation cost, no targeting, speed 1 in own open Main Phase, hand or own Set zone; pass-only single-link resolution. Current text retained as reference; historical printed-text review in import overlay remains pending. No claim of all card interactions or full Chain support."
+  }
+]

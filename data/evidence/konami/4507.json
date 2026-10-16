@@ -1,0 +1,22 @@
+{
+  "passcode": "54652250",
+  "konamiId": 4507,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4507&request_locale=en",
+  "accessedOn": "2026-10-15",
+  "htmlSha256": "ee5196ab17a75be752bad09b8d0f1676b379ac1eff57824a2f7099fe707022dc",
+  "currentFacts": {
+    "name": "Man-Eater Bug",
+    "text": "FLIP: Target 1 monster on the field; destroy it.",
+    "kind": "effect-monster",
+    "race": "Insect",
+    "attribute": "EARTH",
+    "level": 2,
+    "attack": 450,
+    "defense": 600
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-108",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

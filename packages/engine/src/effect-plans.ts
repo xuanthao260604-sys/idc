@@ -1,0 +1,48 @@
+/** Pure resolution plans. Not an activation API or a substitute for Chain/timing checks. */
+import { z } from 'zod';
+import { freeze } from './registry.js';
+
+const Request = z.discriminatedUnion('handler', [
+  z.strictObject({ handler: z.literal('draw'), count: z.number().int().positive().max(100) }),
+  z.strictObject({ handler: z.literal('destroy-lowest-opposing-face-up-attack') }),
+]);
+const Board = z.strictObject({
+  controllerId: z.string().min(1),
+  // Effective ATK at resolution, supplied by the trusted engine, never printed ATK from client.
+  monsters: z.array(z.strictObject({
+    instanceId: z.string().min(1), controllerId: z.string().min(1),
+    faceUp: z.boolean(), attack: z.number().int().nonnegative().safe(),
+  })),
+}).superRefine((board, ctx) => {
+  if (new Set(board.monsters.map(m => m.instanceId)).size !== board.monsters.length)
+    ctx.addIssue({ code: 'custom', message: 'Duplicate monster instance' });
+});
+export type ResolutionPlan =
+  | { readonly kind: 'draw'; readonly playerId: string; readonly count: number }
+  | { readonly kind: 'no-op' }
+  | { readonly kind: 'destroy'; readonly instanceId: string }
+  | { readonly kind: 'choose-destruction'; readonly playerId: string; readonly optionIds: readonly string[] };
+
+/** Inspect the current board when this link resolves, not when it was activated.
+ * No card names, passcodes or description interpretation occur in a handler.
+ * Caller applies draws one by one (including required-draw loss) and destruction through
+ * the event/replacement pipeline. A choice pauses this same resolution, not a new Chain.
+ */
+export function planResolution(requestInput: unknown, boardInput: unknown): ResolutionPlan {
+  const request = Request.parse(requestInput);
+  const board = Board.parse(boardInput);
+  if (request.handler === 'draw')
+    return freeze({ kind: 'draw', playerId: board.controllerId, count: request.count });
+  const candidates = board.monsters.filter(m => m.controllerId !== board.controllerId && m.faceUp);
+  if (candidates.length === 0) return freeze({ kind: 'no-op' });
+  const minimum = Math.min(...candidates.map(m => m.attack));
+  const optionIds = candidates.filter(m => m.attack === minimum).map(m => m.instanceId);
+  if (optionIds.length === 1) return freeze({ kind: 'destroy', instanceId: optionIds[0]! });
+  return freeze({ kind: 'choose-destruction', playerId: board.controllerId, optionIds });
+}
+
+/** Server validates the pending decision ID/actor/version before calling this helper. */
+export function chooseDestruction(plan: Extract<ResolutionPlan, { kind: 'choose-destruction' }>, instanceId: string): ResolutionPlan {
+  if (!plan.optionIds.includes(instanceId)) throw new Error('Choice is not a minimum-ATK candidate');
+  return freeze({ kind: 'destroy', instanceId });
+}

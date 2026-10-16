@@ -1,0 +1,22 @@
+{
+  "passcode": "13039848",
+  "konamiId": 4080,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4080&request_locale=en",
+  "accessedOn": "2026-10-15",
+  "htmlSha256": "581e15cb06b7790212d49dfb7a5a97ef8df669342f23b5d03f88f40e95999c39",
+  "currentFacts": {
+    "name": "Giant Soldier of Stone",
+    "text": "A giant warrior made of stone. A punch from this creature has earth-shaking results.",
+    "kind": "normal-monster",
+    "race": "Rock",
+    "attribute": "EARTH",
+    "level": 3,
+    "attack": 1300,
+    "defense": 2000
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-068",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

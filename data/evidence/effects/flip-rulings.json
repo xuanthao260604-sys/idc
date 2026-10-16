@@ -1,0 +1,20 @@
+{
+  "accessedOn": "2026-10-15",
+  "sources": [
+    {
+      "url": "https://www.goatformat.com/basics.html",
+      "htmlSha256": "aa421122993e806101abca1cc9d78a6163fbf35587d3e9b49488063c45a10f45",
+      "quotation": "Flip Effects, other Trigger Effects that activate when a monster is flipped face-up, and many effects that activate “after damage calculation” activate here and form a Chain if necessary."
+    },
+    {
+      "url": "https://www.goatformat.com/rulings5.html",
+      "htmlSha256": "aed2c49d2c93f5d436fd6df19fc1c95c83234bd4f14ce5016f64f778665a961b",
+      "quotation": "If \"Man-Eater Bug\" is the only monster on the field when it is flipped, it destroys itself."
+    },
+    {
+      "url": "https://www.yugioh-card.com/en/downloads/rulebook/SD_RuleBook_EN_10.pdf",
+      "pdfSha256": "82be14641b2b7940467034a5b14b0d4037835831866537738d34fd9df5a0f444",
+      "quotation": "If you need to select a monster for the Flip effect to target, you cannot target a monster that has already been destroyed during damage calculation."
+    }
+  ]
+}

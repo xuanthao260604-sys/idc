@@ -1,0 +1,22 @@
+{
+  "passcode": "46986414",
+  "konamiId": 4041,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4041&request_locale=en",
+  "accessedOn": "2026-10-15",
+  "htmlSha256": "59bcd3ab09290a3898f48a182eb3fb6d490ce1b00c94077e29a5c768fe7fa186",
+  "currentFacts": {
+    "name": "Dark Magician",
+    "text": "The ultimate wizard in terms of attack and defense.",
+    "kind": "normal-monster",
+    "race": "Spellcaster",
+    "attribute": "DARK",
+    "level": 7,
+    "attack": 2500,
+    "defense": 2100
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-005",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

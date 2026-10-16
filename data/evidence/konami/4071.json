@@ -1,0 +1,22 @@
+{
+  "passcode": "90357090",
+  "konamiId": 4071,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4071&request_locale=en",
+  "accessedOn": "2026-10-15",
+  "htmlSha256": "2092dab4cc325b3766c827258b9bfb034e902ca05809d2669d15f421cd2cdc4f",
+  "currentFacts": {
+    "name": "Silver Fang",
+    "text": "A snow wolf that's beautiful to the eye, but absolutely vicious in battle.",
+    "kind": "normal-monster",
+    "race": "Beast",
+    "attribute": "EARTH",
+    "level": 3,
+    "attack": 1200,
+    "defense": 800
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-010",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}
