@@ -28,4 +28,9 @@ Browser fixture có bài úp thuộc cả ba loại; xác nhận chung một n�
 Đã xem screenshot Chromium ở 1440 × 1000 và 390 × 844; chỉ là bằng chứng UI, không phải bản beta phát hành.
 Bộ test so sánh byte bằng Buffer.equals thay vì deep-compare mảng byte lớn gây timeout; không bỏ kiểm tra nội dung ảnh.
 
-Validation Linux và Windows CI đang được hoàn tất. Windows 11 desktop chưa chạy.
+Linux: 321/321 test, 21/21 bước validation và 11 browser run đạt, runtimeExceptions 0.
+Các trận tự nhiên pilot 20 và expanded 50 vẫn đạt.
+Windows và Ubuntu CI đã đạt trên commit `70034db8b3592e026653bb11b00893fa4a816ed0`, [run 38881716115](https://github.com/xuanthao260604-sys/idc/actions/runs/38881716115).
+Đã tải và đọc artifact Windows: win32/x64, OS release 10.0.26100, Node 24.19.0, npm 11.17.0;
+Edge 154.0.4258.62, 321/321 test, 21/21 bước, 11 browser report với runtimeExceptions 0.
+Report effect browser xác nhận sharedBack gồm monster/spell/trap. Windows 11 desktop chưa chạy.
