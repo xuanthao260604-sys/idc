@@ -10,19 +10,19 @@ Game đấu bài hai người theo Goat Format Bắc Mỹ: cutoff 17/8/2005, ban
 Core hỗ trợ 15 quái thường; 5 hiệu ứng Pot of Greed, Fissure, Trap Hole, Hane-Hane và
 Man-Eater Bug được mở bằng hồ sơ review và kiểm thử trong scope giới hạn.
 
-Mục đang chốt: [hoàn thiện hotseat nội bộ 20 lá](docs/milestones/hotseat-20.md).
+Đã hoàn tất [hotseat nội bộ 20 lá](docs/milestones/hotseat-20.md) và [xây/lưu deck A/B](docs/beta/deck-builder.md) trong scope giới hạn.
 Đã đạt [kiểm chứng Windows CI](docs/platform/windows-ci-result.md); còn ca Windows 11 desktop chưa chạy.
 Không coi việc cấu hình CI Windows hoặc chạy Linux là đã kiểm chứng Windows.
 
-278/278 test thư viện/pipeline/HTTP/công cụ đạt trên Linux, gồm 12 HTTP integration test.
-Windows CI đã đạt 267 test ở mốc trước; kết quả mục xây deck được ghi tại tài liệu tính năng.
-Browser regression tính riêng: 5 hiệu ứng, xem Mộ, tạo trận A/B/ngẫu nhiên, bỏ bài,
+278/278 test thư viện/pipeline/HTTP/công cụ đạt trên Linux và Windows CI, gồm 12 HTTP integration test.
+Kết quả mới nhất: [mục xây deck](docs/beta/deck-builder.md), 19 bước và 9 browser run bằng Edge.
+Browser regression tính riêng: xây/lưu deck, 5 hiệu ứng, xem Mộ, tạo trận A/B/ngẫu nhiên, bỏ bài,
 Pot với deck 0/1/2 lá, đầu hàng/hủy và tạo trận sau kết thúc, trận tự nhiên đầy đủ.
 Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không phải game hoàn tất mọi luật Yu-Gi-Oh!.
 
 ## Chạy và phát triển
 
-Node 24.19.0, npm 11.9.0 là phiên bản đã kiểm tra. Lệnh npm dùng chung Windows/Linux,
+Node 24.19.0; npm 11.9.0 trên cloud và 11.17.0 trên Windows CI là các phiên bản đã kiểm tra. Lệnh npm dùng chung Windows/Linux,
 không yêu cầu Bash/WSL. Không cần secret/database. Cache ở .npm-cache trong checkout.
 
 ```sh
@@ -61,7 +61,7 @@ hoặc mọi tương tác bài. Bài tự tạo giữ ở [kế hoạch mở r�
 
 `npm run validate:platform` chạy bộ kiểm chứng tổng hợp, ghi report JSON và log từng bước
 vào artifacts/platform-validation/ (Git bỏ qua). Lỗi dừng ngay, phần còn lại ghi chưa chạy.
-Windows CI đã chạy cùng lệnh, đạt 18/18 bước và giữ artifact; report Linux vẫn chỉ xác nhận Linux.
+Windows CI đã chạy cùng lệnh, đạt 19/19 bước và giữ artifact; report Linux vẫn chỉ xác nhận Linux.
 
 ## Kiểm thử giao diện
 
@@ -88,8 +88,8 @@ Xem [Windows browser checks](docs/platform/windows-browser-checks.md),
 
 ## Các mục sau
 
-Đang chốt [xây/lưu deck 20 lá](docs/beta/deck-builder.md); chỉ mở rộng catalog ở mục riêng tiếp theo.
-Online và trình tạo bài riêng là các mục chưa triển khai. Không tự push/publish/phát hành.
+Đã hoàn tất [xây/lưu deck 20 lá](docs/beta/deck-builder.md); chỉ mở rộng catalog ở mục riêng tiếp theo.
+Online và trình tạo bài riêng là các mục chưa triển khai. Nhánh work đã được commit/push theo phép người dùng; chưa phát hành beta.
 
 Đã bổ sung `npm run beta:startup-smoke` để kiểm tra lỗi cổng, cwd Unicode, HTTP/lệnh
 và dừng/khởi động lại process. Xem [điểm dừng phần chuẩn bị Windows](docs/platform/beta-startup-check.md).

@@ -1,6 +1,6 @@
 # Xây deck từ bộ pilot 20 lá
 
-Trạng thái triển khai: có editor và lưu deck riêng cho A/B. Kết quả kiểm chứng cuối mục
+Trạng thái: hoàn tất mục editor và lưu deck riêng cho A/B trong phạm vi bộ 20 lá. Kết quả kiểm chứng cuối mục
 được ghi ở phần cuối tài liệu; đây không phải mở rộng catalog hoặc tạo bài mới.
 
 ## Cách dùng
@@ -53,7 +53,25 @@ các save và kiểm tra revision; đây chưa phải hệ lưu trữ nhiều se
   Dùng thư mục lưu tạm riêng, không đọc/ghi deck cá nhân của người đang chạy kiểm thử.
 
 Bộ tổng hợp Linux hiện đạt 19/19 bước, 278/278 test và 9 browser run, không có runtime
-exception. Windows CI của mục này sẽ được đối chiếu riêng, không lấy kết quả Windows mốc cũ.
+exception. Windows CI đã được đối chiếu riêng theo kết quả bên dưới.
 
 Đã chụp/xem bố cục 1440px và 390px trên Chromium/Linux, hộp thoại không tràn ngang.
 Enter trong ô tìm kiếm không tự lưu deck; có regression bằng sự kiện phím thực qua CDP.
+
+## Kết quả Windows và điểm dừng
+
+[Windows/Ubuntu CI](https://github.com/xuanthao260604-sys/idc/actions/runs/38874697590) đều đạt trên commit
+fc8bb526b8626074df656aca32d95e07460ffcea, nhánh work. Đã tải và đọc report/test log:
+Windows win32/x64, OS release 10.0.26100, Node 24.19.0, npm 11.17.0,
+Edge Edg/154.0.4258.62; 278/278 test, 20 file; 19/19 bước, 9 browser report,
+không runtime exception. Editor chạy trên Windows xác nhận A=41/B=42, lỗi mạng giữ
+nháp, hủy không đổi bản lưu, save không đổi trận và reset lấy đúng hai deck.
+CLI startup step cũng đạt với lưu file/restart/reload trong thư mục Unicode tạm.
+Full duel mặc định vẫn 16 lượt/339 lệnh, đủ 5 effect, B thắng LP 0/4200.
+
+Artifact windows-validation-38874697590-1 giữ report/log 14 ngày. Bản tải local ở
+artifacts/ci-deck-builder/ bị Git bỏ qua. Không nhận đây là kiểm tra Windows 11 desktop;
+windows11DesktopVerified vẫn false. Không sửa luật hoặc dữ liệu 20 lá.
+
+**Dừng sau mục xây/lưu deck theo yêu cầu người dùng.** Chưa bắt đầu mở rộng catalog,
+import/export deck, nhiều profile, artwork, online hoặc custom editor. Chưa giao beta.

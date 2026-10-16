@@ -62,3 +62,6 @@ workflow được trigger. Không có run Windows trong phiên này.
 
 Đã bổ sung browser-deck-builder vào validate:platform để kiểm tra editor/lưu A-B/
 không sửa trận hiện tại và dùng deck khi reset; xem ../beta/deck-builder.md.
+
+Mục xây deck đã đạt Edge Windows ở [run 38874697590](https://github.com/xuanthao260604-sys/idc/actions/runs/38874697590),
+278 test, 19 bước và 9 browser run. Chi tiết ../beta/deck-builder.md.
