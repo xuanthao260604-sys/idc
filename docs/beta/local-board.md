@@ -1,3 +1,5 @@
+Catalog runtime hiện tại gồm 50 loại; deck mặc định giữ 40 lá. Xem [mốc dữ liệu 50](../data/classic-50.md).
+
 Catalog runtime hiện tại gồm 40 loại; xem [mốc dữ liệu 40](../data/classic-40.md). Các số 30/20 bên dưới mô tả mốc trước.
 
 # Bàn đấu beta trên cùng máy

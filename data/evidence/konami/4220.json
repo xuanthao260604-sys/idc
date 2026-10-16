@@ -1,0 +1,22 @@
+{
+  "passcode": "15401633",
+  "konamiId": 4220,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4220&request_locale=en",
+  "accessedOn": "2026-10-16",
+  "htmlSha256": "2ddcbbbef4614359041c14a2f939c59a05f3a3e06d5ca43f7bdf41c5ddc83c5b",
+  "currentFacts": {
+    "name": "Kagemusha of the Blue Flame",
+    "text": "Serving as a double for the Ruler of the Blue Flame, he's a master swordsman that wields a fine blade.",
+    "kind": "normal-monster",
+    "race": "Warrior",
+    "attribute": "EARTH",
+    "level": 2,
+    "attack": 800,
+    "defense": 400
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-028",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

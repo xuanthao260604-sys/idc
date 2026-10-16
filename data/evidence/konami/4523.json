@@ -1,0 +1,22 @@
+{
+  "passcode": "73051941",
+  "konamiId": 4523,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4523&request_locale=en",
+  "accessedOn": "2026-10-16",
+  "htmlSha256": "fe0d7251b0702506077f5620992450d75f105e9704a4fae6532875d453925cc5",
+  "currentFacts": {
+    "name": "Sand Stone",
+    "text": "Appears from underground and attacks with long, snake-like tentacles.",
+    "kind": "normal-monster",
+    "race": "Rock",
+    "attribute": "EARTH",
+    "level": 5,
+    "attack": 1300,
+    "defense": 1600
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-109",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

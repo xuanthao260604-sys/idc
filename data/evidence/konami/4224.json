@@ -1,0 +1,22 @@
+{
+  "passcode": "57305373",
+  "konamiId": 4224,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4224&request_locale=en",
+  "accessedOn": "2026-10-16",
+  "htmlSha256": "432df628713d0d12d283923d12f05fd7cda35cbbda7c6abc4d65a16b2f8b73d1",
+  "currentFacts": {
+    "name": "Two-Mouth Darkruler",
+    "text": "A dinosaur with two deadly jaws, it stores electricity in its horn and releases high voltage bolts from the mouth on its back.",
+    "kind": "normal-monster",
+    "race": "Dinosaur",
+    "attribute": "EARTH",
+    "level": 3,
+    "attack": 900,
+    "defense": 700
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-030",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

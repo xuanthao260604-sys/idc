@@ -1,0 +1,22 @@
+{
+  "passcode": "39111158",
+  "konamiId": 4711,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4711&request_locale=en",
+  "accessedOn": "2026-10-16",
+  "htmlSha256": "5fb7334a6e00ef52927ffbd23084aab8a3ff1c56def24f8b39179ca233bb2313",
+  "currentFacts": {
+    "name": "Tri-Horned Dragon",
+    "text": "An unworthy dragon with three sharp horns sprouting from its head.",
+    "kind": "normal-monster",
+    "race": "Dragon",
+    "attribute": "DARK",
+    "level": 8,
+    "attack": 2850,
+    "defense": 2350
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-000",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

@@ -10,12 +10,14 @@ import type { EngineAction } from '../packages/engine/src/actions.js';
 type Mutable<T>={-readonly[K in keyof T]:Mutable<T[K]>};
 const {registry}=loadRuntimeCatalog();
 const load=(p:string)=>JSON.parse(readFileSync(join(projectRoot,p),'utf8'));
-const manifest={cards:['classic-10','classic-10b'].flatMap(batch=>load(`data/import/${batch}.manifest.json`).cards)} as {cards:{passcode:string;konamiId:number;expectedName:string}[]};
+const manifest={cards:['classic-10','classic-10b','classic-10c'].flatMap(batch=>load(`data/import/${batch}.manifest.json`).cards)} as {cards:{passcode:string;konamiId:number;expectedName:string}[]};
 function step(s:DuelState,actorId:string,action:EngineAction){const result=applyAction(registry,s,{actorId,expectedStateVersion:s.stateVersion,action});if(!result.accepted)throw new Error(result.message);return result.state;}
 function settle(s:DuelState){for(let n=0;s.timing.window!=='open';n++){if(n>4)throw new Error('Response did not settle');s=step(s,s.timing.priorityPlayer!,{type:'pass'});}return s;}
-describe('Twenty sourced expansion normal monsters through summon and battle transitions',()=>{
+describe('Thirty sourced expansion normal monsters through summon and battle transitions',()=>{
   it.each(manifest.cards)('$expectedName uses reviewed tribute count and printed ATK for direct battle damage',entry=>{
-    const proof=load(`data/evidence/konami/${entry.konamiId}.json`), deck=defaultDeck(registry);
+    const proof=load(`data/evidence/konami/${entry.konamiId}.json`), requiredIds=[`official:${entry.passcode}`,'official:05053103','official:91152256'],
+      deck=[...requiredIds,...defaultDeck(registry).filter(id=>!requiredIds.includes(id))].slice(0,40);
+    expect(deck).toContain(`official:${entry.passcode}`);
     const s=structuredClone(createDuel(registry,{duelId:'classic10',players:[{id:'a',deck},{id:'b',deck}],firstPlayerId:'a',seedHex:'23'.repeat(32)}).state) as Mutable<DuelState>;
     s.turn.number=3;s.turn.phase='main1';s.timing.window='open';s.timing.priorityPlayer='a';s.timing.consecutivePasses=0;
     const take=(definitionId:string)=>{const p=s.players[0],card=Object.values(s.cards).find(c=>c.ownerId==='a'&&c.definition.id===definitionId&&['hand','deck'].includes(c.location.kind))!;const list=card.location.kind==='hand'?p.hand:p.deck;list.splice(list.indexOf(card.id),1);return card;};

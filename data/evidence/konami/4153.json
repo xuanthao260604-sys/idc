@@ -1,0 +1,22 @@
+{
+  "passcode": "36121917",
+  "konamiId": 4153,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4153&request_locale=en",
+  "accessedOn": "2026-10-16",
+  "htmlSha256": "f0cfa28f108e59e1f311c07217313c746828eeb1557632c0e3e7fb83a7e350b7",
+  "currentFacts": {
+    "name": "Monster Egg",
+    "text": "A warrior hidden within an egg that attacks enemies by flinging eggshells.",
+    "kind": "normal-monster",
+    "race": "Warrior",
+    "attribute": "EARTH",
+    "level": 3,
+    "attack": 600,
+    "defense": 900
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-017",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

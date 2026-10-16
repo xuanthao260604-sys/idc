@@ -1,0 +1,22 @@
+{
+  "passcode": "83464209",
+  "konamiId": 4288,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4288&request_locale=en",
+  "accessedOn": "2026-10-16",
+  "htmlSha256": "49dadfe0f2ed41161d65120d32ff159c1ac8debdb5b43939b1e9aa91722f3f85",
+  "currentFacts": {
+    "name": "Mystical Sheep #2",
+    "text": "A monstrous sheep with a long tail for hypnotizing enemies.",
+    "kind": "normal-monster",
+    "race": "Beast",
+    "attribute": "EARTH",
+    "level": 3,
+    "attack": 800,
+    "defense": 1000
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-037",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

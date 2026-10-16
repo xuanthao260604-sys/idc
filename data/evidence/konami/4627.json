@@ -1,0 +1,22 @@
+{
+  "passcode": "55291359",
+  "konamiId": 4627,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4627&request_locale=en",
+  "accessedOn": "2026-10-16",
+  "htmlSha256": "b153410d636294a533afb5fa0535465f596b80ac150826104a251c840583004d",
+  "currentFacts": {
+    "name": "Succubus Knight",
+    "text": "A warrior wizard adept in casting bone-chilling spells.",
+    "kind": "normal-monster",
+    "race": "Warrior",
+    "attribute": "DARK",
+    "level": 5,
+    "attack": 1650,
+    "defense": 1300
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-117",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

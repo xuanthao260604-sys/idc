@@ -4,6 +4,7 @@ import { randomUUID } from 'node:crypto';
 import { mkdir, open, rename, rm } from 'node:fs/promises';
 import { z } from 'zod';
 import { freeze, validateDeck } from '../packages/engine/src/registry.js';
+import { starterCardIds } from './starter-deck.js';
 import type { Registry } from '../packages/engine/src/registry.js';
 
 type Seat = 'a' | 'b';
@@ -28,8 +29,10 @@ export function deckIssues(registry: Registry, cards: readonly string[]): string
 }
 export function defaultDeck(registry: Registry): string[] {
   const cards: string[] = [];
+  const preferred = starterCardIds.filter(id => Object.hasOwn(registry.cards, id));
+  const order = [...preferred, ...Object.keys(registry.cards).filter(id => !preferred.includes(id))];
   for (let copy = 1; copy <= registry.rules.deck.combinedCopyLimit && cards.length < registry.rules.deck.mainMin; copy++)
-    for (const card of Object.values(registry.cards)) if (cards.length < registry.rules.deck.mainMin && card.legality.maxCopies! >= copy) cards.push(card.id);
+    for (const id of order) if (cards.length < registry.rules.deck.mainMin && registry.cards[id]!.legality.maxCopies! >= copy) cards.push(id);
   validateDeck(registry, cards); return cards;
 }
 

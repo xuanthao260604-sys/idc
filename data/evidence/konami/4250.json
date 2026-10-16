@@ -1,0 +1,22 @@
+{
+  "passcode": "40826495",
+  "konamiId": 4250,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4250&request_locale=en",
+  "accessedOn": "2026-10-16",
+  "htmlSha256": "f34a2911d1373bce07438c3a1f619ab557f2dd9e195a743b871f5fb6fc1d9be3",
+  "currentFacts": {
+    "name": "Dissolverock",
+    "text": "A monster born in the lava pits, it generates intense heat that can melt away its enemies.",
+    "kind": "normal-monster",
+    "race": "Rock",
+    "attribute": "EARTH",
+    "level": 3,
+    "attack": 900,
+    "defense": 1000
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-031",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

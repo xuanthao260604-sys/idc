@@ -1,3 +1,5 @@
+Mốc hiện tại: [catalog 50](classic-50.md), thêm batch độc lập `classic-10c`; các mốc 40/30/20 bên dưới là lịch sử.
+
 Mốc hiện tại: [catalog 40](classic-40.md), thêm batch độc lập `classic-10b`; nội dung 30/20 dưới đây là lịch sử.
 
 # Quy trình nhập dữ liệu — Giai đoạn 3

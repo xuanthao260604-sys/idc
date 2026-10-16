@@ -1,0 +1,22 @@
+{
+  "passcode": "71407486",
+  "konamiId": 4297,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4297&request_locale=en",
+  "accessedOn": "2026-10-16",
+  "htmlSha256": "bededddb5660f788c17197aabb016b517b18027f122af8b1dbf27b5b7aab7d55",
+  "currentFacts": {
+    "name": "Fireyarou",
+    "text": "A malevolent creature wrapped in flames that attacks enemies with intense fire.",
+    "kind": "normal-monster",
+    "race": "Pyro",
+    "attribute": "FIRE",
+    "level": 4,
+    "attack": 1300,
+    "defense": 1000
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-085",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

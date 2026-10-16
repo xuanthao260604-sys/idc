@@ -8,7 +8,6 @@ import { resolveBrowser, browserLaunchArgs } from '../dist/tools/browser-executa
 import { projectRoot } from '../dist/tools/project-root.js';
 import { createBetaServer } from '../dist/tools/beta-server.js';
 import { loadRuntimeCatalog } from '../dist/tools/runtime-catalog.js';
-import { defaultDeck } from '../dist/tools/deck-store.js';
 import { createRegistry } from '../dist/packages/engine/src/registry.js';
 import { createDuel, assertDuelInvariants } from '../dist/packages/engine/src/duel.js';
 import { goat200508Format } from '../dist/packages/card-data/src/formats/goat-2005-08-17.js';
@@ -16,7 +15,7 @@ const read = async p => JSON.parse(await readFile(join(projectRoot, p), 'utf8'))
 const expanded = process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel');
 const r = expanded ? loadRuntimeCatalog().registry : createRegistry((await read('data/generated/pilot.json')).cards, goat200508Format, {},
   await read('data/reviews/pilot.spell-effects.json'), await read('data/reviews/pilot.flip-effects.json'), await read('data/reviews/pilot.trap-effects.json'));
-const deck = expanded ? defaultDeck(r) : Object.keys(r.cards);
+const deck = Object.keys(r.cards);
 for (const c of Object.values(r.cards)) if (!expanded && c.legality.maxCopies >= 2) deck.push(c.id);
 for (const c of Object.values(r.cards)) if (!expanded && deck.length < 40 && c.legality.maxCopies >= 3) deck.push(c.id);
 const fullDuel = process.argv.includes('--full-duel') || process.argv.includes('--expanded-duel');
@@ -26,7 +25,7 @@ const concede = process.argv.includes('--concede');
 const deckBuilder = process.argv.includes('--deck-builder');
 const deckOutArg = process.argv.find(arg => /^--deck-out=[012]$/.test(arg));
 const deckOut = deckOutArg === undefined ? null : Number(deckOutArg.split('=')[1]);
-const s = structuredClone(createDuel(r, { duelId: fullDuel ? 'mixed-smoke' : 'browser-fixture', players: [{ id: 'a', deck }, { id: 'b', deck }], firstPlayerId: 'a', seedHex: fullDuel ? '08'.padStart(64, '0') : '12'.repeat(32) }).state);
+const s = structuredClone(createDuel(r, { duelId: fullDuel ? 'mixed-smoke' : 'browser-fixture', players: [{ id: 'a', deck }, { id: 'b', deck }], firstPlayerId: 'a', seedHex: fullDuel ? (expanded ? '05' : '08').padStart(64, '0') : '12'.repeat(32) }).state);
 // Trusted fixture setup BEFORE starting the server. No state-edit endpoint, seed flag or test mode in beta CLI.
 function move(name, owner, zone, slot = 0, down = false) {
   const d = Object.values(r.cards).find(c => c.name === name), p = s.players.find(p => p.id === owner);
@@ -242,10 +241,10 @@ try {
   await send('Runtime.enable'); await send('Page.enable'); await send('Page.navigate', { url: `http://127.0.0.1:${server.address().port}` });
   await wait(`document.getElementById('seat-dialog')?.open`); await seat('a');
   if (expanded && !fullDuel) {
-    assert.equal(await evaluate('catalog.size'), 40);
-    assert.match(await evaluate(`document.getElementById('catalog-count').textContent`), /40/);
+    assert.equal(await evaluate('catalog.size'), 50);
+    assert.match(await evaluate(`document.getElementById('catalog-count').textContent`), /50/);
     await click(`document.getElementById('deck-builder')`); await wait(`!busy && document.getElementById('deck-dialog').open`);
-    const added = [...(await read('data/generated/classic-10.json')).cards, ...(await read('data/generated/classic-10b.json')).cards];
+    const added = [...(await read('data/generated/classic-10.json')).cards, ...(await read('data/generated/classic-10b.json')).cards, ...(await read('data/generated/classic-10c.json')).cards];
     for (const card of added) {
       await click(`document.querySelector('#deck-catalog [data-card-id="${card.id}"] .deck-name')`);
       assert.equal(await evaluate(`document.querySelector('#deck-preview h2').textContent`), card.name);
@@ -264,7 +263,7 @@ try {
     assert.equal(await evaluate('view.players[1].lifePoints'), 7200);
     assert.equal(await evaluate(`view.players[1].graveyard.some(c=>catalog.get(c.definition.id).name==='Armored Lizard')`), true);
     assert.equal(errors.length, 0);
-    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'expanded-catalog', catalog: 40, reviewedNewCardPreviews: 20, tributeSummon: 'Gaia The Fierce Knight', battleTarget: 'Armored Lizard', battleDamage: 800, fixtureOnlyAtSetup: true, runtimeExceptions: errors.length }));
+    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'expanded-catalog', catalog: 50, reviewedNewCardPreviews: 30, tributeSummon: 'Gaia The Fierce Knight', battleTarget: 'Armored Lizard', battleDamage: 800, fixtureOnlyAtSetup: true, runtimeExceptions: errors.length }));
   } else if (deckBuilder) {
     const openDeck = async () => { await click(`document.getElementById('deck-builder')`); await wait(`!busy && document.getElementById('deck-dialog').open`); };
     const change = (id, direction) => click(`document.querySelector('#deck-catalog [data-card-id="${id}"] [data-change="${direction}"]')`);

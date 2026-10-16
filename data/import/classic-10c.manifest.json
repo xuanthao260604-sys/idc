@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "formatId": "goat-2005-08-17",
+  "cards": [
+    {
+      "passcode": "15401633",
+      "expectedName": "Kagemusha of the Blue Flame",
+      "konamiId": 4220
+    },
+    {
+      "passcode": "36121917",
+      "expectedName": "Monster Egg",
+      "konamiId": 4153
+    },
+    {
+      "passcode": "39111158",
+      "expectedName": "Tri-Horned Dragon",
+      "konamiId": 4711
+    },
+    {
+      "passcode": "40826495",
+      "expectedName": "Dissolverock",
+      "konamiId": 4250
+    },
+    {
+      "passcode": "55291359",
+      "expectedName": "Succubus Knight",
+      "konamiId": 4627
+    },
+    {
+      "passcode": "57305373",
+      "expectedName": "Two-Mouth Darkruler",
+      "konamiId": 4224
+    },
+    {
+      "passcode": "71407486",
+      "expectedName": "Fireyarou",
+      "konamiId": 4297
+    },
+    {
+      "passcode": "73051941",
+      "expectedName": "Sand Stone",
+      "konamiId": 4523
+    },
+    {
+      "passcode": "75356564",
+      "expectedName": "Petit Dragon",
+      "konamiId": 4206
+    },
+    {
+      "passcode": "83464209",
+      "expectedName": "Mystical Sheep #2",
+      "konamiId": 4288
+    }
+  ],
+  "eligibleSetPrefixes": [
+    "LOB",
+    "SDK",
+    "SDY",
+    "MRD"
+  ],
+  "eligibilitySource": {
+    "url": "https://www.goatformat.com/cardpool.html",
+    "accessedOn": "2026-10-15",
+    "scope": "release",
+    "notes": "Previously reviewed Goat cardpool includes LOB, SDK, SDY and MRD; classic-10c uses individually reviewed original North American print rows from these sets."
+  }
+}

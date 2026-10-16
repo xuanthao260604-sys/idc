@@ -1,0 +1,875 @@
+{
+  "schemaVersion": 1,
+  "format": {
+    "id": "goat-2005-08-17",
+    "revision": 4
+  },
+  "provenance": {
+    "upstreamSha256": "084378ec414f249d47dc7d976956d3477344d8c992065c20b60761510e02245a",
+    "manifestSha256": "f5c0eb06858bc0be5bc63d4194e5250c6f4649fe60d34471f3eb0f08f0c20b23",
+    "reviewSha256": "face25e2edc4fda89a44204cc465f7c76a32e82220e0f0904f6550ff396744e8",
+    "officialEvidenceSha256": "5df9b5e245e93344a8a902c4892c55978598cb149a9750fa7a6893ef3485a2c9"
+  },
+  "cards": [
+    {
+      "schemaVersion": 1,
+      "id": "official:15401633",
+      "origin": "official",
+      "revision": 1,
+      "name": "Kagemusha of the Blue Flame",
+      "passcode": "15401633",
+      "text": "Serving as a double for the Ruler of the Blue Flame, he's a master swordsman that wields a fine blade.",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=75356564,39111158,83464209,57305373,15401633,73051941,40826495,55291359,71407486,36121917&misc=yes",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4220&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 4220."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4220&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4220&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+        }
+      ],
+      "verification": "verified",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4220&request_locale=en",
+            "accessedOn": "2026-10-16",
+            "scope": "release",
+            "notes": "Reviewed North American print LOB-028, 2002-03-08, LEGEND OF BLUE EYES WHITE DRAGON; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "release",
+            "notes": "Previously reviewed Goat cardpool includes LOB, SDK, SDY and MRD; classic-10c uses individually reviewed original North American print rows from these sets."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "attribute": "EARTH",
+      "race": "Warrior",
+      "level": 2,
+      "attack": 800,
+      "defense": 400,
+      "kind": "normal-monster"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "official:36121917",
+      "origin": "official",
+      "revision": 1,
+      "name": "Monster Egg",
+      "passcode": "36121917",
+      "text": "A warrior hidden within an egg that attacks enemies by flinging eggshells.",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=75356564,39111158,83464209,57305373,15401633,73051941,40826495,55291359,71407486,36121917&misc=yes",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4153&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 4153."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4153&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4153&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+        }
+      ],
+      "verification": "verified",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4153&request_locale=en",
+            "accessedOn": "2026-10-16",
+            "scope": "release",
+            "notes": "Reviewed North American print LOB-017, 2002-03-08, LEGEND OF BLUE EYES WHITE DRAGON; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "release",
+            "notes": "Previously reviewed Goat cardpool includes LOB, SDK, SDY and MRD; classic-10c uses individually reviewed original North American print rows from these sets."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "attribute": "EARTH",
+      "race": "Warrior",
+      "level": 3,
+      "attack": 600,
+      "defense": 900,
+      "kind": "normal-monster"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "official:39111158",
+      "origin": "official",
+      "revision": 1,
+      "name": "Tri-Horned Dragon",
+      "passcode": "39111158",
+      "text": "An unworthy dragon with three sharp horns sprouting from its head.",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=75356564,39111158,83464209,57305373,15401633,73051941,40826495,55291359,71407486,36121917&misc=yes",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4711&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 4711."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4711&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4711&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+        }
+      ],
+      "verification": "verified",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4711&request_locale=en",
+            "accessedOn": "2026-10-16",
+            "scope": "release",
+            "notes": "Reviewed North American print LOB-000, 2002-03-08, LEGEND OF BLUE EYES WHITE DRAGON; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "release",
+            "notes": "Previously reviewed Goat cardpool includes LOB, SDK, SDY and MRD; classic-10c uses individually reviewed original North American print rows from these sets."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "attribute": "DARK",
+      "race": "Dragon",
+      "level": 8,
+      "attack": 2850,
+      "defense": 2350,
+      "kind": "normal-monster"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "official:40826495",
+      "origin": "official",
+      "revision": 1,
+      "name": "Dissolverock",
+      "passcode": "40826495",
+      "text": "A monster born in the lava pits, it generates intense heat that can melt away its enemies.",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=75356564,39111158,83464209,57305373,15401633,73051941,40826495,55291359,71407486,36121917&misc=yes",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4250&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 4250."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4250&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4250&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+        }
+      ],
+      "verification": "verified",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4250&request_locale=en",
+            "accessedOn": "2026-10-16",
+            "scope": "release",
+            "notes": "Reviewed North American print LOB-031, 2002-03-08, LEGEND OF BLUE EYES WHITE DRAGON; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "release",
+            "notes": "Previously reviewed Goat cardpool includes LOB, SDK, SDY and MRD; classic-10c uses individually reviewed original North American print rows from these sets."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "attribute": "EARTH",
+      "race": "Rock",
+      "level": 3,
+      "attack": 900,
+      "defense": 1000,
+      "kind": "normal-monster"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "official:55291359",
+      "origin": "official",
+      "revision": 1,
+      "name": "Succubus Knight",
+      "passcode": "55291359",
+      "text": "A warrior wizard adept in casting bone-chilling spells.",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=75356564,39111158,83464209,57305373,15401633,73051941,40826495,55291359,71407486,36121917&misc=yes",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4627&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 4627."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4627&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4627&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+        }
+      ],
+      "verification": "verified",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4627&request_locale=en",
+            "accessedOn": "2026-10-16",
+            "scope": "release",
+            "notes": "Reviewed North American print LOB-117, 2002-03-08, LEGEND OF BLUE EYES WHITE DRAGON; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "release",
+            "notes": "Previously reviewed Goat cardpool includes LOB, SDK, SDY and MRD; classic-10c uses individually reviewed original North American print rows from these sets."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "attribute": "DARK",
+      "race": "Warrior",
+      "level": 5,
+      "attack": 1650,
+      "defense": 1300,
+      "kind": "normal-monster"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "official:57305373",
+      "origin": "official",
+      "revision": 1,
+      "name": "Two-Mouth Darkruler",
+      "passcode": "57305373",
+      "text": "A dinosaur with two deadly jaws, it stores electricity in its horn and releases high voltage bolts from the mouth on its back.",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=75356564,39111158,83464209,57305373,15401633,73051941,40826495,55291359,71407486,36121917&misc=yes",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4224&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 4224."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4224&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4224&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+        }
+      ],
+      "verification": "verified",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4224&request_locale=en",
+            "accessedOn": "2026-10-16",
+            "scope": "release",
+            "notes": "Reviewed North American print LOB-030, 2002-03-08, LEGEND OF BLUE EYES WHITE DRAGON; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "release",
+            "notes": "Previously reviewed Goat cardpool includes LOB, SDK, SDY and MRD; classic-10c uses individually reviewed original North American print rows from these sets."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "attribute": "EARTH",
+      "race": "Dinosaur",
+      "level": 3,
+      "attack": 900,
+      "defense": 700,
+      "kind": "normal-monster"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "official:71407486",
+      "origin": "official",
+      "revision": 1,
+      "name": "Fireyarou",
+      "passcode": "71407486",
+      "text": "A malevolent creature wrapped in flames that attacks enemies with intense fire.",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=75356564,39111158,83464209,57305373,15401633,73051941,40826495,55291359,71407486,36121917&misc=yes",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4297&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 4297."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4297&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4297&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+        }
+      ],
+      "verification": "verified",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4297&request_locale=en",
+            "accessedOn": "2026-10-16",
+            "scope": "release",
+            "notes": "Reviewed North American print LOB-085, 2002-03-08, LEGEND OF BLUE EYES WHITE DRAGON; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "release",
+            "notes": "Previously reviewed Goat cardpool includes LOB, SDK, SDY and MRD; classic-10c uses individually reviewed original North American print rows from these sets."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "attribute": "FIRE",
+      "race": "Pyro",
+      "level": 4,
+      "attack": 1300,
+      "defense": 1000,
+      "kind": "normal-monster"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "official:73051941",
+      "origin": "official",
+      "revision": 1,
+      "name": "Sand Stone",
+      "passcode": "73051941",
+      "text": "Appears from underground and attacks with long, snake-like tentacles.",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=75356564,39111158,83464209,57305373,15401633,73051941,40826495,55291359,71407486,36121917&misc=yes",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4523&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 4523."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4523&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4523&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+        }
+      ],
+      "verification": "verified",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4523&request_locale=en",
+            "accessedOn": "2026-10-16",
+            "scope": "release",
+            "notes": "Reviewed North American print LOB-109, 2002-03-08, LEGEND OF BLUE EYES WHITE DRAGON; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "release",
+            "notes": "Previously reviewed Goat cardpool includes LOB, SDK, SDY and MRD; classic-10c uses individually reviewed original North American print rows from these sets."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "attribute": "EARTH",
+      "race": "Rock",
+      "level": 5,
+      "attack": 1300,
+      "defense": 1600,
+      "kind": "normal-monster"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "official:75356564",
+      "origin": "official",
+      "revision": 1,
+      "name": "Petit Dragon",
+      "passcode": "75356564",
+      "text": "A very small dragon known for its vicious attacks.",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=75356564,39111158,83464209,57305373,15401633,73051941,40826495,55291359,71407486,36121917&misc=yes",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4206&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 4206."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4206&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4206&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+        }
+      ],
+      "verification": "verified",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4206&request_locale=en",
+            "accessedOn": "2026-10-16",
+            "scope": "release",
+            "notes": "Reviewed North American print LOB-024, 2002-03-08, LEGEND OF BLUE EYES WHITE DRAGON; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "release",
+            "notes": "Previously reviewed Goat cardpool includes LOB, SDK, SDY and MRD; classic-10c uses individually reviewed original North American print rows from these sets."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "attribute": "WIND",
+      "race": "Dragon",
+      "level": 2,
+      "attack": 600,
+      "defense": 700,
+      "kind": "normal-monster"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "official:83464209",
+      "origin": "official",
+      "revision": 1,
+      "name": "Mystical Sheep #2",
+      "passcode": "83464209",
+      "text": "A monstrous sheep with a long tail for hypnotizing enemies.",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=75356564,39111158,83464209,57305373,15401633,73051941,40826495,55291359,71407486,36121917&misc=yes",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4288&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 4288."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4288&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4288&request_locale=en",
+          "accessedOn": "2026-10-16",
+          "scope": "text",
+          "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+        }
+      ],
+      "verification": "verified",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4288&request_locale=en",
+            "accessedOn": "2026-10-16",
+            "scope": "release",
+            "notes": "Reviewed North American print LOB-037, 2002-03-08, LEGEND OF BLUE EYES WHITE DRAGON; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "release",
+            "notes": "Previously reviewed Goat cardpool includes LOB, SDK, SDY and MRD; classic-10c uses individually reviewed original North American print rows from these sets."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "attribute": "EARTH",
+      "race": "Beast",
+      "level": 3,
+      "attack": 800,
+      "defense": 1000,
+      "kind": "normal-monster"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "official:15401633",
+      "fingerprint": "fa456f10d53e30f1d7c0718fc8faf6fc2626287c4399e8da44c2b8e1b653f690",
+      "historicalTextReview": "not-required-normal-flavor",
+      "upstreamText": "Serving as a double for the Ruler of the Blue Flame, he's a master swordsman that wields a fine blade.",
+      "referenceText": "Serving as a double for the Ruler of the Blue Flame, he's a master swordsman that wields a fine blade.",
+      "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+      "printing": {
+        "date": "2002-03-08",
+        "setCode": "LOB-028",
+        "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+      },
+      "upstreamTcgDate": "2002-03-08"
+    },
+    {
+      "id": "official:36121917",
+      "fingerprint": "c5f010b0c66ecf184fd1ffaa638cf1eb0d2b5804e46a6625b36a8b758a221c0c",
+      "historicalTextReview": "not-required-normal-flavor",
+      "upstreamText": "A warrior hidden within an egg that attacks enemies by flinging eggshells.",
+      "referenceText": "A warrior hidden within an egg that attacks enemies by flinging eggshells.",
+      "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+      "printing": {
+        "date": "2002-03-08",
+        "setCode": "LOB-017",
+        "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+      },
+      "upstreamTcgDate": "2002-03-08"
+    },
+    {
+      "id": "official:39111158",
+      "fingerprint": "c59b8c3136567673b6e5f1265fbad3340d9f9efeb35ea2831a782fa13947c41c",
+      "historicalTextReview": "not-required-normal-flavor",
+      "upstreamText": "An unworthy dragon with three sharp horns sprouting from its head.",
+      "referenceText": "An unworthy dragon with three sharp horns sprouting from its head.",
+      "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+      "printing": {
+        "date": "2002-03-08",
+        "setCode": "LOB-000",
+        "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+      },
+      "upstreamTcgDate": "2002-03-08"
+    },
+    {
+      "id": "official:40826495",
+      "fingerprint": "3154c410a96de4a5ac9a9cfdd1fa72a1734d3cd7e58a402dfca97238bd77c08c",
+      "historicalTextReview": "not-required-normal-flavor",
+      "upstreamText": "A monster born in the lava pits, it generates intense heat that can melt away its enemies.",
+      "referenceText": "A monster born in the lava pits, it generates intense heat that can melt away its enemies.",
+      "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+      "printing": {
+        "date": "2002-03-08",
+        "setCode": "LOB-031",
+        "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+      },
+      "upstreamTcgDate": "2002-03-08"
+    },
+    {
+      "id": "official:55291359",
+      "fingerprint": "e9f2e6bd91408da568552ed74ebe7f82406c8024a8554db01fd09505881be2b2",
+      "historicalTextReview": "not-required-normal-flavor",
+      "upstreamText": "A warrior wizard adept in casting bone-chilling spells.",
+      "referenceText": "A warrior wizard adept in casting bone-chilling spells.",
+      "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+      "printing": {
+        "date": "2002-03-08",
+        "setCode": "LOB-117",
+        "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+      },
+      "upstreamTcgDate": "2002-03-08"
+    },
+    {
+      "id": "official:57305373",
+      "fingerprint": "5f4628fbd29c1064e19bad03f597b0329301b7c10f6ee30cf4556a4485990476",
+      "historicalTextReview": "not-required-normal-flavor",
+      "upstreamText": "A dinosaur with two deadly jaws, it stores electricity in its horn and releases high voltage bolts from the mouth on its back.",
+      "referenceText": "A dinosaur with two deadly jaws, it stores electricity in its horn and releases high voltage bolts from the mouth on its back.",
+      "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+      "printing": {
+        "date": "2002-03-08",
+        "setCode": "LOB-030",
+        "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+      },
+      "upstreamTcgDate": "2002-03-08"
+    },
+    {
+      "id": "official:71407486",
+      "fingerprint": "1c2fb1869b939f900ae42f4d83c107d8b6defc7b84c75357fd6110e96c33104e",
+      "historicalTextReview": "not-required-normal-flavor",
+      "upstreamText": "A malevolent creature wrapped in flames that attacks enemies with intense fire.",
+      "referenceText": "A malevolent creature wrapped in flames that attacks enemies with intense fire.",
+      "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+      "printing": {
+        "date": "2002-03-08",
+        "setCode": "LOB-085",
+        "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+      },
+      "upstreamTcgDate": "2002-03-08"
+    },
+    {
+      "id": "official:73051941",
+      "fingerprint": "8621a2d4d9b1677c50ab845d21a3357fa36ef88c5f6f77a6b84a7026eefb40bc",
+      "historicalTextReview": "not-required-normal-flavor",
+      "upstreamText": "Appears from underground and attacks with long, snake-like tentacles.",
+      "referenceText": "Appears from underground and attacks with long, snake-like tentacles.",
+      "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+      "printing": {
+        "date": "2002-03-08",
+        "setCode": "LOB-109",
+        "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+      },
+      "upstreamTcgDate": "2002-03-08"
+    },
+    {
+      "id": "official:75356564",
+      "fingerprint": "11378a3743bcd17d1ef7bc60d5336188d61fc5477e58e86e84cbebf4ecd6c167",
+      "historicalTextReview": "not-required-normal-flavor",
+      "upstreamText": "A very small dragon known for its vicious attacks.",
+      "referenceText": "A very small dragon known for its vicious attacks.",
+      "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+      "printing": {
+        "date": "2002-03-08",
+        "setCode": "LOB-024",
+        "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+      },
+      "upstreamTcgDate": "2002-03-08"
+    },
+    {
+      "id": "official:83464209",
+      "fingerprint": "55bd8a3c8b2a020b5436723eb3eff3ec85e3f2dac31b46c0fd476412dadbbd94",
+      "historicalTextReview": "not-required-normal-flavor",
+      "upstreamText": "A monstrous sheep with a long tail for hypnotizing enemies.",
+      "referenceText": "A monstrous sheep with a long tail for hypnotizing enemies.",
+      "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+      "printing": {
+        "date": "2002-03-08",
+        "setCode": "LOB-037",
+        "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+      },
+      "upstreamTcgDate": "2002-03-08"
+    }
+  ],
+  "summary": {
+    "imported": 10,
+    "verifiedData": 10,
+    "historicalReviewPending": 0,
+    "implemented": 0,
+    "testedEffects": 0,
+    "playable": 0
+  }
+}

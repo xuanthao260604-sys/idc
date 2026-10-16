@@ -1,0 +1,22 @@
+{
+  "passcode": "75356564",
+  "konamiId": 4206,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4206&request_locale=en",
+  "accessedOn": "2026-10-16",
+  "htmlSha256": "3b7c98a014477d304abcc2444ac2b4f744967d5d4af85c23b2c99ddbe959a3cd",
+  "currentFacts": {
+    "name": "Petit Dragon",
+    "text": "A very small dragon known for its vicious attacks.",
+    "kind": "normal-monster",
+    "race": "Dragon",
+    "attribute": "WIND",
+    "level": 2,
+    "attack": 600,
+    "defense": 700
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-024",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}
