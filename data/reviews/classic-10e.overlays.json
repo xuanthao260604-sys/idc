@@ -1,0 +1,162 @@
+[
+  {
+    "id": "official:10538007",
+    "baseFingerprint": "3b3ba821d5a19612349132a6bc01bd6493823d08a65505a7ffe1811791b99b36",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "not-required-normal-flavor",
+    "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4409&request_locale=en",
+        "accessedOn": "2026-10-22",
+        "scope": "text",
+        "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+      }
+    ]
+  },
+  {
+    "id": "official:13429800",
+    "baseFingerprint": "393976d965313e00436bc068e13338de6d040a626cda2168e6220381782e84ff",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "not-required-normal-flavor",
+    "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4066&request_locale=en",
+        "accessedOn": "2026-10-22",
+        "scope": "text",
+        "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+      }
+    ]
+  },
+  {
+    "id": "official:16972957",
+    "baseFingerprint": "ce111d10b5db65ea30d5b2557f33be74ef14b2ef8c9fe1c6b08090201820e87e",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "not-required-normal-flavor",
+    "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4117&request_locale=en",
+        "accessedOn": "2026-10-22",
+        "scope": "text",
+        "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+      }
+    ]
+  },
+  {
+    "id": "official:20277860",
+    "baseFingerprint": "9001dec1f6f59f8bcc278e133b8929012e361b8dc82dd19312e6650989ead6be",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "not-required-normal-flavor",
+    "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4102&request_locale=en",
+        "accessedOn": "2026-10-22",
+        "scope": "text",
+        "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+      }
+    ]
+  },
+  {
+    "id": "official:26378150",
+    "baseFingerprint": "9d38709c8d4c6a4bf696992e0cdef06efa697b30aa9aeff829e5cdd26b062fc7",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "not-required-normal-flavor",
+    "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4388&request_locale=en",
+        "accessedOn": "2026-10-22",
+        "scope": "text",
+        "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+      }
+    ]
+  },
+  {
+    "id": "official:31122090",
+    "baseFingerprint": "bc1acfafb9890a8f47c9e8fbec8b0c5f3fd29cc79ffe466d7a902aa6b15b3fff",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "not-required-normal-flavor",
+    "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4096&request_locale=en",
+        "accessedOn": "2026-10-22",
+        "scope": "text",
+        "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+      }
+    ]
+  },
+  {
+    "id": "official:47060154",
+    "baseFingerprint": "486b7f42fa5b85ac1f1cca770b729cb9f1d328cb0c639844e7f6352841c4db5e",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "not-required-normal-flavor",
+    "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4287&request_locale=en",
+        "accessedOn": "2026-10-22",
+        "scope": "text",
+        "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+      }
+    ]
+  },
+  {
+    "id": "official:53153481",
+    "baseFingerprint": "235d6fbff64f078170ffb69cbecf01af1e823e642cb4a2039679163180fcdc7e",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "not-required-normal-flavor",
+    "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4178&request_locale=en",
+        "accessedOn": "2026-10-22",
+        "scope": "text",
+        "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+      }
+    ]
+  },
+  {
+    "id": "official:69455834",
+    "baseFingerprint": "10cf2d335171dfe8d2fcb8c2dc0631207381eae238cee6dbe96f208bd46b7b7a",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "not-required-normal-flavor",
+    "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4091&request_locale=en",
+        "accessedOn": "2026-10-22",
+        "scope": "text",
+        "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+      }
+    ]
+  },
+  {
+    "id": "official:80770678",
+    "baseFingerprint": "764451c3778b0ec0d8e7aa87cb67bb16d96588126115861e95ceba0420b658e7",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "not-required-normal-flavor",
+    "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4176&request_locale=en",
+        "accessedOn": "2026-10-22",
+        "scope": "text",
+        "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+      }
+    ]
+  }
+]

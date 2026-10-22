@@ -1,0 +1,22 @@
+{
+  "passcode": "20277860",
+  "konamiId": 4102,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4102&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "a43107f65e36a43d3f62d3ae8e96b0cfacd17b4a5687511ec060834b1f5ca2ae",
+  "currentFacts": {
+    "name": "Armored Zombie",
+    "text": "This warrior blindly swings a deadly blade with devastating force.",
+    "kind": "normal-monster",
+    "race": "Zombie",
+    "attribute": "DARK",
+    "level": 3,
+    "attack": 1500,
+    "defense": 0
+  },
+  "printing": {
+    "date": "2002-06-26",
+    "setCode": "MRD-013",
+    "product": "METAL RAIDERS"
+  }
+}

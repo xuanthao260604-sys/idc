@@ -1,0 +1,22 @@
+{
+  "passcode": "10538007",
+  "konamiId": 4409,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4409&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "d4ea216f2921823abef3965a271e9699b8e442c6159d722658dac9fc89f28087",
+  "currentFacts": {
+    "name": "Leogun",
+    "text": "Huge monster with a lion's mane similar to the King of Beasts.",
+    "kind": "normal-monster",
+    "race": "Beast",
+    "attribute": "EARTH",
+    "level": 5,
+    "attack": 1750,
+    "defense": 1550
+  },
+  "printing": {
+    "date": "2002-06-26",
+    "setCode": "MRD-033",
+    "product": "METAL RAIDERS"
+  }
+}

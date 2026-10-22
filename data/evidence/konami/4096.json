@@ -1,0 +1,22 @@
+{
+  "passcode": "31122090",
+  "konamiId": 4096,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4096&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "47bb7a9c36b4a9ffddbc157dd421e08e44ba946f7ad9bc34ab04e068ddde5c05",
+  "currentFacts": {
+    "name": "Gyakutenno Megami",
+    "text": "This fairy uses her mystical power to protect the weak and provide spiritual support.",
+    "kind": "normal-monster",
+    "race": "Fairy",
+    "attribute": "LIGHT",
+    "level": 6,
+    "attack": 1800,
+    "defense": 2000
+  },
+  "printing": {
+    "date": "2002-03-29",
+    "setCode": "SDK-011",
+    "product": "STARTER DECK KAIBA"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "passcode": "69455834",
+  "konamiId": 4091,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4091&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "eabb6d0ef20003a11c56f87eb7ed33b31540931624ceba45ba1266e5fdfc882a",
+  "currentFacts": {
+    "name": "King of Yamimakai",
+    "text": "Wields the power of darkness to destroy its enemies.",
+    "kind": "normal-monster",
+    "race": "Fiend",
+    "attribute": "DARK",
+    "level": 5,
+    "attack": 2000,
+    "defense": 1530
+  },
+  "printing": {
+    "date": "2002-06-26",
+    "setCode": "MRD-074",
+    "product": "METAL RAIDERS"
+  }
+}

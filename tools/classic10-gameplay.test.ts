@@ -10,10 +10,10 @@ import type { EngineAction } from '../packages/engine/src/actions.js';
 type Mutable<T>={-readonly[K in keyof T]:Mutable<T[K]>};
 const {registry}=loadRuntimeCatalog();
 const load=(p:string)=>JSON.parse(readFileSync(join(projectRoot,p),'utf8'));
-const manifest={cards:['classic-10','classic-10b','classic-10c','classic-10d'].flatMap(batch=>load(`data/import/${batch}.manifest.json`).cards)} as {cards:{passcode:string;konamiId:number;expectedName:string}[]};
+const manifest={cards:['classic-10','classic-10b','classic-10c','classic-10d','classic-10e'].flatMap(batch=>load(`data/import/${batch}.manifest.json`).cards)} as {cards:{passcode:string;konamiId:number;expectedName:string}[]};
 function step(s:DuelState,actorId:string,action:EngineAction){const result=applyAction(registry,s,{actorId,expectedStateVersion:s.stateVersion,action});if(!result.accepted)throw new Error(result.message);return result.state;}
 function settle(s:DuelState){for(let n=0;s.timing.window!=='open';n++){if(n>4)throw new Error('Response did not settle');s=step(s,s.timing.priorityPlayer!,{type:'pass'});}return s;}
-describe('Forty sourced expansion normal monsters through summon and battle transitions',()=>{
+describe('Fifty sourced expansion normal monsters through summon and battle transitions',()=>{
   it.each(manifest.cards)('$expectedName uses reviewed tribute count and printed ATK for direct battle damage',entry=>{
     const proof=load(`data/evidence/konami/${entry.konamiId}.json`), requiredIds=[`official:${entry.passcode}`,'official:05053103','official:91152256'],
       deck=[...requiredIds,...defaultDeck(registry).filter(id=>!requiredIds.includes(id))].slice(0,40);

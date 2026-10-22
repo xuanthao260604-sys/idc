@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "formatId": "goat-2005-08-17",
+  "cards": [
+    {
+      "passcode": "10538007",
+      "expectedName": "Leogun",
+      "konamiId": 4409
+    },
+    {
+      "passcode": "13429800",
+      "expectedName": "Great White",
+      "konamiId": 4066
+    },
+    {
+      "passcode": "16972957",
+      "expectedName": "Doma The Angel of Silence",
+      "konamiId": 4117
+    },
+    {
+      "passcode": "20277860",
+      "expectedName": "Armored Zombie",
+      "konamiId": 4102
+    },
+    {
+      "passcode": "26378150",
+      "expectedName": "Rude Kaiser",
+      "konamiId": 4388
+    },
+    {
+      "passcode": "31122090",
+      "expectedName": "Gyakutenno Megami",
+      "konamiId": 4096
+    },
+    {
+      "passcode": "47060154",
+      "expectedName": "Mystic Clown",
+      "konamiId": 4287
+    },
+    {
+      "passcode": "53153481",
+      "expectedName": "Armaill",
+      "konamiId": 4178
+    },
+    {
+      "passcode": "69455834",
+      "expectedName": "King of Yamimakai",
+      "konamiId": 4091
+    },
+    {
+      "passcode": "80770678",
+      "expectedName": "Spirit of the Harp",
+      "konamiId": 4176
+    }
+  ],
+  "eligibleSetPrefixes": [
+    "LOB",
+    "SDK",
+    "SDY",
+    "MRD"
+  ],
+  "eligibilitySource": {
+    "url": "https://www.goatformat.com/cardpool.html",
+    "accessedOn": "2026-10-15",
+    "scope": "release",
+    "notes": "Previously reviewed Goat cardpool includes LOB, SDK, SDY and MRD; classic-10e uses individually reviewed original North American print rows from these sets."
+  }
+}

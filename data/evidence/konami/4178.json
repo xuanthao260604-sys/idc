@@ -1,0 +1,22 @@
+{
+  "passcode": "53153481",
+  "konamiId": 4178,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4178&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "18cc84250ce765b0d0a673fcd8a14636601d0af85107666ec3886fa7bf5b4810",
+  "currentFacts": {
+    "name": "Armaill",
+    "text": "A strange warrior who manipulates three deadly blades with both hands and his tail.",
+    "kind": "normal-monster",
+    "race": "Warrior",
+    "attribute": "EARTH",
+    "level": 3,
+    "attack": 700,
+    "defense": 1300
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-079",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

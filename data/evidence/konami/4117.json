@@ -1,0 +1,22 @@
+{
+  "passcode": "16972957",
+  "konamiId": 4117,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4117&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "073f0d91680ee49e3652a56cbe14b3aea580be7cbbea595bed0e18a9dbe4d639",
+  "currentFacts": {
+    "name": "Doma The Angel of Silence",
+    "text": "This fairy rules over the end of existence.",
+    "kind": "normal-monster",
+    "race": "Fairy",
+    "attribute": "DARK",
+    "level": 5,
+    "attack": 1600,
+    "defense": 1400
+  },
+  "printing": {
+    "date": "2002-03-29",
+    "setCode": "SDY-015",
+    "product": "STARTER DECK YUGI"
+  }
+}

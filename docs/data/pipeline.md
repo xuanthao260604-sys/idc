@@ -1,3 +1,5 @@
+Mốc hiện tại: [catalog 70](classic-70.md), thêm batch độc lập `classic-10e`; các mốc dưới đây là lịch sử.
+
 Mốc hiện tại: [catalog 60](classic-60.md), thêm batch độc lập `classic-10d`; các mốc dưới đây là lịch sử.
 
 Mốc hiện tại: [catalog 50](classic-50.md), thêm batch độc lập `classic-10c`; các mốc 40/30/20 bên dưới là lịch sử.

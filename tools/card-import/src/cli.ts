@@ -8,7 +8,7 @@ import { atomicWrite, readIfExists, saveImmutableSnapshot } from './files.js';
 
 const json = async (path: string): Promise<unknown> => JSON.parse(await readFile(path, 'utf8'));
 export async function run(command: string, root = process.cwd(), batchInput = 'pilot') {
-  const batch = z.enum(['pilot', 'classic-10', 'classic-10b', 'classic-10c', 'classic-10d']).parse(batchInput);
+  const batch = z.enum(['pilot', 'classic-10', 'classic-10b', 'classic-10c', 'classic-10d', 'classic-10e']).parse(batchInput);
   const manifest = ManifestSchema.parse(await json(resolve(root, `data/import/${batch}.manifest.json`)));
   const receiptPath = resolve(root, `data/import/${batch}.receipt.json`);
   if (command === 'fetch') {
@@ -27,7 +27,7 @@ export async function run(command: string, root = process.cwd(), batchInput = 'p
     console.log(`Cached ${manifest.cards.length} requested cards; SHA-256 ${hash}. Reviews/generated bundle were not changed.`);
     return;
   }
-  if (command !== 'import' && command !== 'check') throw new Error('Usage: card-import [fetch|import|check] [pilot|classic-10|classic-10b|classic-10c|classic-10d]');
+  if (command !== 'import' && command !== 'check') throw new Error('Usage: card-import [fetch|import|check] [pilot|classic-10|classic-10b|classic-10c|classic-10d|classic-10e]');
   const receipt = ReceiptSchema.parse(await json(receiptPath));
   const raw = await readFile(resolve(root, `data/raw/ygoprodeck/${receipt.sha256}.json`), 'utf8');
   const overlays = await json(resolve(root, `data/reviews/${batch}.overlays.json`));

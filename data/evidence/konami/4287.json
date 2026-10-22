@@ -1,0 +1,22 @@
+{
+  "passcode": "47060154",
+  "konamiId": 4287,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4287&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "c7185f5e84e0eb27b2713172c0174e96046c1d7bfca27d2e9abad230cccdd76b",
+  "currentFacts": {
+    "name": "Mystic Clown",
+    "text": "Nothing can stop the mad attack of this powerful creature.",
+    "kind": "normal-monster",
+    "race": "Fiend",
+    "attribute": "DARK",
+    "level": 4,
+    "attack": 1500,
+    "defense": 1000
+  },
+  "printing": {
+    "date": "2002-03-29",
+    "setCode": "SDK-018",
+    "product": "STARTER DECK KAIBA"
+  }
+}

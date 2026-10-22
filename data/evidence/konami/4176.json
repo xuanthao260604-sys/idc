@@ -1,0 +1,22 @@
+{
+  "passcode": "80770678",
+  "konamiId": 4176,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4176&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "0b6cbd68932d73a1d7d525221681ff8df967a8cb02493b74e6bc6b3c2667f214",
+  "currentFacts": {
+    "name": "Spirit of the Harp",
+    "text": "A spirit that soothes the soul with the music of its heavenly harp.",
+    "kind": "normal-monster",
+    "race": "Fairy",
+    "attribute": "LIGHT",
+    "level": 4,
+    "attack": 800,
+    "defense": 2000
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-078",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

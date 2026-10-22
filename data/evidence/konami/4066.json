@@ -1,0 +1,22 @@
+{
+  "passcode": "13429800",
+  "konamiId": 4066,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4066&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "f7724f44a80b22b1b9c4242495a04fa880a429b2150ce875926582b9f58a59ea",
+  "currentFacts": {
+    "name": "Great White",
+    "text": "A giant white shark with razor-sharp teeth.",
+    "kind": "normal-monster",
+    "race": "Fish",
+    "attribute": "WATER",
+    "level": 4,
+    "attack": 1600,
+    "defense": 800
+  },
+  "printing": {
+    "date": "2002-03-29",
+    "setCode": "SDY-011",
+    "product": "STARTER DECK YUGI"
+  }
+}

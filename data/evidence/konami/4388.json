@@ -1,0 +1,22 @@
+{
+  "passcode": "26378150",
+  "konamiId": 4388,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4388&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "dfb144d52de9915afa6dc8b55d9ffc54094c7950b3c7c7c80732fdb45aa9552d",
+  "currentFacts": {
+    "name": "Rude Kaiser",
+    "text": "With an axe in each hand, this monster delivers heavy damage.",
+    "kind": "normal-monster",
+    "race": "Beast-Warrior",
+    "attribute": "EARTH",
+    "level": 5,
+    "attack": 1800,
+    "defense": 1600
+  },
+  "printing": {
+    "date": "2002-03-29",
+    "setCode": "SDK-027",
+    "product": "STARTER DECK KAIBA"
+  }
+}
