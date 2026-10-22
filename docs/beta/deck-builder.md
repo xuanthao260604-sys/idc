@@ -24,7 +24,8 @@ CLI beta mặc định lưu .ygo-local/decks/a.json và b.json trong checkout, G
 Mỗi file có schemaVersion, format id/revision, revision lưu và danh sách definition ID.
 Có thể cấu hình thư mục qua YGO_BETA_DECK_DIR ở startup, không nhận đường dẫn qua HTTP.
 Không cần database. Chỉ deck được lưu qua restart, chưa lưu trận/hand/deck order/RNG.
-Không có import/export deck, nhiều deck profile hoặc side/Fusion Deck trong mục này.
+Mốc editor ban đầu chưa có import/export. Phần bổ sung hiện tại: [file deck](deck-files.md).
+Chưa có nhiều deck profile hoặc side/Fusion Deck.
 
 Chưa từng lưu thì dùng deck mẫu hợp lệ 40 lá. File đã lưu sai JSON, format hoặc deck không
 hợp lệ làm startup báo lỗi và giữ file nguyên vẹn, không tự ghi đè bằng deck mẫu.

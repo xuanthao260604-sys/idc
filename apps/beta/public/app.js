@@ -333,7 +333,8 @@ function renderDeck() {
   $('deck-count').textContent = `${deckDraft.cards.length} lá · Tối thiểu ${deckRules.mainMin}${deckRules.mainMax === null ? ' · Không có trần 60 lá hiện đại' : ' · Tối đa ' + deckRules.mainMax}`;
   const issues = draftIssues(); $('deck-issues').replaceChildren(...issues.map(text => node('li', text)));
   $('deck-save').disabled = busy || !!issues.length;
-  for (const id of ['deck-default', 'deck-close', 'deck-search', 'deck-kind']) $(id).disabled = busy;
+  $('deck-export').disabled = busy || !!issues.length;
+  for (const id of ['deck-default', 'deck-close', 'deck-search', 'deck-kind', 'deck-import', 'deck-file']) $(id).disabled = busy;
   const query = $('deck-search').value.trim().toLocaleLowerCase(), kind = $('deck-kind').value;
   const rows = [...catalog.values()].filter(c => (!query || (c.name + ' ' + c.text).toLocaleLowerCase().includes(query)) && (kind === 'all' || (kind === 'monster' ? c.kind.includes('monster') : c.kind === kind))).map(c => {
     const row = node('div', undefined, 'deck-row'); row.dataset.cardId = c.id;
@@ -372,4 +373,31 @@ $('deck-form').addEventListener('submit', async e => {
     $('deck-dialog').close(); deckDraft = null;
   } catch (error) { $('deck-error').textContent = 'Chưa xác nhận lưu deck. ' + error.message + ' Bản đang sửa được giữ lại.'; }
   finally { busy = false; render(); renderDeck(); }
+});
+
+$('deck-export').addEventListener('click', async () => {
+  if (busy || !deckDraft || draftIssues().length) return;
+  busy = true; renderDeck();
+  try {
+    const data = await api('/api/deck/export', { seat: deckDraft.seat, cards: deckDraft.cards });
+    const url = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2) + '\n'], { type: 'application/json' }));
+    const link = document.createElement('a'); link.href = url; link.download = `classic-duel-deck-${deckDraft.seat}.json`;
+    document.body.append(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+    $('deck-error').textContent = 'Đã gửi file cho trình duyệt tải xuống. Deck đã lưu không thay đổi.';
+  } catch (error) { $('deck-error').textContent = error.message; }
+  finally { busy = false; renderDeck(); }
+});
+$('deck-import').addEventListener('click', () => {
+  if (!busy && deckDraft) { $('deck-file').value = ''; $('deck-file').click(); }
+});
+$('deck-file').addEventListener('change', async () => {
+  const file = $('deck-file').files[0]; if (busy || !deckDraft || !file) return;
+  busy = true; renderDeck();
+  try {
+    if (file.size > 12000) throw new Error('File deck vượt 12.000 byte.');
+    const data = await api('/api/deck/import', { seat: deckDraft.seat, text: await file.text() });
+    deckDraft.cards = [...data.cards];
+    $('deck-error').textContent = 'Đã nhập vào bản nháp. Kiểm tra rồi bấm Lưu deck để áp dụng cho trận mới.';
+  } catch (error) { $('deck-error').textContent = 'Không nhập được; giữ nguyên bản nháp và deck đã lưu. ' + error.message; }
+  finally { $('deck-file').value = ''; busy = false; renderDeck(); }
 });

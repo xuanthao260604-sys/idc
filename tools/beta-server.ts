@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { projectRoot } from './project-root.js';
 import { z } from 'zod';
+import { exportDeck, importDeck } from './deck-transfer.js';
 import { createDeckStore } from './deck-store.js';
 import type { DeckStore } from './deck-store.js';
 import { createCommandAdapter } from '../packages/engine/src/command-adapter.js';
@@ -49,10 +50,10 @@ export function createBetaServer(registry: Registry, publicRoot = resolve(projec
         if (!actor) { json(401, { error: 'Hãy chọn người chơi.' }); return; }
         json(200, { ...deckStore.get(actor), defaultCards: deckStore.defaults }); return;
       }
-      if (req.method !== 'POST' || !['/api/seat', '/api/command', '/api/reset', '/api/deck'].includes(url.pathname)) { json(404, { error: 'Không tìm thấy.' }); return; }
+      if (req.method !== 'POST' || !['/api/seat', '/api/command', '/api/reset', '/api/deck', '/api/deck/import', '/api/deck/export'].includes(url.pathname)) { json(404, { error: 'Không tìm thấy.' }); return; }
       if (!req.headers['content-type']?.startsWith('application/json')) { json(415, { error: 'Yêu cầu phải là JSON.' }); return; }
       let length = 0; const chunks: Buffer[] = [];
-      for await (const chunk of req) { length += chunk.length; if (length > 16384) { json(413, { error: 'Yêu cầu quá lớn.' }); return; } chunks.push(chunk); }
+      for await (const chunk of req) { length += chunk.length; if (length > (url.pathname === '/api/deck/import' ? 32768 : 16384)) { json(413, { error: 'Yêu cầu quá lớn.' }); return; } chunks.push(chunk); }
       let body: unknown;
       try { body = JSON.parse(Buffer.concat(chunks).toString('utf8')); } catch { json(400, { error: 'JSON không hợp lệ.' }); return; }
       if (url.pathname === '/api/seat') {
@@ -65,6 +66,17 @@ export function createBetaServer(registry: Registry, publicRoot = resolve(projec
         json(200, game.refreshView(parsed.data.seat, true)); return;
       }
       if (!actor) { json(401, { error: 'Hãy chọn người chơi.' }); return; }
+      if (url.pathname === '/api/deck/import' || url.pathname === '/api/deck/export') {
+        const parsed = (url.pathname.endsWith('/import')
+          ? z.strictObject({ seat: z.enum(['a', 'b']), text: z.string().max(12000) })
+          : z.strictObject({ seat: z.enum(['a', 'b']), cards: z.array(z.string().min(1).max(128)) })).safeParse(body);
+        if (!parsed.success) { json(400, { error: 'Dữ liệu chuyển deck không hợp lệ.' }); return; }
+        if (parsed.data.seat !== actor) { json(409, { error: 'Người chơi đã thay đổi. Hãy mở lại deck.' }); return; }
+        try {
+          json(200, 'text' in parsed.data ? { cards: importDeck(registry, parsed.data.text) } : exportDeck(registry, parsed.data.cards));
+        } catch (error) { json(422, { error: (error as Error).message }); }
+        return;
+      }
       if (url.pathname === '/api/deck') {
         const parsed = z.strictObject({ seat: z.enum(['a', 'b']), revision: z.number().int().nonnegative().safe(), cards: z.array(z.string().min(1).max(128)) }).safeParse(body);
         if (!parsed.success) { json(400, { error: 'Dữ liệu deck không hợp lệ.' }); return; }

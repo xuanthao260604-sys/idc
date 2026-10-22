@@ -108,4 +108,20 @@ describe('Loopback beta HTTP boundary', () => {
     expect((await (await fetch(base+'/api/deck',{headers:{Cookie:cookieB}})).json()).cards).toHaveLength(40);
   });
 
+  it('validates portable files without saving decks or changing the duel, and binds the selected seat', async () => {
+    const selected = await post('/api/seat', {seat:'a'}), cookie = selected.headers.get('set-cookie')!.split(';')[0]!;
+    const get = async (path:string) => (await fetch(base+path,{headers:{Cookie:cookie}})).json();
+    const before = await get('/api/deck'), duel = await get('/api/view');
+    const exported = await post('/api/deck/export',{seat:'a',cards:before.cards},cookie);
+    expect(exported.status).toBe(200); const file = await exported.json();
+    expect(Object.keys(file).sort()).toEqual(['cards','format','kind','schemaVersion']);
+    expect((await post('/api/deck/import',{seat:'a',text:JSON.stringify(file)})).status).toBe(401);
+    expect((await post('/api/deck/import',{seat:'b',text:JSON.stringify(file)},cookie)).status).toBe(409);
+    expect((await post('/api/deck/import',{seat:'a',text:'{'},cookie)).status).toBe(422);
+    expect((await post('/api/deck/import',{seat:'a',text:JSON.stringify({...file,definitions:[]})},cookie)).status).toBe(422);
+    const imported = await post('/api/deck/import',{seat:'a',text:JSON.stringify(file)},cookie);
+    expect(imported.status).toBe(200); expect(await imported.json()).toEqual({cards:before.cards});
+    expect(await get('/api/deck')).toEqual(before); expect(await get('/api/view')).toEqual(duel);
+  });
+
 });

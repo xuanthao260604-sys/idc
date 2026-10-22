@@ -491,6 +491,36 @@ try {
     await click(`document.querySelector('#deck-catalog [data-card-id="official:89631139"] .deck-name')`);
     assert.equal(await evaluate(`document.querySelector('#deck-preview h2').textContent`), 'Blue-Eyes White Dragon');
     assert.equal(await evaluate(`document.querySelector('#deck-preview p').textContent`), r.cards['official:89631139'].text);
+    // Exercise the real download and native file input, preserving both draft and saved deck on error.
+    const downloads = join(directory, 'deck-files'); await mkdir(downloads, {recursive:true});
+    await send('Browser.setDownloadBehavior', {behavior:'allow',downloadPath:downloads});
+    await click(`document.getElementById('deck-export')`); await wait(`!busy`);
+    const exportedPath = join(downloads, 'classic-duel-deck-a.json');
+    let portable;
+    for (let n=0;n<100;n++) {
+      try { portable = JSON.parse(await readFile(exportedPath,'utf8')); break; } catch { await new Promise(resolve=>setTimeout(resolve,100)); }
+    }
+    assert.ok(portable); assert.equal(portable.cards.length,41);
+    assert.deepEqual(Object.keys(portable).sort(),['cards','format','kind','schemaVersion']);
+    const upload = async path => {
+      const root = await send('DOM.getDocument');
+      const input = await send('DOM.querySelector',{nodeId:root.root.nodeId,selector:'#deck-file'});
+      await send('DOM.setFileInputFiles',{nodeId:input.nodeId,files:[path]});
+      await wait(`!busy && document.getElementById('deck-file').value===''`);
+    };
+    const invalidPath=join(downloads,'invalid.json');await writeFile(invalidPath,'{');
+    await upload(invalidPath);
+    assert.match(await evaluate(`document.getElementById('deck-error').textContent`),/Không nhập được/);
+    assert.equal(await evaluate('deckDraft.cards.length'),41);
+    await change('official:89631139','remove'); assert.equal(await evaluate('deckDraft.cards.length'),40);
+    await upload(exportedPath); assert.equal(await evaluate('deckDraft.cards.length'),41);
+    assert.match(await evaluate(`document.getElementById('deck-error').textContent`),/bản nháp/);
+    assert.equal(await evaluate(`(async()=> (await api('/api/deck')).cards.length)()`),40);
+    assert.equal(await evaluate('JSON.stringify(view)'),before);
+    await click(`document.getElementById('deck-close')`); await openDeck();
+    assert.equal(await evaluate('deckDraft.cards.length'),40);
+    await upload(exportedPath); assert.equal(await evaluate('deckDraft.cards.length'),41);
+
     if (process.argv.includes('--screenshots')) {
       const screenshots = join(projectRoot, 'artifacts', 'deck-builder'); await mkdir(screenshots, { recursive: true });
       for (const [label, width, height] of [['desktop', 1440, 1000], ['narrow', 390, 844]]) {
@@ -526,6 +556,10 @@ try {
     assert.equal(await evaluate(`document.querySelectorAll('#deck-catalog .deck-row').length`), 2);
     await click(`document.getElementById('deck-close')`);
     await seat('b'); await openDeck(); assert.equal(await evaluate('deckDraft.cards.length'), 40);
+    await upload(exportedPath); assert.equal(await evaluate('deckDraft.cards.length'),41);
+    assert.equal(await evaluate(`(async()=> (await api('/api/deck')).cards.length)()`),40);
+    await click(`document.getElementById('deck-close')`); await openDeck();
+    assert.equal(await evaluate('deckDraft.cards.length'),40);
     await change('official:97590747', 'add'); await change('official:05053103', 'add'); await saveDeck();
     const oldId = await evaluate('view.duelId');
     await click(`document.getElementById('reset')`); await click(`document.querySelector('#new-game-form input[value="a"]')`);
@@ -536,7 +570,7 @@ try {
     await seat('a'); await openDeck(); assert.equal(await evaluate('deckDraft.cards.length'), 41);
     await click(`document.getElementById('deck-close')`);
     assert.equal(errors.length, 0);
-    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'deck-builder', decks: [41,42], invalidSizeBlocked: true, copyLimits: true, cancelPreservesSaved: true, networkErrorPreservesDraft: true, savePreservesDuel: true, appliedOnNewDuel: true, runtimeExceptions: errors.length }));
+    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'deck-builder', portableFileRoundtrip: true, invalidImportPreservesDraft: true, importRequiresSave: true, decks: [41,42], invalidSizeBlocked: true, copyLimits: true, cancelPreservesSaved: true, networkErrorPreservesDraft: true, savePreservesDuel: true, appliedOnNewDuel: true, runtimeExceptions: errors.length }));
   } else if (concede) {
     const before = await evaluate('JSON.stringify(view)');
     dialogAnswer = false; await click(`document.getElementById('concede')`);
