@@ -54,5 +54,15 @@ Seed expanded hex 03 được chọn sau headless có Spell/Trap/FLIP và kết 
 
 ## Kết quả
 
-380/380 test (23 file) đã đạt trên Linux. Validation và Windows CI đang được hoàn tất.
+Linux: 380/380 test (23 file), 21/21 bước validation và 11 browser run bằng Chromium 154.0.8037.57, runtimeExceptions 0.
+Trận expanded: 15 lượt, 305 lệnh, 15 attack, 1 decision; Fissure/Hane-Hane/Trap Hole được dùng;
+B thắng LP 0/3100. Pilot 20 giữ 16 lượt/339 lệnh, đủ 5 effect, LP 0/4200.
+Sau lượt validation tổng hợp, kiểm tra ảnh chụp phát hiện WATER bị xuống dòng trong vòng thuộc tính.
+Đã chỉnh cỡ chữ/nowrap, bổ sung kiểm tra đúng thuộc tính và không tràn; chạy lại browser expanded đủ 80 preview đạt.
+Ảnh chụp Armored Starfish/Giga-Tech Wolf ở desktop/màn hình hẹp đã được xem lại, giữ nguyên ảnh khung nguồn.
+Windows và Ubuntu CI đã đạt trên commit `5ed6911aa9325f5c92b34d609488d6dffd56499c`, [run 39744582537](https://github.com/xuanthao260604-sys/idc/actions/runs/39744582537).
+Đã tải và đọc artifact Windows: win32/x64, OS release 10.0.26100, Node 24.19.0, npm 11.17.0;
+Edge 155.0.4283.62, 380/380 test, 23 file, 21/21 bước, 11 browser report, runtimeExceptions 0.
+80 preview khớp loại/sao/chỉ số/thuộc tính và kiểm tra nhãn không tràn; trận expanded trùng Linux: 15 lượt/305 lệnh/1 decision, LP 0/3100.
+Artifact chỉ là bằng chứng kiểm thử, được Git bỏ qua; không phải gói beta.
 Windows 11 desktop chưa chạy. Chưa đóng gói/bàn giao beta.

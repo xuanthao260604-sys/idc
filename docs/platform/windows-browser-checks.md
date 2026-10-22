@@ -1,6 +1,8 @@
 # Kiểm thử giao diện bằng trình duyệt trên Windows
 
-> Mốc hiện hành: [catalog 70](../data/classic-70.md) đạt Windows CI: 357 test, 21 bước, 11 browser run bằng Edge 154.0.4258.62; đủ 70 preview khớp dữ liệu.
+> Mốc hiện hành: [catalog 80](../data/classic-80.md) đạt Windows CI: 380 test, 21 bước, 11 browser run bằng Edge 155.0.4283.62; đủ 80 preview khớp dữ liệu.
+
+> Mốc trước: [catalog 70](../data/classic-70.md) đạt Windows CI: 357 test, 21 bước, 11 browser run bằng Edge 154.0.4258.62; đủ 70 preview khớp dữ liệu.
 
 > Mốc trước: [catalog 60](../data/classic-60.md) đạt Windows CI: 334 test, 21 bước, 11 browser run bằng Edge 155.0.4283.62; đủ 60 preview khớp dữ liệu.
 
