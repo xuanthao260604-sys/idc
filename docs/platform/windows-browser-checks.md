@@ -1,5 +1,7 @@
 # Kiểm thử giao diện bằng trình duyệt trên Windows
 
+> Mốc hiện hành: [ba khung mặt trước](../beta/card-fronts.md) đạt Windows CI, 50 preview khớp loại/sao/chỉ số; 321 test, 21 bước, 11 browser run.
+
 > Mặt sau chung đã đạt Windows CI: [bằng chứng và giới hạn](../beta/card-frames.md), 321 test/21 bước/11 browser run bằng Edge.
 
 > Mốc trước: [catalog 50](../data/classic-50.md) đã đạt 321 test, 21 bước, 11 browser run bằng Edge trên Windows CI.

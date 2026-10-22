@@ -1,6 +1,10 @@
 # Kết quả Windows CI — 16/10/2026
 
-> Mốc hiện hành: [mặt sau chung do người dùng cung cấp](../beta/card-frames.md), [run 38881716115](https://github.com/xuanthao260604-sys/idc/actions/runs/38881716115), commit 70034db.
+> Mốc hiện hành: [ba khung mặt trước](../beta/card-fronts.md), [run 39737883662](https://github.com/xuanthao260604-sys/idc/actions/runs/39737883662), commit 93e1191.
+> 321/321 test, 21 bước, 11 browser run bằng Edge; 50 preview có sao theo dữ liệu. Windows/Ubuntu đều đạt.
+> Windows 11 desktop chưa chạy.
+
+> Mốc trước: [mặt sau chung do người dùng cung cấp](../beta/card-frames.md), [run 38881716115](https://github.com/xuanthao260604-sys/idc/actions/runs/38881716115), commit 70034db.
 > 321/321 test, 21 bước, 11 browser run bằng Edge; Windows/Ubuntu đều đạt. Windows 11 desktop chưa chạy.
 
 > Mốc trước: [catalog 50 lá](../data/classic-50.md), [run 38878802549](https://github.com/xuanthao260604-sys/idc/actions/runs/38878802549), commit c1c1d38.
