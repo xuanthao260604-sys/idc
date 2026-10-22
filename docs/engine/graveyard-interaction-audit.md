@@ -13,7 +13,7 @@ scope đã duyệt. Snapshot nhập và khả năng runtime tiếp tục đượ
 | Reincarnation lấy Man-Eater Bug/Hane-Hane → dùng làm chi phí Tribute | Chi phí trả ngay, không kích hoạt FLIP, không dùng quota Normal; Tribute chỉ phá mục tiêu khi resolve |
 
 Nguồn luật và phạm vi giữ theo [Monster Reincarnation](monster-reincarnation.md),
-[Tribute](tribute-doomed.md), [FLIP](reviewed-flips.md) và hồ sơ Trap Hole hiện có.
+[Tribute](tribute-doomed.md), [FLIP](reviewed-flips.md) và [Trap Hole](reviewed-trap.md) hiện có.
 Không thêm cách diễn giải luật, Chain hỗn hợp, discard Trigger, SEGOC, Special Summon
 hoặc replacement/negation ngoài phạm vi đã hỗ trợ.
 
@@ -25,5 +25,12 @@ không sửa state đầu vào. Đây là kiểm thử tình huống, không ph�
 ## Kiểm chứng
 
 Linux: typecheck và 630/630 test trong 30 file đạt, gồm 10 tình huống mới.
-CI Windows/Ubuntu đang chờ chạy; chưa ghi nhận kết quả trước khi đọc artifact.
+Windows và Ubuntu CI đều đạt trên source commit dfe09fe3d84355004483f56a501d4e40418293e0:
+[run 39784037637](https://github.com/xuanthao260604-sys/idc/actions/runs/39784037637).
+Đã tải và đọc artifact windows-validation-39784037637-1: Windows win32 x64,
+OS 10.0.26100, Node 24.19.0, npm 11.17.0, Edge 154.0.4258.62.
+630/630 test trong 30 file; 28/28 bước validation; 18 browser report, runtimeExceptions=0.
+Trận tự nhiên catalog 106 giữ 17 lượt/336 lệnh/13 tấn công/2 quyết định;
+A thắng LP 6400/0, không sửa state trong trận. Kiểm tra nhập lại lỗi vẫn bảo toàn
+13 bundle hợp lệ, không thay đổi snapshot hay review để làm test đạt.
 Windows 11 desktop chưa được kiểm thử trực tiếp; không xuất bản beta.

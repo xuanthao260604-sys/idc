@@ -14,8 +14,8 @@ Hinotama, Dian Keto the Cure Master, Smashing Ground, Hammer Shot, Tribute to Th
 Đã kiểm chứng [hai Phép thay đổi LP](docs/engine/life-point-spells.md) trên Linux và Windows CI; còn ca Windows 11 desktop chưa chạy.
 Không coi việc cấu hình CI Windows hoặc chạy Linux là đã kiểm chứng Windows.
 
-620/620 test đạt trên Linux và Windows CI cho catalog 106.
-28/28 bước validation và 18 browser run đạt bằng Edge trên Windows CI; chi tiết tại [Monster Reincarnation](docs/engine/monster-reincarnation.md).
+630/630 test đạt trên Linux và Windows CI cho catalog 106.
+28/28 bước validation và 18 browser run đạt bằng Edge trên Windows CI; chi tiết tại [rà soát tương tác Mộ](docs/engine/graveyard-interaction-audit.md).
 Browser regression tính riêng: xây/lưu deck, 5 hiệu ứng, xem Mộ, tạo trận A/B/ngẫu nhiên, bỏ bài,
 Pot với deck 0/1/2 lá, đầu hàng/hủy và tạo trận sau kết thúc, trận tự nhiên đầy đủ.
 Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không phải game hoàn tất mọi luật Yu-Gi-Oh!.

@@ -1,6 +1,10 @@
 # Kiểm thử giao diện bằng trình duyệt trên Windows
 
-> Mốc hiện hành: [Monster Reincarnation](../engine/monster-reincarnation.md), catalog 106; [run 39781536781](https://github.com/xuanthao260604-sys/idc/actions/runs/39781536781), commit 3504b9b.
+> Mốc hiện hành: [rà soát tương tác Mộ](../engine/graveyard-interaction-audit.md), catalog 106; [run 39784037637](https://github.com/xuanthao260604-sys/idc/actions/runs/39784037637), commit dfe09fe.
+> Windows/Ubuntu đều đạt; Windows: 630/630 test, 28/28 bước, 18 browser report với Edge 154.0.4258.62, runtimeExceptions=0.
+> Thêm 10 test tương tác recovery/FLIP/Trap Hole/chi phí; không đổi engine hoặc dữ liệu bài. Windows 11 desktop chưa chạy.
+
+> Mốc trước: [Monster Reincarnation](../engine/monster-reincarnation.md), catalog 106; [run 39781536781](https://github.com/xuanthao260604-sys/idc/actions/runs/39781536781), commit 3504b9b.
 > Windows/Ubuntu đều đạt; Windows: 620/620 test, 28/28 bước, 18 browser report với Edge 154.0.4258.62, không có runtime exception.
 > Đủ 106 preview; trả quái cũ/trả quái vừa bỏ làm chi phí và trận tự nhiên đều đạt. Windows 11 desktop chưa chạy.
 
