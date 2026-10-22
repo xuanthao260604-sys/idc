@@ -14,9 +14,8 @@ Hinotama, Dian Keto the Cure Master và Smashing Ground được mở bằng h�
 Đã kiểm chứng [hai Phép thay đổi LP](docs/engine/life-point-spells.md) trên Linux và Windows CI; còn ca Windows 11 desktop chưa chạy.
 Không coi việc cấu hình CI Windows hoặc chạy Linux là đã kiểm chứng Windows.
 
-Đang chốt [Smashing Ground](docs/engine/smashing-ground.md) và kiểm chứng catalog 103.
-Mốc trước: 467/467 test trên Linux và Windows CI cho catalog 102, xem [rà soát lệnh LP](docs/engine/life-point-command-audit.md).
-23/23 bước validation và 13 browser run đạt bằng Edge trên Windows CI; chi tiết tại [rà soát lệnh LP](docs/engine/life-point-command-audit.md).
+488/488 test đạt trên Linux và Windows CI cho catalog 103.
+24/24 bước validation và 14 browser run đạt bằng Edge trên Windows CI; chi tiết tại [Smashing Ground](docs/engine/smashing-ground.md).
 Browser regression tính riêng: xây/lưu deck, 5 hiệu ứng, xem Mộ, tạo trận A/B/ngẫu nhiên, bỏ bài,
 Pot với deck 0/1/2 lá, đầu hàng/hủy và tạo trận sau kết thúc, trận tự nhiên đầy đủ.
 Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không phải game hoàn tất mọi luật Yu-Gi-Oh!.
@@ -67,7 +66,7 @@ hoặc mọi tương tác bài. Bài tự tạo giữ ở [kế hoạch mở r�
 
 `npm run validate:platform` chạy bộ kiểm chứng tổng hợp, ghi report JSON và log từng bước
 vào artifacts/platform-validation/ (Git bỏ qua). Lỗi dừng ngay, phần còn lại ghi chưa chạy.
-Windows CI đã chạy cùng lệnh, đạt 23/23 bước và giữ artifact; report Linux vẫn chỉ xác nhận Linux.
+Windows CI đã chạy cùng lệnh, đạt 24/24 bước và giữ artifact; report Linux vẫn chỉ xác nhận Linux.
 
 ## Kiểm thử giao diện
 

@@ -68,5 +68,10 @@ Trận tự nhiên catalog 103 dùng Fissure/Hane-Hane/Smashing Ground/Trap Hole
 Pilot 20 giữ kết quả 16 lượt/339 lệnh, đủ 5 hiệu ứng cũ.
 Seed expanded đổi từ 72 sang 90 vì pool thay đổi khiến seed cũ không có decision;
 giữ tiêu chí có decision và thêm yêu cầu phải kích hoạt Smashing Ground.
-Windows CI chờ kết quả trên source commit của mục này.
+Windows và Ubuntu CI đều đạt trên commit 90176b60d16be5635e78f16c1cc5c71b5c1d83b7:
+[run 39756279907](https://github.com/xuanthao260604-sys/idc/actions/runs/39756279907).
+Đã tải và đọc artifact: Windows x64 10.0.26100, Node 24.19.0, npm 11.17.0,
+Edge 155.0.4283.62; 488/488 test, 24/24 bước, 14 browser report, runtimeExceptions=0.
+Có đủ 103 preview; ca hòa DEF và trận expanded đạt cùng kết quả Linux (14 lượt/287 lệnh, LP 0/6050).
+
 Windows 11 desktop chưa chạy; artwork vẫn placeholder; chưa đóng gói hoặc bàn giao beta.

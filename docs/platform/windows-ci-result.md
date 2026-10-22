@@ -1,6 +1,10 @@
 # Kết quả Windows CI — 16/10/2026
 
-> Mốc hiện hành: [rà soát lệnh LP](../engine/life-point-command-audit.md), [run 39753236857](https://github.com/xuanthao260604-sys/idc/actions/runs/39753236857), commit dc25a98.
+> Mốc hiện hành: [Smashing Ground](../engine/smashing-ground.md), catalog 103; [run 39756279907](https://github.com/xuanthao260604-sys/idc/actions/runs/39756279907), commit 90176b6.
+> Windows/Ubuntu đều đạt; Windows: 488/488 test, 24/24 bước, 14 browser report với Edge 155.0.4283.62, không có runtime exception.
+> Đủ 103 preview; ca hòa DEF và trận tự nhiên dùng Smashing Ground đều đạt. Windows 11 desktop chưa chạy.
+
+> Mốc trước: [rà soát lệnh LP](../engine/life-point-command-audit.md), [run 39753236857](https://github.com/xuanthao260604-sys/idc/actions/runs/39753236857), commit dc25a98.
 > Windows/Ubuntu đều đạt; Windows: 467/467 test, 23/23 bước, 13 browser report với Edge 154.0.4258.62, không có runtime exception.
 > Catalog 102 và scope hiệu ứng giữ nguyên; Windows 11 desktop chưa chạy.
 

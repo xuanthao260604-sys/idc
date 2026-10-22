@@ -1,6 +1,6 @@
 Mốc trước: [hai Phép LP](../engine/life-point-spells.md), batch `lp-spells` riêng, tổng 102 lá. Snapshot và capability runtime tiếp tục tách biệt.
 
-> Mục hiện tại: [Smashing Ground](../engine/smashing-ground.md), catalog runtime 103; batch riêng defense-spell, snapshot lịch sử vẫn pending. Đang kiểm chứng nền tảng.
+> Mục hiện tại: [Smashing Ground](../engine/smashing-ground.md), catalog runtime 103; batch riêng defense-spell, snapshot lịch sử vẫn pending. Đã đạt Linux và Windows CI: 488 test, 24 bước, 14 browser report. Windows 11 desktop chưa chạy.
 
 Mốc hiện tại: [catalog 100](classic-100.md), hoàn tất phạm vi dữ liệu 80–100 bằng batch riêng `classic-20`. Các mốc dưới đây là lịch sử.
 
