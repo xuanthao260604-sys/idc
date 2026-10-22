@@ -6,13 +6,16 @@ import { SpellHandlerSchema } from './spell-review.js';
 const Request = SpellHandlerSchema;
 const Board = z.strictObject({
   controllerId: z.string().min(1),
-  // Effective ATK/DEF at resolution, supplied by the trusted engine, never printed ATK from client.
+  // Effective ATK/DEF at resolution, supplied by the trusted engine, never stats/positions from client.
   monsters: z.array(z.strictObject({
     instanceId: z.string().min(1), controllerId: z.string().min(1),
     faceUp: z.boolean(), attack: z.number().int().nonnegative().safe(),
+    position: z.enum(['face-up-attack', 'face-up-defense', 'face-down-defense']).optional(),
     defense: z.number().int().nonnegative().safe().optional(),
   })),
 }).superRefine((board, ctx) => {
+  for (const m of board.monsters) if (m.position !== undefined && m.faceUp !== (m.position !== 'face-down-defense'))
+    ctx.addIssue({ code: 'custom', message: 'Inconsistent monster visibility and position' });
   if (new Set(board.monsters.map(m => m.instanceId)).size !== board.monsters.length)
     ctx.addIssue({ code: 'custom', message: 'Duplicate monster instance' });
 });
@@ -36,12 +39,16 @@ export function planResolution(requestInput: unknown, boardInput: unknown): Reso
     return freeze({ kind: 'draw', playerId: board.controllerId, count: request.count });
   if (request.handler === 'inflict-damage') return freeze({ kind: 'effect-damage', controllerId: board.controllerId, amount: request.amount });
   if (request.handler === 'gain-life-points') return freeze({ kind: 'life-points-gained', playerId: board.controllerId, amount: request.amount });
-  const candidates = board.monsters.filter(m => m.controllerId !== board.controllerId && m.faceUp);
+  const byAttackPosition = request.handler === 'destroy-highest-face-up-attack-position';
+  if (byAttackPosition && board.monsters.some(m => m.faceUp && m.position === undefined)) throw new Error('Missing monster position');
+  const candidates = board.monsters.filter(m => m.faceUp && (byAttackPosition
+    ? m.position === 'face-up-attack'
+    : m.controllerId !== board.controllerId));
   if (candidates.length === 0) return freeze({ kind: 'no-op' });
   const byDefense = request.handler === 'destroy-highest-opposing-face-up-defense';
   if (byDefense && candidates.some(m => m.defense === undefined)) throw new Error('Missing effective DEF');
   const stat = (m: (typeof candidates)[number]) => byDefense ? m.defense! : m.attack;
-  const selected = byDefense ? Math.max(...candidates.map(stat)) : Math.min(...candidates.map(stat));
+  const selected = byDefense || byAttackPosition ? Math.max(...candidates.map(stat)) : Math.min(...candidates.map(stat));
   const optionIds = candidates.filter(m => stat(m) === selected).map(m => m.instanceId);
   if (optionIds.length === 1) return freeze({ kind: 'destroy', instanceId: optionIds[0]! });
   return freeze({ kind: 'choose-destruction', playerId: board.controllerId, optionIds });

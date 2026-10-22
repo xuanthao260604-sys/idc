@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "format": {
+    "id": "goat-2005-08-17",
+    "revision": 4
+  },
+  "provenance": {
+    "upstreamSha256": "655ae8f3984dd36735dbee36e4474fea5a778354646711020cca9f8342dd3a5e",
+    "manifestSha256": "16c1c1c1e3acb22ba9ceebdbe3aaa966aebda7e5f26e1f2a75151548d73f6507",
+    "reviewSha256": "c6c8973a723835d05fc90a5a311faf2aa0d784cb8bd273ce2b730864677db809",
+    "officialEvidenceSha256": "7f67e8b9cd93bbc5e49105282ec6cf58ad39b75c33f6e4c3f0b21be55fe76dbe"
+  },
+  "cards": [
+    {
+      "schemaVersion": 1,
+      "id": "official:26412047",
+      "origin": "official",
+      "revision": 1,
+      "name": "Hammer Shot",
+      "passcode": "26412047",
+      "text": "Destroy the 1 Attack Position monster on the field with the highest ATK (your choice, if tied).",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=26412047&misc=yes",
+          "accessedOn": "2026-10-22",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=6130&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 6130."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=6130&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=6130&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "text",
+          "notes": "Current reference, not claimed as original 2005 wording."
+        }
+      ],
+      "verification": "pending",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=6130&request_locale=en",
+            "accessedOn": "2026-10-22",
+            "scope": "release",
+            "notes": "Reviewed North American print SOD-EN038, 2004-10-01, SOUL OF THE DUELIST; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-22",
+            "scope": "release",
+            "notes": "Reviewed Goat cardpool explicitly lists Soul of the Duelist (SOD); original North American SOD-EN038 print independently checked on Konami."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "kind": "spell",
+      "subtype": "normal"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "official:26412047",
+      "fingerprint": "d7e657985c4d1cfa4adf82fcd68f66c8d1ec1cdc533269e1d6aba58c0baa1aa7",
+      "historicalTextReview": "pending",
+      "upstreamText": "Destroy 1 face-up Attack Position monster with the highest ATK. (If it is a tie, you get to choose.)",
+      "referenceText": "Destroy the 1 Attack Position monster on the field with the highest ATK (your choice, if tied).",
+      "notes": "Current Konami text copied verbatim if different from API. Historical printed wording pending; runtime review separate. Original SOD printing checked.",
+      "printing": {
+        "date": "2004-10-01",
+        "setCode": "SOD-EN038",
+        "product": "SOUL OF THE DUELIST"
+      },
+      "upstreamTcgDate": "2004-10-01"
+    }
+  ],
+  "summary": {
+    "imported": 1,
+    "verifiedData": 0,
+    "historicalReviewPending": 1,
+    "implemented": 0,
+    "testedEffects": 0,
+    "playable": 0
+  }
+}

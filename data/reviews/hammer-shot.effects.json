@@ -1,0 +1,40 @@
+[
+  {
+    "cardId": "official:26412047",
+    "definitionSha256": "e99e146fddebbfb918c468a94b3bb6608ac00c0cc75770602018ce331de14c5e",
+    "revision": 1,
+    "format": {
+      "id": "goat-2005-08-17",
+      "revision": 4
+    },
+    "status": "reviewed-for-supported-scope",
+    "scope": "normal-spell-highest-attack-position-single-link-v1",
+    "handler": {
+      "handler": "destroy-highest-face-up-attack-position"
+    },
+    "evidence": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=6130&request_locale=en",
+        "accessedOn": "2026-10-22",
+        "sourceKind": "official-current",
+        "quotation": "Destroy the 1 Attack Position monster on the field with the highest ATK (your choice, if tied).",
+        "historicalApplicability": "Current semantics; original SOD-EN038 release independently checked. Not claimed as original 2005 printed wording."
+      },
+      {
+        "url": "https://www.goatformat.com/rulings3.html",
+        "accessedOn": "2026-10-22",
+        "sourceKind": "community",
+        "historicalApplicability": "Goat Individual Card FAQs for Hammer Shot. Community archive, not current Konami primary ruling.",
+        "quotation": "\"Hammer Shot\" determines which monster to destroy using current ATK, not original ATK."
+      },
+      {
+        "url": "https://www.goatformat.com/rulings3.html",
+        "accessedOn": "2026-10-22",
+        "sourceKind": "community",
+        "historicalApplicability": "Goat Individual Card FAQs for Hammer Shot. Community archive, not current Konami primary ruling.",
+        "quotation": "\"Hammer Shot\" does not target. You determine which monster is destroyed when \"Hammer Shot\" resolves."
+      }
+    ],
+    "notes": "No cost or target; own open Main from hand/own Set. At resolution select highest current ATK among face-up Attack Position monsters on either field; controller chooses tied maximum, including own monsters. Requires at least one eligible monster. No modifiers yet: trusted current ATK equals definition ATK in runtime. Single-link pass-only; no general mixed Chain, negate, immunity or replacements. Exotic face-down Attack Position not supported. Historical printed wording remains pending."
+  }
+]

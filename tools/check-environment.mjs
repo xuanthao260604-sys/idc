@@ -5,7 +5,7 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const major = Number(process.versions.node.split('.')[0]);
 const issues = [];
 if (major !== 24) issues.push(`Cần Node.js 24.x; máy đang chạy ${process.version}.`);
-for (const path of ['package.json', 'package-lock.json', 'data/generated/pilot.json', 'data/generated/classic-10.json', 'data/generated/classic-10b.json', 'data/generated/classic-10c.json', 'data/generated/classic-10d.json', 'data/generated/classic-10e.json', 'data/generated/classic-10f.json', 'data/generated/classic-20.json', 'data/generated/defense-spell.json', 'data/reviews/defense-spell.effects.json', 'data/generated/lp-spells.json', 'data/reviews/life-point-spells.effects.json', 'data/reviews/pilot.spell-effects.json',
+for (const path of ['package.json', 'package-lock.json', 'data/generated/pilot.json', 'data/generated/classic-10.json', 'data/generated/classic-10b.json', 'data/generated/classic-10c.json', 'data/generated/classic-10d.json', 'data/generated/classic-10e.json', 'data/generated/classic-10f.json', 'data/generated/classic-20.json', 'data/generated/hammer-shot.json', 'data/reviews/hammer-shot.effects.json', 'data/generated/defense-spell.json', 'data/reviews/defense-spell.effects.json', 'data/generated/lp-spells.json', 'data/reviews/life-point-spells.effects.json', 'data/reviews/pilot.spell-effects.json',
   'data/reviews/pilot.flip-effects.json', 'data/reviews/pilot.trap-effects.json', 'apps/beta/public/index.html', 'apps/beta/public/app.js', 'apps/beta/public/style.css', 'apps/beta/public/assets/card-frames/monster-and-back.png', 'apps/beta/public/assets/card-frames/spell-and-trap.png']) {
   try { accessSync(join(root, path), constants.R_OK); } catch { issues.push(`Thiếu hoặc không đọc được: ${path}`); }
 }

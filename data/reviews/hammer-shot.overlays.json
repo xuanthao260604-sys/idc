@@ -1,0 +1,20 @@
+[
+  {
+    "id": "official:26412047",
+    "baseFingerprint": "d7e657985c4d1cfa4adf82fcd68f66c8d1ec1cdc533269e1d6aba58c0baa1aa7",
+    "revision": 1,
+    "patch": {
+      "text": "Destroy the 1 Attack Position monster on the field with the highest ATK (your choice, if tied)."
+    },
+    "historicalTextReview": "pending",
+    "notes": "Current Konami text copied verbatim if different from API. Historical printed wording pending; runtime review separate. Original SOD printing checked.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=6130&request_locale=en",
+        "accessedOn": "2026-10-22",
+        "scope": "text",
+        "notes": "Current reference, not claimed as original 2005 wording."
+      }
+    ]
+  }
+]

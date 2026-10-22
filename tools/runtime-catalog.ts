@@ -28,8 +28,9 @@ export function loadRuntimeCatalog(root = projectRoot) {
   const classic20 = read('data/generated/classic-20.json');
   const lpSpells = read('data/generated/lp-spells.json');
   const defenseSpell = read('data/generated/defense-spell.json');
-  const cards = combineCatalogBundles([pilot, classic10, classic10b, classic10c, classic10d, classic10e, classic10f, classic20, lpSpells, defenseSpell]);
-  const registry = createRegistry(cards, goat200508Format, {}, [...read('data/reviews/pilot.spell-effects.json'), ...read('data/reviews/life-point-spells.effects.json'), ...read('data/reviews/defense-spell.effects.json')],
+  const hammerShot = read('data/generated/hammer-shot.json');
+  const cards = combineCatalogBundles([pilot, classic10, classic10b, classic10c, classic10d, classic10e, classic10f, classic20, lpSpells, defenseSpell, hammerShot]);
+  const registry = createRegistry(cards, goat200508Format, {}, [...read('data/reviews/pilot.spell-effects.json'), ...read('data/reviews/life-point-spells.effects.json'), ...read('data/reviews/defense-spell.effects.json'), ...read('data/reviews/hammer-shot.effects.json')],
     read('data/reviews/pilot.flip-effects.json'), read('data/reviews/pilot.trap-effects.json'));
-  return { cards, registry, importedSnapshots: { pilot: pilot.summary, classic10: classic10.summary, classic10b: classic10b.summary, classic10c: classic10c.summary, classic10d: classic10d.summary, classic10e: classic10e.summary, classic10f: classic10f.summary, classic20: classic20.summary, lpSpells: lpSpells.summary, defenseSpell: defenseSpell.summary } };
+  return { cards, registry, importedSnapshots: { pilot: pilot.summary, classic10: classic10.summary, classic10b: classic10b.summary, classic10c: classic10c.summary, classic10d: classic10d.summary, classic10e: classic10e.summary, classic10f: classic10f.summary, classic20: classic20.summary, lpSpells: lpSpells.summary, defenseSpell: defenseSpell.summary, hammerShot: hammerShot.summary } };
 }

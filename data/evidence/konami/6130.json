@@ -1,0 +1,18 @@
+{
+  "passcode": "26412047",
+  "konamiId": 6130,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=6130&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "a6ab17e17c3fe4a8571c62ae84038649eb31f28ef6498634b66d7deb8603faee",
+  "currentFacts": {
+    "name": "Hammer Shot",
+    "text": "Destroy the 1 Attack Position monster on the field with the highest ATK (your choice, if tied).",
+    "kind": "spell",
+    "subtype": "normal"
+  },
+  "printing": {
+    "date": "2004-10-01",
+    "setCode": "SOD-EN038",
+    "product": "SOUL OF THE DUELIST"
+  }
+}
