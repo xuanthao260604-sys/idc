@@ -12,3 +12,29 @@
    Crop rectangle x=756,y=40,w=672,h=972; rendering only, no rewritten artwork. */
 .card.back{position:relative;overflow:hidden;padding:0;border:0;background:#151410;border-radius:5px}
 .card-back-art{position:absolute;inset:0;border-radius:inherit;background-image:url('/assets/card-frames/monster-and-back.png');background-repeat:no-repeat;background-size:218.75% 110.0823045%;background-position:94.7368421% 40.8163265%}
+
+/* Fronts are rendered from the original sheets; names, levels and stats are data layers. */
+.card.front{position:relative;display:block;padding:0;border:0;overflow:hidden;background:#171510;border-radius:5px}
+.card-front-art{position:absolute;inset:0;border-radius:inherit;background-repeat:no-repeat;pointer-events:none}
+.card.monster .card-front-art{background-image:url('/assets/card-frames/monster-and-back.png');background-size:218.10089% 110.0823%;background-position:5.025126% 40.816327%}
+.card.spell .card-front-art{background-image:url('/assets/card-frames/spell-and-trap.png');background-size:216.814159% 108.51927%;background-position:4.545455% 41.666667%}
+.card.trap .card-front-art{background-image:url('/assets/card-frames/spell-and-trap.png');background-size:215.542522% 108.51927%;background-position:95.431472% 41.666667%}
+.card.front .card-name{position:absolute;left:7%;top:4.5%;width:74%;height:7%;padding:0;background:none;color:#211a12;display:flex;align-items:center;font-size:8px;line-height:1.05;overflow:hidden}
+.card-level{position:absolute;top:12%;left:5%;right:5%;height:4.8%;display:flex;align-items:center;justify-content:flex-end;gap:1px;background:linear-gradient(90deg,#d6c9ad,#d9ccb4);color:#6f4409;overflow:hidden}
+.card-star{font:7px/1 Georgia,serif}
+.card-attribute{position:absolute;top:4%;right:5%;width:12%;height:8%;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#171b19;color:#f5d48e;font:4px/1 Segoe UI,sans-serif}
+.card.front .card-art{position:absolute;left:8%;right:8%;top:19%;height:47%;min-height:0;opacity:1;color:#b5a779;font-size:25px}
+.card-type{position:absolute;top:73%;left:8%;right:8%;height:12%;overflow:hidden;color:#211a12;font:6px/1.3 Segoe UI,sans-serif;overflow-wrap:anywhere}
+.card.front .card-stats{position:absolute;left:7%;right:7%;top:89%;height:4.3%;display:flex;align-items:center;justify-content:center;padding:0;background:#d9ccb5;color:#211a12;font:6px/1 Segoe UI,sans-serif;white-space:nowrap}
+.card.front .card-position{position:absolute;top:64%;left:8%;right:8%;margin:0;background:#171b19d9;color:#f3dfad;font:6px/1.5 Segoe UI,sans-serif}
+.card.card-preview{width:min(100%,240px);height:auto;aspect-ratio:674/972;min-height:0;margin:14px auto;box-shadow:0 5px 16px #0007}
+.card.card-preview .card-name{font-size:15px}.card.card-preview .card-star{font-size:14px}.card.card-preview .card-attribute{font-size:9px}.card.card-preview .card-type{font-size:12px}.card.card-preview .card-stats{font-size:12px}.card.card-preview .card-art{font-size:55px}
+@media(max-width:720px){.card.front .card-name{font-size:6px}.card-star{font-size:5px}.card.front .card-stats{font-size:4px}.card-type{font-size:4px}.card-attribute{font-size:3px}.hand .card.front .card-name{font-size:8px}.hand .card-star{font-size:6px}.hand .card.front .card-stats{font-size:5px}.card.card-preview .card-name{font-size:15px}.card.card-preview .card-star{font-size:14px}.card.card-preview .card-stats{font-size:12px}.card.card-preview .card-type{font-size:12px}.card.card-preview .card-attribute{font-size:9px}}
+
+.card-description{position:absolute;top:77%;left:8%;right:8%;height:10%;overflow:hidden;color:#211a12;font:5px/1.15 Georgia,serif;text-align:left}
+.card.spell .card-description,.card.trap .card-description{height:15%}
+.card.card-preview .card-description{font-size:10px}
+.card-type{height:4%;white-space:nowrap}
+
+.card.front .card-name.long-name{font-size:6px}.card.card-preview .card-name.long-name{font-size:11px}
+@media(max-width:720px){aside>.panel:first-child{grid-column:1/-1}.card.front .card-name.long-name{font-size:5px}.hand .card.front .card-name.long-name{font-size:6px}.card.card-preview .card-name.long-name{font-size:11px}}

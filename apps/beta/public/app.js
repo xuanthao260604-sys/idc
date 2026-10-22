@@ -23,12 +23,31 @@ function optionLabel(handle) {
   }
   return 'Lựa chọn';
 }
+function frontContent(element, d) {
+  element.classList.add('front', d.kind === 'spell' ? 'spell' : d.kind === 'trap' ? 'trap' : 'monster');
+  const frame = node('span', undefined, 'card-front-art'); frame.setAttribute('aria-hidden', 'true');
+  const name = node('span', d.name, `card-name${d.name.length > 24 ? ' long-name' : ''}`); name.title = d.name;
+  element.append(frame, name);
+  if (d.level) {
+    const stars = node('span', undefined, 'card-level'); stars.setAttribute('aria-label', `Cấp ${d.level}`);
+    for (let n = 0; n < d.level; n++) stars.append(node('span', '★', 'card-star'));
+    const attribute = node('span', d.attribute, 'card-attribute'); attribute.title = d.attribute;
+    element.append(stars, attribute);
+  }
+  const art = node('span', '✧', 'card-art'); art.setAttribute('aria-label', 'Chưa có ảnh minh họa');
+  element.append(art, node('span', d.level ? `${d.race} · ${d.kind === 'normal-monster' ? 'Quái thường' : 'Hiệu ứng'}` : d.kind === 'spell' ? 'PHÉP THUẬT' : 'CẠM BẪY', 'card-type'));
+  element.append(node('span', d.text, 'card-description'));
+  if (d.level) element.append(node('span', `ATK/${d.attack}  DEF/${d.defense}`, 'card-stats'));
+}
+function cardPreview(d) {
+  const preview = node('div', undefined, 'card card-preview'); preview.setAttribute('aria-hidden', 'true');
+  frontContent(preview, d); return preview;
+}
 function cardButton(card, zone, player, slot, onSelect) {
   const d = def(card), b = button('', onSelect || (() => { selected = { card, zone, player, slot }; render(); }), `card ${d?.kind === 'spell' ? 'spell' : d?.kind === 'trap' ? 'trap' : ''} ${!d ? 'back' : ''} ${selected?.card.handle === card.handle ? 'selected' : ''}`);
   b.setAttribute('aria-label', `${label(card)}${zone === 'hand' ? ' trên tay' : zone === 'graveyard' ? ` trong Mộ, vị trí ${slot + 1} từ trên xuống` : ` tại ô ${slot + 1}`}`);
   if (!d) { const art = node('span', undefined, 'card-back-art'); art.setAttribute('aria-hidden', 'true'); b.append(art); return b; }
-  b.append(node('span', d.name, 'card-name'), node('span', d.kind === 'spell' ? '✦' : d.kind === 'trap' ? '◇' : '✧', 'card-art'));
-  b.append(node('span', d.level ? `★ ${d.level} · ${d.attack} / ${d.defense}` : d.kind === 'spell' ? 'PHÉP THUẬT' : 'CẠM BẪY', 'card-stats'));
+  frontContent(b, d);
   if (zone !== 'hand') b.append(node('span', card.position === 'face-down-defense' || card.position === 'face-down' ? 'ÚP' : card.position === 'face-up-defense' ? 'PHÒNG THỦ' : card.position === 'face-up-attack' ? 'TẤN CÔNG' : 'NGỬA', 'card-position'));
   return b;
 }
@@ -122,14 +141,14 @@ function chooseAction(title, base, { slots = false, tributes = false, targets = 
 function cardInfo(panel, card) {
   const d = def(card);
   if (!d) { panel.replaceChildren(node('h2', 'Bài úp'), node('p', 'Danh tính lá bài được giữ kín.')); return; }
-  panel.replaceChildren(node('h2', d.name), node('span', d.level ? `Cấp ${d.level} · ${d.attribute} · ATK ${d.attack} / DEF ${d.defense}` : d.kind === 'spell' ? 'Bài Phép' : 'Bài Bẫy', 'tag'), node('p', d.text));
+  panel.replaceChildren(node('h2', d.name), cardPreview(d), node('span', d.level ? `Cấp ${d.level} · ${d.attribute} · ATK ${d.attack} / DEF ${d.defense}` : d.kind === 'spell' ? 'Bài Phép' : 'Bài Bẫy', 'tag'), node('p', d.text));
 }
 function detail() {
   const panel = $('detail'), actions = $('actions'); actions.replaceChildren();
   if (!selected) { panel.replaceChildren(node('h2', 'Chọn một lá bài'), node('p', 'Chọn bài trên tay hoặc trên sân để xem và thực hiện thao tác.')); return; }
   const { card, zone, player, slot } = selected, d = def(card);
   if (!d) { panel.replaceChildren(node('h2', 'Bài úp'), node('div', '◇', 'large-symbol'), node('p', 'Danh tính lá bài được giữ kín.')); return; }
-  panel.replaceChildren(node('h2', d.name), node('div', d.kind === 'spell' ? '✦' : d.kind === 'trap' ? '◇' : '✧', 'large-symbol'), node('span', d.level ? `Cấp ${d.level} · ${d.attribute} · ATK ${d.attack} / DEF ${d.defense}` : d.kind === 'spell' ? 'Bài Phép' : 'Bài Bẫy', 'tag'), node('p', d.text));
+  panel.replaceChildren(node('h2', d.name), cardPreview(d), node('span', d.level ? `Cấp ${d.level} · ${d.attribute} · ATK ${d.attack} / DEF ${d.defense}` : d.kind === 'spell' ? 'Bài Phép' : 'Bài Bẫy', 'tag'), node('p', d.text));
   if (player !== view.viewerId || view.result) return;
   const canMain = view.turn.activePlayer === view.viewerId && ['main1', 'main2'].includes(view.turn.phase) && view.timing.window === 'open' && !view.decision;
   const canBattle = view.turn.activePlayer === view.viewerId && view.turn.phase === 'battle' && view.timing.window === 'open' && !view.decision;

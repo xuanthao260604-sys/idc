@@ -8,7 +8,9 @@ Người dùng cung cấp `Khung_Bai.zip` và xác nhận mặt sau dùng chung 
 | 159ab18d-eada-43b3-a269-25e8302bd61e.png | `spell-and-trap.png` | 1470 × 1070 | `1e8429787c8f22428a2aa3eb169888d6bd1d7c417fe83971585df1de1ccaf5c7` |
 | d9750320-b9ae-4283-be66-95862e36b702.png | `monster-and-back.png` | 1470 × 1070 | `9e97343fd051a07fad7c944eb4cd0ffeb4e7ab45d28885fb190436a46e8a02cc` |
 
-## Phạm vi hiện tại
+> Cập nhật: [ba khung mặt trước đã được ghép](card-fronts.md); phần bên dưới giữ kết quả của mốc mặt sau chung.
+
+## Phạm vi của mốc mặt sau
 
 - Ảnh thứ nhất chứa mặt trước Phép (trái, xanh) và Bẫy (phải, tím).
 - Ảnh thứ hai chứa mặt trước quái (trái) và mặt sau chung (phải).

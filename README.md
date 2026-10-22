@@ -21,7 +21,7 @@ Pot với deck 0/1/2 lá, đầu hàng/hủy và tạo trận sau kết thúc, t
 Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không phải game hoàn tất mọi luật Yu-Gi-Oh!.
 
 Đã nhận bộ khung người dùng: [mặt sau chung](docs/beta/card-frames.md) được dùng cho bài úp của cả ba loại.
-Mặt trước và ảnh minh họa từng lá sẽ tích hợp riêng; hàng sao phải khớp level.
+Đã ghép [ba khung mặt trước](docs/beta/card-fronts.md), hàng sao và chỉ số lấy từ dữ liệu; ảnh minh họa từng lá sẽ bổ sung sau.
 
 ## Chạy và phát triển
 

@@ -244,11 +244,27 @@ try {
     assert.equal(await evaluate('catalog.size'), 50);
     assert.match(await evaluate(`document.getElementById('catalog-count').textContent`), /50/);
     await click(`document.getElementById('deck-builder')`); await wait(`!busy && document.getElementById('deck-dialog').open`);
-    const added = [...(await read('data/generated/classic-10.json')).cards, ...(await read('data/generated/classic-10b.json')).cards, ...(await read('data/generated/classic-10c.json')).cards];
+    const added = Object.values(r.cards);
     for (const card of added) {
       await click(`document.querySelector('#deck-catalog [data-card-id="${card.id}"] .deck-name')`);
       assert.equal(await evaluate(`document.querySelector('#deck-preview h2').textContent`), card.name);
       assert.equal(await evaluate(`document.querySelector('#deck-preview p').textContent`), card.text);
+      assert.equal(await evaluate(`document.querySelectorAll('#deck-preview .card-star').length`), card.level || 0);
+      assert.equal(await evaluate(`document.querySelector('#deck-preview .card-name').textContent`), card.name);
+      assert.equal(await evaluate(`document.querySelector('#deck-preview .card-description').textContent`), card.text);
+      const kind=card.kind==='spell'?'spell':card.kind==='trap'?'trap':'monster';
+      assert.equal(await evaluate(`document.querySelector('#deck-preview .card-preview').classList.contains(${JSON.stringify(kind)})`),true);
+      if(card.level) assert.equal(await evaluate(`document.querySelector('#deck-preview .card-stats').textContent`),`ATK/${card.attack}  DEF/${card.defense}`);
+      if(process.argv.includes('--screenshots') && ['Blue-Eyes White Dragon','Pot of Greed','Trap Hole','Skull Servant'].includes(card.name)) {
+        const directory=join(projectRoot,'artifacts','card-fronts');await mkdir(directory,{recursive:true});
+        for(const [label,width,height] of [['desktop',1440,1000],['narrow',390,844]]) {
+          await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
+          await evaluate(`document.querySelector('#deck-preview .card-preview').scrollIntoView({block:'center'})`);
+          const capture=await send('Page.captureScreenshot',{format:'png'});
+          await writeFile(join(directory,kind+'-'+(card.level||0)+'-'+label+'.png'),Buffer.from(capture.data,'base64'));
+        }
+        await send('Emulation.clearDeviceMetricsOverride');
+      }
     }
     await click(`document.getElementById('deck-close')`);
     await hand('Gaia The Fierce Knight'); await click(textButton('#actions button', 'Triệu hồi'));
@@ -263,7 +279,7 @@ try {
     assert.equal(await evaluate('view.players[1].lifePoints'), 7200);
     assert.equal(await evaluate(`view.players[1].graveyard.some(c=>catalog.get(c.definition.id).name==='Armored Lizard')`), true);
     assert.equal(errors.length, 0);
-    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'expanded-catalog', catalog: 50, reviewedNewCardPreviews: 30, tributeSummon: 'Gaia The Fierce Knight', battleTarget: 'Armored Lizard', battleDamage: 800, fixtureOnlyAtSetup: true, runtimeExceptions: errors.length }));
+    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'expanded-catalog', catalog: 50, reviewedCardPreviews: 50, dataDrivenLevels: true, tributeSummon: 'Gaia The Fierce Knight', battleTarget: 'Armored Lizard', battleDamage: 800, fixtureOnlyAtSetup: true, runtimeExceptions: errors.length }));
   } else if (deckBuilder) {
     const openDeck = async () => { await click(`document.getElementById('deck-builder')`); await wait(`!busy && document.getElementById('deck-dialog').open`); };
     const change = (id, direction) => click(`document.querySelector('#deck-catalog [data-card-id="${id}"] [data-change="${direction}"]')`);
