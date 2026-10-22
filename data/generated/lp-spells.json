@@ -1,0 +1,187 @@
+{
+  "schemaVersion": 1,
+  "format": {
+    "id": "goat-2005-08-17",
+    "revision": 4
+  },
+  "provenance": {
+    "upstreamSha256": "95b76f33585cd1d9528d819048817fdbb4d002ebf813335aa3bf4e4abf05cead",
+    "manifestSha256": "bf2a64f001121de4a5b5f9a4edf1448b582e1ec2b688131fea9b008b6211fdb5",
+    "reviewSha256": "83c03f188ec08432bfb57fc2127cf98b6a3acc4380e1e3dd1e2a74cca3395d2d",
+    "officialEvidenceSha256": "5f9d25c8b6e1fd7d736951217a81cb036b53de19f489642fd47f2876735ef785"
+  },
+  "cards": [
+    {
+      "schemaVersion": 1,
+      "id": "official:46130346",
+      "origin": "official",
+      "revision": 1,
+      "name": "Hinotama",
+      "passcode": "46130346",
+      "text": "Inflict 500 damage to your opponent.",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=46130346,84257639&misc=yes",
+          "accessedOn": "2026-10-22",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4350&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 4350."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4350&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4350&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "text",
+          "notes": "Current official reference, not asserted as original 2005 wording."
+        }
+      ],
+      "verification": "pending",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4350&request_locale=en",
+            "accessedOn": "2026-10-22",
+            "scope": "release",
+            "notes": "Reviewed North American print LOB-056, 2002-03-08, LEGEND OF BLUE EYES WHITE DRAGON; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "release",
+            "notes": "Previously reviewed Goat pool includes LOB/SDY; lp-spells uses independently reviewed original North American print rows. No historical printed text is claimed."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "kind": "spell",
+      "subtype": "normal"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "official:84257639",
+      "origin": "official",
+      "revision": 1,
+      "name": "Dian Keto the Cure Master",
+      "passcode": "84257639",
+      "text": "Increase your Life Points by 1000 points.",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=46130346,84257639&misc=yes",
+          "accessedOn": "2026-10-22",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4348&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 4348."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4348&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4348&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "text",
+          "notes": "Current official reference, not asserted as original 2005 wording."
+        }
+      ],
+      "verification": "pending",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4348&request_locale=en",
+            "accessedOn": "2026-10-22",
+            "scope": "release",
+            "notes": "Reviewed North American print SDY-023, 2002-03-29, STARTER DECK YUGI; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "release",
+            "notes": "Previously reviewed Goat pool includes LOB/SDY; lp-spells uses independently reviewed original North American print rows. No historical printed text is claimed."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "kind": "spell",
+      "subtype": "normal"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "official:46130346",
+      "fingerprint": "343d01384346af83c56556bf8fa5f8e2acb7d14ef8a02e35205fcd63b9068fd7",
+      "historicalTextReview": "pending",
+      "upstreamText": "Inflict 500 damage to your opponent.",
+      "referenceText": "Inflict 500 damage to your opponent.",
+      "notes": "Current Konami identity, text and original North American print verified. Historical printed wording remains pending in the import snapshot; runtime semantic review is separate.",
+      "printing": {
+        "date": "2002-03-08",
+        "setCode": "LOB-056",
+        "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+      },
+      "upstreamTcgDate": "2002-03-08"
+    },
+    {
+      "id": "official:84257639",
+      "fingerprint": "b935b7a1abac81af709be5cde160901b19d507149570e2c8214cb56165264f5e",
+      "historicalTextReview": "pending",
+      "upstreamText": "Increase your Life Points by 1000 points.",
+      "referenceText": "Increase your Life Points by 1000 points.",
+      "notes": "Current Konami identity, text and original North American print verified. Historical printed wording remains pending in the import snapshot; runtime semantic review is separate.",
+      "printing": {
+        "date": "2002-03-29",
+        "setCode": "SDY-023",
+        "product": "STARTER DECK YUGI"
+      },
+      "upstreamTcgDate": "2002-03-29"
+    }
+  ],
+  "summary": {
+    "imported": 2,
+    "verifiedData": 0,
+    "historicalReviewPending": 2,
+    "implemented": 0,
+    "testedEffects": 0,
+    "playable": 0
+  }
+}

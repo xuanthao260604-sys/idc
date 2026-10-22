@@ -1,0 +1,18 @@
+{
+  "passcode": "46130346",
+  "konamiId": 4350,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4350&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "83a3384533356d34cb00aef0316e9dff0c9808f56859f1c9330adc74d9bf6354",
+  "currentFacts": {
+    "name": "Hinotama",
+    "text": "Inflict 500 damage to your opponent.",
+    "kind": "spell",
+    "subtype": "normal"
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-056",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

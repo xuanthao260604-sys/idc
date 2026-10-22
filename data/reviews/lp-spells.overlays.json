@@ -1,0 +1,34 @@
+[
+  {
+    "id": "official:46130346",
+    "baseFingerprint": "343d01384346af83c56556bf8fa5f8e2acb7d14ef8a02e35205fcd63b9068fd7",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "pending",
+    "notes": "Current Konami identity, text and original North American print verified. Historical printed wording remains pending in the import snapshot; runtime semantic review is separate.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4350&request_locale=en",
+        "accessedOn": "2026-10-22",
+        "scope": "text",
+        "notes": "Current official reference, not asserted as original 2005 wording."
+      }
+    ]
+  },
+  {
+    "id": "official:84257639",
+    "baseFingerprint": "b935b7a1abac81af709be5cde160901b19d507149570e2c8214cb56165264f5e",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "pending",
+    "notes": "Current Konami identity, text and original North American print verified. Historical printed wording remains pending in the import snapshot; runtime semantic review is separate.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4348&request_locale=en",
+        "accessedOn": "2026-10-22",
+        "scope": "text",
+        "notes": "Current official reference, not asserted as original 2005 wording."
+      }
+    ]
+  }
+]

@@ -17,7 +17,7 @@
     "build": "tsc -p tsconfig.build.json",
     "cards:fetch": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js fetch",
     "cards:import": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js import",
-    "cards:check": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js check && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10 && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10b && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10c && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10d && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10e && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10f && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-20",
+    "cards:check": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js check && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10 && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10b && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10c && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10d && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10e && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10f && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-20 && node --use-env-proxy dist/tools/card-import/src/cli.js check lp-spells",
     "cards:classic-fetch": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js fetch classic-10",
     "cards:classic-import": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js import classic-10",
     "engine:smoke": "npm run build && node dist/tools/engine-smoke.js",
@@ -47,7 +47,10 @@
     "cards:classic-f-fetch": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js fetch classic-10f",
     "cards:classic-f-import": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js import classic-10f",
     "cards:classic-20-fetch": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js fetch classic-20",
-    "cards:classic-20-import": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js import classic-20"
+    "cards:classic-20-import": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js import classic-20",
+    "cards:life-points-fetch": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js fetch lp-spells",
+    "cards:life-points-import": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js import lp-spells",
+    "beta:browser-life-points": "npm run build && node tools/beta-browser-smoke.mjs --life-points=normal && node tools/beta-browser-smoke.mjs --life-points=lethal"
   },
   "devDependencies": {
     "@types/node": "24.19.2",

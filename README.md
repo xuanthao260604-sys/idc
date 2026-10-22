@@ -6,12 +6,12 @@ Game đấu bài hai người theo Goat Format Bắc Mỹ: cutoff 17/8/2005, ban
 
 ## Tiến độ hiện tại
 
-Đã có bàn đấu hotseat hai người thay phiên cùng máy, catalog 100 loại và deck mẫu hợp lệ 40 lá; deck A/B tự xây vẫn được giữ.
-Core hỗ trợ 95 quái thường; 5 hiệu ứng Pot of Greed, Fissure, Trap Hole, Hane-Hane và
-Man-Eater Bug được mở bằng hồ sơ review và kiểm thử trong scope giới hạn.
+Đã có bàn đấu hotseat hai người thay phiên cùng máy, catalog 102 loại và deck mẫu hợp lệ 40 lá; deck A/B tự xây vẫn được giữ.
+Core hỗ trợ 95 quái thường; 7 hiệu ứng Pot of Greed, Fissure, Trap Hole, Hane-Hane, Man-Eater Bug,
+Hinotama và Dian Keto the Cure Master được mở bằng hồ sơ review và kiểm thử trong scope giới hạn.
 
 Đã hoàn tất [hotseat nội bộ 20 lá](docs/milestones/hotseat-20.md) và [xây/lưu deck A/B](docs/beta/deck-builder.md) trong scope giới hạn.
-Đã đạt [Windows CI cho catalog 100](docs/data/classic-100.md); còn ca Windows 11 desktop chưa chạy.
+Đang kiểm chứng [hai Phép thay đổi LP](docs/engine/life-point-spells.md); mốc Windows CI catalog 100 đã đạt; còn ca Windows 11 desktop chưa chạy.
 Không coi việc cấu hình CI Windows hoặc chạy Linux là đã kiểm chứng Windows.
 
 423/423 test đạt trên Linux và Windows CI cho catalog 100.

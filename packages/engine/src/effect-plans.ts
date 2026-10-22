@@ -1,11 +1,9 @@
 /** Pure resolution plans. Not an activation API or a substitute for Chain/timing checks. */
 import { z } from 'zod';
 import { freeze } from './registry.js';
+import { SpellHandlerSchema } from './spell-review.js';
 
-const Request = z.discriminatedUnion('handler', [
-  z.strictObject({ handler: z.literal('draw'), count: z.number().int().positive().max(100) }),
-  z.strictObject({ handler: z.literal('destroy-lowest-opposing-face-up-attack') }),
-]);
+const Request = SpellHandlerSchema;
 const Board = z.strictObject({
   controllerId: z.string().min(1),
   // Effective ATK at resolution, supplied by the trusted engine, never printed ATK from client.
@@ -19,6 +17,8 @@ const Board = z.strictObject({
 });
 export type ResolutionPlan =
   | { readonly kind: 'draw'; readonly playerId: string; readonly count: number }
+  | { readonly kind: 'effect-damage'; readonly controllerId: string; readonly amount: number }
+  | { readonly kind: 'life-points-gained'; readonly playerId: string; readonly amount: number }
   | { readonly kind: 'no-op' }
   | { readonly kind: 'destroy'; readonly instanceId: string }
   | { readonly kind: 'choose-destruction'; readonly playerId: string; readonly optionIds: readonly string[] };
@@ -33,6 +33,8 @@ export function planResolution(requestInput: unknown, boardInput: unknown): Reso
   const board = Board.parse(boardInput);
   if (request.handler === 'draw')
     return freeze({ kind: 'draw', playerId: board.controllerId, count: request.count });
+  if (request.handler === 'inflict-damage') return freeze({ kind: 'effect-damage', controllerId: board.controllerId, amount: request.amount });
+  if (request.handler === 'gain-life-points') return freeze({ kind: 'life-points-gained', playerId: board.controllerId, amount: request.amount });
   const candidates = board.monsters.filter(m => m.controllerId !== board.controllerId && m.faceUp);
   if (candidates.length === 0) return freeze({ kind: 'no-op' });
   const minimum = Math.min(...candidates.map(m => m.attack));

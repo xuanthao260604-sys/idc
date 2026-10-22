@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "formatId": "goat-2005-08-17",
+  "cards": [
+    {
+      "passcode": "46130346",
+      "expectedName": "Hinotama",
+      "konamiId": 4350
+    },
+    {
+      "passcode": "84257639",
+      "expectedName": "Dian Keto the Cure Master",
+      "konamiId": 4348
+    }
+  ],
+  "eligibleSetPrefixes": [
+    "LOB",
+    "SDK",
+    "SDY",
+    "MRD"
+  ],
+  "eligibilitySource": {
+    "url": "https://www.goatformat.com/cardpool.html",
+    "accessedOn": "2026-10-15",
+    "scope": "release",
+    "notes": "Previously reviewed Goat pool includes LOB/SDY; lp-spells uses independently reviewed original North American print rows. No historical printed text is claimed."
+  }
+}

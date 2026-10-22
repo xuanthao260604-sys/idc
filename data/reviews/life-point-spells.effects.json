@@ -1,0 +1,66 @@
+[
+  {
+    "cardId": "official:46130346",
+    "definitionSha256": "7db0e22ab9c746643d0e9191e45f84f8f76b6b2cdd9999016194be4e4b06b459",
+    "revision": 1,
+    "format": {
+      "id": "goat-2005-08-17",
+      "revision": 4
+    },
+    "status": "reviewed-for-supported-scope",
+    "scope": "normal-spell-life-points-single-link-v1",
+    "handler": {
+      "handler": "inflict-damage",
+      "amount": 500
+    },
+    "evidence": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4350&request_locale=en",
+        "accessedOn": "2026-10-22",
+        "sourceKind": "official-current",
+        "quotation": "Inflict 500 damage to your opponent.",
+        "historicalApplicability": "Current reference semantics; original North American release separately verified. Not claiming original 2005 printed wording."
+      },
+      {
+        "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+        "accessedOn": "2026-10-22",
+        "sourceKind": "archive",
+        "quotation": "Each player begins a Duel with 8000 Life Points.",
+        "historicalApplicability": "English v5 archive byte hash matches the previously reviewed d02c016334f65c98a9fe900ae0b2630a3de63f63e330426ab07c55d9466dc61a. Starting LP is not a healing cap; no 8000 cap is introduced."
+      }
+    ],
+    "notes": "Semantic review for a Normal Spell with no cost or target; own open Main Phase, hand or own Set zone, pass-only single-link resolution. Damage applies to opponent, gain to controller; LP 0 ends immediately at resolution. No LP replacement/prevention/redirection, Bad Reaction to Simochi, general mixed Chain or negate. Historical printed wording remains pending in the import snapshot."
+  },
+  {
+    "cardId": "official:84257639",
+    "definitionSha256": "e9fafe2761bde56cd0a75bd820de9bbcbe173a944e92254cf6380e8fbf97fdbb",
+    "revision": 1,
+    "format": {
+      "id": "goat-2005-08-17",
+      "revision": 4
+    },
+    "status": "reviewed-for-supported-scope",
+    "scope": "normal-spell-life-points-single-link-v1",
+    "handler": {
+      "handler": "gain-life-points",
+      "amount": 1000
+    },
+    "evidence": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4348&request_locale=en",
+        "accessedOn": "2026-10-22",
+        "sourceKind": "official-current",
+        "quotation": "Increase your Life Points by 1000 points.",
+        "historicalApplicability": "Current reference semantics; original North American release separately verified. Not claiming original 2005 printed wording."
+      },
+      {
+        "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+        "accessedOn": "2026-10-22",
+        "sourceKind": "archive",
+        "quotation": "Each player begins a Duel with 8000 Life Points.",
+        "historicalApplicability": "English v5 archive byte hash matches the previously reviewed d02c016334f65c98a9fe900ae0b2630a3de63f63e330426ab07c55d9466dc61a. Starting LP is not a healing cap; no 8000 cap is introduced."
+      }
+    ],
+    "notes": "Semantic review for a Normal Spell with no cost or target; own open Main Phase, hand or own Set zone, pass-only single-link resolution. Damage applies to opponent, gain to controller; LP 0 ends immediately at resolution. No LP replacement/prevention/redirection, Bad Reaction to Simochi, general mixed Chain or negate. Historical printed wording remains pending in the import snapshot."
+  }
+]

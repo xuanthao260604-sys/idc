@@ -4,6 +4,11 @@ const fissure = { handler: 'destroy-lowest-opposing-face-up-attack' };
 const monster = (instanceId: string, attack: number, controllerId = 'b', faceUp = true) => ({ instanceId, attack, controllerId, faceUp });
 const board = (monsters: ReturnType<typeof monster>[] = []) => ({ controllerId: 'a', monsters });
 describe('Resolution primitives only; not integrated card activation', () => {
+  it.each(['inflict-damage', 'gain-life-points'])('rejects unsafe or nonpositive amounts for %s', handler => {
+    for (const amount of [0, -1, 0.5, NaN, Infinity, Number.MAX_SAFE_INTEGER + 1])
+      expect(() => planResolution({ handler, amount }, board())).toThrow();
+    expect(() => planResolution({ handler, amount: 500, playerId: 'b' }, board())).toThrow();
+  });
   it('plans two required draws for the resolving controller without deck-length gating', () => {
     expect(planResolution({ handler: 'draw', count: 2 }, board())).toEqual({ kind: 'draw', playerId: 'a', count: 2 });
   });

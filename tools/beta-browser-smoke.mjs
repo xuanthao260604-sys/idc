@@ -12,7 +12,9 @@ import { createRegistry } from '../dist/packages/engine/src/registry.js';
 import { createDuel, assertDuelInvariants } from '../dist/packages/engine/src/duel.js';
 import { goat200508Format } from '../dist/packages/card-data/src/formats/goat-2005-08-17.js';
 const read = async p => JSON.parse(await readFile(join(projectRoot, p), 'utf8'));
-const expanded = process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel');
+const lifePointsArg = process.argv.find(arg => /^--life-points=(normal|lethal)$/.test(arg));
+const lifePointsMode = lifePointsArg?.split('=')[1] ?? null;
+const expanded = process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
 const r = expanded ? loadRuntimeCatalog().registry : createRegistry((await read('data/generated/pilot.json')).cards, goat200508Format, {},
   await read('data/reviews/pilot.spell-effects.json'), await read('data/reviews/pilot.flip-effects.json'), await read('data/reviews/pilot.trap-effects.json'));
 const deck = Object.keys(r.cards);
@@ -25,7 +27,7 @@ const concede = process.argv.includes('--concede');
 const deckBuilder = process.argv.includes('--deck-builder');
 const deckOutArg = process.argv.find(arg => /^--deck-out=[012]$/.test(arg));
 const deckOut = deckOutArg === undefined ? null : Number(deckOutArg.split('=')[1]);
-const s = structuredClone(createDuel(r, { duelId: fullDuel ? 'mixed-smoke' : 'browser-fixture', players: [{ id: 'a', deck }, { id: 'b', deck }], firstPlayerId: 'a', seedHex: fullDuel ? (expanded ? '30' : '08').padStart(64, '0') : '12'.repeat(32) }).state);
+const s = structuredClone(createDuel(r, { duelId: fullDuel ? 'mixed-smoke' : 'browser-fixture', players: [{ id: 'a', deck }, { id: 'b', deck }], firstPlayerId: 'a', seedHex: fullDuel ? (expanded ? '72' : '08').padStart(64, '0') : '12'.repeat(32) }).state);
 // Trusted fixture setup BEFORE starting the server. No state-edit endpoint, seed flag or test mode in beta CLI.
 function move(name, owner, zone, slot = 0, down = false) {
   const d = Object.values(r.cards).find(c => c.name === name), p = s.players.find(p => p.id === owner);
@@ -42,11 +44,16 @@ move('La Jinn the Mystical Genie of the Lamp', 'a', 'monster', 0); move('Celtic 
 move('Mystical Elf', 'b', 'monster', 0); move('Hane-Hane', 'b', 'monster', 1, true); move('Man-Eater Bug', 'b', 'monster', 2, true); move('Trap Hole', 'b', 'spell-trap', 0, true); move('Fissure', 'b', 'spell-trap', 1, true);
 s.turn.number = 3; s.turn.phase = 'main1'; s.timing.window = 'open'; s.timing.priorityPlayer = 'a'; s.timing.consecutivePasses = 0;
 }
-if (expanded && !fullDuel) {
+if (expanded && !fullDuel && lifePointsMode === null) {
   move('Gaia The Fierce Knight', 'a', 'hand');
   move('Battle Ox', 'a', 'monster', 0); move('Celtic Guardian', 'a', 'monster', 1);
   move('Armored Lizard', 'b', 'monster', 0);
   s.turn.number = 3; s.turn.phase = 'main1'; s.timing.window = 'open'; s.timing.priorityPlayer = 'a'; s.timing.consecutivePasses = 0;
+}
+if (lifePointsMode !== null) {
+  move('Hinotama', 'a', 'hand'); move('Dian Keto the Cure Master', 'a', 'hand');
+  s.turn.number = 3; s.turn.phase = 'main1'; s.timing.window = 'open'; s.timing.priorityPlayer = 'a'; s.timing.consecutivePasses = 0;
+  if (lifePointsMode === 'lethal') s.players[1].lifePoints = 400;
 }
 if (discard) {
   while (s.players[0].hand.length < 8) {
@@ -199,7 +206,7 @@ try {
         lastSummon = null;
         const free = own.spellsTraps.indexOf(null);
         const spell = free >= 0 ? v.selfHand.findIndex(c=>definition(c)?.kind==='spell'
-          && (r.spellHandlers[c.definition.id].handler==='draw' || opp.monsters.some(c=>c && c.visibility==='known' && c.position!=='face-down-defense'))) : -1;
+          && (['draw','inflict-damage','gain-life-points'].includes(r.spellHandlers[c.definition.id].handler) || opp.monsters.some(c=>c && c.visibility==='known' && c.position!=='face-down-defense'))) : -1;
         if (spell >= 0) { const name=definition(v.selfHand[spell]).name; await handAction(spell,'Kích hoạt',free); actions++; usedEffects.add(name); continue; }
         const trap = free >= 0 ? v.selfHand.findIndex(c=>definition(c)?.kind==='trap') : -1;
         if (trap >= 0) { trapSets[v.viewerId][free]=v.turn.number; await handAction(trap,'Úp bài',free); actions++; continue; }
@@ -240,9 +247,42 @@ try {
   }
   await send('Runtime.enable'); await send('Page.enable'); await send('Page.navigate', { url: `http://127.0.0.1:${server.address().port}` });
   await wait(`document.getElementById('seat-dialog')?.open`); await seat('a');
-  if (expanded && !fullDuel) {
-    assert.equal(await evaluate('catalog.size'), 100);
-    assert.match(await evaluate(`document.getElementById('catalog-count').textContent`), /100/);
+  if (lifePointsMode !== null) {
+    if (lifePointsMode === 'normal') {
+      await hand('Dian Keto the Cure Master'); await click(textButton('#actions button','Úp bài')); await confirm();
+      await pass('a'); await pass('b'); await seat('a');
+      await click(`document.querySelector('#self .zone-row:nth-child(3) .card')`);
+      await actionClick(textButton('#actions button','Kích hoạt'));
+      assert.equal(await evaluate('view.players[0].lifePoints'),8000);
+      await pass('b'); assert.equal(await evaluate('view.players[0].lifePoints'),8000);
+      await pass('a'); assert.equal(await evaluate('view.players[0].lifePoints'),9000);
+      assert.match(await evaluate(`document.getElementById('status').textContent`),/Người chơi A hồi 1000 LP/);
+      assert.equal(await evaluate(`view.chain.length`),0);
+      await pass('a'); await pass('b');
+    }
+    await hand('Hinotama'); await click(textButton('#actions button','Kích hoạt'));
+    assert.equal(await evaluate(`document.querySelectorAll('#action-fields select[name="target"]').length`),0);
+    await confirm();
+    const beforeDamage=lifePointsMode==='lethal'?400:8000;
+    assert.equal(await evaluate('view.players[1].lifePoints'),beforeDamage);
+    await pass('b'); assert.equal(await evaluate('view.players[1].lifePoints'),beforeDamage);
+    await pass('a');
+    assert.equal(await evaluate('view.players[1].lifePoints'),lifePointsMode==='lethal'?0:7500);
+    assert.match(await evaluate(`document.getElementById('status').textContent`),/Người chơi B nhận 500 sát thương hiệu ứng/);
+    const facts=await evaluate(`view.activity.flatMap(e=>e.resolution||[])`);
+    assert.ok(facts.some(f=>f.kind==='effect-damage' && f.playerId==='b' && f.amount===500));
+    if(lifePointsMode==='normal') assert.ok(facts.some(f=>f.kind==='life-points-gained' && f.playerId==='a' && f.amount===1000));
+    assert.equal(await evaluate('view.chain.length'),0);assert.equal(await evaluate('view.players[0].spellsTraps.every(c=>c===null)'),true);
+    if(lifePointsMode==='lethal') {
+      assert.deepEqual(await evaluate('view.result'),{winner:'a',reason:'life-points'});
+      assert.match(await evaluate(`document.getElementById('guide-title').textContent`),/thắng/);
+      assert.equal(await evaluate(`document.getElementById('pass').disabled`),true);
+    } else assert.equal(await evaluate('view.result'),null);
+    assert.equal(errors.length,0);
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'life-points-'+lifePointsMode,gainFromOwnSet:lifePointsMode==='normal',lifePoints:await evaluate('view.players.map(p=>p.lifePoints)'),delayedUntilResolution:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
+  } else if (expanded && !fullDuel) {
+    assert.equal(await evaluate('catalog.size'), 102);
+    assert.match(await evaluate(`document.getElementById('catalog-count').textContent`), /102/);
     await click(`document.getElementById('deck-builder')`); await wait(`!busy && document.getElementById('deck-dialog').open`);
     const added = Object.values(r.cards);
     for (const card of added) {
@@ -283,7 +323,7 @@ try {
     assert.equal(await evaluate('view.players[1].lifePoints'), 7200);
     assert.equal(await evaluate(`view.players[1].graveyard.some(c=>catalog.get(c.definition.id).name==='Armored Lizard')`), true);
     assert.equal(errors.length, 0);
-    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'expanded-catalog', catalog: 100, reviewedCardPreviews: 100, dataDrivenLevels: true, tributeSummon: 'Gaia The Fierce Knight', battleTarget: 'Armored Lizard', battleDamage: 800, fixtureOnlyAtSetup: true, runtimeExceptions: errors.length }));
+    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'expanded-catalog', catalog: 102, reviewedCardPreviews: 102, dataDrivenLevels: true, tributeSummon: 'Gaia The Fierce Knight', battleTarget: 'Armored Lizard', battleDamage: 800, fixtureOnlyAtSetup: true, runtimeExceptions: errors.length }));
   } else if (deckBuilder) {
     const openDeck = async () => { await click(`document.getElementById('deck-builder')`); await wait(`!busy && document.getElementById('deck-dialog').open`); };
     const change = (id, direction) => click(`document.querySelector('#deck-catalog [data-card-id="${id}"] [data-change="${direction}"]')`);

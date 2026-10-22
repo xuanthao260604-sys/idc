@@ -1,3 +1,5 @@
+Catalog hiện tại 102 loại, có [hai Phép thay đổi LP](../engine/life-point-spells.md). Starter/deck cũ giữ nguyên; các mốc dưới đây là lịch sử.
+
 Catalog runtime hiện tại gồm 100 loại; starter/deck đã lưu giữ nguyên. Xem [tổng kết mốc 100](../milestones/catalog-100.md).
 
 Catalog runtime hiện tại gồm 80 loại; starter/deck đã lưu giữ nguyên. Xem [mốc dữ liệu 80](../data/classic-80.md).

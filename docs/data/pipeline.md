@@ -1,3 +1,5 @@
+Mục hiện tại: [hai Phép LP](../engine/life-point-spells.md), batch `lp-spells` riêng, tổng 102 lá. Snapshot và capability runtime tiếp tục tách biệt.
+
 Mốc hiện tại: [catalog 100](classic-100.md), hoàn tất phạm vi dữ liệu 80–100 bằng batch riêng `classic-20`. Các mốc dưới đây là lịch sử.
 
 Mốc hiện tại: [catalog 80](classic-80.md), thêm batch độc lập `classic-10f`; đạt ngưỡng dưới mục tiêu 80–100. Các mốc dưới đây là lịch sử.

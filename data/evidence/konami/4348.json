@@ -1,0 +1,18 @@
+{
+  "passcode": "84257639",
+  "konamiId": 4348,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4348&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "8fa930e7b6faabdf95f2159647465fc1299626be1392df1aa9035f2bf0de06aa",
+  "currentFacts": {
+    "name": "Dian Keto the Cure Master",
+    "text": "Increase your Life Points by 1000 points.",
+    "kind": "spell",
+    "subtype": "normal"
+  },
+  "printing": {
+    "date": "2002-03-29",
+    "setCode": "SDY-023",
+    "product": "STARTER DECK YUGI"
+  }
+}

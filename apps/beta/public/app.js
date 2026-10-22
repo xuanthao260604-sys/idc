@@ -84,6 +84,8 @@ function resolutionText(fact) {
   const player = names[fact.playerId] || 'Người chơi';
   if (fact.kind === 'draw') return `${player} bốc ${fact.count} lá`;
   if (fact.kind === 'battle-damage') return `${player} nhận ${fact.amount} sát thương chiến đấu`;
+  if (fact.kind === 'effect-damage') return `${player} nhận ${fact.amount} sát thương hiệu ứng`;
+  if (fact.kind === 'life-points-gained') return `${player} hồi ${fact.amount} LP`;
   if (fact.kind === 'effect-destroyed') return `${fact.count} quái bị phá bởi hiệu ứng`;
   if (fact.kind === 'battle-destroyed') return `${fact.count} quái bị phá bởi chiến đấu`;
   if (fact.kind === 'return-to-hand') return `${fact.count} lá trở về tay ${player}`;

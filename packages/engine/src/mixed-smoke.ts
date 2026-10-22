@@ -51,7 +51,7 @@ export function runMixedSmoke(registry: Registry, seedHex: string) {
     if (state.turn.phase === 'standby') { advance('main1'); continue; }
     if (state.turn.phase === 'main1' || state.turn.phase === 'main2') {
       const free = p.spellsTraps.indexOf(null);
-      const spell = free >= 0 && p.hand.find(id => registry.spellHandlers[def(id).id]?.handler === 'draw'
+      const spell = free >= 0 && p.hand.find(id => ['draw', 'inflict-damage', 'gain-life-points'].includes(registry.spellHandlers[def(id).id]?.handler ?? '')
         || (registry.spellHandlers[def(id).id]?.handler === 'destroy-lowest-opposing-face-up-attack'
           && opponent.monsters.some(id => id !== null && state.cards[id]!.position !== 'face-down-defense')));
       if (spell) { act(active, { type: 'activate-spell', instanceId: spell, slot: free }); continue; }

@@ -418,7 +418,7 @@ function spell(c: Context, actorId: string, action: Extract<EngineRequest['actio
   rule(fromHand || (action.type === 'activate-spell' && fromSet), 'invalid-target', 'Spell is not in an eligible own zone');
   rule(fromSet || p.spellsTraps[action.slot] === null, 'occupied-zone', 'Spell zone occupied');
   const handler = c.registry.spellHandlers[card.definition.id]!;
-  if (action.type === 'activate-spell' && handler.handler !== 'draw')
+  if (action.type === 'activate-spell' && handler.handler === 'destroy-lowest-opposing-face-up-attack')
     rule(planResolution(handler, resolutionBoard(c, actorId)).kind !== 'no-op', 'invalid-target', 'No eligible opposing face-up monster');
   if (fromHand) { p.hand.splice(p.hand.indexOf(card.id), 1); p.spellsTraps[action.slot] = card.id; }
   card.location = { kind: 'spell-trap', playerId: actorId, slot: action.slot as Slot };
@@ -445,6 +445,18 @@ function resolveSpell(c: Context) {
     c.state.pendingDecision = { id: `${link.id}:choice`, playerId: plan.playerId, kind: 'effect-choice', optionIds: [...plan.optionIds], min: 1, max: 1 }; return;
   }
   if (plan.kind === 'draw') for (let i = 0; i < plan.count && !c.state.result; i++) draw(c, plan.playerId);
+  if (plan.kind === 'effect-damage') {
+    const victim = mutablePlayer(c.state, other(c.state, plan.controllerId).id);
+    victim.lifePoints = Math.max(0, victim.lifePoints - plan.amount);
+    emit(c, 'effect-damage', [], { playerId: victim.id, amount: plan.amount });
+    if (victim.lifePoints === 0) endDuel(c, plan.controllerId, 'life-points');
+  }
+  if (plan.kind === 'life-points-gained') {
+    const recipient = mutablePlayer(c.state, plan.playerId);
+    rule(Number.isSafeInteger(recipient.lifePoints + plan.amount), 'invalid-action', 'LP exceeds numeric representation');
+    recipient.lifePoints += plan.amount;
+    emit(c, 'life-points-gained', [], { playerId: recipient.id, amount: plan.amount });
+  }
   if (plan.kind === 'destroy') { sendToGraveyard(c, plan.instanceId); emit(c, 'effect-destroyed', [plan.instanceId]); }
   finishSpell(c);
 }
