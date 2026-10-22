@@ -1,5 +1,7 @@
 Catalog hiện tại 102 loại, có [hai Phép thay đổi LP](../engine/life-point-spells.md). Starter/deck cũ giữ nguyên; các mốc dưới đây là lịch sử.
 
+> Mục hiện tại: [Smashing Ground](../engine/smashing-ground.md), catalog runtime 103; batch riêng defense-spell, snapshot lịch sử vẫn pending. Đang kiểm chứng nền tảng.
+
 Catalog runtime hiện tại gồm 100 loại; starter/deck đã lưu giữ nguyên. Xem [tổng kết mốc 100](../milestones/catalog-100.md).
 
 Catalog runtime hiện tại gồm 80 loại; starter/deck đã lưu giữ nguyên. Xem [mốc dữ liệu 80](../data/classic-80.md).

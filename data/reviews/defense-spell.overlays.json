@@ -1,0 +1,20 @@
+[
+  {
+    "id": "official:97169186",
+    "baseFingerprint": "4faf991547c869283660c6117472eabd704ce7d6b74cc141730b1147bcdfffe9",
+    "revision": 1,
+    "patch": {
+      "text": "Destroy the 1 face-up monster your opponent controls with the highest DEF (your choice, if tied)."
+    },
+    "historicalTextReview": "pending",
+    "notes": "API uses \"that has\" while Konami uses \"with\". Patch copies current Konami verbatim; not historical wording. Original IOC printing checked; runtime review separate.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=5905&request_locale=en",
+        "accessedOn": "2026-10-22",
+        "scope": "text",
+        "notes": "Current reference, not claimed as original 2005 wording."
+      }
+    ]
+  }
+]

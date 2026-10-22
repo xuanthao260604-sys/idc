@@ -14,7 +14,8 @@ import { goat200508Format } from '../dist/packages/card-data/src/formats/goat-20
 const read = async p => JSON.parse(await readFile(join(projectRoot, p), 'utf8'));
 const lifePointsArg = process.argv.find(arg => /^--life-points=(normal|lethal)$/.test(arg));
 const lifePointsMode = lifePointsArg?.split('=')[1] ?? null;
-const expanded = process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
+const smashingGround = process.argv.includes('--smashing-ground');
+const expanded = smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
 const r = expanded ? loadRuntimeCatalog().registry : createRegistry((await read('data/generated/pilot.json')).cards, goat200508Format, {},
   await read('data/reviews/pilot.spell-effects.json'), await read('data/reviews/pilot.flip-effects.json'), await read('data/reviews/pilot.trap-effects.json'));
 const deck = Object.keys(r.cards);
@@ -27,7 +28,7 @@ const concede = process.argv.includes('--concede');
 const deckBuilder = process.argv.includes('--deck-builder');
 const deckOutArg = process.argv.find(arg => /^--deck-out=[012]$/.test(arg));
 const deckOut = deckOutArg === undefined ? null : Number(deckOutArg.split('=')[1]);
-const s = structuredClone(createDuel(r, { duelId: fullDuel ? 'mixed-smoke' : 'browser-fixture', players: [{ id: 'a', deck }, { id: 'b', deck }], firstPlayerId: 'a', seedHex: fullDuel ? (expanded ? '72' : '08').padStart(64, '0') : '12'.repeat(32) }).state);
+const s = structuredClone(createDuel(r, { duelId: fullDuel ? 'mixed-smoke' : 'browser-fixture', players: [{ id: 'a', deck }, { id: 'b', deck }], firstPlayerId: 'a', seedHex: fullDuel ? (expanded ? '90' : '08').padStart(64, '0') : '12'.repeat(32) }).state);
 // Trusted fixture setup BEFORE starting the server. No state-edit endpoint, seed flag or test mode in beta CLI.
 function move(name, owner, zone, slot = 0, down = false) {
   const d = Object.values(r.cards).find(c => c.name === name), p = s.players.find(p => p.id === owner);
@@ -44,10 +45,16 @@ move('La Jinn the Mystical Genie of the Lamp', 'a', 'monster', 0); move('Celtic 
 move('Mystical Elf', 'b', 'monster', 0); move('Hane-Hane', 'b', 'monster', 1, true); move('Man-Eater Bug', 'b', 'monster', 2, true); move('Trap Hole', 'b', 'spell-trap', 0, true); move('Fissure', 'b', 'spell-trap', 1, true);
 s.turn.number = 3; s.turn.phase = 'main1'; s.timing.window = 'open'; s.timing.priorityPlayer = 'a'; s.timing.consecutivePasses = 0;
 }
-if (expanded && !fullDuel && lifePointsMode === null) {
+if (expanded && !fullDuel && lifePointsMode === null && !smashingGround) {
   move('Gaia The Fierce Knight', 'a', 'hand');
   move('Battle Ox', 'a', 'monster', 0); move('Celtic Guardian', 'a', 'monster', 1);
   move('Armored Lizard', 'b', 'monster', 0);
+  s.turn.number = 3; s.turn.phase = 'main1'; s.timing.window = 'open'; s.timing.priorityPlayer = 'a'; s.timing.consecutivePasses = 0;
+}
+if (smashingGround) {
+  move('Smashing Ground', 'a', 'hand'); move('Blue-Eyes White Dragon', 'a', 'monster', 0);
+  move('Mystical Elf', 'b', 'monster', 0); move('Giant Soldier of Stone', 'b', 'monster', 1);
+  move('Battle Ox', 'b', 'monster', 2); move('Blue-Eyes White Dragon', 'b', 'monster', 3, true);
   s.turn.number = 3; s.turn.phase = 'main1'; s.timing.window = 'open'; s.timing.priorityPlayer = 'a'; s.timing.consecutivePasses = 0;
 }
 if (lifePointsMode !== null) {
@@ -155,6 +162,7 @@ try {
       let v = await snapshot();
       if (v.result) {
         assert.equal(v.result.reason, 'life-points'); assert.ok(attacks > 0); assert.ok(decisions > 0);
+        if (expanded) assert.ok(usedEffects.has('Smashing Ground'), 'Expanded duel must exercise the new reviewed Spell');
         assert.equal(errors.length, 0); assert.equal(v.chain.length, 0); assert.equal(v.decision, null);
         assert.match(await evaluate(`document.getElementById('timing').textContent`), /thắng/);
         assert.equal(v.stateVersion, actions);
@@ -247,7 +255,34 @@ try {
   }
   await send('Runtime.enable'); await send('Page.enable'); await send('Page.navigate', { url: `http://127.0.0.1:${server.address().port}` });
   await wait(`document.getElementById('seat-dialog')?.open`); await seat('a');
-  if (lifePointsMode !== null) {
+  if (smashingGround) {
+    await hand('Smashing Ground'); await click(textButton('#actions button','Kích hoạt'));
+    assert.equal(await evaluate(`document.querySelectorAll('#action-fields select[name="target"]').length`),0);
+    await confirm(); assert.equal(await evaluate('view.decision'),null);
+    await pass('b'); assert.equal(await evaluate('view.decision'),null); await pass('a');
+    await seat('a');
+    assert.equal(await evaluate('view.decision.kind'),'effect-choice');
+    assert.equal(await evaluate('view.decision.optionIds.length'),2);
+    assert.equal(await evaluate(`document.querySelectorAll('#decision-form input').length`),2);
+    assert.match(await evaluate(`document.getElementById('decision-form').textContent`),/Mystical Elf/);
+    assert.match(await evaluate(`document.getElementById('decision-form').textContent`),/Giant Soldier of Stone/);
+    assert.equal(await evaluate(`document.getElementById('pass').disabled`),true);
+    await seat('b'); assert.equal(await evaluate('view.decision'),null); await seat('a');
+    await click(`[...document.querySelectorAll('#decision-form label')].find(e=>e.textContent.includes('Giant Soldier of Stone')).querySelector('input')`);
+    await actionClick(`document.querySelector('#decision-form button[type="submit"]')`);
+    assert.equal(await evaluate('view.players[1].monsters[1]'),null);
+    assert.equal(await evaluate('view.players[1].monsters[0].visibility'),'known');
+    assert.equal(await evaluate('view.players[1].monsters[2].visibility'),'known');
+    assert.equal(await evaluate('view.players[1].monsters[3].visibility'),'hidden');
+    assert.equal(await evaluate('view.players[0].monsters[0].visibility'),'known');
+    assert.equal(await evaluate('view.players[0].spellsTraps[0]'),null);
+    assert.equal(await evaluate('view.chain.length'),0); assert.equal(await evaluate('view.decision'),null);
+    assert.match(await evaluate(`document.getElementById('status').textContent`),/1 quái bị phá bởi hiệu ứng/);
+    await inspectGraveyard('self',['Smashing Ground']); await inspectGraveyard('opponent',['Giant Soldier of Stone']);
+    assert.deepEqual(await evaluate('view.players.map(p=>p.lifePoints)'),[8000,8000]);
+    assert.equal(errors.length,0);
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'smashing-ground',nonTargeting:true,tiedHighestDefenseChoice:true,ownAndHiddenExcluded:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
+  } else if (lifePointsMode !== null) {
     if (lifePointsMode === 'normal') {
       await hand('Dian Keto the Cure Master'); await click(textButton('#actions button','Úp bài')); await confirm();
       await pass('a'); await pass('b'); await seat('a');
@@ -281,8 +316,8 @@ try {
     assert.equal(errors.length,0);
     console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'life-points-'+lifePointsMode,gainFromOwnSet:lifePointsMode==='normal',lifePoints:await evaluate('view.players.map(p=>p.lifePoints)'),delayedUntilResolution:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
   } else if (expanded && !fullDuel) {
-    assert.equal(await evaluate('catalog.size'), 102);
-    assert.match(await evaluate(`document.getElementById('catalog-count').textContent`), /102/);
+    assert.equal(await evaluate('catalog.size'), 103);
+    assert.match(await evaluate(`document.getElementById('catalog-count').textContent`), /103/);
     await click(`document.getElementById('deck-builder')`); await wait(`!busy && document.getElementById('deck-dialog').open`);
     const added = Object.values(r.cards);
     for (const card of added) {
@@ -323,7 +358,7 @@ try {
     assert.equal(await evaluate('view.players[1].lifePoints'), 7200);
     assert.equal(await evaluate(`view.players[1].graveyard.some(c=>catalog.get(c.definition.id).name==='Armored Lizard')`), true);
     assert.equal(errors.length, 0);
-    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'expanded-catalog', catalog: 102, reviewedCardPreviews: 102, dataDrivenLevels: true, tributeSummon: 'Gaia The Fierce Knight', battleTarget: 'Armored Lizard', battleDamage: 800, fixtureOnlyAtSetup: true, runtimeExceptions: errors.length }));
+    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'expanded-catalog', catalog: 103, reviewedCardPreviews: 103, dataDrivenLevels: true, tributeSummon: 'Gaia The Fierce Knight', battleTarget: 'Armored Lizard', battleDamage: 800, fixtureOnlyAtSetup: true, runtimeExceptions: errors.length }));
   } else if (deckBuilder) {
     const openDeck = async () => { await click(`document.getElementById('deck-builder')`); await wait(`!busy && document.getElementById('deck-dialog').open`); };
     const change = (id, direction) => click(`document.querySelector('#deck-catalog [data-card-id="${id}"] [data-change="${direction}"]')`);

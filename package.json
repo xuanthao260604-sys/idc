@@ -17,7 +17,7 @@
     "build": "tsc -p tsconfig.build.json",
     "cards:fetch": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js fetch",
     "cards:import": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js import",
-    "cards:check": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js check && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10 && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10b && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10c && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10d && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10e && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10f && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-20 && node --use-env-proxy dist/tools/card-import/src/cli.js check lp-spells",
+    "cards:check": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js check && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10 && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10b && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10c && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10d && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10e && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10f && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-20 && node --use-env-proxy dist/tools/card-import/src/cli.js check lp-spells && node --use-env-proxy dist/tools/card-import/src/cli.js check defense-spell",
     "cards:classic-fetch": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js fetch classic-10",
     "cards:classic-import": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js import classic-10",
     "engine:smoke": "npm run build && node dist/tools/engine-smoke.js",
@@ -50,7 +50,10 @@
     "cards:classic-20-import": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js import classic-20",
     "cards:life-points-fetch": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js fetch lp-spells",
     "cards:life-points-import": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js import lp-spells",
-    "beta:browser-life-points": "npm run build && node tools/beta-browser-smoke.mjs --life-points=normal && node tools/beta-browser-smoke.mjs --life-points=lethal"
+    "beta:browser-life-points": "npm run build && node tools/beta-browser-smoke.mjs --life-points=normal && node tools/beta-browser-smoke.mjs --life-points=lethal",
+    "cards:defense-fetch": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js fetch defense-spell",
+    "cards:defense-import": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js import defense-spell",
+    "beta:browser-smashing": "npm run build && node tools/beta-browser-smoke.mjs --smashing-ground"
   },
   "devDependencies": {
     "@types/node": "24.19.2",

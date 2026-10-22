@@ -1,0 +1,18 @@
+{
+  "passcode": "97169186",
+  "konamiId": 5905,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=5905&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "791a7e080926d5450b9c6aad1bacf0171aa25a0d8222693bbe52e46a2ce971cc",
+  "currentFacts": {
+    "name": "Smashing Ground",
+    "text": "Destroy the 1 face-up monster your opponent controls with the highest DEF (your choice, if tied).",
+    "kind": "spell",
+    "subtype": "normal"
+  },
+  "printing": {
+    "date": "2004-03-01",
+    "setCode": "IOC-093",
+    "product": "INVASION OF CHAOS"
+  }
+}

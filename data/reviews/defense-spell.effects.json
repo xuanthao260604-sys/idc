@@ -1,0 +1,33 @@
+[
+  {
+    "cardId": "official:97169186",
+    "definitionSha256": "7743be5806f0fc8b856f8061701ffffe77e47831f1752da6ca604fe8201c450c",
+    "revision": 1,
+    "format": {
+      "id": "goat-2005-08-17",
+      "revision": 4
+    },
+    "status": "reviewed-for-supported-scope",
+    "scope": "normal-spell-highest-defense-single-link-v1",
+    "handler": {
+      "handler": "destroy-highest-opposing-face-up-defense"
+    },
+    "evidence": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=5905&request_locale=en",
+        "accessedOn": "2026-10-22",
+        "sourceKind": "official-current",
+        "quotation": "Destroy the 1 face-up monster your opponent controls with the highest DEF (your choice, if tied).",
+        "historicalApplicability": "Current semantics; original IOC-093 release independently checked. Not claimed as original 2005 wording."
+      },
+      {
+        "url": "https://www.goatformat.com/rulings3.html",
+        "accessedOn": "2026-10-22",
+        "sourceKind": "community",
+        "quotation": "The effect of this card will not negate \"Creature Swap\", \"Fissure\", \"Smashing Ground\", \"Dark Hole\", \"Raigeki\", or similar Spell Cards that do not target.",
+        "historicalApplicability": "Goat FAQ for Freed the Matchless General explicitly identifies Smashing Ground as non-targeting. Community archive, not current Konami primary ruling."
+      }
+    ],
+    "notes": "No cost, no target. Own open Main, hand or own Set. Requires opposing face-up monster; highest effective DEF selected at resolution, controller chooses if tied. Single-link pass-only; no immunity/replacement/modifiers/general mixed Chain. Face-down monsters excluded. Import historical text status remains pending."
+  }
+]

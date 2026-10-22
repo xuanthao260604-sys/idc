@@ -6,15 +6,16 @@ Game đấu bài hai người theo Goat Format Bắc Mỹ: cutoff 17/8/2005, ban
 
 ## Tiến độ hiện tại
 
-Đã có bàn đấu hotseat hai người thay phiên cùng máy, catalog 102 loại và deck mẫu hợp lệ 40 lá; deck A/B tự xây vẫn được giữ.
-Core hỗ trợ 95 quái thường; 7 hiệu ứng Pot of Greed, Fissure, Trap Hole, Hane-Hane, Man-Eater Bug,
-Hinotama và Dian Keto the Cure Master được mở bằng hồ sơ review và kiểm thử trong scope giới hạn.
+Đã có bàn đấu hotseat hai người thay phiên cùng máy, catalog 103 loại và deck mẫu hợp lệ 40 lá; deck A/B tự xây vẫn được giữ.
+Core hỗ trợ 95 quái thường; 8 hiệu ứng Pot of Greed, Fissure, Trap Hole, Hane-Hane, Man-Eater Bug,
+Hinotama, Dian Keto the Cure Master và Smashing Ground được mở bằng hồ sơ review và kiểm thử trong scope giới hạn.
 
 Đã hoàn tất [hotseat nội bộ 20 lá](docs/milestones/hotseat-20.md) và [xây/lưu deck A/B](docs/beta/deck-builder.md) trong scope giới hạn.
 Đã kiểm chứng [hai Phép thay đổi LP](docs/engine/life-point-spells.md) trên Linux và Windows CI; còn ca Windows 11 desktop chưa chạy.
 Không coi việc cấu hình CI Windows hoặc chạy Linux là đã kiểm chứng Windows.
 
-467/467 test đạt trên Linux và Windows CI cho catalog 102; [rà soát lệnh LP](docs/engine/life-point-command-audit.md) đã hoàn tất.
+Đang chốt [Smashing Ground](docs/engine/smashing-ground.md) và kiểm chứng catalog 103.
+Mốc trước: 467/467 test trên Linux và Windows CI cho catalog 102, xem [rà soát lệnh LP](docs/engine/life-point-command-audit.md).
 23/23 bước validation và 13 browser run đạt bằng Edge trên Windows CI; chi tiết tại [rà soát lệnh LP](docs/engine/life-point-command-audit.md).
 Browser regression tính riêng: xây/lưu deck, 5 hiệu ứng, xem Mộ, tạo trận A/B/ngẫu nhiên, bỏ bài,
 Pot với deck 0/1/2 lá, đầu hàng/hủy và tạo trận sau kết thúc, trận tự nhiên đầy đủ.

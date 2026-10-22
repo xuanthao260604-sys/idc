@@ -6,6 +6,7 @@ import { EvidenceSchema } from '../../card-data/src/format.js';
 export const SpellHandlerSchema = z.discriminatedUnion('handler', [
   z.strictObject({ handler: z.literal('draw'), count: z.number().int().positive().max(100) }),
   z.strictObject({ handler: z.literal('destroy-lowest-opposing-face-up-attack') }),
+  z.strictObject({ handler: z.literal('destroy-highest-opposing-face-up-defense') }),
   z.strictObject({ handler: z.literal('inflict-damage'), amount: z.number().int().positive().safe() }),
   z.strictObject({ handler: z.literal('gain-life-points'), amount: z.number().int().positive().safe() }),
 ]);
@@ -16,11 +17,14 @@ export const SpellReviewSchema = z.strictObject({
   revision: z.number().int().positive(),
   format: z.strictObject({ id: z.string().min(1), revision: z.number().int().positive() }),
   status: z.literal('reviewed-for-supported-scope'),
-  scope: z.enum(['normal-spell-single-link-vanilla-v1', 'normal-spell-life-points-single-link-v1']),
+  scope: z.enum(['normal-spell-single-link-vanilla-v1', 'normal-spell-life-points-single-link-v1', 'normal-spell-highest-defense-single-link-v1']),
   handler: SpellHandlerSchema,
   evidence: z.array(EvidenceSchema).min(1),
   notes: z.string().min(1),
 }).superRefine((review, ctx) => {
+  const highestDefense = review.handler.handler === 'destroy-highest-opposing-face-up-defense';
+  if (highestDefense !== (review.scope === 'normal-spell-highest-defense-single-link-v1'))
+    ctx.addIssue({ code: 'custom', message: 'Spell handler requires its reviewed scope' });
   const lifePoints = ['inflict-damage', 'gain-life-points'].includes(review.handler.handler);
   if (lifePoints !== (review.scope === 'normal-spell-life-points-single-link-v1'))
     ctx.addIssue({ code: 'custom', message: 'Spell handler requires its reviewed scope' });

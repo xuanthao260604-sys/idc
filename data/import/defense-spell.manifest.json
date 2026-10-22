@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "formatId": "goat-2005-08-17",
+  "cards": [
+    {
+      "passcode": "97169186",
+      "expectedName": "Smashing Ground",
+      "konamiId": 5905
+    }
+  ],
+  "eligibleSetPrefixes": [
+    "IOC"
+  ],
+  "eligibilitySource": {
+    "url": "https://www.goatformat.com/cardpool.html",
+    "accessedOn": "2026-10-22",
+    "scope": "release",
+    "notes": "Reviewed Goat cardpool explicitly lists Invasion of Chaos (IOC); original North American IOC-093 row independently checked on Konami."
+  }
+}

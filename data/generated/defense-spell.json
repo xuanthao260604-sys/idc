@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "format": {
+    "id": "goat-2005-08-17",
+    "revision": 4
+  },
+  "provenance": {
+    "upstreamSha256": "0dda50375ced30dc663a4f989374557c44b10b8b46b09647d731dbf3a94b31b3",
+    "manifestSha256": "7371eddad71ef8c50564bde8fd9ea4fb12fe649871b28ee1d7d4a745d65d9a09",
+    "reviewSha256": "e7c13e0dad3313fa7a561287ab85fcc3b3f2037e81d1105020ef207f607fde4c",
+    "officialEvidenceSha256": "b7ab38d7be8181b40528aa623818d7757b15fa30930c874172a7dcfb96414b25"
+  },
+  "cards": [
+    {
+      "schemaVersion": 1,
+      "id": "official:97169186",
+      "origin": "official",
+      "revision": 1,
+      "name": "Smashing Ground",
+      "passcode": "97169186",
+      "text": "Destroy the 1 face-up monster your opponent controls with the highest DEF (your choice, if tied).",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=97169186&misc=yes",
+          "accessedOn": "2026-10-22",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=5905&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 5905."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=5905&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=5905&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "text",
+          "notes": "Current reference, not claimed as original 2005 wording."
+        }
+      ],
+      "verification": "pending",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=5905&request_locale=en",
+            "accessedOn": "2026-10-22",
+            "scope": "release",
+            "notes": "Reviewed North American print IOC-093, 2004-03-01, INVASION OF CHAOS; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-22",
+            "scope": "release",
+            "notes": "Reviewed Goat cardpool explicitly lists Invasion of Chaos (IOC); original North American IOC-093 row independently checked on Konami."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "kind": "spell",
+      "subtype": "normal"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "official:97169186",
+      "fingerprint": "4faf991547c869283660c6117472eabd704ce7d6b74cc141730b1147bcdfffe9",
+      "historicalTextReview": "pending",
+      "upstreamText": "Destroy the 1 face-up monster your opponent controls that has the highest DEF (your choice, if tied).",
+      "referenceText": "Destroy the 1 face-up monster your opponent controls with the highest DEF (your choice, if tied).",
+      "notes": "API uses \"that has\" while Konami uses \"with\". Patch copies current Konami verbatim; not historical wording. Original IOC printing checked; runtime review separate.",
+      "printing": {
+        "date": "2004-03-01",
+        "setCode": "IOC-093",
+        "product": "INVASION OF CHAOS"
+      },
+      "upstreamTcgDate": "2004-03-01"
+    }
+  ],
+  "summary": {
+    "imported": 1,
+    "verifiedData": 0,
+    "historicalReviewPending": 1,
+    "implemented": 0,
+    "testedEffects": 0,
+    "playable": 0
+  }
+}

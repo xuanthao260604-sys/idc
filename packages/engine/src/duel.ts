@@ -406,7 +406,7 @@ function resolveTraps(c: Context) {
 
 function resolutionBoard(c: Context, controllerId: string) {
   return { controllerId, monsters: c.state.players.flatMap(p => p.monsters.filter((id): id is string => id !== null).map(id => ({
-    instanceId: id, controllerId: p.id, faceUp: c.state.cards[id]!.position !== 'face-down-defense', attack: monsterDefinition(c, id).attack,
+    instanceId: id, controllerId: p.id, faceUp: c.state.cards[id]!.position !== 'face-down-defense', attack: monsterDefinition(c, id).attack, defense: monsterDefinition(c, id).defense,
   }))) };
 }
 function spell(c: Context, actorId: string, action: Extract<EngineRequest['action'], { type: 'activate-spell' | 'set-spell' }>) {
@@ -418,7 +418,7 @@ function spell(c: Context, actorId: string, action: Extract<EngineRequest['actio
   rule(fromHand || (action.type === 'activate-spell' && fromSet), 'invalid-target', 'Spell is not in an eligible own zone');
   rule(fromSet || p.spellsTraps[action.slot] === null, 'occupied-zone', 'Spell zone occupied');
   const handler = c.registry.spellHandlers[card.definition.id]!;
-  if (action.type === 'activate-spell' && handler.handler === 'destroy-lowest-opposing-face-up-attack')
+  if (action.type === 'activate-spell' && ['destroy-lowest-opposing-face-up-attack', 'destroy-highest-opposing-face-up-defense'].includes(handler.handler))
     rule(planResolution(handler, resolutionBoard(c, actorId)).kind !== 'no-op', 'invalid-target', 'No eligible opposing face-up monster');
   if (fromHand) { p.hand.splice(p.hand.indexOf(card.id), 1); p.spellsTraps[action.slot] = card.id; }
   card.location = { kind: 'spell-trap', playerId: actorId, slot: action.slot as Slot };

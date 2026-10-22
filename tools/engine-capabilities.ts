@@ -10,7 +10,7 @@ console.log(JSON.stringify({
     reviewedFlipMonsters: Object.keys(registry.flipHandlers),
     reviewedNormalTraps: Object.keys(registry.trapHandlers),
     unsupportedIds: registry.unsupportedIds,
-    scope: ['normal-spell-single-link-vanilla-v1', 'normal-spell-life-points-single-link-v1', 'flip-single-link-v1', 'summon-response-trap-v1'],
+    scope: ['normal-spell-single-link-vanilla-v1', 'normal-spell-life-points-single-link-v1', 'normal-spell-highest-defense-single-link-v1', 'flip-single-link-v1', 'summon-response-trap-v1'],
     limitations: ['only reviewed summon Traps or passes as responses', 'no general mixed Chain/negation', 'no general SEGOC/modifiers/replacements', 'no online multiplayer or persistent matches'],
   },
 }, null, 2));

@@ -6,10 +6,11 @@ import { SpellHandlerSchema } from './spell-review.js';
 const Request = SpellHandlerSchema;
 const Board = z.strictObject({
   controllerId: z.string().min(1),
-  // Effective ATK at resolution, supplied by the trusted engine, never printed ATK from client.
+  // Effective ATK/DEF at resolution, supplied by the trusted engine, never printed ATK from client.
   monsters: z.array(z.strictObject({
     instanceId: z.string().min(1), controllerId: z.string().min(1),
     faceUp: z.boolean(), attack: z.number().int().nonnegative().safe(),
+    defense: z.number().int().nonnegative().safe().optional(),
   })),
 }).superRefine((board, ctx) => {
   if (new Set(board.monsters.map(m => m.instanceId)).size !== board.monsters.length)
@@ -37,14 +38,17 @@ export function planResolution(requestInput: unknown, boardInput: unknown): Reso
   if (request.handler === 'gain-life-points') return freeze({ kind: 'life-points-gained', playerId: board.controllerId, amount: request.amount });
   const candidates = board.monsters.filter(m => m.controllerId !== board.controllerId && m.faceUp);
   if (candidates.length === 0) return freeze({ kind: 'no-op' });
-  const minimum = Math.min(...candidates.map(m => m.attack));
-  const optionIds = candidates.filter(m => m.attack === minimum).map(m => m.instanceId);
+  const byDefense = request.handler === 'destroy-highest-opposing-face-up-defense';
+  if (byDefense && candidates.some(m => m.defense === undefined)) throw new Error('Missing effective DEF');
+  const stat = (m: (typeof candidates)[number]) => byDefense ? m.defense! : m.attack;
+  const selected = byDefense ? Math.max(...candidates.map(stat)) : Math.min(...candidates.map(stat));
+  const optionIds = candidates.filter(m => stat(m) === selected).map(m => m.instanceId);
   if (optionIds.length === 1) return freeze({ kind: 'destroy', instanceId: optionIds[0]! });
   return freeze({ kind: 'choose-destruction', playerId: board.controllerId, optionIds });
 }
 
 /** Server validates the pending decision ID/actor/version before calling this helper. */
 export function chooseDestruction(plan: Extract<ResolutionPlan, { kind: 'choose-destruction' }>, instanceId: string): ResolutionPlan {
-  if (!plan.optionIds.includes(instanceId)) throw new Error('Choice is not a minimum-ATK candidate');
+  if (!plan.optionIds.includes(instanceId)) throw new Error('Choice is not an eligible destruction candidate');
   return freeze({ kind: 'destroy', instanceId });
 }
