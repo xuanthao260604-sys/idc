@@ -58,5 +58,11 @@ Bộ validate tăng từ 21 lên 23 bước, từ 11 lên 13 browser run. Previe
 
 ## Kết quả
 
-456/456 test (24 file) và hai mode browser mới đã đạt Linux. Validation tổng hợp và Windows CI đang hoàn tất.
+Linux: 456/456 test (24 file), 23/23 bước validation và 13 browser report, runtimeExceptions 0.
+Hai fixture LP đạt 9000/7500 và lethal 8000/0. Trận expanded tự nhiên với 102 loại:
+11 lượt/220 lệnh/10 attack/1 decision, dùng Dian Keto/Hinotama/Hane-Hane, A thắng LP 6100/0;
+không chỉnh state khi chơi. Hồi quy pilot 20 vẫn 16 lượt/339 lệnh và đủ 5 hiệu ứng cũ.
+Windows và Ubuntu CI đã đạt trên commit eb5e7af21d3e8a5c3f808eafadc1f997173188a3: [run 39750638222](https://github.com/xuanthao260604-sys/idc/actions/runs/39750638222).
+Windows x64 10.0.26100, Node 24.19.0, npm 11.17.0, Edge 154.0.4258.62: 456/456 test, 23/23 bước và 13 browser run, không có runtime exception.
+Hai ca LP xác nhận [9000,7500] sau hồi/gây sát thương và [8000,0] khi sát thương kết thúc trận; trận tự nhiên 102 lá đạt 11 lượt/220 lệnh, dùng cả hai lá mới, LP cuối [6100,0].
 Windows 11 desktop chưa chạy; ảnh minh họa vẫn placeholder; chưa đóng gói hoặc bàn giao beta.

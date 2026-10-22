@@ -1,6 +1,10 @@
 # Kết quả Windows CI — 16/10/2026
 
-> Mốc hiện hành: [catalog 100](../data/classic-100.md), [run 39746863841](https://github.com/xuanthao260604-sys/idc/actions/runs/39746863841), commit fa6b773.
+> Mốc hiện hành 22/10/2026: [hai Phép thay đổi LP](../engine/life-point-spells.md), catalog 102; [run 39750638222](https://github.com/xuanthao260604-sys/idc/actions/runs/39750638222), commit eb5e7af.
+> Windows và Ubuntu đều đạt; Windows: 456/456 test, 23/23 bước, 13 browser run bằng Edge 154.0.4258.62, không có runtime exception.
+> Xác nhận hồi LP, sát thương kết thúc trận, 102 preview và trận tự nhiên dùng cả hai lá mới. Windows 11 desktop chưa chạy.
+
+> Mốc trước: [catalog 100](../data/classic-100.md), [run 39746863841](https://github.com/xuanthao260604-sys/idc/actions/runs/39746863841), commit fa6b773.
 > 423/423 test, 21 bước, 11 browser run bằng Edge 154.0.4258.62; Windows/Ubuntu đều đạt.
 > Windows 11 desktop chưa chạy. Các kết quả dưới đây giữ làm lịch sử.
 

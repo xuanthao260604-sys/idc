@@ -11,11 +11,11 @@ Core hỗ trợ 95 quái thường; 7 hiệu ứng Pot of Greed, Fissure, Trap H
 Hinotama và Dian Keto the Cure Master được mở bằng hồ sơ review và kiểm thử trong scope giới hạn.
 
 Đã hoàn tất [hotseat nội bộ 20 lá](docs/milestones/hotseat-20.md) và [xây/lưu deck A/B](docs/beta/deck-builder.md) trong scope giới hạn.
-Đang kiểm chứng [hai Phép thay đổi LP](docs/engine/life-point-spells.md); mốc Windows CI catalog 100 đã đạt; còn ca Windows 11 desktop chưa chạy.
+Đã kiểm chứng [hai Phép thay đổi LP](docs/engine/life-point-spells.md) trên Linux và Windows CI; còn ca Windows 11 desktop chưa chạy.
 Không coi việc cấu hình CI Windows hoặc chạy Linux là đã kiểm chứng Windows.
 
-423/423 test đạt trên Linux và Windows CI cho catalog 100.
-21/21 bước validation và 11 browser run đạt bằng Edge trên Windows CI; chi tiết tại [mốc 100](docs/data/classic-100.md).
+456/456 test đạt trên Linux và Windows CI cho catalog 102.
+23/23 bước validation và 13 browser run đạt bằng Edge trên Windows CI; chi tiết tại [mốc hiệu ứng LP](docs/engine/life-point-spells.md).
 Browser regression tính riêng: xây/lưu deck, 5 hiệu ứng, xem Mộ, tạo trận A/B/ngẫu nhiên, bỏ bài,
 Pot với deck 0/1/2 lá, đầu hàng/hủy và tạo trận sau kết thúc, trận tự nhiên đầy đủ.
 Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không phải game hoàn tất mọi luật Yu-Gi-Oh!.
@@ -66,7 +66,7 @@ hoặc mọi tương tác bài. Bài tự tạo giữ ở [kế hoạch mở r�
 
 `npm run validate:platform` chạy bộ kiểm chứng tổng hợp, ghi report JSON và log từng bước
 vào artifacts/platform-validation/ (Git bỏ qua). Lỗi dừng ngay, phần còn lại ghi chưa chạy.
-Windows CI đã chạy cùng lệnh, đạt 21/21 bước và giữ artifact; report Linux vẫn chỉ xác nhận Linux.
+Windows CI đã chạy cùng lệnh, đạt 23/23 bước và giữ artifact; report Linux vẫn chỉ xác nhận Linux.
 
 ## Kiểm thử giao diện
 
