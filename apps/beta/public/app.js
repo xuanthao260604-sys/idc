@@ -2,6 +2,7 @@
 const $ = id => document.getElementById(id);
 const catalog = new Map();
 let deckRules, deckDraft = null;
+let actionHints = new Set();
 let view = null, selected = null, busy = false, message = 'Chọn một lá bài để bắt đầu.';
 const names = { a: 'Người chơi A', b: 'Người chơi B' };
 const phaseNames = { draw: 'BỐC BÀI', standby: 'CHUẨN BỊ', main1: 'MAIN 1', battle: 'CHIẾN ĐẤU', main2: 'MAIN 2', end: 'KẾT THÚC' };
@@ -49,6 +50,14 @@ function cardButton(card, zone, player, slot, onSelect) {
   b.setAttribute('aria-label', `${label(card)}${zone === 'hand' ? ' trên tay' : zone === 'graveyard' ? ` trong Mộ, vị trí ${slot + 1} từ trên xuống` : ` tại ô ${slot + 1}`}`);
   if (!d) { const art = node('span', undefined, 'card-back-art'); art.setAttribute('aria-hidden', 'true'); b.append(art); return b; }
   frontContent(b, d);
+  if (player === view.viewerId && ['hand', 'monster', 'spell-trap'].includes(zone)) {
+    b.dataset.cardHandle = card.handle;
+    if (actionHints.has(card.handle)) {
+      b.classList.add('actionable');
+      b.setAttribute('aria-label', b.getAttribute('aria-label') + ' · Có thao tác hợp lệ');
+      const hint = node('span', '✓ Có thao tác', 'card-action-hint'); hint.setAttribute('aria-hidden', 'true'); b.append(hint);
+    }
+  }
   if (zone !== 'hand') b.append(node('span', card.position === 'face-down-defense' || card.position === 'face-down' ? 'ÚP' : card.position === 'face-up-defense' ? 'PHÒNG THỦ' : card.position === 'face-up-attack' ? 'TẤN CÔNG' : 'NGỬA', 'card-position'));
   return b;
 }
@@ -254,6 +263,13 @@ function renderGuide() {
 function render() {
   if (!view) return;
   const self = view.players.find(p => p.playerId === view.viewerId), opponent = view.players.find(p => p.playerId !== view.viewerId);
+  const ownHandles = new Set([...view.selfHand, ...self.monsters, ...self.spellsTraps].filter(Boolean).map(c => c.handle));
+  actionHints = new Set(!busy && !view.result && !view.decision
+    ? (view.availableActions || []).flatMap(a => [a.cardHandle, a.attackerHandle]).filter(h => ownHandles.has(h)) : []);
+  $('action-hints').textContent = busy ? 'Đang xử lý thao tác…' : view.result ? 'Trận đấu đã kết thúc.'
+    : view.decision ? 'Hoàn tất lựa chọn bắt buộc trước khi dùng bài.'
+    : actionHints.size ? `✓ ${actionHints.size} lá có thao tác hợp lệ trên tay hoặc sân của bạn. Chọn lá để xem thao tác.`
+    : 'Hiện chưa có lá nào có thao tác hợp lệ. Xem hướng dẫn lượt để tiếp tục.';
   $('score').replaceChildren(...[opponent, self].map(p => { const n = node('div', undefined, `score ${view.turn.activePlayer === p.playerId ? 'active' : ''}`); n.append(node('span', names[p.playerId]), node('div', undefined)); n.lastChild.append(node('small', 'LIFE POINTS'), node('strong', String(p.lifePoints))); return n; }));
   const phases = node('div', undefined, 'phases'); for (const [key, text] of Object.entries(phaseNames)) phases.append(node('span', text, `phase ${view.turn.phase === key ? 'current' : ''}`)); $('phases').replaceChildren(phases);
   side(opponent, 'opponent', false); side(self, 'self', true);

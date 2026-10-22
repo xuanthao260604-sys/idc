@@ -41,3 +41,9 @@
 
 /* Keep five-letter attributes inside the frame's small circular badge. */
 .card-attribute{white-space:nowrap;font-size:clamp(2px,.3vw,3px)}.card.card-preview .card-attribute{font-size:7px}
+
+/* Legal-action cues use projected own actions; selection keeps its gold outline. */
+.card.actionable:not(.selected){outline:2px solid #8cdec3;outline-offset:1px}
+.card-action-hint{position:absolute;top:53%;left:9%;right:9%;padding:2px 0;background:#153d32ed;color:#d5ffee;font:7px/1.4 Segoe UI,sans-serif;text-align:center;white-space:nowrap;border-radius:3px}
+.action-hints{font-size:11px;color:#b9e5d6;margin:5px 0 10px}
+@media(max-width:720px){.card-action-hint{font-size:4px;padding:1px 0}.hand .card-action-hint{font-size:7px}}

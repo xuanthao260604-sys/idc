@@ -137,8 +137,16 @@ try {
   async function pass(who) { await seat(who); await actionClick(`document.getElementById('pass')`); }
   async function hand(name) { await seat('a'); await click(`[...document.querySelectorAll('#hand .card')].find(e=>e.querySelector('.card-name')?.textContent===${JSON.stringify(name)})`); }
   async function confirm() { await actionClick(`document.querySelector('#action-form button[type="submit"]')`); }
+  async function marked(scope, name, expected) {
+    const selector = `${scope} .card`;
+    const card = `[...document.querySelectorAll(${JSON.stringify(selector)})].find(e=>e.querySelector('.card-name')?.textContent===${JSON.stringify(name)})`;
+    assert.equal(await evaluate(`${card}?.classList.contains('actionable')`),expected,`${name}: legal-action cue`);
+    assert.equal(await evaluate(`${card}?.getAttribute('aria-label').includes('Có thao tác hợp lệ')`),expected);
+  }
+
   async function chooseTarget(index) { await evaluate(`document.querySelector('#action-fields select[name="target"]').selectedIndex=${index}`); }
   async function decision(name) {
+    assert.equal(await evaluate(`document.querySelectorAll('.card.actionable').length`),0);
     assert.match(await evaluate(`document.getElementById('guide-title').textContent`), /Bạn cần chọn bài/);
     assert.equal(await evaluate(`document.querySelector('#decision-form input').type`), 'radio');
     assert.match(await evaluate(`document.querySelector('#decision-form').textContent`), /Người chơi A · Quái ô/);
@@ -596,6 +604,7 @@ try {
   } else if (deckOut !== null) {
     const before = await evaluate('view.selfHand.length');
     await hand('Pot of Greed'); await click(textButton('#actions button', 'Kích hoạt')); await confirm();
+    assert.equal(await evaluate(`document.querySelectorAll('.card.actionable').length`),0);
     await pass('b'); await pass('a');
     assert.equal(await evaluate('view.selfHand.length'), before - 1 + deckOut);
     assert.equal(await evaluate('view.players[0].deckCount'), 0);
@@ -609,6 +618,8 @@ try {
       assert.equal(await evaluate(`document.getElementById('concede').disabled`), true);
       assert.equal(await evaluate(`document.querySelectorAll('#turn-actions button').length`), 0);
       assert.deepEqual(await evaluate('view.availableActions'), []);
+      assert.equal(await evaluate(`document.querySelectorAll('.card.actionable').length`),0);
+      assert.match(await evaluate(`document.getElementById('action-hints').textContent`),/Trận đấu đã kết thúc/);
       await seat('b'); assert.equal(await evaluate('view.result.reason'), 'failed-draw');
     } else {
       assert.equal(await evaluate('view.result'), null);
@@ -674,6 +685,9 @@ try {
     await seat('b'); assert.equal(await evaluate('view.selfHand.length'), 5); await seat('a');
     await playNaturalDuel();
   } else {
+  await marked('#hand','Pot of Greed',true); await marked('#hand','Battle Ox',true);
+  assert.equal(await evaluate(`document.querySelectorAll('#opponent .actionable').length`),0);
+  assert.match(await evaluate(`document.getElementById('action-hints').textContent`),/lá có thao tác hợp lệ/);
   assert.equal(await evaluate(`['Hane-Hane','Man-Eater Bug','Trap Hole'].some(name=>document.getElementById('opponent').textContent.includes(name))`), false);
   await inspectGraveyard('opponent', []);
   // Known fixture includes concealed monsters, a Spell and a Trap; all use the same back.
@@ -691,7 +705,8 @@ try {
     await send('Emulation.clearDeviceMetricsOverride');
   }
   const before = await evaluate('view.selfHand.length');
-  await hand('Pot of Greed'); await click(textButton('#actions button', 'Kích hoạt')); await confirm(); await pass('b'); await pass('a');
+  await hand('Pot of Greed'); await click(textButton('#actions button', 'Kích hoạt')); await confirm();
+  assert.equal(await evaluate(`document.querySelectorAll('.card.actionable').length`),0); await pass('b'); await pass('a');
   assert.equal(await evaluate('view.selfHand.length'), before + 1);
   assert.match(await evaluate(`document.getElementById('status').textContent`), /Người chơi A bốc 2 lá/);
   await inspectGraveyard('self', ['Pot of Greed']);
@@ -706,6 +721,8 @@ try {
   await hand('Battle Ox'); await click(textButton('#actions button', 'Triệu hồi'));
   assert.equal(await evaluate(`[...document.querySelector('#action-fields select').options].slice(0,2).every(o=>o.disabled)`), true);
   await confirm(); await pass('a'); await seat('b');
+  await marked('#self','Trap Hole',true); await marked('#self','Fissure',false);
+  assert.equal(await evaluate(`document.querySelectorAll('#opponent .actionable').length`),0);
   await click(`document.querySelector('#self .zone-row:nth-child(3) .card')`);
   await click(textButton('#actions button', 'Kích hoạt Bẫy'));
   assert.equal(await evaluate(`[...document.querySelector('#action-fields select').options].filter(o=>!o.disabled).length`), 1);
@@ -714,6 +731,7 @@ try {
   assert.match(await evaluate(`document.getElementById('status').textContent`), /1 quái bị phá bởi hiệu ứng/);
   await seat('a'); await pass('a'); await pass('b'); await seat('a');
   await actionClick(textButton('#turn-actions button', 'CHIẾN ĐẤU')); await pass('b');
+  await seat('a'); await marked('#self','La Jinn the Mystical Genie of the Lamp',true);
   for (const [attacker, slot, flipped] of [['La Jinn the Mystical Genie of the Lamp', 0, 'Hane-Hane'], ['Celtic Guardian', 0, 'Man-Eater Bug']]) {
     await seat('a'); await click(`[...document.querySelectorAll('#self .card')].find(e=>e.querySelector('.card-name')?.textContent===${JSON.stringify(attacker)})`);
     await click(textButton('#actions button', 'Tấn công')); await chooseTarget(slot); await confirm(); await pass('a'); await pass('b');
@@ -725,7 +743,7 @@ try {
   assert.equal(await evaluate('view.players[0].monsters.filter(Boolean).length'), 0);
   assert.equal(await evaluate(`['Pot of Greed','Hane-Hane','Man-Eater Bug','Trap Hole','Fissure'].some(name=>document.getElementById('activity').textContent.includes(name))`), false);
   assert.equal(errors.length, 0);
-  console.log(JSON.stringify({ browser: browser.brand, browserVersion: browserVersion.product, platform: process.platform, fixtureOnlyAtSetup: true, sharedBack: ['monster', 'spell', 'trap'], effectFlows: ['Pot of Greed', 'Fissure', 'Trap Hole', 'Hane-Hane', 'Man-Eater Bug'], interaction: 'mouse controls and dialogs', graveyard: ['empty', 'inline card text', 'top-first order', 'read-only both players'], runtimeExceptions: errors.length }));
+  console.log(JSON.stringify({ browser: browser.brand, browserVersion: browserVersion.product, platform: process.platform, fixtureOnlyAtSetup: true, legalActionCues: ['main-hand', 'pass-only-chain', 'trap-summon-response', 'battle', 'mandatory-choice', 'own-only'], sharedBack: ['monster', 'spell', 'trap'], effectFlows: ['Pot of Greed', 'Fissure', 'Trap Hole', 'Hane-Hane', 'Man-Eater Bug'], interaction: 'mouse controls and dialogs', graveyard: ['empty', 'inline card text', 'top-first order', 'read-only both players'], runtimeExceptions: errors.length }));
   }
 
 } finally {
