@@ -62,6 +62,15 @@ Seed expanded hex 30 được chọn sau headless có Spell/Trap/FLIP và kết 
 
 ## Kết quả
 
-423/423 test (23 file) đã đạt trên Linux. Validation và Windows CI đang được hoàn tất.
+Linux: 423/423 test (23 file), 21/21 bước validation, 11 browser run bằng Chromium 154.0.8037.57, runtimeExceptions 0.
+100 preview đều khớp khung/sao/thuộc tính/chỉ số. Đã xem screenshot Disk Magician ATK 1350 và Illusionist Faceless Mage DEF 2200
+ở desktop/màn hình hẹp; giữ nguyên ảnh khung nguồn.
+Trận expanded: 8 lượt, 162 lệnh, 7 attack, 1 decision; Man-Eater Bug/Pot of Greed/Trap Hole được dùng;
+A thắng LP 8000/0. Pilot 20 giữ 16 lượt/339 lệnh và đủ 5 effect, LP 0/4200.
+Windows và Ubuntu CI đã đạt trên commit `fa6b77373ea5f85263ffa1f7e2ee7e38cd693080`, [run 39746863841](https://github.com/xuanthao260604-sys/idc/actions/runs/39746863841).
+Đã tải và đọc artifact Windows: win32/x64, OS release 10.0.26100, Node 24.19.0, npm 11.17.0;
+Edge 154.0.4258.62, 423/423 test, 23 file, 21/21 bước, 11 browser report, runtimeExceptions 0.
+100 preview có sao/chỉ số theo dữ liệu; trận expanded trùng Linux: 8 lượt/162 lệnh/1 decision, LP 8000/0.
+Artifact chỉ là bằng chứng kiểm thử, được Git bỏ qua; không phải gói beta.
 Windows 11 desktop chưa chạy. Chưa đóng gói/bàn giao beta.
 Xem [tổng kết mốc 100](../milestones/catalog-100.md) để phân biệt phần đã có và phần còn thiếu.

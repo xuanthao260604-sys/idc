@@ -35,4 +35,9 @@ Các mục ảnh minh họa và custom editor tiếp tục tách riêng theo yê
 
 ## Kiểm chứng mốc
 
-Đang hoàn tất Linux và Windows CI. Không dùng kết quả CI để tuyên bố đã thử Windows 11 desktop.
+Linux và Windows CI đều đạt 423/423 test, 23 file; 21/21 bước validation và 11 browser run.
+Đã đọc artifact [run 39746863841](https://github.com/xuanthao260604-sys/idc/actions/runs/39746863841), source commit fa6b77373ea5f85263ffa1f7e2ee7e38cd693080.
+Windows dùng Edge 154.0.4258.62, kiểm tra đủ 100 preview; cả 11 browser report runtimeExceptions=0.
+Trận tự nhiên với deck thử 100 lá: 8 lượt/162 lệnh/7 attack/1 decision, A thắng LP 8000/0.
+Pilot 20 vẫn giữ trận hồi quy 16 lượt/339 lệnh, đủ 5 effect. Dữ liệu 80 lá cũ chỉ được đọc, không bị sửa.
+Không dùng kết quả CI để tuyên bố đã thử Windows 11 desktop. Đã dừng tại mốc này, chưa bắt đầu nhóm hiệu ứng mới.

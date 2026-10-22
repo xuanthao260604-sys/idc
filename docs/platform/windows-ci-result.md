@@ -1,6 +1,10 @@
 # Kết quả Windows CI — 16/10/2026
 
-> Mốc hiện hành: [catalog 80](../data/classic-80.md), [run 39744582537](https://github.com/xuanthao260604-sys/idc/actions/runs/39744582537), commit 5ed6911.
+> Mốc hiện hành: [catalog 100](../data/classic-100.md), [run 39746863841](https://github.com/xuanthao260604-sys/idc/actions/runs/39746863841), commit fa6b773.
+> 423/423 test, 21 bước, 11 browser run bằng Edge 154.0.4258.62; Windows/Ubuntu đều đạt.
+> Windows 11 desktop chưa chạy. Các kết quả dưới đây giữ làm lịch sử.
+
+> Mốc trước: [catalog 80](../data/classic-80.md), [run 39744582537](https://github.com/xuanthao260604-sys/idc/actions/runs/39744582537), commit 5ed6911.
 > 380/380 test, 21 bước, 11 browser run bằng Edge 155.0.4283.62; Windows/Ubuntu đều đạt.
 > Windows 11 desktop chưa chạy. Các kết quả dưới đây giữ làm lịch sử.
 
