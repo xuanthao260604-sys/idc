@@ -1,6 +1,10 @@
 # Kết quả Windows CI
 
-> Mốc hiện hành: [gợi ý lá có thao tác](../beta/actionable-cards.md), catalog 106; [run 39789853873](https://github.com/xuanthao260604-sys/idc/actions/runs/39789853873), commit 59a190c.
+> Mốc hiện hành: [xem trước chi phí/mục tiêu](../beta/choice-previews.md), catalog 106; [run 39791352732](https://github.com/xuanthao260604-sys/idc/actions/runs/39791352732), commit b68f4f1.
+> Windows/Ubuntu đều đạt; Windows: 644/644 test, 28/28 bước, 18 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Preview theo PlayerView; đổi cost cập nhật target, chuyển sang bài úp xóa mặt trước cũ. Windows 11 desktop chưa chạy.
+
+> Mốc trước: [gợi ý lá có thao tác](../beta/actionable-cards.md), catalog 106; [run 39789853873](https://github.com/xuanthao260604-sys/idc/actions/runs/39789853873), commit 59a190c.
 > Windows/Ubuntu đều đạt; Windows: 644/644 test, 28/28 bước, 18 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Gợi ý theo availableActions, chỉ bài của viewer; Main/Chain/Trap/Battle/FLIP/end được kiểm chứng. Windows 11 desktop chưa chạy.
 

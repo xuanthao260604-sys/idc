@@ -29,5 +29,17 @@ Các ca browser riêng trên Linux Chromium 154.0.8037.57 đạt:
 - Phần đọc hiển thị nguyên văn text từ catalog, không có nút hành động bên trong.
 - Đã xem ảnh 1440px/390px; dialog cuộn trong chiều cao màn hình và không tràn ngang.
 
-Validation Linux đầy đủ và Windows CI đang chờ kiểm chứng.
+Linux: typecheck, build, dữ liệu nhập và 644/644 test trong 31 file đều đạt;
+validation đầy đủ 28/28 bước, 18 browser report, runtimeExceptions=0.
+Report: artifacts/platform-validation/2026-10-22T13-56-34-032Z-57854/report.json.
+Cả hai trận tự nhiên giữ kết quả cũ (pilot: 16 lượt/339 lệnh; 106: 17 lượt/336 lệnh);
+đã kiểm tra mô tả tấn công trực tiếp trong hộp chọn thay vì dựng lá mục tiêu.
+Windows và Ubuntu CI đều đạt trên source commit b68f4f1ee79c5ab41b575c00ebacd9daf2645c6e:
+[run 39791352732](https://github.com/xuanthao260604-sys/idc/actions/runs/39791352732).
+Đã tải và đọc artifact windows-validation-39791352732-1: win32 x64,
+OS 10.0.26100, Node 24.19.0, npm 11.17.0, Edge 155.0.4283.62.
+Windows đạt 644/644 test trong 31 file, 28/28 bước, 18 browser report,
+tất cả runtimeExceptions=0. Hai report Reincarnation có choicePreviews và
+previewFollowsCostChange=true; Tribute có previewKeepsHiddenIdentity=true.
+Các kiểm tra mới nằm trong browser regression hiện có; không tăng số unit test.
 Windows 11 desktop chưa thử trực tiếp; chưa đóng gói hoặc bàn giao beta.

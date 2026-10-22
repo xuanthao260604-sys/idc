@@ -1,4 +1,4 @@
-> Mục hiện tại: [gợi ý lá có thao tác](actionable-cards.md), catalog 106; nhãn trên bài riêng theo availableActions. Linux và Windows CI đều đạt 644 test, 28 bước, 18 browser report. Windows 11 desktop chưa chạy.
+> Mục hiện tại: [xem trước chi phí/mục tiêu](choice-previews.md), catalog 106; nội dung theo PlayerView, giữ kín bài úp đối thủ. Linux và Windows CI đều đạt 644 test, 28 bước, 18 browser report. Windows 11 desktop chưa chạy.
 
 > Mốc trước: [Tribute to The Doomed](../engine/tribute-doomed.md), catalog 105; thêm chi phí bỏ bài và target khi kích hoạt. Đã đạt Linux và Windows CI: 579 test, 26 bước, 16 browser report. Snapshot lịch sử vẫn pending; Windows 11 desktop chưa chạy.
 
