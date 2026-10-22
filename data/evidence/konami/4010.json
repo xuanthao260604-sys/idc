@@ -1,0 +1,22 @@
+{
+  "passcode": "88819587",
+  "konamiId": 4010,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4010&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "40f33a3c2c9620cff9434acef71b56ee8b3035c5f9267a8a376509a1a25e720a",
+  "currentFacts": {
+    "name": "Baby Dragon",
+    "text": "Much more than just a child, this dragon is gifted with untapped power.",
+    "kind": "normal-monster",
+    "race": "Dragon",
+    "attribute": "WIND",
+    "level": 3,
+    "attack": 1200,
+    "defense": 700
+  },
+  "printing": {
+    "date": "2002-06-26",
+    "setCode": "MRD-061",
+    "product": "METAL RAIDERS"
+  }
+}

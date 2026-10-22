@@ -1,0 +1,22 @@
+{
+  "passcode": "10202894",
+  "konamiId": 4472,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4472&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "92a56737f8e267eb43116b247fa4e6e5b1e3ebf37d67c1ed3c92b47e382d1d0e",
+  "currentFacts": {
+    "name": "Skull Red Bird",
+    "text": "This monster swoops down and attacks with a rain of knives stored in its wings.",
+    "kind": "normal-monster",
+    "race": "Winged Beast",
+    "attribute": "WIND",
+    "level": 4,
+    "attack": 1550,
+    "defense": 1200
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-105",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

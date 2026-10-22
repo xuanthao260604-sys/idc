@@ -1,0 +1,22 @@
+{
+  "passcode": "49888191",
+  "konamiId": 4787,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4787&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "9c34f1e0d68db43ca0808e6fdfb38bf5142b51698888e49b22978df54b69656e",
+  "currentFacts": {
+    "name": "Garnecia Elefantis",
+    "text": "A monster so heavy that each step rocks the earth.",
+    "kind": "normal-monster",
+    "race": "Beast-Warrior",
+    "attribute": "EARTH",
+    "level": 7,
+    "attack": 2400,
+    "defense": 2000
+  },
+  "printing": {
+    "date": "2002-06-26",
+    "setCode": "MRD-125",
+    "product": "METAL RAIDERS"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "passcode": "85639257",
+  "konamiId": 4219,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4219&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "989f9f42834b24e383d901508351eee8ed34455a31c837eb0e666d9e28fc7bb3",
+  "currentFacts": {
+    "name": "Aqua Madoor",
+    "text": "A wizard of the waters that conjures a liquid wall to crush any enemies that oppose him.",
+    "kind": "normal-monster",
+    "race": "Spellcaster",
+    "attribute": "WATER",
+    "level": 4,
+    "attack": 1200,
+    "defense": 2000
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-027",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

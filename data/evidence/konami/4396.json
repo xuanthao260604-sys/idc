@@ -1,0 +1,22 @@
+{
+  "passcode": "87322377",
+  "konamiId": 4396,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4396&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "bb0e01a33de8b1219aafb7843eaf492ec3cbe7eb4d9949d9917bcfde40315693",
+  "currentFacts": {
+    "name": "Launcher Spider",
+    "text": "A mechanical spider with rocket launchers capable of random fire.",
+    "kind": "normal-monster",
+    "race": "Machine",
+    "attribute": "FIRE",
+    "level": 7,
+    "attack": 2200,
+    "defense": 2500
+  },
+  "printing": {
+    "date": "2002-06-26",
+    "setCode": "MRD-095",
+    "product": "METAL RAIDERS"
+  }
+}

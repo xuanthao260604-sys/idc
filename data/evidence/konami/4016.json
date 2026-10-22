@@ -1,0 +1,22 @@
+{
+  "passcode": "87564352",
+  "konamiId": 4016,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4016&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "3114e15eb897e16cb25de9582b7da9b7c59b0867b334a69c4ba28de89ce2f9b2",
+  "currentFacts": {
+    "name": "Blackland Fire Dragon",
+    "text": "A dragon that dwells in the depths of darkness, its vulnerability lies in its poor eyesight.",
+    "kind": "normal-monster",
+    "race": "Dragon",
+    "attribute": "DARK",
+    "level": 4,
+    "attack": 1500,
+    "defense": 800
+  },
+  "printing": {
+    "date": "2002-06-26",
+    "setCode": "MRD-062",
+    "product": "METAL RAIDERS"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "passcode": "60862676",
+  "konamiId": 4535,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4535&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "91487da3b8d62904975616fa18c5d1d72962914a31d305c70df383c80d29ce2c",
+  "currentFacts": {
+    "name": "Flame Cerebrus",
+    "text": "Known to many as the \"Burning Executioner\", this monster is capable of burning enemies to cinders.",
+    "kind": "normal-monster",
+    "race": "Pyro",
+    "attribute": "FIRE",
+    "level": 6,
+    "attack": 2100,
+    "defense": 1800
+  },
+  "printing": {
+    "date": "2002-06-26",
+    "setCode": "MRD-111",
+    "product": "METAL RAIDERS"
+  }
+}

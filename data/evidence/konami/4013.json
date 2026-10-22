@@ -1,0 +1,22 @@
+{
+  "passcode": "87796900",
+  "konamiId": 4013,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4013&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "24662bd3fbc986022194daeb8207a63533b767f3026358904a24eba6a70af095",
+  "currentFacts": {
+    "name": "Winged Dragon, Guardian of the Fortress #1",
+    "text": "A dragon commonly found guarding mountain fortresses. Its signature attack is a sweeping dive from out of the blue.",
+    "kind": "normal-monster",
+    "race": "Dragon",
+    "attribute": "WIND",
+    "level": 4,
+    "attack": 1400,
+    "defense": 1200
+  },
+  "printing": {
+    "date": "2002-03-29",
+    "setCode": "SDY-003",
+    "product": "STARTER DECK YUGI"
+  }
+}

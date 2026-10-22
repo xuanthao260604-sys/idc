@@ -1,0 +1,22 @@
+{
+  "passcode": "93221206",
+  "konamiId": 4439,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4439&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "ddf6acb51a5caddf30b833a7365a1ae1ab263d98f279a29556bce23ec09a8e8e",
+  "currentFacts": {
+    "name": "Ancient Elf",
+    "text": "This elf is rumored to have lived for thousands of years. He leads an army of spirits against his enemies.",
+    "kind": "normal-monster",
+    "race": "Spellcaster",
+    "attribute": "LIGHT",
+    "level": 4,
+    "attack": 1450,
+    "defense": 1200
+  },
+  "printing": {
+    "date": "2002-03-29",
+    "setCode": "SDY-024",
+    "product": "STARTER DECK YUGI"
+  }
+}

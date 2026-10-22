@@ -1,0 +1,22 @@
+{
+  "passcode": "24611934",
+  "konamiId": 4383,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4383&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "1e3783c8961f440e4ca3a7768c007a55d917fa0e388a01abfdd358d0f65b3cb0",
+  "currentFacts": {
+    "name": "Ryu-Kishin Powered",
+    "text": "A gargoyle enhanced by the powers of darkness. Very sharp talons make it a worthy opponent.",
+    "kind": "normal-monster",
+    "race": "Fiend",
+    "attribute": "DARK",
+    "level": 4,
+    "attack": 1600,
+    "defense": 1200
+  },
+  "printing": {
+    "date": "2002-03-29",
+    "setCode": "SDK-024",
+    "product": "STARTER DECK KAIBA"
+  }
+}

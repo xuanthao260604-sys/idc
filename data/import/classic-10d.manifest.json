@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "formatId": "goat-2005-08-17",
+  "cards": [
+    {
+      "passcode": "10202894",
+      "expectedName": "Skull Red Bird",
+      "konamiId": 4472
+    },
+    {
+      "passcode": "24611934",
+      "expectedName": "Ryu-Kishin Powered",
+      "konamiId": 4383
+    },
+    {
+      "passcode": "49888191",
+      "expectedName": "Garnecia Elefantis",
+      "konamiId": 4787
+    },
+    {
+      "passcode": "60862676",
+      "expectedName": "Flame Cerebrus",
+      "konamiId": 4535
+    },
+    {
+      "passcode": "85639257",
+      "expectedName": "Aqua Madoor",
+      "konamiId": 4219
+    },
+    {
+      "passcode": "87322377",
+      "expectedName": "Launcher Spider",
+      "konamiId": 4396
+    },
+    {
+      "passcode": "87564352",
+      "expectedName": "Blackland Fire Dragon",
+      "konamiId": 4016
+    },
+    {
+      "passcode": "87796900",
+      "expectedName": "Winged Dragon, Guardian of the Fortress #1",
+      "konamiId": 4013
+    },
+    {
+      "passcode": "88819587",
+      "expectedName": "Baby Dragon",
+      "konamiId": 4010
+    },
+    {
+      "passcode": "93221206",
+      "expectedName": "Ancient Elf",
+      "konamiId": 4439
+    }
+  ],
+  "eligibleSetPrefixes": [
+    "LOB",
+    "SDK",
+    "SDY",
+    "MRD"
+  ],
+  "eligibilitySource": {
+    "url": "https://www.goatformat.com/cardpool.html",
+    "accessedOn": "2026-10-15",
+    "scope": "release",
+    "notes": "Previously reviewed Goat cardpool includes LOB, SDK, SDY and MRD; classic-10d uses individually reviewed original North American print rows from these sets."
+  }
+}
