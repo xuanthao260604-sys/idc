@@ -1,0 +1,22 @@
+{
+  "passcode": "34460851",
+  "konamiId": 4148,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4148&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "7063397088ca353d4afc4245eaa4f51b456094d822b29a6e79763fbc3b90171d",
+  "currentFacts": {
+    "name": "Flame Manipulator",
+    "text": "This Spellcaster attacks enemies with fire-related spells such as \"Sea of Flames\" and \"Wall of Fire\".",
+    "kind": "normal-monster",
+    "race": "Spellcaster",
+    "attribute": "FIRE",
+    "level": 3,
+    "attack": 900,
+    "defense": 1000
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-016",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

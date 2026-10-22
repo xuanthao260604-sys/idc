@@ -1,0 +1,22 @@
+{
+  "passcode": "75376965",
+  "konamiId": 4257,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4257&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "7059d9bea8f0b78f7572e02246263ff82a26d06c968be442e763b2edaca597ca",
+  "currentFacts": {
+    "name": "Enchanting Mermaid",
+    "text": "A beautiful mermaid that lures voyagers to a watery grave.",
+    "kind": "normal-monster",
+    "race": "Fish",
+    "attribute": "WATER",
+    "level": 3,
+    "attack": 1200,
+    "defense": 900
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-084",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

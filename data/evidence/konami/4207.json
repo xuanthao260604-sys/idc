@@ -1,0 +1,22 @@
+{
+  "passcode": "98818516",
+  "konamiId": 4207,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4207&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "9f0bb3de045f23ca69d142630104e2c717fa2e13d10495e01067668e95b77493",
+  "currentFacts": {
+    "name": "Frenzied Panda",
+    "text": "A savage beast that carries a big bamboo stick for beating down its enemies.",
+    "kind": "normal-monster",
+    "race": "Beast",
+    "attribute": "EARTH",
+    "level": 4,
+    "attack": 1200,
+    "defense": 1000
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-081",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

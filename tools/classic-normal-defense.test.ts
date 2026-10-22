@@ -8,7 +8,7 @@ import { createDuel, applyAction, assertDuelInvariants } from '../packages/engin
 import type { DuelState, PlayerId } from '../packages/protocol/src/duel.js';
 type Mutable<T> = { -readonly [K in keyof T]: Mutable<T[K]> };
 const load = (path: string) => JSON.parse(readFileSync(join(projectRoot, path), 'utf8'));
-const manifest = { cards: ['classic-10e','classic-10f'].flatMap(batch => load(`data/import/${batch}.manifest.json`).cards) } as { cards: { passcode: string; konamiId: number; expectedName: string }[] };
+const manifest = { cards: ['classic-10e','classic-10f','classic-20'].flatMap(batch => load(`data/import/${batch}.manifest.json`).cards) } as { cards: { passcode: string; konamiId: number; expectedName: string }[] };
 const { registry } = loadRuntimeCatalog();
 
 describe('Sourced expansion DEF through a revealed defense battle', () => {

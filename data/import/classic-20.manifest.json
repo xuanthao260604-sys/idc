@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "formatId": "goat-2005-08-17",
+  "cards": [
+    {
+      "passcode": "02863439",
+      "expectedName": "Fiend Reflection #2",
+      "konamiId": 4192
+    },
+    {
+      "passcode": "09159938",
+      "expectedName": "Dark Gray",
+      "konamiId": 4119
+    },
+    {
+      "passcode": "14851496",
+      "expectedName": "Jellyfish",
+      "konamiId": 4077
+    },
+    {
+      "passcode": "16353197",
+      "expectedName": "Drooling Lizard",
+      "konamiId": 4575
+    },
+    {
+      "passcode": "20060230",
+      "expectedName": "Hard Armor",
+      "konamiId": 4162
+    },
+    {
+      "passcode": "28546905",
+      "expectedName": "Illusionist Faceless Mage",
+      "konamiId": 4048
+    },
+    {
+      "passcode": "34460851",
+      "expectedName": "Flame Manipulator",
+      "konamiId": 4148
+    },
+    {
+      "passcode": "41218256",
+      "expectedName": "Claw Reacher",
+      "konamiId": 4184
+    },
+    {
+      "passcode": "41949033",
+      "expectedName": "Dark Assailant",
+      "konamiId": 4247
+    },
+    {
+      "passcode": "53293545",
+      "expectedName": "Firegrass",
+      "konamiId": 4163
+    },
+    {
+      "passcode": "55784832",
+      "expectedName": "Morinphen",
+      "konamiId": 4504
+    },
+    {
+      "passcode": "56342351",
+      "expectedName": "M-Warrior #1",
+      "konamiId": 4166
+    },
+    {
+      "passcode": "75376965",
+      "expectedName": "Enchanting Mermaid",
+      "konamiId": 4257
+    },
+    {
+      "passcode": "76446915",
+      "expectedName": "Disk Magician",
+      "konamiId": 4649
+    },
+    {
+      "passcode": "80141480",
+      "expectedName": "Hunter Spider",
+      "konamiId": 4620
+    },
+    {
+      "passcode": "81057959",
+      "expectedName": "D. Human",
+      "konamiId": 4508
+    },
+    {
+      "passcode": "86088138",
+      "expectedName": "Ocubeam",
+      "konamiId": 4402
+    },
+    {
+      "passcode": "89272878",
+      "expectedName": "Guardian of the Labyrinth",
+      "konamiId": 4242
+    },
+    {
+      "passcode": "92731455",
+      "expectedName": "M-Warrior #2",
+      "konamiId": 4167
+    },
+    {
+      "passcode": "98818516",
+      "expectedName": "Frenzied Panda",
+      "konamiId": 4207
+    }
+  ],
+  "eligibleSetPrefixes": [
+    "LOB",
+    "SDK",
+    "SDY",
+    "MRD"
+  ],
+  "eligibilitySource": {
+    "url": "https://www.goatformat.com/cardpool.html",
+    "accessedOn": "2026-10-15",
+    "scope": "release",
+    "notes": "Previously reviewed Goat cardpool includes LOB, SDK, SDY and MRD; classic-20 uses individually reviewed original North American print rows from these sets."
+  }
+}

@@ -1,3 +1,5 @@
+Catalog runtime hiện tại gồm 100 loại; starter/deck đã lưu giữ nguyên. Xem [tổng kết mốc 100](../milestones/catalog-100.md).
+
 Catalog runtime hiện tại gồm 80 loại; starter/deck đã lưu giữ nguyên. Xem [mốc dữ liệu 80](../data/classic-80.md).
 
 Catalog runtime hiện tại gồm 70 loại; starter/deck đã lưu giữ nguyên. Xem [mốc dữ liệu 70](../data/classic-70.md).

@@ -1,0 +1,22 @@
+{
+  "passcode": "89272878",
+  "konamiId": 4242,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4242&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "654c86353c7623ee3ef3365b2b0ba692521a295cbcec9b98f9abb4c9b4a7676e",
+  "currentFacts": {
+    "name": "Guardian of the Labyrinth",
+    "text": "A monster that guards the entrance to the Netherworld.",
+    "kind": "normal-monster",
+    "race": "Warrior",
+    "attribute": "EARTH",
+    "level": 4,
+    "attack": 1000,
+    "defense": 1200
+  },
+  "printing": {
+    "date": "2002-06-26",
+    "setCode": "MRD-083",
+    "product": "METAL RAIDERS"
+  }
+}

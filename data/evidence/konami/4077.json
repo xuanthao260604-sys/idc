@@ -1,0 +1,22 @@
+{
+  "passcode": "14851496",
+  "konamiId": 4077,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4077&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "1f8a6a085b936fdc7d80670761742105dcd3e3bdb35b07066860263c23876c5a",
+  "currentFacts": {
+    "name": "Jellyfish",
+    "text": "An almost invisible, semi-transparent jellyfish that drifts in the sea.",
+    "kind": "normal-monster",
+    "race": "Aqua",
+    "attribute": "WATER",
+    "level": 4,
+    "attack": 1200,
+    "defense": 1500
+  },
+  "printing": {
+    "date": "2002-06-26",
+    "setCode": "MRD-072",
+    "product": "METAL RAIDERS"
+  }
+}

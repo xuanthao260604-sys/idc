@@ -1,0 +1,22 @@
+{
+  "passcode": "92731455",
+  "konamiId": 4167,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4167&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "85ad11869b83dbdee2ff76dcbf456858ac54e5707d55fe389de01b5e16e88e7a",
+  "currentFacts": {
+    "name": "M-Warrior #2",
+    "text": "Specializing in combination attacks, this warrior is equipped with a tough, magnetically coated armor.",
+    "kind": "normal-monster",
+    "race": "Warrior",
+    "attribute": "EARTH",
+    "level": 3,
+    "attack": 500,
+    "defense": 1000
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-077",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

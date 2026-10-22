@@ -1,0 +1,22 @@
+{
+  "passcode": "55784832",
+  "konamiId": 4504,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4504&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "9329cd92845238659a21822aafcaadffe70762aa8aa46233b12f6ee6e9a9009f",
+  "currentFacts": {
+    "name": "Morinphen",
+    "text": "A strange fiend with long arms and razor-sharp talons.",
+    "kind": "normal-monster",
+    "race": "Fiend",
+    "attribute": "DARK",
+    "level": 5,
+    "attack": 1550,
+    "defense": 1300
+  },
+  "printing": {
+    "date": "2002-06-26",
+    "setCode": "MRD-043",
+    "product": "METAL RAIDERS"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "passcode": "28546905",
+  "konamiId": 4048,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4048&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "e5e9ba2b2985e15655d2ae8746d85afcf07f0cf5b1c6356d4206ebfbca593656",
+  "currentFacts": {
+    "name": "Illusionist Faceless Mage",
+    "text": "Manipulates enemy attacks with the power of illusion.",
+    "kind": "normal-monster",
+    "race": "Spellcaster",
+    "attribute": "DARK",
+    "level": 5,
+    "attack": 1200,
+    "defense": 2200
+  },
+  "printing": {
+    "date": "2002-06-26",
+    "setCode": "MRD-068",
+    "product": "METAL RAIDERS"
+  }
+}

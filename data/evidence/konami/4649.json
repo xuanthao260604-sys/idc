@@ -1,0 +1,22 @@
+{
+  "passcode": "76446915",
+  "konamiId": 4649,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4649&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "3739a5e5d66c0829d476efc16663dea31f913865bc937da0f32de33067299a03",
+  "currentFacts": {
+    "name": "Disk Magician",
+    "text": "This monster hides in a saucer and only appears when executing an attack.",
+    "kind": "normal-monster",
+    "race": "Machine",
+    "attribute": "DARK",
+    "level": 4,
+    "attack": 1350,
+    "defense": 1000
+  },
+  "printing": {
+    "date": "2002-06-26",
+    "setCode": "MRD-053",
+    "product": "METAL RAIDERS"
+  }
+}

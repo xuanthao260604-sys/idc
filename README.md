@@ -6,12 +6,12 @@ Game đấu bài hai người theo Goat Format Bắc Mỹ: cutoff 17/8/2005, ban
 
 ## Tiến độ hiện tại
 
-Đã có bàn đấu hotseat hai người thay phiên cùng máy, catalog 80 loại và deck mẫu hợp lệ 40 lá; deck A/B tự xây vẫn được giữ.
-Core hỗ trợ 75 quái thường; 5 hiệu ứng Pot of Greed, Fissure, Trap Hole, Hane-Hane và
+Đã có bàn đấu hotseat hai người thay phiên cùng máy, catalog 100 loại và deck mẫu hợp lệ 40 lá; deck A/B tự xây vẫn được giữ.
+Core hỗ trợ 95 quái thường; 5 hiệu ứng Pot of Greed, Fissure, Trap Hole, Hane-Hane và
 Man-Eater Bug được mở bằng hồ sơ review và kiểm thử trong scope giới hạn.
 
 Đã hoàn tất [hotseat nội bộ 20 lá](docs/milestones/hotseat-20.md) và [xây/lưu deck A/B](docs/beta/deck-builder.md) trong scope giới hạn.
-Đã đạt [Windows CI cho catalog 80](docs/data/classic-80.md); còn ca Windows 11 desktop chưa chạy.
+Đang kiểm chứng [catalog 100](docs/data/classic-100.md); mốc Windows CI catalog 80 đã đạt; còn ca Windows 11 desktop chưa chạy.
 Không coi việc cấu hình CI Windows hoặc chạy Linux là đã kiểm chứng Windows.
 
 380/380 test đạt trên Linux và Windows CI cho catalog 80.
@@ -22,6 +22,8 @@ Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không 
 
 Đã nhận bộ khung người dùng: [mặt sau chung](docs/beta/card-frames.md) được dùng cho bài úp của cả ba loại.
 Đã ghép [ba khung mặt trước](docs/beta/card-fronts.md), hàng sao và chỉ số lấy từ dữ liệu; ảnh minh họa từng lá sẽ bổ sung sau.
+
+Đã có [tổng kết mốc 100](docs/milestones/catalog-100.md), nêu rõ khả năng hiện có và phần còn thiếu.
 
 ## Chạy và phát triển
 

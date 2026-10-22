@@ -1,0 +1,22 @@
+{
+  "passcode": "09159938",
+  "konamiId": 4119,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4119&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "270f07b109b98aea5796586f579f45703c47233364d7d00f24bfaf199d5aaf88",
+  "currentFacts": {
+    "name": "Dark Gray",
+    "text": "Entirely gray, this beast has rarely been seen by mortal eyes.",
+    "kind": "normal-monster",
+    "race": "Beast",
+    "attribute": "EARTH",
+    "level": 3,
+    "attack": 800,
+    "defense": 900
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-011",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "passcode": "81057959",
+  "konamiId": 4508,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4508&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "9c1d3a50a1f0d7b568cb4261f9ca0391398609a75266a8aa426466a73011b330",
+  "currentFacts": {
+    "name": "D. Human",
+    "text": "Gifted with the power of dragons, this warrior wields a sword created from a dragon's fang.",
+    "kind": "normal-monster",
+    "race": "Warrior",
+    "attribute": "EARTH",
+    "level": 4,
+    "attack": 1300,
+    "defense": 1100
+  },
+  "printing": {
+    "date": "2002-03-29",
+    "setCode": "SDK-030",
+    "product": "STARTER DECK KAIBA"
+  }
+}

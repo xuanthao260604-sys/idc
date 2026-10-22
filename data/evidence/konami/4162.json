@@ -1,0 +1,22 @@
+{
+  "passcode": "20060230",
+  "konamiId": 4162,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4162&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "2c2908919673fbbe7f462c3387415fa4f5a1058427b2d53d597909c7b1ebfc9a",
+  "currentFacts": {
+    "name": "Hard Armor",
+    "text": "A living suit of armor that attacks enemies with a bone-jarring tackle.",
+    "kind": "normal-monster",
+    "race": "Warrior",
+    "attribute": "EARTH",
+    "level": 3,
+    "attack": 300,
+    "defense": 1200
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-074",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

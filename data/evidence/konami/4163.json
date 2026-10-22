@@ -1,0 +1,22 @@
+{
+  "passcode": "53293545",
+  "konamiId": 4163,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4163&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "6bef38b0438db0d303d41c9e70ea0187f79c9c5ab42c8622a80c52ca4fd716d5",
+  "currentFacts": {
+    "name": "Firegrass",
+    "text": "A fire-breathing plant found growing near volcanoes.",
+    "kind": "normal-monster",
+    "race": "Plant",
+    "attribute": "EARTH",
+    "level": 2,
+    "attack": 700,
+    "defense": 600
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-018",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

@@ -25,7 +25,7 @@ const concede = process.argv.includes('--concede');
 const deckBuilder = process.argv.includes('--deck-builder');
 const deckOutArg = process.argv.find(arg => /^--deck-out=[012]$/.test(arg));
 const deckOut = deckOutArg === undefined ? null : Number(deckOutArg.split('=')[1]);
-const s = structuredClone(createDuel(r, { duelId: fullDuel ? 'mixed-smoke' : 'browser-fixture', players: [{ id: 'a', deck }, { id: 'b', deck }], firstPlayerId: 'a', seedHex: fullDuel ? (expanded ? '03' : '08').padStart(64, '0') : '12'.repeat(32) }).state);
+const s = structuredClone(createDuel(r, { duelId: fullDuel ? 'mixed-smoke' : 'browser-fixture', players: [{ id: 'a', deck }, { id: 'b', deck }], firstPlayerId: 'a', seedHex: fullDuel ? (expanded ? '30' : '08').padStart(64, '0') : '12'.repeat(32) }).state);
 // Trusted fixture setup BEFORE starting the server. No state-edit endpoint, seed flag or test mode in beta CLI.
 function move(name, owner, zone, slot = 0, down = false) {
   const d = Object.values(r.cards).find(c => c.name === name), p = s.players.find(p => p.id === owner);
@@ -241,8 +241,8 @@ try {
   await send('Runtime.enable'); await send('Page.enable'); await send('Page.navigate', { url: `http://127.0.0.1:${server.address().port}` });
   await wait(`document.getElementById('seat-dialog')?.open`); await seat('a');
   if (expanded && !fullDuel) {
-    assert.equal(await evaluate('catalog.size'), 80);
-    assert.match(await evaluate(`document.getElementById('catalog-count').textContent`), /80/);
+    assert.equal(await evaluate('catalog.size'), 100);
+    assert.match(await evaluate(`document.getElementById('catalog-count').textContent`), /100/);
     await click(`document.getElementById('deck-builder')`); await wait(`!busy && document.getElementById('deck-dialog').open`);
     const added = Object.values(r.cards);
     for (const card of added) {
@@ -259,7 +259,7 @@ try {
         assert.equal(await evaluate(`document.querySelector('#deck-preview .card-attribute').textContent`),card.attribute);
         assert.equal(await evaluate(`(()=>{const e=document.querySelector('#deck-preview .card-attribute');return getComputedStyle(e).whiteSpace==='nowrap' && e.scrollWidth<=e.clientWidth+1})()`),true);
       }
-      if(process.argv.includes('--screenshots') && ['Blue-Eyes White Dragon','Pot of Greed','Trap Hole','Skull Servant','Launcher Spider','Winged Dragon, Guardian of the Fortress #1','King of Yamimakai','Armored Zombie','Armored Starfish','Giga-Tech Wolf'].includes(card.name)) {
+      if(process.argv.includes('--screenshots') && ['Blue-Eyes White Dragon','Pot of Greed','Trap Hole','Skull Servant','Launcher Spider','Winged Dragon, Guardian of the Fortress #1','King of Yamimakai','Armored Zombie','Armored Starfish','Giga-Tech Wolf','Disk Magician','Illusionist Faceless Mage'].includes(card.name)) {
         const directory=join(projectRoot,'artifacts','card-fronts');await mkdir(directory,{recursive:true});
         for(const [label,width,height] of [['desktop',1440,1000],['narrow',390,844]]) {
           await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
@@ -283,7 +283,7 @@ try {
     assert.equal(await evaluate('view.players[1].lifePoints'), 7200);
     assert.equal(await evaluate(`view.players[1].graveyard.some(c=>catalog.get(c.definition.id).name==='Armored Lizard')`), true);
     assert.equal(errors.length, 0);
-    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'expanded-catalog', catalog: 80, reviewedCardPreviews: 80, dataDrivenLevels: true, tributeSummon: 'Gaia The Fierce Knight', battleTarget: 'Armored Lizard', battleDamage: 800, fixtureOnlyAtSetup: true, runtimeExceptions: errors.length }));
+    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'expanded-catalog', catalog: 100, reviewedCardPreviews: 100, dataDrivenLevels: true, tributeSummon: 'Gaia The Fierce Knight', battleTarget: 'Armored Lizard', battleDamage: 800, fixtureOnlyAtSetup: true, runtimeExceptions: errors.length }));
   } else if (deckBuilder) {
     const openDeck = async () => { await click(`document.getElementById('deck-builder')`); await wait(`!busy && document.getElementById('deck-dialog').open`); };
     const change = (id, direction) => click(`document.querySelector('#deck-catalog [data-card-id="${id}"] [data-change="${direction}"]')`);

@@ -1,0 +1,22 @@
+{
+  "passcode": "02863439",
+  "konamiId": 4192,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4192&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "f612bbffeb661fde1b764481877c4c3c01def88b153b4905bc3f9bfdec741919",
+  "currentFacts": {
+    "name": "Fiend Reflection #2",
+    "text": "A bird-beast that summons reinforcements with a hand mirror.",
+    "kind": "normal-monster",
+    "race": "Winged Beast",
+    "attribute": "LIGHT",
+    "level": 4,
+    "attack": 1100,
+    "defense": 1400
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-021",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

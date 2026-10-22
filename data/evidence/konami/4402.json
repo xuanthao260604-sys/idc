@@ -1,0 +1,22 @@
+{
+  "passcode": "86088138",
+  "konamiId": 4402,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4402&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "c2a18d4875ef4e8c5676ef7e056fbb5fa20969e69978287cefad27fbc2779e18",
+  "currentFacts": {
+    "name": "Ocubeam",
+    "text": "Frightening in appearance, this creature uses its large eyes and ears to keep track of any movement.",
+    "kind": "normal-monster",
+    "race": "Fairy",
+    "attribute": "LIGHT",
+    "level": 5,
+    "attack": 1550,
+    "defense": 1650
+  },
+  "printing": {
+    "date": "2002-06-26",
+    "setCode": "MRD-030",
+    "product": "METAL RAIDERS"
+  }
+}

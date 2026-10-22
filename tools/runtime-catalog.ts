@@ -25,8 +25,9 @@ export function loadRuntimeCatalog(root = projectRoot) {
   const classic10d = read('data/generated/classic-10d.json');
   const classic10e = read('data/generated/classic-10e.json');
   const classic10f = read('data/generated/classic-10f.json');
-  const cards = combineCatalogBundles([pilot, classic10, classic10b, classic10c, classic10d, classic10e, classic10f]);
+  const classic20 = read('data/generated/classic-20.json');
+  const cards = combineCatalogBundles([pilot, classic10, classic10b, classic10c, classic10d, classic10e, classic10f, classic20]);
   const registry = createRegistry(cards, goat200508Format, {}, read('data/reviews/pilot.spell-effects.json'),
     read('data/reviews/pilot.flip-effects.json'), read('data/reviews/pilot.trap-effects.json'));
-  return { cards, registry, importedSnapshots: { pilot: pilot.summary, classic10: classic10.summary, classic10b: classic10b.summary, classic10c: classic10c.summary, classic10d: classic10d.summary, classic10e: classic10e.summary, classic10f: classic10f.summary } };
+  return { cards, registry, importedSnapshots: { pilot: pilot.summary, classic10: classic10.summary, classic10b: classic10b.summary, classic10c: classic10c.summary, classic10d: classic10d.summary, classic10e: classic10e.summary, classic10f: classic10f.summary, classic20: classic20.summary } };
 }

@@ -1,0 +1,22 @@
+{
+  "passcode": "80141480",
+  "konamiId": 4620,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4620&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "090c4678d139683e4c3fb4fba96997432f65f2d36bbe1caddaf118b6f2245b92",
+  "currentFacts": {
+    "name": "Hunter Spider",
+    "text": "This monster feeds on whatever it catches in its web.",
+    "kind": "normal-monster",
+    "race": "Insect",
+    "attribute": "EARTH",
+    "level": 5,
+    "attack": 1600,
+    "defense": 1400
+  },
+  "printing": {
+    "date": "2002-06-26",
+    "setCode": "MRD-049",
+    "product": "METAL RAIDERS"
+  }
+}

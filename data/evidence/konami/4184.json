@@ -1,0 +1,22 @@
+{
+  "passcode": "41218256",
+  "konamiId": 4184,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4184&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "322482d982a3d71b67799e61c9b337984365445e976d16fc156da5a4af1b4007",
+  "currentFacts": {
+    "name": "Claw Reacher",
+    "text": "Stretching arms and razor-sharp claws make this monster a formidable opponent.",
+    "kind": "normal-monster",
+    "race": "Fiend",
+    "attribute": "DARK",
+    "level": 3,
+    "attack": 1000,
+    "defense": 800
+  },
+  "printing": {
+    "date": "2002-03-29",
+    "setCode": "SDY-018",
+    "product": "STARTER DECK YUGI"
+  }
+}

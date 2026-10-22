@@ -1,0 +1,22 @@
+{
+  "passcode": "16353197",
+  "konamiId": 4575,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4575&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "d9306cca8e686f61acccc851c11ebe739f5da7bdce3711453d67510ea93aa11e",
+  "currentFacts": {
+    "name": "Drooling Lizard",
+    "text": "A blood-sucking snake in human form that attacks any living being that passes nearby.",
+    "kind": "normal-monster",
+    "race": "Reptile",
+    "attribute": "EARTH",
+    "level": 3,
+    "attack": 900,
+    "defense": 800
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-115",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

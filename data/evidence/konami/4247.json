@@ -1,0 +1,22 @@
+{
+  "passcode": "41949033",
+  "konamiId": 4247,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4247&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "c6afedba738b822c99a6bd59203865e2a86a21c5b3f19a25b59baafaee68e56e",
+  "currentFacts": {
+    "name": "Dark Assailant",
+    "text": "Armed with the Psycho Sword, this sinister assassin rules the bad land.",
+    "kind": "normal-monster",
+    "race": "Zombie",
+    "attribute": "DARK",
+    "level": 4,
+    "attack": 1200,
+    "defense": 1200
+  },
+  "printing": {
+    "date": "2002-03-29",
+    "setCode": "SDK-015",
+    "product": "STARTER DECK KAIBA"
+  }
+}
