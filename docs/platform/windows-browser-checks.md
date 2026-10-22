@@ -1,6 +1,10 @@
 # Kiểm thử giao diện bằng trình duyệt trên Windows
 
-> Mốc hiện hành: [xem trước chi phí/mục tiêu](../beta/choice-previews.md), catalog 106; [run 39791352732](https://github.com/xuanthao260604-sys/idc/actions/runs/39791352732), commit b68f4f1.
+> Mốc hiện hành: [đọc bài trong lựa chọn bắt buộc](../beta/decision-previews.md), catalog 106; [run 39793189856](https://github.com/xuanthao260604-sys/idc/actions/runs/39793189856), commit ef9b807.
+> Windows/Ubuntu đạt; Windows: 644/644 test, 28/28 bước, 18 browser report với Edge 154.0.4258.62, runtimeExceptions=0.
+> FLIP/Hammer Shot/discard đọc đúng bài, giữ ô chọn; Escape xóa preview. Windows 11 desktop chưa chạy.
+
+> Mốc trước: [xem trước chi phí/mục tiêu](../beta/choice-previews.md), catalog 106; [run 39791352732](https://github.com/xuanthao260604-sys/idc/actions/runs/39791352732), commit b68f4f1.
 > Windows/Ubuntu đều đạt; Windows: 644/644 test, 28/28 bước, 18 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Preview theo PlayerView; đổi cost cập nhật target, chuyển sang bài úp xóa mặt trước cũ. Windows 11 desktop chưa chạy.
 

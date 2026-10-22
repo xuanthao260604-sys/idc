@@ -23,6 +23,19 @@ Ca FLIP đọc mục tiêu trước khi chọn rồi resolve Hane-Hane/Man-Eater
 Phần đọc không có nút hành động phụ; đóng xóa nội dung. Đã xem ảnh 390px, kiểm tra
 hộp đọc không tràn ngang và cuộn trong màn hình tại 390px/1440px.
 
-Bộ validation đầy đủ Linux và Windows CI đang chờ kiểm chứng.
+Linux đầy đủ đạt typecheck, build, kiểm tra dữ liệu và 644/644 test trong 31 file;
+28/28 bước validation, 18 browser report, runtimeExceptions=0.
+Report: artifacts/platform-validation/2026-10-22T14-09-02-517Z-62071/report.json.
+Đã chạy thêm ca đọc lựa chọn quái đồng hạng của Hammer Shot; các trận tự nhiên
+giữ 16 lượt/339 lệnh (pilot) và 17 lượt/336 lệnh (106), không sửa state khi chơi.
+Windows và Ubuntu CI đạt trên source commit ef9b8078a2e2beeb024b8d492465a4f7ac42cdb6:
+[run 39793189856](https://github.com/xuanthao260604-sys/idc/actions/runs/39793189856).
+Đã tải và đọc artifact windows-validation-39793189856-1: win32 x64,
+OS 10.0.26100, Node 24.19.0, npm 11.17.0, Edge 154.0.4258.62.
+Windows đạt 644/644 test trong 31 file, 28/28 bước, 18 browser report,
+tất cả runtimeExceptions=0. Report FLIP có flipDecisionPreviews=true;
+Hammer Shot có decisionPreviews=true; discard có viewingPreservesSelection và
+escapeClearsPreview=true. Các assertion mới bổ sung trong browser regression
+hiện có, không tăng số unit test.
 Catalog giữ 106 loại, chưa mở thêm hiệu ứng hoặc thay dữ liệu/deck đã lưu.
 Windows 11 desktop chưa kiểm thử trực tiếp; chưa đóng gói hoặc bàn giao beta.

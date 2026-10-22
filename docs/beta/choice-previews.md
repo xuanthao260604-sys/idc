@@ -15,8 +15,9 @@ projection trả về. Bài úp đối thủ chỉ hiện “Bài úp” và l�
 kín; không dựng mặt trước hoặc tra catalog để đoán danh tính. Tấn công trực tiếp
 hiện mô tả thay cho lá mục tiêu. Nội dung chỉ đọc, không có nút hành động phụ.
 
-Đây là hộp chọn chi phí/mục tiêu trước khi gửi lệnh, chưa bổ sung xem trước nhiều
-lá hiến tế hoặc bảng lựa chọn bắt buộc. Không đổi timing, cost, Chain hay validate
+Đây là hộp chọn chi phí/mục tiêu trước khi gửi lệnh; chưa xem trước nhiều lá
+hiến tế. Phần đọc trong bảng lựa chọn bắt buộc được bổ sung riêng tại
+[đọc bài trong quyết định](decision-previews.md). Không đổi timing, cost, Chain hay validate
 của engine. Catalog 106, dữ liệu/review, deck đã lưu và file chuyển deck giữ nguyên.
 
 ## Kiểm chứng

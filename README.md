@@ -15,13 +15,15 @@ Hinotama, Dian Keto the Cure Master, Smashing Ground, Hammer Shot, Tribute to Th
 Không coi việc cấu hình CI Windows hoặc chạy Linux là đã kiểm chứng Windows.
 
 644/644 test đạt trên Linux và Windows CI cho catalog 106.
-28/28 bước validation và 18 browser run đạt bằng Edge trên Windows CI; chi tiết tại [xem trước chi phí/mục tiêu](docs/beta/choice-previews.md).
+28/28 bước validation và 18 browser run đạt bằng Edge trên Windows CI; chi tiết tại [đọc bài trong lựa chọn bắt buộc](docs/beta/decision-previews.md).
 Browser regression tính riêng: xây/lưu deck, 5 hiệu ứng, xem Mộ, tạo trận A/B/ngẫu nhiên, bỏ bài,
 Pot với deck 0/1/2 lá, đầu hàng/hủy và tạo trận sau kết thúc, trận tự nhiên đầy đủ.
 Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không phải game hoàn tất mọi luật Yu-Gi-Oh!.
 
 Đã nhận bộ khung người dùng: [mặt sau chung](docs/beta/card-frames.md) được dùng cho bài úp của cả ba loại.
 Đã ghép [ba khung mặt trước](docs/beta/card-fronts.md), hàng sao và chỉ số lấy từ dữ liệu; ảnh minh họa từng lá sẽ bổ sung sau.
+
+Đã có [đọc bài trong lựa chọn bắt buộc](docs/beta/decision-previews.md): xem nội dung mà không tự chọn bài hoặc gửi quyết định.
 
 Đã có [xem trước chi phí và mục tiêu](docs/beta/choice-previews.md) trong hộp xác nhận, giữ kín bài úp của đối thủ.
 
