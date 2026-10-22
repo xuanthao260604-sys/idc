@@ -1,6 +1,10 @@
 # Kiểm thử giao diện bằng trình duyệt trên Windows
 
-> Mốc hiện hành: [xuất/nhập file deck](../beta/deck-files.md), catalog 106; [run 39786648331](https://github.com/xuanthao260604-sys/idc/actions/runs/39786648331), commit 2d9b758.
+> Mốc hiện hành: [gợi ý lá có thao tác](../beta/actionable-cards.md), catalog 106; [run 39789853873](https://github.com/xuanthao260604-sys/idc/actions/runs/39789853873), commit 59a190c.
+> Windows/Ubuntu đều đạt; Windows: 644/644 test, 28/28 bước, 18 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Gợi ý theo availableActions, chỉ bài của viewer; Main/Chain/Trap/Battle/FLIP/end được kiểm chứng. Windows 11 desktop chưa chạy.
+
+> Mốc trước: [xuất/nhập file deck](../beta/deck-files.md), catalog 106; [run 39786648331](https://github.com/xuanthao260604-sys/idc/actions/runs/39786648331), commit 2d9b758.
 > Windows/Ubuntu đều đạt; Windows: 644/644 test, 28/28 bước, 18 browser report với Edge 154.0.4258.62, runtimeExceptions=0.
 > Tải/nhập file thật đạt; nhập lỗi giữ bản nháp, nhập thành công cần Lưu mới áp dụng. Windows 11 desktop chưa chạy.
 

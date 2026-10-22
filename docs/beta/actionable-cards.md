@@ -29,5 +29,17 @@ vì bốc thiếu bài. Nhãn/aria-label đồng nhất; bài đối thủ khôn
 Các chuỗi này dùng lệnh thật sau fixture khởi tạo, runtimeExceptions=0.
 Đã xem ảnh 1440px/390px; dấu nằm trong vùng minh họa, không che tên/sao/chỉ số.
 
-Bộ validation đầy đủ Linux và Windows CI đang chờ kiểm chứng.
+Linux validation đầy đủ đạt 28/28 bước và 18 browser report, runtimeExceptions=0;
+report: artifacts/platform-validation/2026-10-22T13-46-42-009Z-53923/report.json.
+Trận pilot 20 giữ 16 lượt/339 lệnh, B thắng LP 0/4200; trận 106 giữ
+17 lượt/336 lệnh, A thắng LP 6400/0. Không sửa state trong trận.
+Windows và Ubuntu CI đều đạt trên source commit 59a190c9c196acd283be8fbe241b19325c24e26b:
+[run 39789853873](https://github.com/xuanthao260604-sys/idc/actions/runs/39789853873).
+Đã tải và đọc artifact windows-validation-39789853873-1: win32 x64,
+OS 10.0.26100, Node 24.19.0, npm 11.17.0, Edge 155.0.4283.62.
+Windows đạt 644/644 test trong 31 file, 28/28 bước, 18 browser report,
+tất cả runtimeExceptions=0. Report xác nhận sáu nhánh gợi ý Main/Chain/Trap/Battle/
+mandatory-choice/own-only; các ca kết thúc vì bốc thiếu bài cũng đạt.
+Test count giữ nguyên vì bổ sung assertion trong browser regression hiện có,
+không thêm unit test cho thao tác render.
 Windows 11 desktop chưa được thử trực tiếp; chưa đóng gói hoặc bàn giao beta.

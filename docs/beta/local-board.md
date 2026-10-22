@@ -1,4 +1,4 @@
-> Mục hiện tại: [xuất/nhập file deck](deck-files.md), catalog 106; sao lưu và chuyển deck qua file JSON, nhập vào bản nháp trước khi lưu. Linux và Windows CI đạt 644 test; Windows đạt 28 bước, 18 browser report. Windows 11 desktop chưa chạy.
+> Mục hiện tại: [gợi ý lá có thao tác](actionable-cards.md), catalog 106; nhãn trên bài riêng theo availableActions. Linux và Windows CI đều đạt 644 test, 28 bước, 18 browser report. Windows 11 desktop chưa chạy.
 
 > Mốc trước: [Tribute to The Doomed](../engine/tribute-doomed.md), catalog 105; thêm chi phí bỏ bài và target khi kích hoạt. Đã đạt Linux và Windows CI: 579 test, 26 bước, 16 browser report. Snapshot lịch sử vẫn pending; Windows 11 desktop chưa chạy.
 

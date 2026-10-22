@@ -66,3 +66,5 @@ Thêm 3 regression test tại command-adapter.test.ts:
 chứng minh an toàn cho mọi lá/hiệu ứng tương lai. Không thay engine, luật hoặc dữ liệu bài.
 Tổng hiện tại 262/262 test đạt cùng typecheck trên Linux. Không chạy lại browser trong
 đợt này vì không thay mã sản phẩm; các kết quả browser trước được ghi riêng.
+
+Giao diện bổ sung: [đánh dấu lá có thao tác](actionable-cards.md) dùng cùng danh sách hành động server; không suy luận luật thêm ở client.
