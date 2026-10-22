@@ -14,9 +14,8 @@ Hinotama, Dian Keto the Cure Master, Smashing Ground, Hammer Shot và Tribute to
 Đã kiểm chứng [hai Phép thay đổi LP](docs/engine/life-point-spells.md) trên Linux và Windows CI; còn ca Windows 11 desktop chưa chạy.
 Không coi việc cấu hình CI Windows hoặc chạy Linux là đã kiểm chứng Windows.
 
-Đang kiểm chứng [Tribute to The Doomed](docs/engine/tribute-doomed.md) cho catalog 105.
-Mốc trước: 519/519 test đạt trên Linux và Windows CI cho catalog 104.
-25/25 bước validation và 15 browser run đạt bằng Edge trên Windows CI; chi tiết tại [Hammer Shot](docs/engine/hammer-shot.md).
+579/579 test đạt trên Linux và Windows CI cho catalog 105.
+26/26 bước validation và 16 browser run đạt bằng Edge trên Windows CI; chi tiết tại [Tribute to The Doomed](docs/engine/tribute-doomed.md).
 Browser regression tính riêng: xây/lưu deck, 5 hiệu ứng, xem Mộ, tạo trận A/B/ngẫu nhiên, bỏ bài,
 Pot với deck 0/1/2 lá, đầu hàng/hủy và tạo trận sau kết thúc, trận tự nhiên đầy đủ.
 Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không phải game hoàn tất mọi luật Yu-Gi-Oh!.
@@ -67,7 +66,7 @@ hoặc mọi tương tác bài. Bài tự tạo giữ ở [kế hoạch mở r�
 
 `npm run validate:platform` chạy bộ kiểm chứng tổng hợp, ghi report JSON và log từng bước
 vào artifacts/platform-validation/ (Git bỏ qua). Lỗi dừng ngay, phần còn lại ghi chưa chạy.
-Windows CI đã chạy cùng lệnh, đạt 25/25 bước và giữ artifact; report Linux vẫn chỉ xác nhận Linux.
+Windows CI đã chạy cùng lệnh, đạt 26/26 bước và giữ artifact; report Linux vẫn chỉ xác nhận Linux.
 
 ## Kiểm thử giao diện
 

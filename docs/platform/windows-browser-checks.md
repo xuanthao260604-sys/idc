@@ -1,6 +1,10 @@
 # Kiểm thử giao diện bằng trình duyệt trên Windows
 
-> Mốc hiện hành: [Hammer Shot](../engine/hammer-shot.md), catalog 104; [run 39774628060](https://github.com/xuanthao260604-sys/idc/actions/runs/39774628060), commit 2ebf56f.
+> Mốc hiện hành: [Tribute to The Doomed](../engine/tribute-doomed.md), catalog 105; [run 39778095511](https://github.com/xuanthao260604-sys/idc/actions/runs/39778095511), commit c4fe6f1.
+> Windows/Ubuntu đều đạt; Windows: 579/579 test, 26/26 bước, 16 browser report với Edge 154.0.4258.62, không có runtime exception.
+> Đủ 105 preview; ca hủy/trả chi phí/target úp và trận tự nhiên dùng lá mới đều đạt. Windows 11 desktop chưa chạy.
+
+> Mốc trước: [Hammer Shot](../engine/hammer-shot.md), catalog 104; [run 39774628060](https://github.com/xuanthao260604-sys/idc/actions/runs/39774628060), commit 2ebf56f.
 > Windows/Ubuntu đều đạt; Windows: 519/519 test, 25/25 bước, 15 browser report với Edge 155.0.4283.62, không có runtime exception.
 > Đủ 104 preview; ca hòa ATK giữa hai sân và trận tự nhiên dùng Hammer Shot đều đạt. Windows 11 desktop chưa chạy.
 

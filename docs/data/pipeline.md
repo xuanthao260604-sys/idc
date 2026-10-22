@@ -1,4 +1,4 @@
-> Mục hiện tại: [Tribute to The Doomed](../engine/tribute-doomed.md), catalog 105; thêm chi phí bỏ bài và target khi kích hoạt. Đang kiểm chứng nền tảng, snapshot lịch sử vẫn pending.
+> Mục hiện tại: [Tribute to The Doomed](../engine/tribute-doomed.md), catalog 105; thêm chi phí bỏ bài và target khi kích hoạt. Đã đạt Linux và Windows CI: 579 test, 26 bước, 16 browser report. Snapshot lịch sử vẫn pending; Windows 11 desktop chưa chạy.
 
 > Mốc trước: [Hammer Shot](../engine/hammer-shot.md), catalog runtime 104; batch riêng hammer-shot. Đã đạt Linux và Windows CI: 519 test, 25 bước, 15 browser report. Trạng thái lịch sử vẫn pending; Windows 11 desktop chưa chạy.
 

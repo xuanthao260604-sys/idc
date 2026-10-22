@@ -91,5 +91,11 @@ Trận tự nhiên catalog 105 dùng Fissure/Hane-Hane/Man-Eater Bug/Pot of Gree
 18 lượt, 370 lệnh, 15 attack, 3 decision, B thắng LP 0/4950; không chỉnh state khi chơi.
 Pilot 20 giữ 16 lượt/339 lệnh và đủ 5 hiệu ứng cũ.
 Seed expanded đổi từ hex 06 của pool 104 sang hex 18 cho pool 105 để trận có dùng lá mới và có decision.
-Windows CI chưa được ghi đạt trước khi đọc report. Windows 11 desktop chưa chạy;
+Windows và Ubuntu CI đều đạt trên source commit c4fe6f19e3928cf8e2be797c16e7cf29221dabf5:
+[run 39778095511](https://github.com/xuanthao260604-sys/idc/actions/runs/39778095511).
+Đã tải và đọc artifact: Windows x64 10.0.26100, Node 24.19.0, npm 11.17.0,
+Edge 154.0.4258.62; 579/579 test, 26/26 bước, 16 browser report, runtimeExceptions=0.
+Đủ 105 preview; fixture chi phí/target và trận expanded đạt cùng kết quả Linux
+(18 lượt/370 lệnh/15 attack/3 decision, LP 0/4950).
+Windows 11 desktop chưa chạy;
 artwork vẫn placeholder, chưa đóng gói hoặc bàn giao beta.
