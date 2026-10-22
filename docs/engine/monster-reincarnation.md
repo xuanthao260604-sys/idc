@@ -89,5 +89,10 @@ bằng Chromium 154.0.8037.57, runtimeExceptions=0. Cả hai ca trả quái cũ/
 Trận tự nhiên catalog 106 dùng Hane-Hane/Man-Eater Bug/Monster Reincarnation/Trap Hole:
 17 lượt, 336 lệnh, 13 attack, 2 decision, A thắng LP 6400/0; không chỉnh state khi chơi.
 Pilot 20 giữ 16 lượt/339 lệnh và đủ 5 hiệu ứng cũ.
-Windows CI đang chờ xác minh source commit của mục này.
+Windows và Ubuntu CI đều đạt trên source commit 3504b9b090750f86297060cc9a9fefc305643ed0:
+[run 39781536781](https://github.com/xuanthao260604-sys/idc/actions/runs/39781536781).
+Đã tải và đọc artifact: Windows x64 10.0.26100, Node 24.19.0, npm 11.17.0,
+Edge 154.0.4258.62; 620/620 test, 28/28 bước, 18 browser report, runtimeExceptions=0.
+Đủ 106 preview; cả hai ca hồi quái và trận expanded đạt cùng kết quả Linux
+(17 lượt/336 lệnh/13 attack/2 decision, LP 6400/0).
 Windows 11 desktop chưa chạy; artwork vẫn placeholder; chưa đóng gói hoặc bàn giao beta.

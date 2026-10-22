@@ -1,6 +1,10 @@
 # Kết quả Windows CI
 
-> Mốc hiện hành: [Tribute to The Doomed](../engine/tribute-doomed.md), catalog 105; [run 39778095511](https://github.com/xuanthao260604-sys/idc/actions/runs/39778095511), commit c4fe6f1.
+> Mốc hiện hành: [Monster Reincarnation](../engine/monster-reincarnation.md), catalog 106; [run 39781536781](https://github.com/xuanthao260604-sys/idc/actions/runs/39781536781), commit 3504b9b.
+> Windows/Ubuntu đều đạt; Windows: 620/620 test, 28/28 bước, 18 browser report với Edge 154.0.4258.62, không có runtime exception.
+> Đủ 106 preview; trả quái cũ/trả quái vừa bỏ làm chi phí và trận tự nhiên đều đạt. Windows 11 desktop chưa chạy.
+
+> Mốc trước: [Tribute to The Doomed](../engine/tribute-doomed.md), catalog 105; [run 39778095511](https://github.com/xuanthao260604-sys/idc/actions/runs/39778095511), commit c4fe6f1.
 > Windows/Ubuntu đều đạt; Windows: 579/579 test, 26/26 bước, 16 browser report với Edge 154.0.4258.62, không có runtime exception.
 > Đủ 105 preview; ca hủy/trả chi phí/target úp và trận tự nhiên dùng lá mới đều đạt. Windows 11 desktop chưa chạy.
 
