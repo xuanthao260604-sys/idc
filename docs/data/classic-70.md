@@ -52,5 +52,14 @@ pilot 20 giữ seed 08. Kiểm tra đủ 70 preview: khung, sao theo level, tên
 
 ## Kết quả
 
-357/357 test, 23 file đã đạt trên Linux. Bộ validation và Windows CI đang được hoàn tất.
+Linux: 357/357 test, 23 file; 21/21 bước validation; 11 browser run bằng Chromium 154.0.8037.57, runtimeExceptions 0.
+Expanded preview xác nhận đủ 70 mặt trước có sao/chỉ số theo dữ liệu. Đã xem screenshot DEF 0 và DEF 1530
+ở desktop/màn hình hẹp; không sửa ảnh khung gốc.
+Trận expanded: 18 lượt, 365 lệnh, 14 attack, 3 decision; Fissure/Hane-Hane/Man-Eater Bug/Trap Hole được dùng;
+B thắng LP 0/6800. Pilot 20 giữ 16 lượt/339 lệnh, đủ 5 effect, LP 0/4200.
+Windows và Ubuntu CI đã đạt trên commit `9a3fadfd11136f8219a4e9d0cb19eaf4de2b745d`, [run 39742428389](https://github.com/xuanthao260604-sys/idc/actions/runs/39742428389).
+Đã tải và đọc artifact Windows: win32/x64, OS release 10.0.26100, Node 24.19.0, npm 11.17.0;
+Edge 154.0.4258.62, 357/357 test, 23 file, 21/21 bước, 11 browser report, runtimeExceptions 0.
+Expanded xác nhận 70 preview có sao theo dữ liệu; trận tự nhiên trùng Linux: 18 lượt/365 lệnh/3 decision, LP 0/6800.
+Artifact chỉ là bằng chứng kiểm thử, được Git bỏ qua; không phải gói beta.
 Windows 11 desktop chưa chạy. Chưa đóng gói/bàn giao beta.

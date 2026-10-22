@@ -11,11 +11,11 @@ Core hỗ trợ 65 quái thường; 5 hiệu ứng Pot of Greed, Fissure, Trap H
 Man-Eater Bug được mở bằng hồ sơ review và kiểm thử trong scope giới hạn.
 
 Đã hoàn tất [hotseat nội bộ 20 lá](docs/milestones/hotseat-20.md) và [xây/lưu deck A/B](docs/beta/deck-builder.md) trong scope giới hạn.
-Đang kiểm chứng [catalog 70](docs/data/classic-70.md); mốc Windows CI catalog 60 đã đạt; còn ca Windows 11 desktop chưa chạy.
+Đã đạt [Windows CI cho catalog 70](docs/data/classic-70.md); còn ca Windows 11 desktop chưa chạy.
 Không coi việc cấu hình CI Windows hoặc chạy Linux là đã kiểm chứng Windows.
 
-334/334 test đạt trên Linux và Windows CI cho catalog 60.
-21/21 bước validation và 11 browser run đạt bằng Edge trên Windows CI; chi tiết tại [mốc 60](docs/data/classic-60.md).
+357/357 test đạt trên Linux và Windows CI cho catalog 70.
+21/21 bước validation và 11 browser run đạt bằng Edge trên Windows CI; chi tiết tại [mốc 70](docs/data/classic-70.md).
 Browser regression tính riêng: xây/lưu deck, 5 hiệu ứng, xem Mộ, tạo trận A/B/ngẫu nhiên, bỏ bài,
 Pot với deck 0/1/2 lá, đầu hàng/hủy và tạo trận sau kết thúc, trận tự nhiên đầy đủ.
 Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không phải game hoàn tất mọi luật Yu-Gi-Oh!.
