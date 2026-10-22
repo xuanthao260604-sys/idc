@@ -1,0 +1,40 @@
+[
+  {
+    "cardId": "official:74848038",
+    "definitionSha256": "655ceb62f07b6e19eb30a85ac5c6aac097af16e68bd7fb25175118d2da496f15",
+    "revision": 1,
+    "format": {
+      "id": "goat-2005-08-17",
+      "revision": 4
+    },
+    "status": "reviewed-for-supported-scope",
+    "scope": "normal-spell-discard-graveyard-single-link-v1",
+    "handler": {
+      "handler": "discard-return-own-graveyard-monster"
+    },
+    "evidence": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=6213&request_locale=en",
+        "accessedOn": "2026-10-22",
+        "sourceKind": "official-current",
+        "quotation": "Discard 1 card, then target 1 monster in your GY; add it to your hand.",
+        "historicalApplicability": "Current reference semantics; original North American RDS-EN045 printing date independently reviewed as 2004-12-01, not inferred from API dates. Historical printed wording remains pending."
+      },
+      {
+        "url": "https://www.goatformat.com/rulings5.html",
+        "accessedOn": "2026-10-22",
+        "sourceKind": "community",
+        "quotation": "You can select a card discarded by the effect of \"Monster Reincarnation\" as a target of the effect of that same \"Monster Reincarnation\" (returning the monster to your hand).",
+        "historicalApplicability": "Goat Individual Card FAQ. Its loose phrase \"by the effect\" does not change discard from cost into an effect; current official text supplies cost semantics. Only target selection is borrowed, not adjacent Night Assailant/Makyura trigger rulings."
+      },
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=4&cid=6213&request_locale=ja",
+        "accessedOn": "2026-10-22",
+        "sourceKind": "official-current",
+        "quotation": "自分の墓地にモンスターが存在しない場合、このカードは発動できません。",
+        "historicalApplicability": "Current official OCG supplement (displayed date 2017-06-03): cannot activate if no monster is in own Graveyard. Not represented as original 2005 TCG wording or an archival Goat primary ruling. No modern Extra Deck or discard-trigger rules are enabled."
+      }
+    ],
+    "notes": "Own open Main, hand/own Set. Requires an eligible own Graveyard monster BEFORE paying; discard one other hand card as activation cost, then target an own Graveyard monster, including the just-discarded monster. Return to hand only after two passes, not Special Summon. Normal/effect monsters supported by current registry only; no Extra Deck returns, discard triggers, Necrovalley/replacements, immunity, modifiers or general mixed Chain. Imported historical status stays pending."
+  }
+]

@@ -1,0 +1,9 @@
+{
+  "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=4&cid=6213&request_locale=ja",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "a9ad67c81b887fddfb9952e530f2f2c52b52ce40298689433429990828c59da1",
+  "quotations": [
+    "自分の墓地にモンスターが存在しない場合、このカードは発動できません。"
+  ],
+  "notes": "Current official OCG supplement (displayed date 2017-06-03): cannot activate if no monster is in own Graveyard. Not represented as original 2005 TCG wording or an archival Goat primary ruling. No modern Extra Deck or discard-trigger rules are enabled."
+}

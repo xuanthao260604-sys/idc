@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "formatId": "goat-2005-08-17",
+  "cards": [
+    {
+      "passcode": "74848038",
+      "expectedName": "Monster Reincarnation",
+      "konamiId": 6213
+    }
+  ],
+  "eligibleSetPrefixes": [
+    "RDS"
+  ],
+  "eligibilitySource": {
+    "url": "https://www.goatformat.com/cardpool.html",
+    "accessedOn": "2026-10-22",
+    "scope": "release",
+    "notes": "Reviewed Goat cardpool explicitly lists Rise of Destiny (RDS); original North American RDS-EN045 print independently checked on Konami."
+  }
+}

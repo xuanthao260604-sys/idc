@@ -76,6 +76,18 @@ function sendToGraveyard(c: Context, id: string) {
   card.controllerId = owner.id; card.position = 'face-up';
 }
 
+function returnToOwnerHand(c: Context, id: string) {
+  const card = c.state.cards[id]!, location = card.location, owner = mutablePlayer(c.state, card.ownerId);
+  if (location.kind === 'monster') mutablePlayer(c.state, card.controllerId).monsters[location.slot] = null;
+  else if (location.kind === 'graveyard') {
+    const graveyard = mutablePlayer(c.state, location.playerId).graveyard;
+    graveyard.splice(graveyard.indexOf(id), 1);
+  } else throw new Error('Unsupported return-to-hand location');
+  owner.hand.push(id); card.location = { kind: 'hand', playerId: owner.id }; card.controllerId = owner.id; card.position = 'face-down';
+  card.counters = {}; card.markers = { summonedOnTurn: null, summonedBy: null, setOnTurn: null, manuallyChangedOnTurn: null, attackDeclarationsThisTurn: 0, attackCountConsumedThisTurn: 0, wasBattleDestroyed: false };
+  emit(c, 'returned-to-hand', [id]);
+}
+
 export function assertDuelInvariants(state: DuelState, registry: Registry) {
   if (state.format.id !== registry.format.id || state.format.revision !== registry.format.revision || state.cardRegistryRevision !== registry.revision)
     throw new Error('State/registry version mismatch');
@@ -117,14 +129,15 @@ export function assertDuelInvariants(state: DuelState, registry: Registry) {
     const card = state.cards[link.source];
     const flip = card && registry.flipHandlers[card.definition.id];
     const trap = card && registry.trapHandlers[card.definition.id];
-    const discardTarget = card && registry.spellHandlers[card.definition.id]?.handler === 'discard-destroy-target-monster';
+    const graveyardReturn = card && registry.spellHandlers[card.definition.id]?.handler === 'discard-return-own-graveyard-monster';
+    const discardTarget = graveyardReturn || (card && registry.spellHandlers[card.definition.id]?.handler === 'discard-destroy-target-monster');
     const cost = link.costEvents[0], paid = cost?.affectedInstances[0] && state.cards[cost.affectedInstances[0]];
     const ref = link.targetRefs[0], target = ref && state.cards[ref.instanceId];
     const targetDefinition = target && registry.cards[target.definition.id];
-    const validDiscardTarget = ref && ref.locationAtSelection.kind === 'monster'
-      && state.players.some(p => p.id === ref.locationAtSelection.playerId)
-      && (targetDefinition?.kind === 'normal-monster' || targetDefinition?.kind === 'effect-monster')
-      && ref.instanceId !== cost?.affectedInstances[0];
+    const validDiscardTarget = ref && (targetDefinition?.kind === 'normal-monster' || targetDefinition?.kind === 'effect-monster')
+      && (graveyardReturn
+        ? ref.locationAtSelection.kind === 'graveyard' && ref.locationAtSelection.playerId === link.controllerId && target!.ownerId === link.controllerId
+        : ref.locationAtSelection.kind === 'monster' && state.players.some(p => p.id === ref.locationAtSelection.playerId) && ref.instanceId !== cost?.affectedInstances[0]);
     const validCosts = discardTarget
       ? link.costEvents.length === 1 && cost!.kind === 'cards-discarded' && cost!.details?.reason === 'activation-cost'
         && cost!.details?.playerId === link.controllerId && cost!.affectedInstances.length === 1
@@ -360,13 +373,7 @@ function resolveFlip(c: Context) {
   if (target && target.location.kind === 'monster' && !target.markers.wasBattleDestroyed
     && JSON.stringify(target.location) === JSON.stringify(ref!.locationAtSelection)) {
     if (link.effectId === 'destroy-target-monster') { sendToGraveyard(c, target.id); emit(c, 'effect-destroyed', [target.id]); }
-    else {
-      mutablePlayer(c.state, target.controllerId).monsters[target.location.slot] = null;
-      mutablePlayer(c.state, target.ownerId).hand.push(target.id);
-      target.location = { kind: 'hand', playerId: target.ownerId }; target.controllerId = target.ownerId; target.position = 'face-down';
-      target.counters = {}; target.markers = { summonedOnTurn: null, summonedBy: null, setOnTurn: null, manuallyChangedOnTurn: null, attackDeclarationsThisTurn: 0, attackCountConsumedThisTurn: 0, wasBattleDestroyed: false };
-      emit(c, 'returned-to-hand', [target.id]);
-    }
+    else returnToOwnerHand(c, target.id);
   }
   emit(c, 'chain-resolved', [], {}, false);
   if (c.state.battle?.step === 'damage') finishDamageAfterFlip(c); else response(c, 'action-response');
@@ -433,14 +440,21 @@ function spell(c: Context, actorId: string, action: Extract<EngineRequest['actio
   rule(fromHand || (action.type === 'activate-spell' && fromSet), 'invalid-target', 'Spell is not in an eligible own zone');
   rule(fromSet || p.spellsTraps[action.slot] === null, 'occupied-zone', 'Spell zone occupied');
   const handler = c.registry.spellHandlers[card.definition.id]!;
+  const graveyardReturn = handler.handler === 'discard-return-own-graveyard-monster';
+  const discardTarget = graveyardReturn || handler.handler === 'discard-destroy-target-monster';
   const costEvents: Mutable<EventRef>[] = [], targetRefs: Mutable<DuelState['chain'][number]['targetRefs']> = [];
   if (action.type === 'activate-spell') {
-    if (handler.handler === 'discard-destroy-target-monster') {
+    if (discardTarget) {
       rule(action.discardId !== undefined && action.targetId !== undefined, 'invalid-action', 'Choose a discard cost and monster target');
       rule(action.discardId !== card.id && p.hand.includes(action.discardId), 'unpayable-cost', 'Discard one other card from your own hand');
       const target = c.state.cards[action.targetId];
-      rule(target && target.location.kind === 'monster', 'invalid-target', 'Choose a monster on either field');
-      targetRefs.push({ instanceId: target.id, locationAtSelection: { ...target.location } });
+      if (graveyardReturn) {
+        const monster = (id: string) => ['normal-monster', 'effect-monster'].includes(definition(c, id).kind);
+        rule(p.graveyard.some(monster), 'invalid-target', 'A monster must already be in your Graveyard before activation');
+        rule(target && monster(target.id) && target.ownerId === actorId &&
+          ((target.location.kind === 'graveyard' && target.location.playerId === actorId) || target.id === action.discardId),
+          'invalid-target', 'Choose an own Graveyard monster or the monster being discarded as cost');
+      } else rule(target && target.location.kind === 'monster', 'invalid-target', 'Choose a monster on either field');
     } else rule(action.discardId === undefined && action.targetId === undefined, 'invalid-action', 'This Spell takes no discard cost or target');
   }
   if (action.type === 'activate-spell' && ['destroy-lowest-opposing-face-up-attack', 'destroy-highest-opposing-face-up-defense', 'destroy-highest-face-up-attack-position'].includes(handler.handler))
@@ -451,11 +465,13 @@ function spell(c: Context, actorId: string, action: Extract<EngineRequest['actio
   if (action.type === 'set-spell') {
     card.markers.setOnTurn = c.state.turn.number; emit(c, 'spell-set', [card.id]); response(c, 'action-response'); return;
   }
-  if (action.type === 'activate-spell' && handler.handler === 'discard-destroy-target-monster') {
+  if (action.type === 'activate-spell' && discardTarget) {
     sendToGraveyard(c, action.discardId!);
     emit(c, 'cards-discarded', [action.discardId!], { playerId: actorId, reason: 'activation-cost' });
     const paid = c.events.at(-1)!;
     costEvents.push({ ...paid, affectedInstances: [...paid.affectedInstances], details: { ...paid.details } });
+    const target = c.state.cards[action.targetId!]!;
+    targetRefs.push({ instanceId: target.id, locationAtSelection: { ...target.location } });
   }
   c.state.chain.push({ id: `${c.state.id}:link:${c.state.eventSequence + 1}`, controllerId: actorId, source: card.id,
     sourceAtActivation: structuredClone(card), effectId: 'normal-spell', spellSpeed: 1, costEvents, targetRefs, activationNegated: false, effectNegated: false });
@@ -487,6 +503,11 @@ function resolveSpell(c: Context) {
     rule(Number.isSafeInteger(recipient.lifePoints + plan.amount), 'invalid-action', 'LP exceeds numeric representation');
     recipient.lifePoints += plan.amount;
     emit(c, 'life-points-gained', [], { playerId: recipient.id, amount: plan.amount });
+  }
+  if (plan.kind === 'return-selected-graveyard-monster') {
+    const ref = link.targetRefs[0], target = ref && c.state.cards[ref.instanceId];
+    if (target && target.location.kind === 'graveyard' && target.location.playerId === link.controllerId
+      && JSON.stringify(target.location) === JSON.stringify(ref!.locationAtSelection)) returnToOwnerHand(c, target.id);
   }
   if (plan.kind === 'destroy-selected-monster') {
     const ref = link.targetRefs[0], target = ref && c.state.cards[ref.instanceId];

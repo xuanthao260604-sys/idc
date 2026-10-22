@@ -1,0 +1,18 @@
+[
+  {
+    "id": "official:74848038",
+    "baseFingerprint": "fd731664f2d91d4013644ea98efbc0b5556fe5813814fbd38c95d2adc3348662",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "pending",
+    "notes": "Current Konami text copied verbatim if different from API. Historical printed wording pending; runtime review separate. Original RDS printing checked.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=6213&request_locale=en",
+        "accessedOn": "2026-10-22",
+        "scope": "text",
+        "notes": "Current reference, not claimed as original 2005 wording."
+      }
+    ]
+  }
+]

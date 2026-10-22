@@ -1,0 +1,18 @@
+{
+  "passcode": "74848038",
+  "konamiId": 6213,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=6213&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "d226a4e3474f6c5223014bf4b3735cd869c5daf7d8203481df2ece27543f413e",
+  "currentFacts": {
+    "name": "Monster Reincarnation",
+    "text": "Discard 1 card, then target 1 monster in your GY; add it to your hand.",
+    "kind": "spell",
+    "subtype": "normal"
+  },
+  "printing": {
+    "date": "2004-12-01",
+    "setCode": "RDS-EN045",
+    "product": "RISE OF DESTINY"
+  }
+}

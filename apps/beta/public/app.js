@@ -17,8 +17,9 @@ function label(card) { return def(card)?.name || 'Bài úp'; }
 function optionLabel(handle) {
   const hand = view.selfHand.find(c => c.handle === handle);
   if (hand) return `Tay của bạn — ${label(hand)}`;
-  for (const p of view.players) for (const [zone, cards] of [['Quái', p.monsters], ['Phép / Bẫy', p.spellsTraps]]) {
+  for (const p of view.players) for (const [zone, cards] of [['Quái', p.monsters], ['Phép / Bẫy', p.spellsTraps], ['Mộ', p.graveyard]]) {
     const slot = cards.findIndex(c => c?.handle === handle);
+    if (slot >= 0 && zone === 'Mộ') return `${names[p.playerId]} · Mộ — ${label(cards[slot])}`;
     if (slot >= 0) return `${names[p.playerId]} · ${zone} ô ${slot + 1} — ${label(cards[slot])}`;
   }
   return 'Lựa chọn';
@@ -103,11 +104,12 @@ function matchesPlan(plan, action) {
     : plan[key] === value);
 }
 let dialogEvents = new AbortController();
-function chooseAction(title, base, { slots = false, tributes = false, targets = null, discards = false } = {}) {
+function chooseAction(title, base, { slots = false, tributes = false, targets = null, discards = false, note = null } = {}) {
   dialogEvents.abort(); dialogEvents = new AbortController();
   const fields = $('action-fields'); fields.replaceChildren(); $('action-title').textContent = title;
   const plans = matchingActions(base);
   if (!plans.length) { message = 'Chưa có thao tác hợp lệ cho lá này ở thời điểm hiện tại.'; $('status').textContent = message; return; }
+  if (note) fields.append(node('p', note));
   let selectSlot, selectTarget, selectDiscard; const checks = [];
   if (slots) {
     const l = node('label', 'Chọn ô đặt bài'); selectSlot = node('select'); selectSlot.name = 'slot';
@@ -139,7 +141,14 @@ function chooseAction(title, base, { slots = false, tributes = false, targets = 
     if (selectTarget) a.targetHandle = selectTarget.value;
     return a;
   };
-  const sync = () => { $('action-form').querySelector('button[type="submit"]').disabled = !plans.some(p => matchesPlan(p, assemble())); };
+  const sync = () => {
+    if (selectDiscard && selectTarget) {
+      const compatible = plans.filter(p => p.discardHandle === selectDiscard.value && (!selectSlot || p.slot === Number(selectSlot.value)));
+      for (const o of selectTarget.options) o.disabled = !compatible.some(p => p.targetHandle === o.value);
+      if (selectTarget.selectedOptions[0]?.disabled) selectTarget.value = [...selectTarget.options].find(o => !o.disabled)?.value || '';
+    }
+    $('action-form').querySelector('button[type="submit"]').disabled = !plans.some(p => matchesPlan(p, assemble()));
+  };
   fields.addEventListener('change', sync, { signal: dialogEvents.signal });
   sync();
   $('action-form').onsubmit = e => {
@@ -194,10 +203,16 @@ function detail() {
 }
 function activateSpell(handle, slot) {
   const base = { type: 'activate-spell', cardHandle: handle, ...(slot === undefined ? {} : { slot }) };
-  const cost = matchingActions(base).some(a => a.discardHandle !== undefined);
+  const plans = matchingActions(base), cost = plans.some(a => a.discardHandle !== undefined);
   if (!cost && slot !== undefined) return command(base);
-  const targets = cost ? view.players.flatMap(p => p.monsters.filter(Boolean).map(c => ({ handle: c.handle, label: optionLabel(c.handle) }))) : null;
-  chooseAction(cost ? 'Bỏ 1 lá làm chi phí và chọn quái để phá' : 'Kích hoạt Phép', base, { slots: slot === undefined, discards: cost, targets });
+  const graveyard = view.players.find(p => p.playerId === view.viewerId).graveyard;
+  const recovery = cost && plans.some(a => graveyard.some(c => c.handle === a.targetHandle));
+  const targets = cost ? [...new Set(plans.map(a => a.targetHandle))].map(h => {
+    const fromHand = recovery && view.selfHand.find(c => c.handle === h);
+    return { handle: h, label: fromHand ? `Lá sẽ bỏ làm chi phí — ${label(fromHand)}` : optionLabel(h) };
+  }) : null;
+  chooseAction(recovery ? 'Bỏ 1 lá làm chi phí và chọn quái về tay' : cost ? 'Bỏ 1 lá làm chi phí và chọn quái để phá' : 'Kích hoạt Phép', base,
+    { slots: slot === undefined, discards: cost, targets, note: recovery ? 'Mộ phải có quái trước khi kích hoạt. Bạn có thể chọn lại quái vừa bỏ làm chi phí.' : null });
 }
 function renderGuide() {
   let title = '', text = '', transfer = null;

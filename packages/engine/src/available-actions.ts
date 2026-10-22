@@ -20,11 +20,17 @@ export function availableActions(registry: Registry, state: DuelState, projectio
     if (applyAction(registry, state, { actorId, expectedStateVersion: state.stateVersion, action }).accepted) actions.push(publicAction);
   };
   const offerSpell = (handle: string, id: string, slot: Slot) => {
-    if (registry.spellHandlers[state.cards[id]!.definition.id]?.handler === 'discard-destroy-target-monster') {
-      for (const discard of view.selfHand.filter(c => c.handle !== handle))
-        for (const target of [...board.monsters, ...opponent.monsters]) if (target)
+    const handler = registry.spellHandlers[state.cards[id]!.definition.id]?.handler;
+    if (['discard-destroy-target-monster', 'discard-return-own-graveyard-monster'].includes(handler ?? '')) {
+      for (const discard of view.selfHand.filter(c => c.handle !== handle)) {
+        const isMonster = (c: { visibility: string; definition?: { id: string } }) => c.visibility === 'known' && ['normal-monster','effect-monster'].includes(registry.cards[c.definition!.id]!.kind);
+        const targets = handler === 'discard-return-own-graveyard-monster'
+          ? [...board.graveyard.filter(isMonster), ...(isMonster(discard) ? [discard] : [])]
+          : [...board.monsters, ...opponent.monsters];
+        for (const target of targets) if (target)
           offer({ type: 'activate-spell', cardHandle: handle, slot, discardHandle: discard.handle, targetHandle: target.handle },
             { type: 'activate-spell', instanceId: id, slot, discardId: resolve(discard.handle), targetId: resolve(target.handle) });
+      }
     } else offer({ type: 'activate-spell', cardHandle: handle, slot }, { type: 'activate-spell', instanceId: id, slot });
   };
   offer({ type: 'concede' }, { type: 'concede' });

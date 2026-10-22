@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "format": {
+    "id": "goat-2005-08-17",
+    "revision": 4
+  },
+  "provenance": {
+    "upstreamSha256": "9762de278d3b97b6f75a92ec8c407f8e2d0e93d3cf6ff91b57db4351aced3028",
+    "manifestSha256": "066c226f7f187a1c21fb175fcbb131003c0460ead4b1ae5283aaeafc46752c8b",
+    "reviewSha256": "b3a5397e73931ba231740c4a0c509f23db0296201a2393c4b43315ca4b4dc551",
+    "officialEvidenceSha256": "07a4a18cbd795a4b14888d5987ec8a652cc44b111fe2cae7df108a2602a66983"
+  },
+  "cards": [
+    {
+      "schemaVersion": 1,
+      "id": "official:74848038",
+      "origin": "official",
+      "revision": 1,
+      "name": "Monster Reincarnation",
+      "passcode": "74848038",
+      "text": "Discard 1 card, then target 1 monster in your GY; add it to your hand.",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=74848038&misc=yes",
+          "accessedOn": "2026-10-22",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=6213&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 6213."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=6213&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=6213&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "text",
+          "notes": "Current reference, not claimed as original 2005 wording."
+        }
+      ],
+      "verification": "pending",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=6213&request_locale=en",
+            "accessedOn": "2026-10-22",
+            "scope": "release",
+            "notes": "Reviewed North American print RDS-EN045, 2004-12-01, RISE OF DESTINY; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-22",
+            "scope": "release",
+            "notes": "Reviewed Goat cardpool explicitly lists Rise of Destiny (RDS); original North American RDS-EN045 print independently checked on Konami."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "kind": "spell",
+      "subtype": "normal"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "official:74848038",
+      "fingerprint": "fd731664f2d91d4013644ea98efbc0b5556fe5813814fbd38c95d2adc3348662",
+      "historicalTextReview": "pending",
+      "upstreamText": "Discard 1 card, then target 1 monster in your GY; add it to your hand.",
+      "referenceText": "Discard 1 card, then target 1 monster in your GY; add it to your hand.",
+      "notes": "Current Konami text copied verbatim if different from API. Historical printed wording pending; runtime review separate. Original RDS printing checked.",
+      "printing": {
+        "date": "2004-12-01",
+        "setCode": "RDS-EN045",
+        "product": "RISE OF DESTINY"
+      },
+      "upstreamTcgDate": "2004-11-20"
+    }
+  ],
+  "summary": {
+    "imported": 1,
+    "verifiedData": 0,
+    "historicalReviewPending": 1,
+    "implemented": 0,
+    "testedEffects": 0,
+    "playable": 0
+  }
+}

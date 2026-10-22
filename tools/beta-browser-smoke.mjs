@@ -17,7 +17,9 @@ const lifePointsMode = lifePointsArg?.split('=')[1] ?? null;
 const smashingGround = process.argv.includes('--smashing-ground');
 const hammerShot = process.argv.includes('--hammer-shot');
 const tributeDoomed = process.argv.includes('--tribute-doomed');
-const expanded = tributeDoomed || hammerShot || smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
+const reincarnationArg = process.argv.find(arg => /^--reincarnation=(grave|cost)$/.test(arg));
+const reincarnationMode = reincarnationArg?.split('=')[1] ?? null;
+const expanded = reincarnationMode !== null || tributeDoomed || hammerShot || smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
 const r = expanded ? loadRuntimeCatalog().registry : createRegistry((await read('data/generated/pilot.json')).cards, goat200508Format, {},
   await read('data/reviews/pilot.spell-effects.json'), await read('data/reviews/pilot.flip-effects.json'), await read('data/reviews/pilot.trap-effects.json'));
 const deck = Object.keys(r.cards);
@@ -30,12 +32,13 @@ const concede = process.argv.includes('--concede');
 const deckBuilder = process.argv.includes('--deck-builder');
 const deckOutArg = process.argv.find(arg => /^--deck-out=[012]$/.test(arg));
 const deckOut = deckOutArg === undefined ? null : Number(deckOutArg.split('=')[1]);
-const s = structuredClone(createDuel(r, { duelId: fullDuel ? 'mixed-smoke' : 'browser-fixture', players: [{ id: 'a', deck }, { id: 'b', deck }], firstPlayerId: 'a', seedHex: fullDuel ? (expanded ? '18' : '08').padStart(64, '0') : '12'.repeat(32) }).state);
+const s = structuredClone(createDuel(r, { duelId: fullDuel ? 'mixed-smoke' : 'browser-fixture', players: [{ id: 'a', deck }, { id: 'b', deck }], firstPlayerId: 'a', seedHex: fullDuel ? (expanded ? '2b' : '08').padStart(64, '0') : '12'.repeat(32) }).state);
 // Trusted fixture setup BEFORE starting the server. No state-edit endpoint, seed flag or test mode in beta CLI.
 function move(name, owner, zone, slot = 0, down = false) {
   const d = Object.values(r.cards).find(c => c.name === name), p = s.players.find(p => p.id === owner);
   const c = Object.values(s.cards).find(c => c.ownerId === owner && c.definition.id === d.id && ['hand', 'deck'].includes(c.location.kind));
   const list = c.location.kind === 'hand' ? p.hand : p.deck; list.splice(list.indexOf(c.id), 1);
+  if (zone === 'graveyard') { p.graveyard.push(c.id); c.location = {kind:'graveyard',playerId:owner}; c.position='face-up'; return; }
   if (zone === 'hand') { p.hand.push(c.id); c.location = { kind: 'hand', playerId: owner }; return; }
   (zone === 'monster' ? p.monsters : p.spellsTraps)[slot] = c.id;
   c.location = { kind: zone, playerId: owner, slot }; c.position = down ? zone === 'monster' ? 'face-down-defense' : 'face-down' : 'face-up-attack';
@@ -47,11 +50,15 @@ move('La Jinn the Mystical Genie of the Lamp', 'a', 'monster', 0); move('Celtic 
 move('Mystical Elf', 'b', 'monster', 0); move('Hane-Hane', 'b', 'monster', 1, true); move('Man-Eater Bug', 'b', 'monster', 2, true); move('Trap Hole', 'b', 'spell-trap', 0, true); move('Fissure', 'b', 'spell-trap', 1, true);
 s.turn.number = 3; s.turn.phase = 'main1'; s.timing.window = 'open'; s.timing.priorityPlayer = 'a'; s.timing.consecutivePasses = 0;
 }
-if (expanded && !fullDuel && lifePointsMode === null && !smashingGround && !hammerShot && !tributeDoomed) {
+if (expanded && !fullDuel && lifePointsMode === null && !smashingGround && !hammerShot && !tributeDoomed && reincarnationMode === null) {
   move('Gaia The Fierce Knight', 'a', 'hand');
   move('Battle Ox', 'a', 'monster', 0); move('Celtic Guardian', 'a', 'monster', 1);
   move('Armored Lizard', 'b', 'monster', 0);
   s.turn.number = 3; s.turn.phase = 'main1'; s.timing.window = 'open'; s.timing.priorityPlayer = 'a'; s.timing.consecutivePasses = 0;
+}
+if (reincarnationMode !== null) {
+  move('Monster Reincarnation','a','hand'); move('Battle Ox','a','hand'); move('Hane-Hane','a','graveyard');
+  s.turn.number=3; s.turn.phase='main1'; s.timing.window='open'; s.timing.priorityPlayer='a'; s.timing.consecutivePasses=0;
 }
 if (tributeDoomed) {
   move('Tribute to The Doomed', 'a', 'hand'); move('Battle Ox', 'a', 'hand');
@@ -177,7 +184,7 @@ try {
       let v = await snapshot();
       if (v.result) {
         assert.equal(v.result.reason, 'life-points'); assert.ok(attacks > 0); assert.ok(decisions > 0);
-        if (expanded) assert.ok(usedEffects.has('Tribute to The Doomed'), 'Expanded duel must exercise the new reviewed Spell');
+        if (expanded) assert.ok(usedEffects.has('Monster Reincarnation'), 'Expanded duel must exercise the new reviewed Spell');
         assert.equal(errors.length, 0); assert.equal(v.chain.length, 0); assert.equal(v.decision, null);
         assert.match(await evaluate(`document.getElementById('timing').textContent`), /thắng/);
         assert.equal(v.stateVersion, actions);
@@ -231,6 +238,7 @@ try {
         const spell = free >= 0 ? v.selfHand.findIndex(c => {
           if (definition(c)?.kind !== 'spell') return false;
           const handler = r.spellHandlers[c.definition.id].handler;
+          if (handler === 'discard-return-own-graveyard-monster') return v.selfHand.length >= 2 && own.graveyard.some(c=>definition(c)?.level);
           if (handler === 'discard-destroy-target-monster') return v.selfHand.length >= 2 && [...opp.monsters,...own.monsters].some(Boolean);
           if (['draw','inflict-damage','gain-life-points'].includes(handler)) return true;
           if (handler === 'destroy-highest-face-up-attack-position') return [...own.monsters,...opp.monsters].some(c=>c && c.position==='face-up-attack');
@@ -238,8 +246,8 @@ try {
         }) : -1;
         if (spell >= 0) {
           const card = v.selfHand[spell], name = definition(card).name;
-          const costPlan = r.spellHandlers[card.definition.id].handler === 'discard-destroy-target-monster'
-            ? { discardHandle: v.selfHand.find(c=>c.handle!==card.handle).handle, targetHandle: [...opp.monsters,...own.monsters].find(Boolean).handle } : null;
+          const costPlan = ['discard-destroy-target-monster','discard-return-own-graveyard-monster'].includes(r.spellHandlers[card.definition.id].handler)
+            ? { discardHandle: v.selfHand.find(c=>c.handle!==card.handle).handle, targetHandle: r.spellHandlers[card.definition.id].handler === 'discard-return-own-graveyard-monster' ? own.graveyard.find(c=>definition(c)?.level).handle : [...opp.monsters,...own.monsters].find(Boolean).handle } : null;
           await handAction(spell,'Kích hoạt',free,[],costPlan); actions++; usedEffects.add(name); continue;
         }
         const trap = free >= 0 ? v.selfHand.findIndex(c=>definition(c)?.kind==='trap') : -1;
@@ -281,7 +289,39 @@ try {
   }
   await send('Runtime.enable'); await send('Page.enable'); await send('Page.navigate', { url: `http://127.0.0.1:${server.address().port}` });
   await wait(`document.getElementById('seat-dialog')?.open`); await seat('a');
-  if (tributeDoomed) {
+  if (reincarnationMode !== null) {
+    const selfCost = reincarnationMode === 'cost', handBefore = await evaluate('view.selfHand.length');
+    if (selfCost) {
+      await hand('Monster Reincarnation'); await click(textButton('#actions button','Úp bài')); await confirm(); await pass('a'); await pass('b'); await seat('a');
+    }
+    const before = await evaluate('JSON.stringify(view)');
+    async function openRecovery() {
+      if (selfCost) await click(`document.querySelector('#self .zone-row:nth-child(3) .card')`); else await hand('Monster Reincarnation');
+      await click(textButton('#actions button','Kích hoạt'));
+    }
+    await openRecovery(); await click(`document.getElementById('cancel-action')`); assert.equal(await evaluate('JSON.stringify(view)'),before); await openRecovery();
+    assert.match(await evaluate(`document.getElementById('action-title').textContent`),/chọn quái về tay/);
+    assert.match(await evaluate(`document.getElementById('action-fields').textContent`),/Mộ phải có quái/);
+    await evaluate(`(()=>{const f=document.getElementById('action-fields'),d=f.querySelector('select[name="discard"]');d.value=[...d.options].find(o=>o.textContent!=='Battle Ox').value;f.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+    assert.equal(await evaluate(`[...document.querySelector('#action-fields select[name="target"]').options].find(o=>o.textContent.includes('Lá sẽ bỏ làm chi phí')&&o.textContent.includes('Battle Ox')).disabled`),true);
+    await evaluate(`(()=>{const f=document.getElementById('action-fields'),d=f.querySelector('select[name="discard"]');d.value=[...d.options].find(o=>o.textContent==='Battle Ox').value;f.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+    assert.equal(await evaluate(`[...document.querySelector('#action-fields select[name="target"]').options].find(o=>o.textContent.includes('Lá sẽ bỏ làm chi phí')&&o.textContent.includes('Battle Ox')).disabled`),false);
+    await evaluate(`(()=>{const f=document.getElementById('action-fields'),t=f.querySelector('select[name="target"]');t.value=[...t.options].find(o=>${selfCost ? "o.textContent.includes('Lá sẽ bỏ làm chi phí')&&o.textContent.includes('Battle Ox')" : "o.textContent.includes('Mộ')&&o.textContent.includes('Hane-Hane')"}).value;f.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+    assert.equal(await evaluate('view.players[0].graveyard.length'),1); await confirm();
+    const selected = selfCost ? 'Battle Ox' : 'Hane-Hane';
+    assert.equal(await evaluate('view.selfHand.length'),handBefore-2); assert.equal(await evaluate('view.players[0].graveyard.length'),2);
+    assert.equal(await evaluate(`view.chain[0].targetHandles[0]===view.players[0].graveyard.find(c=>catalog.get(c.definition.id).name===${JSON.stringify(selected)}).handle`),true);
+    assert.match(await evaluate(`document.getElementById('status').textContent`),/bỏ 1 lá làm chi phí/);
+    await pass('b'); assert.equal(await evaluate('view.players[0].graveyard.length'),2); await pass('a');
+    assert.equal(await evaluate('view.selfHand.length'),handBefore-1);
+    assert.equal(await evaluate(`view.selfHand.some(c=>c.visibility==='known'&&catalog.get(c.definition.id).name===${JSON.stringify(selected)})`),true);
+    assert.equal(await evaluate('view.players.every(p=>p.monsters.every(c=>c===null))'),true);
+    assert.equal(await evaluate('view.chain.length'),0); assert.equal(await evaluate('view.decision'),null);
+    assert.match(await evaluate(`document.getElementById('status').textContent`),/1 lá trở về tay Người chơi A/);
+    await inspectGraveyard('self',['Monster Reincarnation',selfCost?'Hane-Hane':'Battle Ox']);
+    assert.deepEqual(await evaluate('view.players.map(p=>p.lifePoints)'),[8000,8000]); assert.equal(errors.length,0);
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'reincarnation-'+reincarnationMode,returnDiscardedMonster:selfCost,preExistingGraveyardMonster:true,costPaidAtActivation:true,returnOnlyAtResolution:true,noSpecialSummon:true,cancelPreservesState:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
+  } else if (tributeDoomed) {
     const before = await evaluate('JSON.stringify(view)'), handBefore = await evaluate('view.selfHand.length');
     await hand('Tribute to The Doomed'); await click(textButton('#actions button','Kích hoạt'));
     assert.equal(await evaluate(`document.querySelectorAll('#action-fields select[name="discard"]').length`),1);
@@ -391,8 +431,8 @@ try {
     assert.equal(errors.length,0);
     console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'life-points-'+lifePointsMode,gainFromOwnSet:lifePointsMode==='normal',lifePoints:await evaluate('view.players.map(p=>p.lifePoints)'),delayedUntilResolution:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
   } else if (expanded && !fullDuel) {
-    assert.equal(await evaluate('catalog.size'), 105);
-    assert.match(await evaluate(`document.getElementById('catalog-count').textContent`), /105/);
+    assert.equal(await evaluate('catalog.size'), 106);
+    assert.match(await evaluate(`document.getElementById('catalog-count').textContent`), /106/);
     await click(`document.getElementById('deck-builder')`); await wait(`!busy && document.getElementById('deck-dialog').open`);
     const added = Object.values(r.cards);
     for (const card of added) {
@@ -433,7 +473,7 @@ try {
     assert.equal(await evaluate('view.players[1].lifePoints'), 7200);
     assert.equal(await evaluate(`view.players[1].graveyard.some(c=>catalog.get(c.definition.id).name==='Armored Lizard')`), true);
     assert.equal(errors.length, 0);
-    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'expanded-catalog', catalog: 105, reviewedCardPreviews: 105, dataDrivenLevels: true, tributeSummon: 'Gaia The Fierce Knight', battleTarget: 'Armored Lizard', battleDamage: 800, fixtureOnlyAtSetup: true, runtimeExceptions: errors.length }));
+    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'expanded-catalog', catalog: 106, reviewedCardPreviews: 106, dataDrivenLevels: true, tributeSummon: 'Gaia The Fierce Knight', battleTarget: 'Armored Lizard', battleDamage: 800, fixtureOnlyAtSetup: true, runtimeExceptions: errors.length }));
   } else if (deckBuilder) {
     const openDeck = async () => { await click(`document.getElementById('deck-builder')`); await wait(`!busy && document.getElementById('deck-dialog').open`); };
     const change = (id, direction) => click(`document.querySelector('#deck-catalog [data-card-id="${id}"] [data-change="${direction}"]')`);

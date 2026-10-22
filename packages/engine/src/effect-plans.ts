@@ -25,6 +25,7 @@ export type ResolutionPlan =
   | { readonly kind: 'life-points-gained'; readonly playerId: string; readonly amount: number }
   | { readonly kind: 'no-op' }
   | { readonly kind: 'destroy-selected-monster' }
+  | { readonly kind: 'return-selected-graveyard-monster' }
   | { readonly kind: 'destroy'; readonly instanceId: string }
   | { readonly kind: 'choose-destruction'; readonly playerId: string; readonly optionIds: readonly string[] };
 
@@ -36,6 +37,7 @@ export type ResolutionPlan =
 export function planResolution(requestInput: unknown, boardInput: unknown): ResolutionPlan {
   const request = Request.parse(requestInput);
   const board = Board.parse(boardInput);
+  if (request.handler === 'discard-return-own-graveyard-monster') return freeze({ kind: 'return-selected-graveyard-monster' });
   if (request.handler === 'discard-destroy-target-monster') return freeze({ kind: 'destroy-selected-monster' });
   if (request.handler === 'draw')
     return freeze({ kind: 'draw', playerId: board.controllerId, count: request.count });

@@ -51,7 +51,9 @@ export function runMixedSmoke(registry: Registry, seedHex: string) {
     if (state.turn.phase === 'standby') { advance('main1'); continue; }
     if (state.turn.phase === 'main1' || state.turn.phase === 'main2') {
       const free = p.spellsTraps.indexOf(null);
-      const spell = free >= 0 && p.hand.find(id => (registry.spellHandlers[def(id).id]?.handler === 'discard-destroy-target-monster'
+      const spell = free >= 0 && p.hand.find(id => (registry.spellHandlers[def(id).id]?.handler === 'discard-return-own-graveyard-monster'
+          && p.hand.length >= 2 && p.graveyard.some(id => ['normal-monster','effect-monster'].includes(def(id).kind)))
+        || (registry.spellHandlers[def(id).id]?.handler === 'discard-destroy-target-monster'
           && p.hand.length >= 2 && [...p.monsters, ...opponent.monsters].some(id => id !== null))
         || ['draw', 'inflict-damage', 'gain-life-points'].includes(registry.spellHandlers[def(id).id]?.handler ?? '')
         || (registry.spellHandlers[def(id).id]?.handler === 'destroy-highest-face-up-attack-position'
@@ -59,9 +61,10 @@ export function runMixedSmoke(registry: Registry, seedHex: string) {
         || (['destroy-lowest-opposing-face-up-attack', 'destroy-highest-opposing-face-up-defense'].includes(registry.spellHandlers[def(id).id]?.handler ?? '')
           && opponent.monsters.some(id => id !== null && state.cards[id]!.position !== 'face-down-defense')));
       if (spell) {
-        const costTarget = registry.spellHandlers[def(spell).id]?.handler === 'discard-destroy-target-monster';
+        const recovery = registry.spellHandlers[def(spell).id]?.handler === 'discard-return-own-graveyard-monster';
+        const costTarget = recovery || registry.spellHandlers[def(spell).id]?.handler === 'discard-destroy-target-monster';
         act(active, { type: 'activate-spell', instanceId: spell, slot: free, ...(costTarget
-          ? { discardId: p.hand.find(id => id !== spell)!, targetId: [...opponent.monsters, ...p.monsters].find((id): id is string => id !== null)! } : {}) }); continue;
+          ? { discardId: p.hand.find(id => id !== spell)!, targetId: recovery ? p.graveyard.find(id => ['normal-monster','effect-monster'].includes(def(id).kind))! : [...opponent.monsters, ...p.monsters].find((id): id is string => id !== null)! } : {}) }); continue;
       }
       const trap = free >= 0 && p.hand.find(id => registry.trapHandlers[def(id).id]);
       if (trap) { act(active, { type: 'set-trap', instanceId: trap, slot: free }); continue; }
