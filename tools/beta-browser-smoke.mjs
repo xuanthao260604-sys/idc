@@ -144,7 +144,25 @@ try {
     assert.equal(await evaluate(`${card}?.getAttribute('aria-label').includes('Có thao tác hợp lệ')`),expected);
   }
 
-  async function chooseTarget(index) { await evaluate(`document.querySelector('#action-fields select[name="target"]').selectedIndex=${index}`); }
+  async function chooseTarget(index) {
+    await evaluate(`(()=>{const s=document.querySelector('#action-fields select[name="target"]');s.selectedIndex=${index};s.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+    if (await evaluate(`document.querySelector('#action-fields select[name="target"]').value==='direct'`)) {
+      assert.match(await evaluate(`document.querySelector('[data-preview="target"]').textContent`),/Tấn công trực tiếp vào đối thủ/);
+      assert.equal(await evaluate(`document.querySelectorAll('[data-preview="target"] .card-preview').length`),0);
+    }
+  }
+  async function preview(kind, name) {
+    const scope = `#action-fields [data-preview="${kind}"]`;
+    assert.equal(await evaluate(`document.querySelector(${JSON.stringify(scope+' h2')})?.textContent`),name || 'Bài úp');
+    assert.equal(await evaluate(`document.querySelectorAll(${JSON.stringify(scope+' button')}).length`),0);
+    if (name) {
+      const definition = Object.values(r.cards).find(c=>c.name===name);
+      assert.equal(await evaluate(`[...document.querySelectorAll(${JSON.stringify(scope+' p')})].at(-1).textContent`),definition.text);
+    } else {
+      assert.equal(await evaluate(`document.querySelectorAll(${JSON.stringify(scope+' .card-preview')}).length`),0);
+      assert.match(await evaluate(`document.querySelector(${JSON.stringify(scope)}).textContent`),/Danh tính lá bài được giữ kín/);
+    }
+  }
   async function decision(name) {
     assert.equal(await evaluate(`document.querySelectorAll('.card.actionable').length`),0);
     assert.match(await evaluate(`document.getElementById('guide-title').textContent`), /Bạn cần chọn bài/);
@@ -310,11 +328,26 @@ try {
     await openRecovery(); await click(`document.getElementById('cancel-action')`); assert.equal(await evaluate('JSON.stringify(view)'),before); await openRecovery();
     assert.match(await evaluate(`document.getElementById('action-title').textContent`),/chọn quái về tay/);
     assert.match(await evaluate(`document.getElementById('action-fields').textContent`),/Mộ phải có quái/);
+    await evaluate(`(()=>{const f=document.getElementById('action-fields'),d=f.querySelector('select[name="discard"]'),t=f.querySelector('select[name="target"]');d.value=[...d.options].find(o=>o.textContent==='Battle Ox').value;t.value=[...t.options].find(o=>o.textContent.includes('Lá sẽ bỏ làm chi phí')&&o.textContent.includes('Battle Ox')).value;f.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+    await preview('discard','Battle Ox'); await preview('target','Battle Ox');
     await evaluate(`(()=>{const f=document.getElementById('action-fields'),d=f.querySelector('select[name="discard"]');d.value=[...d.options].find(o=>o.textContent!=='Battle Ox').value;f.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+    await preview('target','Hane-Hane');
     assert.equal(await evaluate(`[...document.querySelector('#action-fields select[name="target"]').options].find(o=>o.textContent.includes('Lá sẽ bỏ làm chi phí')&&o.textContent.includes('Battle Ox')).disabled`),true);
     await evaluate(`(()=>{const f=document.getElementById('action-fields'),d=f.querySelector('select[name="discard"]');d.value=[...d.options].find(o=>o.textContent==='Battle Ox').value;f.dispatchEvent(new Event('change',{bubbles:true}));})()`);
     assert.equal(await evaluate(`[...document.querySelector('#action-fields select[name="target"]').options].find(o=>o.textContent.includes('Lá sẽ bỏ làm chi phí')&&o.textContent.includes('Battle Ox')).disabled`),false);
     await evaluate(`(()=>{const f=document.getElementById('action-fields'),t=f.querySelector('select[name="target"]');t.value=[...t.options].find(o=>${selfCost ? "o.textContent.includes('Lá sẽ bỏ làm chi phí')&&o.textContent.includes('Battle Ox')" : "o.textContent.includes('Mộ')&&o.textContent.includes('Hane-Hane')"}).value;f.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+    await preview('discard','Battle Ox'); await preview('target',selfCost?'Battle Ox':'Hane-Hane');
+    assert.equal(await evaluate('JSON.stringify(view)'),before);
+    if (process.argv.includes('--screenshots')) {
+      const folder=join(projectRoot,'artifacts','choice-previews'); await mkdir(folder,{recursive:true});
+      for (const [label,width,height] of [['desktop',1440,1000],['narrow',390,844]]) {
+        await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
+        await evaluate(`document.getElementById('action-dialog').scrollTop=0`);
+        assert.equal(await evaluate(`(()=>{const d=document.getElementById('action-dialog'),r=d.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1&&d.scrollWidth<=d.clientWidth+1&&r.height<=innerHeight})()`),true);
+        const shot=await send('Page.captureScreenshot',{format:'png'}); await writeFile(join(folder,label+'.png'),Buffer.from(shot.data,'base64'));
+      }
+      await send('Emulation.clearDeviceMetricsOverride');
+    }
     assert.equal(await evaluate('view.players[0].graveyard.length'),1); await confirm();
     const selected = selfCost ? 'Battle Ox' : 'Hane-Hane';
     assert.equal(await evaluate('view.selfHand.length'),handBefore-2); assert.equal(await evaluate('view.players[0].graveyard.length'),2);
@@ -328,7 +361,7 @@ try {
     assert.match(await evaluate(`document.getElementById('status').textContent`),/1 lá trở về tay Người chơi A/);
     await inspectGraveyard('self',['Monster Reincarnation',selfCost?'Hane-Hane':'Battle Ox']);
     assert.deepEqual(await evaluate('view.players.map(p=>p.lifePoints)'),[8000,8000]); assert.equal(errors.length,0);
-    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'reincarnation-'+reincarnationMode,returnDiscardedMonster:selfCost,preExistingGraveyardMonster:true,costPaidAtActivation:true,returnOnlyAtResolution:true,noSpecialSummon:true,cancelPreservesState:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'reincarnation-'+reincarnationMode,choicePreviews:true,previewFollowsCostChange:true,returnDiscardedMonster:selfCost,preExistingGraveyardMonster:true,costPaidAtActivation:true,returnOnlyAtResolution:true,noSpecialSummon:true,cancelPreservesState:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
   } else if (tributeDoomed) {
     const before = await evaluate('JSON.stringify(view)'), handBefore = await evaluate('view.selfHand.length');
     await hand('Tribute to The Doomed'); await click(textButton('#actions button','Kích hoạt'));
@@ -338,8 +371,12 @@ try {
     await hand('Tribute to The Doomed'); await click(textButton('#actions button','Úp bài')); await confirm(); await pass('a'); await pass('b'); await seat('a');
     await click(`document.querySelector('#self .zone-row:nth-child(3) .card')`); await click(textButton('#actions button','Kích hoạt'));
     assert.equal(await evaluate(`document.querySelectorAll('#action-fields select[name="slot"]').length`),0);
+    await evaluate(`(()=>{const t=document.querySelector('#action-fields select[name="target"]');t.value=[...t.options].find(o=>o.textContent.includes('Celtic Guardian')).value;t.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+    await preview('target','Celtic Guardian');
     await evaluate(`(()=>{const f=document.getElementById('action-fields'),d=f.querySelector('select[name="discard"]'),t=f.querySelector('select[name="target"]');d.value=[...d.options].find(o=>o.textContent==='Battle Ox').value;t.value=[...t.options].find(o=>o.textContent.includes('Người chơi B')).value;f.dispatchEvent(new Event('change',{bubbles:true}));})()`);
     assert.match(await evaluate(`document.querySelector('#action-fields select[name="target"]').selectedOptions[0].textContent`),/Bài úp/);
+    await preview('discard','Battle Ox'); await preview('target',null);
+    assert.equal(await evaluate(`document.querySelector('[data-preview="target"]').textContent.includes('Man-Eater Bug')`),false);
     assert.equal(await evaluate('view.players[0].graveyard.length'),0); await confirm();
     assert.equal(await evaluate('view.selfHand.length'),handBefore-2);
     assert.equal(await evaluate('view.players[0].graveyard.length'),1); assert.equal(await evaluate('view.players[1].monsters[0].visibility'),'hidden');
@@ -352,7 +389,7 @@ try {
     await inspectGraveyard('self',['Tribute to The Doomed','Battle Ox']); await inspectGraveyard('opponent',['Man-Eater Bug']);
     const facts = await evaluate('view.activity.flatMap(x=>x.resolution||[])');
     assert.deepEqual(facts,[{kind:'discard-cost',playerId:'a',count:1},{kind:'effect-destroyed',count:1}]); assert.equal(errors.length,0);
-    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'tribute-doomed',cancelPreservesCards:true,fromOwnSet:true,costPaidAtActivation:true,targetDestroyedAtResolution:true,hiddenTarget:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'tribute-doomed',cancelPreservesCards:true,fromOwnSet:true,costPaidAtActivation:true,targetDestroyedAtResolution:true,hiddenTarget:true,choicePreviews:true,previewKeepsHiddenIdentity:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
   } else if (hammerShot) {
     await hand('Hammer Shot'); await click(textButton('#actions button','Kích hoạt'));
     assert.equal(await evaluate(`document.querySelectorAll('#action-fields select[name="target"]').length`),0);

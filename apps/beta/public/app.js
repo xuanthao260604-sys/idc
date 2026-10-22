@@ -142,6 +142,26 @@ function chooseAction(title, base, { slots = false, tributes = false, targets = 
     const l = node('label', 'Chọn mục tiêu'); selectTarget = node('select'); selectTarget.name = 'target';
     targets.forEach(t => { const o = node('option', t.label); o.value = t.handle; o.disabled = !plans.some(a => a.targetHandle === t.handle); selectTarget.append(o); }); const first = [...selectTarget.options].find(o => !o.disabled); if (first) selectTarget.value = first.value; l.append(selectTarget); fields.append(l);
   }
+  const previews = node('div', undefined, 'choice-previews');
+  const previewCard = (select, kind, caption) => {
+    if (!select) return () => {};
+    const section = node('section', undefined, 'choice-preview'); section.dataset.preview = kind;
+    section.setAttribute('aria-label', caption);
+    const content = node('div'); content.setAttribute('aria-live', 'polite');
+    section.append(node('h3', caption), content); previews.append(section);
+    return () => {
+      const handle = select.value;
+      if (!handle || select.selectedOptions[0]?.disabled) { content.replaceChildren(node('p', 'Chưa có lựa chọn hợp lệ.')); return; }
+      if (handle === 'direct') { content.replaceChildren(node('p', 'Tấn công trực tiếp vào đối thủ.')); return; }
+      const card = [...view.selfHand, ...view.players.flatMap(p => [...p.monsters, ...p.spellsTraps, ...p.graveyard])].find(c => c?.handle === handle);
+      if (!card) { content.replaceChildren(node('p', 'Không có thông tin lá trong góc nhìn hiện tại.')); return; }
+      cardInfo(content, card);
+      content.prepend(node('p', select.selectedOptions[0].textContent, 'choice-location'));
+    };
+  };
+  const showDiscard = previewCard(selectDiscard, 'discard', 'Lá bỏ làm chi phí');
+  const showTarget = previewCard(selectTarget, 'target', 'Mục tiêu đang chọn');
+  if (previews.children.length) fields.append(previews);
   const assemble = () => {
     const a = { ...base };
     if (selectSlot) a.slot = Number(selectSlot.value);
@@ -156,6 +176,7 @@ function chooseAction(title, base, { slots = false, tributes = false, targets = 
       for (const o of selectTarget.options) o.disabled = !compatible.some(p => p.targetHandle === o.value);
       if (selectTarget.selectedOptions[0]?.disabled) selectTarget.value = [...selectTarget.options].find(o => !o.disabled)?.value || '';
     }
+    showDiscard(); showTarget();
     $('action-form').querySelector('button[type="submit"]').disabled = !plans.some(p => matchesPlan(p, assemble()));
   };
   fields.addEventListener('change', sync, { signal: dialogEvents.signal });
