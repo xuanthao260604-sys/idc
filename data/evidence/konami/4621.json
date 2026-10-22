@@ -1,0 +1,22 @@
+{
+  "passcode": "17535588",
+  "konamiId": 4621,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4621&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "830653054f7ef4cc050a6120f30626edbb7a94b64c61a7225e13a92a9fd0a5a7",
+  "currentFacts": {
+    "name": "Armored Starfish",
+    "text": "A bluish starfish with a solid hide capable of fending off attacks.",
+    "kind": "normal-monster",
+    "race": "Aqua",
+    "attribute": "WATER",
+    "level": 4,
+    "attack": 850,
+    "defense": 1400
+  },
+  "printing": {
+    "date": "2002-03-08",
+    "setCode": "LOB-116",
+    "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+  }
+}

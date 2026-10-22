@@ -8,15 +8,15 @@ import { createDuel, applyAction, assertDuelInvariants } from '../packages/engin
 import type { DuelState, PlayerId } from '../packages/protocol/src/duel.js';
 type Mutable<T> = { -readonly [K in keyof T]: Mutable<T[K]> };
 const load = (path: string) => JSON.parse(readFileSync(join(projectRoot, path), 'utf8'));
-const manifest = load('data/import/classic-10e.manifest.json') as { cards: { passcode: string; konamiId: number; expectedName: string }[] };
+const manifest = { cards: ['classic-10e','classic-10f'].flatMap(batch => load(`data/import/${batch}.manifest.json`).cards) } as { cards: { passcode: string; konamiId: number; expectedName: string }[] };
 const { registry } = loadRuntimeCatalog();
 
-describe('Sourced classic-10e DEF through a revealed defense battle', () => {
+describe('Sourced expansion DEF through a revealed defense battle', () => {
   it.each(manifest.cards)('$expectedName uses its exact reviewed DEF, including zero and 1530', entry => {
     const proof = load(`data/evidence/konami/${entry.konamiId}.json`);
     const definitionId = `official:${entry.passcode}`;
     const deck = [definitionId, ...defaultDeck(registry).filter(id => id !== definitionId)].slice(0, 40);
-    let state = structuredClone(createDuel(registry, { duelId: 'classic10e-defense', players: [{ id: 'a', deck }, { id: 'b', deck }], firstPlayerId: 'a', seedHex: '31'.repeat(32) }).state) as Mutable<DuelState>;
+    let state = structuredClone(createDuel(registry, { duelId: 'classic-normal-defense', players: [{ id: 'a', deck }, { id: 'b', deck }], firstPlayerId: 'a', seedHex: '31'.repeat(32) }).state) as Mutable<DuelState>;
     state.turn.number = 3; state.turn.phase = 'main1'; state.timing.window = 'open'; state.timing.priorityPlayer = 'a'; state.timing.consecutivePasses = 0;
     const place = (owner: PlayerId, id: string, down: boolean) => {
       const player = state.players.find(p => p.id === owner)!;

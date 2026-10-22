@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "formatId": "goat-2005-08-17",
+  "cards": [
+    {
+      "passcode": "08471389",
+      "expectedName": "Giga-Tech Wolf",
+      "konamiId": 4418
+    },
+    {
+      "passcode": "17535588",
+      "expectedName": "Armored Starfish",
+      "konamiId": 4621
+    },
+    {
+      "passcode": "41396436",
+      "expectedName": "Blue-Winged Crown",
+      "konamiId": 4642
+    },
+    {
+      "passcode": "42431843",
+      "expectedName": "Ancient Brain",
+      "konamiId": 4181
+    },
+    {
+      "passcode": "43230671",
+      "expectedName": "Ancient Lizard Warrior",
+      "konamiId": 4636
+    },
+    {
+      "passcode": "64501875",
+      "expectedName": "Hibikime",
+      "konamiId": 4655
+    },
+    {
+      "passcode": "73481154",
+      "expectedName": "Destroyer Golem",
+      "konamiId": 4460
+    },
+    {
+      "passcode": "81386177",
+      "expectedName": "Bottom Dweller",
+      "konamiId": 4445
+    },
+    {
+      "passcode": "86325596",
+      "expectedName": "Baron of the Fiend Sword",
+      "konamiId": 4882
+    },
+    {
+      "passcode": "89494469",
+      "expectedName": "Dark Titan of Terror",
+      "konamiId": 4239
+    }
+  ],
+  "eligibleSetPrefixes": [
+    "LOB",
+    "SDK",
+    "SDY",
+    "MRD"
+  ],
+  "eligibilitySource": {
+    "url": "https://www.goatformat.com/cardpool.html",
+    "accessedOn": "2026-10-15",
+    "scope": "release",
+    "notes": "Previously reviewed Goat cardpool includes LOB, SDK, SDY and MRD; classic-10f uses individually reviewed original North American print rows from these sets."
+  }
+}

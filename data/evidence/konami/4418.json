@@ -1,0 +1,22 @@
+{
+  "passcode": "08471389",
+  "konamiId": 4418,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4418&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "08c1b74894c0e95e0ddf77f87726b7d702ed4e577d8082609c6859244ef3e8c2",
+  "currentFacts": {
+    "name": "Giga-Tech Wolf",
+    "text": "An iron wolf with razor-sharp fangs that can penetrate any armor.",
+    "kind": "normal-monster",
+    "race": "Machine",
+    "attribute": "FIRE",
+    "level": 4,
+    "attack": 1200,
+    "defense": 1400
+  },
+  "printing": {
+    "date": "2002-06-26",
+    "setCode": "MRD-096",
+    "product": "METAL RAIDERS"
+  }
+}

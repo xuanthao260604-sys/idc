@@ -1,0 +1,22 @@
+{
+  "passcode": "86325596",
+  "konamiId": 4882,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4882&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "4ed2a9b3a39c81f9686a0f4100e7c5c9ea959093c213d55f2d02163427162be4",
+  "currentFacts": {
+    "name": "Baron of the Fiend Sword",
+    "text": "An aristocrat who wields a sword possessed by a malicious spirit that preys on the weak.",
+    "kind": "normal-monster",
+    "race": "Fiend",
+    "attribute": "DARK",
+    "level": 4,
+    "attack": 1550,
+    "defense": 800
+  },
+  "printing": {
+    "date": "2002-03-29",
+    "setCode": "SDY-036",
+    "product": "STARTER DECK YUGI"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "passcode": "89494469",
+  "konamiId": 4239,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4239&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "199f94a485a0e4c5e0cc1649b9d40b727fffa5a532cba503beda17a1df9cbab2",
+  "currentFacts": {
+    "name": "Dark Titan of Terror",
+    "text": "A fiend said to dwell in the world of dreams, it attacks enemies in their sleep.",
+    "kind": "normal-monster",
+    "race": "Fiend",
+    "attribute": "DARK",
+    "level": 4,
+    "attack": 1300,
+    "defense": 1100
+  },
+  "printing": {
+    "date": "2002-03-29",
+    "setCode": "SDK-014",
+    "product": "STARTER DECK KAIBA"
+  }
+}

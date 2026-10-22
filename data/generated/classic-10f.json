@@ -1,0 +1,875 @@
+{
+  "schemaVersion": 1,
+  "format": {
+    "id": "goat-2005-08-17",
+    "revision": 4
+  },
+  "provenance": {
+    "upstreamSha256": "f6fff102f76c126fd9999947dda10800e4e7936646695a93dbbbed8f2fc8df66",
+    "manifestSha256": "d04d8c92c7533c53e7a74b037b9aa40059052560d6599947bfbd1ae64abbb085",
+    "reviewSha256": "51a59d80a3778341ae1e544e060bae3536d4c983d8a4f4af28059e9ef49b775a",
+    "officialEvidenceSha256": "a5471f88bc5d0e30b4bedf3f99fde399e89ef8c1a4871187724227cbdd447b2b"
+  },
+  "cards": [
+    {
+      "schemaVersion": 1,
+      "id": "official:08471389",
+      "origin": "official",
+      "revision": 1,
+      "name": "Giga-Tech Wolf",
+      "passcode": "08471389",
+      "text": "An iron wolf with razor-sharp fangs that can penetrate any armor.",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=42431843,43230671,17535588,86325596,41396436,81386177,89494469,73481154,8471389,64501875&misc=yes",
+          "accessedOn": "2026-10-22",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4418&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 4418."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4418&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4418&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "text",
+          "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+        }
+      ],
+      "verification": "verified",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4418&request_locale=en",
+            "accessedOn": "2026-10-22",
+            "scope": "release",
+            "notes": "Reviewed North American print MRD-096, 2002-06-26, METAL RAIDERS; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "release",
+            "notes": "Previously reviewed Goat cardpool includes LOB, SDK, SDY and MRD; classic-10f uses individually reviewed original North American print rows from these sets."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "attribute": "FIRE",
+      "race": "Machine",
+      "level": 4,
+      "attack": 1200,
+      "defense": 1400,
+      "kind": "normal-monster"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "official:17535588",
+      "origin": "official",
+      "revision": 1,
+      "name": "Armored Starfish",
+      "passcode": "17535588",
+      "text": "A bluish starfish with a solid hide capable of fending off attacks.",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=42431843,43230671,17535588,86325596,41396436,81386177,89494469,73481154,8471389,64501875&misc=yes",
+          "accessedOn": "2026-10-22",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4621&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 4621."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4621&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4621&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "text",
+          "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+        }
+      ],
+      "verification": "verified",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4621&request_locale=en",
+            "accessedOn": "2026-10-22",
+            "scope": "release",
+            "notes": "Reviewed North American print LOB-116, 2002-03-08, LEGEND OF BLUE EYES WHITE DRAGON; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "release",
+            "notes": "Previously reviewed Goat cardpool includes LOB, SDK, SDY and MRD; classic-10f uses individually reviewed original North American print rows from these sets."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "attribute": "WATER",
+      "race": "Aqua",
+      "level": 4,
+      "attack": 850,
+      "defense": 1400,
+      "kind": "normal-monster"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "official:41396436",
+      "origin": "official",
+      "revision": 1,
+      "name": "Blue-Winged Crown",
+      "passcode": "41396436",
+      "text": "With hair shaped like a crown and a body encased in bluish white flames, this bird is a formidable sight.",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=42431843,43230671,17535588,86325596,41396436,81386177,89494469,73481154,8471389,64501875&misc=yes",
+          "accessedOn": "2026-10-22",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4642&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 4642."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4642&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4642&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "text",
+          "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+        }
+      ],
+      "verification": "verified",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4642&request_locale=en",
+            "accessedOn": "2026-10-22",
+            "scope": "release",
+            "notes": "Reviewed North American print MRD-122, 2002-06-26, METAL RAIDERS; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "release",
+            "notes": "Previously reviewed Goat cardpool includes LOB, SDK, SDY and MRD; classic-10f uses individually reviewed original North American print rows from these sets."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "attribute": "WIND",
+      "race": "Winged Beast",
+      "level": 4,
+      "attack": 1600,
+      "defense": 1200,
+      "kind": "normal-monster"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "official:42431843",
+      "origin": "official",
+      "revision": 1,
+      "name": "Ancient Brain",
+      "passcode": "42431843",
+      "text": "A fallen fairy that is powerful in the dark.",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=42431843,43230671,17535588,86325596,41396436,81386177,89494469,73481154,8471389,64501875&misc=yes",
+          "accessedOn": "2026-10-22",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4181&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 4181."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4181&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4181&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "text",
+          "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+        }
+      ],
+      "verification": "verified",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4181&request_locale=en",
+            "accessedOn": "2026-10-22",
+            "scope": "release",
+            "notes": "Reviewed North American print MRD-082, 2002-06-26, METAL RAIDERS; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "release",
+            "notes": "Previously reviewed Goat cardpool includes LOB, SDK, SDY and MRD; classic-10f uses individually reviewed original North American print rows from these sets."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "attribute": "DARK",
+      "race": "Fiend",
+      "level": 3,
+      "attack": 1000,
+      "defense": 700,
+      "kind": "normal-monster"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "official:43230671",
+      "origin": "official",
+      "revision": 1,
+      "name": "Ancient Lizard Warrior",
+      "passcode": "43230671",
+      "text": "Before the dawn of man, this lizard warrior ruled supreme.",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=42431843,43230671,17535588,86325596,41396436,81386177,89494469,73481154,8471389,64501875&misc=yes",
+          "accessedOn": "2026-10-22",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4636&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 4636."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4636&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4636&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "text",
+          "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+        }
+      ],
+      "verification": "verified",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4636&request_locale=en",
+            "accessedOn": "2026-10-22",
+            "scope": "release",
+            "notes": "Reviewed North American print MRD-050, 2002-06-26, METAL RAIDERS; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "release",
+            "notes": "Previously reviewed Goat cardpool includes LOB, SDK, SDY and MRD; classic-10f uses individually reviewed original North American print rows from these sets."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "attribute": "EARTH",
+      "race": "Reptile",
+      "level": 4,
+      "attack": 1400,
+      "defense": 1100,
+      "kind": "normal-monster"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "official:64501875",
+      "origin": "official",
+      "revision": 1,
+      "name": "Hibikime",
+      "passcode": "64501875",
+      "text": "Confuses enemy monsters with a noise that is harsh to the ears.",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=42431843,43230671,17535588,86325596,41396436,81386177,89494469,73481154,8471389,64501875&misc=yes",
+          "accessedOn": "2026-10-22",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4655&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 4655."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4655&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4655&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "text",
+          "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+        }
+      ],
+      "verification": "verified",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4655&request_locale=en",
+            "accessedOn": "2026-10-22",
+            "scope": "release",
+            "notes": "Reviewed North American print MRD-055, 2002-06-26, METAL RAIDERS; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "release",
+            "notes": "Previously reviewed Goat cardpool includes LOB, SDK, SDY and MRD; classic-10f uses individually reviewed original North American print rows from these sets."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "attribute": "EARTH",
+      "race": "Warrior",
+      "level": 4,
+      "attack": 1450,
+      "defense": 1000,
+      "kind": "normal-monster"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "official:73481154",
+      "origin": "official",
+      "revision": 1,
+      "name": "Destroyer Golem",
+      "passcode": "73481154",
+      "text": "A golem with a massive right hand for crushing its victims.",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=42431843,43230671,17535588,86325596,41396436,81386177,89494469,73481154,8471389,64501875&misc=yes",
+          "accessedOn": "2026-10-22",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4460&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 4460."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4460&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4460&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "text",
+          "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+        }
+      ],
+      "verification": "verified",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4460&request_locale=en",
+            "accessedOn": "2026-10-22",
+            "scope": "release",
+            "notes": "Reviewed North American print SDK-028, 2002-03-29, STARTER DECK KAIBA; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "release",
+            "notes": "Previously reviewed Goat cardpool includes LOB, SDK, SDY and MRD; classic-10f uses individually reviewed original North American print rows from these sets."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "attribute": "EARTH",
+      "race": "Rock",
+      "level": 4,
+      "attack": 1500,
+      "defense": 1000,
+      "kind": "normal-monster"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "official:81386177",
+      "origin": "official",
+      "revision": 1,
+      "name": "Bottom Dweller",
+      "passcode": "81386177",
+      "text": "This is one sea creature whose wrath is something monsters fear to face.",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=42431843,43230671,17535588,86325596,41396436,81386177,89494469,73481154,8471389,64501875&misc=yes",
+          "accessedOn": "2026-10-22",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4445&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 4445."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4445&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4445&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "text",
+          "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+        }
+      ],
+      "verification": "verified",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4445&request_locale=en",
+            "accessedOn": "2026-10-22",
+            "scope": "release",
+            "notes": "Reviewed North American print MRD-039, 2002-06-26, METAL RAIDERS; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "release",
+            "notes": "Previously reviewed Goat cardpool includes LOB, SDK, SDY and MRD; classic-10f uses individually reviewed original North American print rows from these sets."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "attribute": "WATER",
+      "race": "Fish",
+      "level": 5,
+      "attack": 1650,
+      "defense": 1700,
+      "kind": "normal-monster"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "official:86325596",
+      "origin": "official",
+      "revision": 1,
+      "name": "Baron of the Fiend Sword",
+      "passcode": "86325596",
+      "text": "An aristocrat who wields a sword possessed by a malicious spirit that preys on the weak.",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=42431843,43230671,17535588,86325596,41396436,81386177,89494469,73481154,8471389,64501875&misc=yes",
+          "accessedOn": "2026-10-22",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4882&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 4882."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4882&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4882&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "text",
+          "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+        }
+      ],
+      "verification": "verified",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4882&request_locale=en",
+            "accessedOn": "2026-10-22",
+            "scope": "release",
+            "notes": "Reviewed North American print SDY-036, 2002-03-29, STARTER DECK YUGI; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "release",
+            "notes": "Previously reviewed Goat cardpool includes LOB, SDK, SDY and MRD; classic-10f uses individually reviewed original North American print rows from these sets."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "attribute": "DARK",
+      "race": "Fiend",
+      "level": 4,
+      "attack": 1550,
+      "defense": 800,
+      "kind": "normal-monster"
+    },
+    {
+      "schemaVersion": 1,
+      "id": "official:89494469",
+      "origin": "official",
+      "revision": 1,
+      "name": "Dark Titan of Terror",
+      "passcode": "89494469",
+      "text": "A fiend said to dwell in the world of dreams, it attacks enemies in their sleep.",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=42431843,43230671,17535588,86325596,41396436,81386177,89494469,73481154,8471389,64501875&misc=yes",
+          "accessedOn": "2026-10-22",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4239&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 4239."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4239&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4239&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "text",
+          "notes": "Current Konami text matches the upstream snapshot; normal-monster flavor only."
+        }
+      ],
+      "verification": "verified",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4239&request_locale=en",
+            "accessedOn": "2026-10-22",
+            "scope": "release",
+            "notes": "Reviewed North American print SDK-014, 2002-03-29, STARTER DECK KAIBA; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "release",
+            "notes": "Previously reviewed Goat cardpool includes LOB, SDK, SDY and MRD; classic-10f uses individually reviewed original North American print rows from these sets."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "attribute": "DARK",
+      "race": "Fiend",
+      "level": 4,
+      "attack": 1300,
+      "defense": 1100,
+      "kind": "normal-monster"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "official:08471389",
+      "fingerprint": "ea7281cfd402007e7c70166fb26c2d3e7ef159b145d3b3babf94f2d08e349129",
+      "historicalTextReview": "not-required-normal-flavor",
+      "upstreamText": "An iron wolf with razor-sharp fangs that can penetrate any armor.",
+      "referenceText": "An iron wolf with razor-sharp fangs that can penetrate any armor.",
+      "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+      "printing": {
+        "date": "2002-06-26",
+        "setCode": "MRD-096",
+        "product": "METAL RAIDERS"
+      },
+      "upstreamTcgDate": "2002-06-26"
+    },
+    {
+      "id": "official:17535588",
+      "fingerprint": "b1f28165367c800ebcaf9d0512ac79ff285e0830b8131ea2a9fcf8338395807e",
+      "historicalTextReview": "not-required-normal-flavor",
+      "upstreamText": "A bluish starfish with a solid hide capable of fending off attacks.",
+      "referenceText": "A bluish starfish with a solid hide capable of fending off attacks.",
+      "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+      "printing": {
+        "date": "2002-03-08",
+        "setCode": "LOB-116",
+        "product": "LEGEND OF BLUE EYES WHITE DRAGON"
+      },
+      "upstreamTcgDate": "2002-03-08"
+    },
+    {
+      "id": "official:41396436",
+      "fingerprint": "6719b9fbf6a93c869441efd5c8a97d093598f46cd201c6bd5dc02bb8df4e91ec",
+      "historicalTextReview": "not-required-normal-flavor",
+      "upstreamText": "With hair shaped like a crown and a body encased in bluish white flames, this bird is a formidable sight.",
+      "referenceText": "With hair shaped like a crown and a body encased in bluish white flames, this bird is a formidable sight.",
+      "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+      "printing": {
+        "date": "2002-06-26",
+        "setCode": "MRD-122",
+        "product": "METAL RAIDERS"
+      },
+      "upstreamTcgDate": "2002-06-26"
+    },
+    {
+      "id": "official:42431843",
+      "fingerprint": "8f748b8e417cc00bfee320596334b79b15937f60b6b8311ee94c0a5a39465f15",
+      "historicalTextReview": "not-required-normal-flavor",
+      "upstreamText": "A fallen fairy that is powerful in the dark.",
+      "referenceText": "A fallen fairy that is powerful in the dark.",
+      "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+      "printing": {
+        "date": "2002-06-26",
+        "setCode": "MRD-082",
+        "product": "METAL RAIDERS"
+      },
+      "upstreamTcgDate": "2002-06-26"
+    },
+    {
+      "id": "official:43230671",
+      "fingerprint": "058d169edcea654a463ad0174a7066e9edf769338ca0f4e399ec06fe5e0b198c",
+      "historicalTextReview": "not-required-normal-flavor",
+      "upstreamText": "Before the dawn of man, this lizard warrior ruled supreme.",
+      "referenceText": "Before the dawn of man, this lizard warrior ruled supreme.",
+      "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+      "printing": {
+        "date": "2002-06-26",
+        "setCode": "MRD-050",
+        "product": "METAL RAIDERS"
+      },
+      "upstreamTcgDate": "2002-06-26"
+    },
+    {
+      "id": "official:64501875",
+      "fingerprint": "5b84f0519254c2b83c98064a7dbefa5d24e869ad35bd0b71b0c126444ba79dfe",
+      "historicalTextReview": "not-required-normal-flavor",
+      "upstreamText": "Confuses enemy monsters with a noise that is harsh to the ears.",
+      "referenceText": "Confuses enemy monsters with a noise that is harsh to the ears.",
+      "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+      "printing": {
+        "date": "2002-06-26",
+        "setCode": "MRD-055",
+        "product": "METAL RAIDERS"
+      },
+      "upstreamTcgDate": "2002-06-26"
+    },
+    {
+      "id": "official:73481154",
+      "fingerprint": "32021a66716127f9fc9f4fcf83dc0dc4ffd0eef33fc60522aede43d3f25f4db0",
+      "historicalTextReview": "not-required-normal-flavor",
+      "upstreamText": "A golem with a massive right hand for crushing its victims.",
+      "referenceText": "A golem with a massive right hand for crushing its victims.",
+      "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+      "printing": {
+        "date": "2002-03-29",
+        "setCode": "SDK-028",
+        "product": "STARTER DECK KAIBA"
+      },
+      "upstreamTcgDate": "2002-03-29"
+    },
+    {
+      "id": "official:81386177",
+      "fingerprint": "79447d179d85bac55fb61e4abbf5aed5c09c8783563b4292f506c6c7c1189d0f",
+      "historicalTextReview": "not-required-normal-flavor",
+      "upstreamText": "This is one sea creature whose wrath is something monsters fear to face.",
+      "referenceText": "This is one sea creature whose wrath is something monsters fear to face.",
+      "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+      "printing": {
+        "date": "2002-06-26",
+        "setCode": "MRD-039",
+        "product": "METAL RAIDERS"
+      },
+      "upstreamTcgDate": "2002-06-26"
+    },
+    {
+      "id": "official:86325596",
+      "fingerprint": "80e787e1d4ac9d12a032371c7fa95b1db160e7fda3bbae5d1c5a0cf06d5cad68",
+      "historicalTextReview": "not-required-normal-flavor",
+      "upstreamText": "An aristocrat who wields a sword possessed by a malicious spirit that preys on the weak.",
+      "referenceText": "An aristocrat who wields a sword possessed by a malicious spirit that preys on the weak.",
+      "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+      "printing": {
+        "date": "2002-03-29",
+        "setCode": "SDY-036",
+        "product": "STARTER DECK YUGI"
+      },
+      "upstreamTcgDate": "2002-03-29"
+    },
+    {
+      "id": "official:89494469",
+      "fingerprint": "bb9cba051689e029236c0efba9d4e44fd4b9bbbd7f7e0bde98d20d0ebe7d637f",
+      "historicalTextReview": "not-required-normal-flavor",
+      "upstreamText": "A fiend said to dwell in the world of dreams, it attacks enemies in their sleep.",
+      "referenceText": "A fiend said to dwell in the world of dreams, it attacks enemies in their sleep.",
+      "notes": "Reviewed current Konami normal-monster stats, flavor text and original North American print row; no behavior-bearing clause. Flavor descriptions do not implement effects. Current name/text are not claimed as original 2005 printed wording. No new effect handler required.",
+      "printing": {
+        "date": "2002-03-29",
+        "setCode": "SDK-014",
+        "product": "STARTER DECK KAIBA"
+      },
+      "upstreamTcgDate": "2002-03-29"
+    }
+  ],
+  "summary": {
+    "imported": 10,
+    "verifiedData": 10,
+    "historicalReviewPending": 0,
+    "implemented": 0,
+    "testedEffects": 0,
+    "playable": 0
+  }
+}

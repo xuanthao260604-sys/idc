@@ -1,0 +1,22 @@
+{
+  "passcode": "43230671",
+  "konamiId": 4636,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4636&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "cf33a4f328bf0847f1cf3489ad120735a48ace88575c7186fe1c2cb91ef3ff78",
+  "currentFacts": {
+    "name": "Ancient Lizard Warrior",
+    "text": "Before the dawn of man, this lizard warrior ruled supreme.",
+    "kind": "normal-monster",
+    "race": "Reptile",
+    "attribute": "EARTH",
+    "level": 4,
+    "attack": 1400,
+    "defense": 1100
+  },
+  "printing": {
+    "date": "2002-06-26",
+    "setCode": "MRD-050",
+    "product": "METAL RAIDERS"
+  }
+}

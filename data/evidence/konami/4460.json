@@ -1,0 +1,22 @@
+{
+  "passcode": "73481154",
+  "konamiId": 4460,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4460&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "042480875fd9d98b23f5673db0e307ad4fd95216181371bca73448e793a338fb",
+  "currentFacts": {
+    "name": "Destroyer Golem",
+    "text": "A golem with a massive right hand for crushing its victims.",
+    "kind": "normal-monster",
+    "race": "Rock",
+    "attribute": "EARTH",
+    "level": 4,
+    "attack": 1500,
+    "defense": 1000
+  },
+  "printing": {
+    "date": "2002-03-29",
+    "setCode": "SDK-028",
+    "product": "STARTER DECK KAIBA"
+  }
+}

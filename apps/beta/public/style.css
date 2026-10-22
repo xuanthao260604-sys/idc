@@ -38,3 +38,6 @@
 
 .card.front .card-name.long-name{font-size:6px}.card.card-preview .card-name.long-name{font-size:11px}
 @media(max-width:720px){aside>.panel:first-child{grid-column:1/-1}.card.front .card-name.long-name{font-size:5px}.hand .card.front .card-name.long-name{font-size:6px}.card.card-preview .card-name.long-name{font-size:11px}}
+
+/* Keep five-letter attributes inside the frame's small circular badge. */
+.card-attribute{white-space:nowrap;font-size:clamp(2px,.3vw,3px)}.card.card-preview .card-attribute{font-size:7px}

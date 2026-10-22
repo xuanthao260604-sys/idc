@@ -1,0 +1,22 @@
+{
+  "passcode": "64501875",
+  "konamiId": 4655,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4655&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "819a2eba1ca98a6d69af39f7664e25e8dc00aaac761078b559f59150e98a7c70",
+  "currentFacts": {
+    "name": "Hibikime",
+    "text": "Confuses enemy monsters with a noise that is harsh to the ears.",
+    "kind": "normal-monster",
+    "race": "Warrior",
+    "attribute": "EARTH",
+    "level": 4,
+    "attack": 1450,
+    "defense": 1000
+  },
+  "printing": {
+    "date": "2002-06-26",
+    "setCode": "MRD-055",
+    "product": "METAL RAIDERS"
+  }
+}

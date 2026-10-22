@@ -1,0 +1,22 @@
+{
+  "passcode": "41396436",
+  "konamiId": 4642,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4642&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "2052c9098ee2b05304a12804f207d4c8f56b542cb950c277ec1c02973d7477c0",
+  "currentFacts": {
+    "name": "Blue-Winged Crown",
+    "text": "With hair shaped like a crown and a body encased in bluish white flames, this bird is a formidable sight.",
+    "kind": "normal-monster",
+    "race": "Winged Beast",
+    "attribute": "WIND",
+    "level": 4,
+    "attack": 1600,
+    "defense": 1200
+  },
+  "printing": {
+    "date": "2002-06-26",
+    "setCode": "MRD-122",
+    "product": "METAL RAIDERS"
+  }
+}

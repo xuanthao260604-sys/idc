@@ -1,0 +1,22 @@
+{
+  "passcode": "81386177",
+  "konamiId": 4445,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4445&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "73d5cf898acf7606f6a21bf316a31cb6750432d59f925027423017bfd3197f34",
+  "currentFacts": {
+    "name": "Bottom Dweller",
+    "text": "This is one sea creature whose wrath is something monsters fear to face.",
+    "kind": "normal-monster",
+    "race": "Fish",
+    "attribute": "WATER",
+    "level": 5,
+    "attack": 1650,
+    "defense": 1700
+  },
+  "printing": {
+    "date": "2002-06-26",
+    "setCode": "MRD-039",
+    "product": "METAL RAIDERS"
+  }
+}

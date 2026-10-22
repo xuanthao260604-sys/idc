@@ -1,0 +1,22 @@
+{
+  "passcode": "42431843",
+  "konamiId": 4181,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4181&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "0181e22c1333ae030c06ed05fabac1cd1953667ab98cc6292d7726c0813b381d",
+  "currentFacts": {
+    "name": "Ancient Brain",
+    "text": "A fallen fairy that is powerful in the dark.",
+    "kind": "normal-monster",
+    "race": "Fiend",
+    "attribute": "DARK",
+    "level": 3,
+    "attack": 1000,
+    "defense": 700
+  },
+  "printing": {
+    "date": "2002-06-26",
+    "setCode": "MRD-082",
+    "product": "METAL RAIDERS"
+  }
+}
