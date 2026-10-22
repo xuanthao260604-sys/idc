@@ -48,4 +48,15 @@ Seed expanded 02 được chọn sau headless kiểm tra có các tương tác e
 
 ## Kết quả
 
-Đang hoàn tất Linux và Windows CI. Windows 11 desktop chưa chạy. Chưa đóng gói/bàn giao beta.
+Linux: 334/334 test (22 file), 21/21 bước validation, 11 browser run bằng Chromium 154.0.8037.57, runtimeExceptions 0.
+Expanded preview: reviewedCardPreviews=60, dataDrivenLevels=true. Đã xem ảnh chụp Launcher Spider và tên dài Winged Dragon
+ở desktop/màn hình hẹp; nguồn ảnh khung không bị sửa.
+Trận expanded: 9 lượt, 182 lệnh, 8 attack, 1 decision; Man-Eater Bug/Pot of Greed/Trap Hole được dùng;
+B thắng với LP 0/8000. Pilot 20 giữ 16 lượt/339 lệnh, đủ 5 hiệu ứng, LP 0/4200.
+Windows và Ubuntu CI đã đạt trên commit `d7d1a74ed14ad5735105a367ebec86c24d96572f`, [run 39740451524](https://github.com/xuanthao260604-sys/idc/actions/runs/39740451524).
+Đã tải và đọc artifact Windows: win32/x64, OS release 10.0.26100, Node 24.19.0, npm 11.17.0;
+Edge 155.0.4283.62, 334/334 test, 21/21 bước, 11 browser report, runtimeExceptions 0.
+60 preview có số sao theo dữ liệu; trận expanded có cùng 9 lượt/182 lệnh/1 decision và LP 0/8000 như Linux.
+Ubuntu CI cũng đạt 334 test; bước npm ci mất khoảng 5 phút nhưng hoàn tất thành công, không sửa lockfile hoặc dependency.
+Artifact chỉ là bằng chứng kiểm thử, được Git bỏ qua; không phải gói beta.
+Windows 11 desktop chưa chạy. Chưa đóng gói/bàn giao beta.
