@@ -37,5 +37,11 @@ nhập JSON lỗi giữ nháp, roundtrip 41 lá, đóng bỏ nháp và chuyển 
 regression editor A=41/B=42 và chỉ áp dụng deck ở trận mới đều đạt, runtimeExceptions=0.
 Đã xem ảnh bố cục 390px; kiểm tra không tràn ngang ở 390px và 1440px.
 
-CI Windows/Ubuntu đang chờ kiểm chứng. Windows 11 desktop chưa thử trực tiếp;
-không đóng gói hoặc bàn giao beta.
+Windows và Ubuntu CI đều đạt trên source commit 2d9b758eb3544a339306ec60dddd7f5ca0cb0fe0:
+[run 39786648331](https://github.com/xuanthao260604-sys/idc/actions/runs/39786648331).
+Đã tải và đọc artifact windows-validation-39786648331-1: win32 x64,
+OS 10.0.26100, Node 24.19.0, npm 11.17.0, Edge 154.0.4258.62.
+Windows đạt 644/644 test trong 31 file, 28/28 bước và 18 browser report,
+tất cả runtimeExceptions=0. Report deck-builder xác nhận portableFileRoundtrip,
+invalidImportPreservesDraft, importRequiresSave đều true, deck A/B vẫn 41/42.
+Windows 11 desktop chưa thử trực tiếp; không đóng gói hoặc bàn giao beta.

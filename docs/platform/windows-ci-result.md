@@ -1,6 +1,10 @@
 # Kết quả Windows CI
 
-> Mốc hiện hành: [rà soát tương tác Mộ](../engine/graveyard-interaction-audit.md), catalog 106; [run 39784037637](https://github.com/xuanthao260604-sys/idc/actions/runs/39784037637), commit dfe09fe.
+> Mốc hiện hành: [xuất/nhập file deck](../beta/deck-files.md), catalog 106; [run 39786648331](https://github.com/xuanthao260604-sys/idc/actions/runs/39786648331), commit 2d9b758.
+> Windows/Ubuntu đều đạt; Windows: 644/644 test, 28/28 bước, 18 browser report với Edge 154.0.4258.62, runtimeExceptions=0.
+> Tải/nhập file thật đạt; nhập lỗi giữ bản nháp, nhập thành công cần Lưu mới áp dụng. Windows 11 desktop chưa chạy.
+
+> Mốc trước: [rà soát tương tác Mộ](../engine/graveyard-interaction-audit.md), catalog 106; [run 39784037637](https://github.com/xuanthao260604-sys/idc/actions/runs/39784037637), commit dfe09fe.
 > Windows/Ubuntu đều đạt; Windows: 630/630 test, 28/28 bước, 18 browser report với Edge 154.0.4258.62, runtimeExceptions=0.
 > Thêm 10 test tương tác recovery/FLIP/Trap Hole/chi phí; không đổi engine hoặc dữ liệu bài. Windows 11 desktop chưa chạy.
 
