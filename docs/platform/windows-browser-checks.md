@@ -1,6 +1,10 @@
 # Kiểm thử giao diện bằng trình duyệt trên Windows
 
-> Mốc hiện hành 22/10/2026: [hai Phép thay đổi LP](../engine/life-point-spells.md), catalog 102; [run 39750638222](https://github.com/xuanthao260604-sys/idc/actions/runs/39750638222), commit eb5e7af.
+> Mốc hiện hành: [rà soát lệnh LP](../engine/life-point-command-audit.md), [run 39753236857](https://github.com/xuanthao260604-sys/idc/actions/runs/39753236857), commit dc25a98.
+> Windows/Ubuntu đều đạt; Windows: 467/467 test, 23/23 bước, 13 browser report với Edge 154.0.4258.62, không có runtime exception.
+> Catalog 102 và scope hiệu ứng giữ nguyên; Windows 11 desktop chưa chạy.
+
+> Mốc trước 22/10/2026: [hai Phép thay đổi LP](../engine/life-point-spells.md), catalog 102; [run 39750638222](https://github.com/xuanthao260604-sys/idc/actions/runs/39750638222), commit eb5e7af.
 > Windows và Ubuntu đều đạt; Windows: 456/456 test, 23/23 bước, 13 browser run bằng Edge 154.0.4258.62, không có runtime exception.
 > Xác nhận hồi LP, sát thương kết thúc trận, 102 preview và trận tự nhiên dùng cả hai lá mới. Windows 11 desktop chưa chạy.
 

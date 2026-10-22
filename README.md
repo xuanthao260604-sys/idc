@@ -14,8 +14,8 @@ Hinotama và Dian Keto the Cure Master được mở bằng hồ sơ review và 
 Đã kiểm chứng [hai Phép thay đổi LP](docs/engine/life-point-spells.md) trên Linux và Windows CI; còn ca Windows 11 desktop chưa chạy.
 Không coi việc cấu hình CI Windows hoặc chạy Linux là đã kiểm chứng Windows.
 
-456/456 test đạt trên Linux và Windows CI cho catalog 102.
-23/23 bước validation và 13 browser run đạt bằng Edge trên Windows CI; chi tiết tại [mốc hiệu ứng LP](docs/engine/life-point-spells.md).
+467/467 test đạt trên Linux và Windows CI cho catalog 102; [rà soát lệnh LP](docs/engine/life-point-command-audit.md) đã hoàn tất.
+23/23 bước validation và 13 browser run đạt bằng Edge trên Windows CI; chi tiết tại [rà soát lệnh LP](docs/engine/life-point-command-audit.md).
 Browser regression tính riêng: xây/lưu deck, 5 hiệu ứng, xem Mộ, tạo trận A/B/ngẫu nhiên, bỏ bài,
 Pot với deck 0/1/2 lá, đầu hàng/hủy và tạo trận sau kết thúc, trận tự nhiên đầy đủ.
 Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không phải game hoàn tất mọi luật Yu-Gi-Oh!.

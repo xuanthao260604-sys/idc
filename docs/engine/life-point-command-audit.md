@@ -30,6 +30,9 @@ trận tự nhiên/trình duyệt của mốc trước và không phải kiểm 
 ## Kết quả
 
 Linux: typecheck đạt; 467/467 test trong 25 file, gồm 11 ca tích hợp mới.
-Windows/Ubuntu CI: chờ xác minh run của commit kiểm thử này.
+Windows và Ubuntu CI đều đạt trên commit dc25a98f5b82732f651d7c8ab7b31821eea1df28,
+[run 39753236857](https://github.com/xuanthao260604-sys/idc/actions/runs/39753236857).
+Đã tải/đọc artifact: Windows x64 10.0.26100, Node 24.19.0, npm 11.17.0;
+467/467 test, 23/23 bước, 13 browser report với Edge 154.0.4258.62, runtimeExceptions=0.
 Không chạy lại bộ browser Linux vì không thay mã sản phẩm hoặc browser harness.
 Dữ liệu/deck/ảnh và scope runtime giữ nguyên; chưa đóng gói beta.
