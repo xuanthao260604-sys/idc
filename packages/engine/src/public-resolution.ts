@@ -24,7 +24,7 @@ export function publicResolution(events: readonly EngineEvent[], after: DuelStat
       && Number.isSafeInteger(event.details.amount) && event.details.amount > 0) add({ kind: event.kind, playerId, amount: event.details.amount });
     else if (event.kind === 'effect-destroyed' && count) add({ kind: 'effect-destroyed', count });
     else if (event.kind === 'battle-destroyed' && count) add({ kind: 'battle-destroyed', count });
-    else if (event.kind === 'cards-discarded' && count && player(playerId)) add({ kind: 'discard', playerId, count });
+    else if (event.kind === 'cards-discarded' && count && player(playerId)) add({ kind: event.details.reason === 'activation-cost' ? 'discard-cost' : 'discard', playerId, count });
     else if (event.kind === 'monsters-tributed' && count && player(playerId)) add({ kind: 'tribute', playerId, count });
     else if (event.kind === 'returned-to-hand') {
       const owners = new Map<string, number>();

@@ -43,7 +43,7 @@ export const OfficialEvidenceSchema = z.strictObject({
 export const OverlaySchema = z.strictObject({
   id: z.string().regex(/^official:\d{8}$/), baseFingerprint: z.string().regex(/^[a-f0-9]{64}$/),
   revision: z.number().int().positive(),
-  patch: z.strictObject({ text: z.string().min(1).optional() }),
+  patch: z.strictObject({ name: z.string().min(1).optional(), text: z.string().min(1).optional() }),
   historicalTextReview: z.enum(['not-required-normal-flavor', 'pending']),
   notes: z.string().min(1), sources: z.array(SourceSchema).min(1),
 });

@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "format": {
+    "id": "goat-2005-08-17",
+    "revision": 4
+  },
+  "provenance": {
+    "upstreamSha256": "560d0a079962484c5b83c1091a5dcec2c238126b9dbae43369c5a77363704740",
+    "manifestSha256": "405c6cc4bb2573d3ce6a3d2731a9077001381a5f754e6c59728528ee5ef3f293",
+    "reviewSha256": "00f9316585cb0c2150c121b85b11be0b782c709d4d5f8ba93b22cdb6abe3d33a",
+    "officialEvidenceSha256": "c84554fbf429b603d3d727e19be51bc68812925cda8a6f5ace7fcbc3ca212a4e"
+  },
+  "cards": [
+    {
+      "schemaVersion": 1,
+      "id": "official:79759861",
+      "origin": "official",
+      "revision": 1,
+      "name": "Tribute to The Doomed",
+      "passcode": "79759861",
+      "text": "Discard 1 card, then target 1 monster on the field; destroy it.",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=79759861&misc=yes",
+          "accessedOn": "2026-10-22",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4856&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 4856."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4856&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4856&request_locale=en",
+          "accessedOn": "2026-10-22",
+          "scope": "text",
+          "notes": "Current reference, not claimed as original 2005 wording."
+        }
+      ],
+      "verification": "pending",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4856&request_locale=en",
+            "accessedOn": "2026-10-22",
+            "scope": "release",
+            "notes": "Reviewed North American print MRD-057, 2002-06-26, METAL RAIDERS; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-22",
+            "scope": "release",
+            "notes": "Reviewed Goat cardpool explicitly lists Metal Raiders (MRD); original North American MRD-057 print independently checked on Konami."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "kind": "spell",
+      "subtype": "normal"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "official:79759861",
+      "fingerprint": "bd8145343720b346c42240bc41f1c35bdfc0ab2b1a49d7744a0e5667ff338d37",
+      "historicalTextReview": "pending",
+      "upstreamName": "Tribute to the Doomed",
+      "upstreamText": "Discard 1 card, then target 1 monster on the field; destroy it.",
+      "referenceText": "Discard 1 card, then target 1 monster on the field; destroy it.",
+      "notes": "Current Konami text copied verbatim if different from API. Historical printed wording pending; runtime review separate. Original MRD printing checked. Explicit name correction: Konami uses uppercase The; upstream API uses lowercase the.",
+      "printing": {
+        "date": "2002-06-26",
+        "setCode": "MRD-057",
+        "product": "METAL RAIDERS"
+      },
+      "upstreamTcgDate": "2002-06-26"
+    }
+  ],
+  "summary": {
+    "imported": 1,
+    "verifiedData": 0,
+    "historicalReviewPending": 1,
+    "implemented": 0,
+    "testedEffects": 0,
+    "playable": 0
+  }
+}

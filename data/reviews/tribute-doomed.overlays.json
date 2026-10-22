@@ -1,0 +1,20 @@
+[
+  {
+    "id": "official:79759861",
+    "baseFingerprint": "bd8145343720b346c42240bc41f1c35bdfc0ab2b1a49d7744a0e5667ff338d37",
+    "revision": 1,
+    "patch": {
+      "name": "Tribute to The Doomed"
+    },
+    "historicalTextReview": "pending",
+    "notes": "Current Konami text copied verbatim if different from API. Historical printed wording pending; runtime review separate. Original MRD printing checked. Explicit name correction: Konami uses uppercase The; upstream API uses lowercase the.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4856&request_locale=en",
+        "accessedOn": "2026-10-22",
+        "scope": "text",
+        "notes": "Current reference, not claimed as original 2005 wording."
+      }
+    ]
+  }
+]

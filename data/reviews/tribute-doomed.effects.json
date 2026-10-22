@@ -1,0 +1,40 @@
+[
+  {
+    "cardId": "official:79759861",
+    "definitionSha256": "788c8981799ec84ae6e5837e6933cfb3b650df4f7031ee666aa70908bc283604",
+    "revision": 1,
+    "format": {
+      "id": "goat-2005-08-17",
+      "revision": 4
+    },
+    "status": "reviewed-for-supported-scope",
+    "scope": "normal-spell-discard-target-single-link-v1",
+    "handler": {
+      "handler": "discard-destroy-target-monster"
+    },
+    "evidence": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4856&request_locale=en",
+        "accessedOn": "2026-10-22",
+        "sourceKind": "official-current",
+        "quotation": "Discard 1 card, then target 1 monster on the field; destroy it.",
+        "historicalApplicability": "Current reference semantics; original MRD-057 release independently checked. Not claimed as original 2005 printed wording."
+      },
+      {
+        "url": "https://www.goatformat.com/rulings1.html",
+        "accessedOn": "2026-10-22",
+        "sourceKind": "community",
+        "quotation": "A face-down \"Big Shield Gardna\" can only negate a Spell Card that targets 1 face-down monster, so it cannot negate \"Riryoku\", \"Creature Swap\" or \"Dark Hole\", but could negate \"Nobleman of Crossout\" or \"Tribute to the Doomed\".",
+        "historicalApplicability": "Goat archived FAQ; community source, not current primary Konami ruling. Named interacting cards are outside this implementation."
+      },
+      {
+        "url": "https://www.goatformat.com/rulings3.html",
+        "accessedOn": "2026-10-22",
+        "sourceKind": "community",
+        "quotation": "You cannot activate \"Gravekeeper’s Watcher\" when a card is discarded as a cost, such as \"Magic Jammer\", \"Kuriboh\", \"Tribute to the Doomed\", \"Thunder Dragon\", or \"Type Zero Magic Crusher\".",
+        "historicalApplicability": "Goat archived FAQ; community source, not current primary Konami ruling. Named interacting cards are outside this implementation."
+      }
+    ],
+    "notes": "Own open Main, hand/own Set; discard one other own hand card as an activation cost and target one monster on either field, including face-down. Cost is paid before response, not an effect discard; target remains until resolution after two passes. No general mixed Chain, negate, cost replacement, discard triggers or immunity. Historical printed wording remains pending. Current Konami uppercase The name explicitly overrides upstream lowercase the through reviewed name patch."
+  }
+]

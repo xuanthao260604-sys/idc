@@ -1,0 +1,18 @@
+{
+  "passcode": "79759861",
+  "konamiId": 4856,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4856&request_locale=en",
+  "accessedOn": "2026-10-22",
+  "htmlSha256": "d3f72c8789225f6ff6dcb0d5c1cca1a88cf0575c87772a03158e26abffb87010",
+  "currentFacts": {
+    "name": "Tribute to The Doomed",
+    "text": "Discard 1 card, then target 1 monster on the field; destroy it.",
+    "kind": "spell",
+    "subtype": "normal"
+  },
+  "printing": {
+    "date": "2002-06-26",
+    "setCode": "MRD-057",
+    "product": "METAL RAIDERS"
+  }
+}

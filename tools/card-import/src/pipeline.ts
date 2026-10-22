@@ -67,6 +67,8 @@ export function importBatch(input: { raw: string; receipt: unknown; manifest: un
     if (!overlay || !proof) throw new Error(`Missing review/evidence for ${id}`);
     if (overlay.baseFingerprint !== fingerprint(facts)) throw new Error(`Review conflict for ${id}: upstream facts changed; preserve overlay and review a new revision`);
     const merged = FactsSchema.parse({ ...facts, ...overlay.patch });
+    if (overlay.patch.name !== undefined && merged.name.toLowerCase() !== facts.name.toLowerCase())
+      throw new Error(`Name patch must be a reviewed casing correction for ${id}`);
     const officialUrl = new URL(proof.url);
     if (officialUrl.origin !== 'https://www.db.yugioh-card.com' || officialUrl.pathname !== '/yugiohdb/card_search.action'
       || officialUrl.searchParams.get('ope') !== '2' || officialUrl.searchParams.get('cid') !== String(expected.konamiId)
@@ -89,7 +91,10 @@ export function importBatch(input: { raw: string; receipt: unknown; manifest: un
       notes: `Reviewed North American print ${proof.printing.setCode}, ${proof.printing.date}, ${proof.printing.product}; not inferred from API tcg_date.` };
     const restrictionEvidence = goatApril2005Restrictions.evidence.map(e => ({ url: e.url, accessedOn: e.accessedOn,
       scope: 'restriction' as const, notes: `Goat list reviewed: ${goatApril2005Restrictions.id} revision ${goatApril2005Restrictions.revision}.` }));
-    const maxCopies = findListedRestriction(goatApril2005Restrictions, merged.name) ?? 3;
+    // A reviewed casing correction must not bypass the historical restriction name.
+    const restrictionName = overlay.patch.name === undefined ? merged.name
+      : goatApril2005Restrictions.entries.find(e => e.sourceName.toLowerCase() === merged.name.toLowerCase())?.sourceName ?? merged.name;
+    const maxCopies = findListedRestriction(goatApril2005Restrictions, restrictionName) ?? 3;
     return {
       card: { ...merged, schemaVersion: 1, id, origin: 'official', revision: overlay.revision, passcode,
         textBasis: 'current-reference', sources: [source, identityProof, textProof, ...overlay.sources],
@@ -98,6 +103,7 @@ export function importBatch(input: { raw: string; receipt: unknown; manifest: un
         legality: { formatId: manifest.formatId, status: maxCopies === 0 ? 'illegal' : 'legal', maxCopies,
           evidence: [releaseProof, manifest.eligibilitySource, ...restrictionEvidence] } },
       review: { id, fingerprint: fingerprint(facts), historicalTextReview: overlay.historicalTextReview,
+        ...(overlay.patch.name !== undefined ? { upstreamName: facts.name } : {}),
         upstreamText: facts.text, referenceText: merged.text, notes: overlay.notes, printing: proof.printing,
         upstreamTcgDate: upstream.misc_info[0]!.tcg_date ?? null },
     };

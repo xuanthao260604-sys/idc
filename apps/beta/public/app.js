@@ -5,7 +5,7 @@ let deckRules, deckDraft = null;
 let view = null, selected = null, busy = false, message = 'Chọn một lá bài để bắt đầu.';
 const names = { a: 'Người chơi A', b: 'Người chơi B' };
 const phaseNames = { draw: 'BỐC BÀI', standby: 'CHUẨN BỊ', main1: 'MAIN 1', battle: 'CHIẾN ĐẤU', main2: 'MAIN 2', end: 'KẾT THÚC' };
-const reasonNames = { 'stale-state': 'Bàn đấu đã thay đổi. Hãy chọn lại bài.', 'not-your-action': 'Chưa đến quyền thao tác của bạn.', 'illegal-timing': 'Không thể dùng thao tác ở thời điểm này.', 'invalid-target': 'Lá bài hoặc mục tiêu chưa hợp lệ.', 'invalid-choice': 'Hãy chọn đúng số lá được yêu cầu.', 'quota-used': 'Bạn đã Normal Summon hoặc Set trong lượt này.', 'unpayable-tribute': 'Số bài hiến tế chưa đúng.', 'occupied-zone': 'Ô đã có bài.', 'invalid-position': 'Chưa thể đổi tư thế hoặc tấn công.', 'duel-ended': 'Trận đấu đã kết thúc.', 'invalid-action': 'Thao tác chưa được hỗ trợ trong beta.', 'command-capacity': 'Trận thử đã đạt giới hạn lệnh. Hãy bắt đầu trận mới.' };
+const reasonNames = { 'stale-state': 'Bàn đấu đã thay đổi. Hãy chọn lại bài.', 'not-your-action': 'Chưa đến quyền thao tác của bạn.', 'illegal-timing': 'Không thể dùng thao tác ở thời điểm này.', 'invalid-target': 'Lá bài hoặc mục tiêu chưa hợp lệ.', 'invalid-choice': 'Hãy chọn đúng số lá được yêu cầu.', 'quota-used': 'Bạn đã Normal Summon hoặc Set trong lượt này.', 'unpayable-cost': 'Cần bỏ một lá khác từ tay của bạn làm chi phí.', 'unpayable-tribute': 'Số bài hiến tế chưa đúng.', 'occupied-zone': 'Ô đã có bài.', 'invalid-position': 'Chưa thể đổi tư thế hoặc tấn công.', 'duel-ended': 'Trận đấu đã kết thúc.', 'invalid-action': 'Thao tác chưa được hỗ trợ trong beta.', 'command-capacity': 'Trận thử đã đạt giới hạn lệnh. Hãy bắt đầu trận mới.' };
 function node(tag, text, className) { const n = document.createElement(tag); if (text !== undefined) n.textContent = text; if (className) n.className = className; return n; }
 function button(text, action, className) { const b = node('button', text, className); b.type = 'button'; b.addEventListener('click', action); return b; }
 async function api(path, body) {
@@ -89,6 +89,7 @@ function resolutionText(fact) {
   if (fact.kind === 'effect-destroyed') return `${fact.count} quái bị phá bởi hiệu ứng`;
   if (fact.kind === 'battle-destroyed') return `${fact.count} quái bị phá bởi chiến đấu`;
   if (fact.kind === 'return-to-hand') return `${fact.count} lá trở về tay ${player}`;
+  if (fact.kind === 'discard-cost') return `${player} bỏ ${fact.count} lá làm chi phí`;
   if (fact.kind === 'discard') return `${player} bỏ ${fact.count} lá xuống Mộ`;
   if (fact.kind === 'tribute') return `${player} hiến tế ${fact.count} quái`;
   return '';
@@ -102,12 +103,12 @@ function matchesPlan(plan, action) {
     : plan[key] === value);
 }
 let dialogEvents = new AbortController();
-function chooseAction(title, base, { slots = false, tributes = false, targets = null } = {}) {
+function chooseAction(title, base, { slots = false, tributes = false, targets = null, discards = false } = {}) {
   dialogEvents.abort(); dialogEvents = new AbortController();
   const fields = $('action-fields'); fields.replaceChildren(); $('action-title').textContent = title;
   const plans = matchingActions(base);
   if (!plans.length) { message = 'Chưa có thao tác hợp lệ cho lá này ở thời điểm hiện tại.'; $('status').textContent = message; return; }
-  let selectSlot, selectTarget; const checks = [];
+  let selectSlot, selectTarget, selectDiscard; const checks = [];
   if (slots) {
     const l = node('label', 'Chọn ô đặt bài'); selectSlot = node('select'); selectSlot.name = 'slot';
     const p = view.players.find(p => p.playerId === view.viewerId);
@@ -119,6 +120,13 @@ function chooseAction(title, base, { slots = false, tributes = false, targets = 
     fields.append(node('p', plans[0].tributeHandles.length ? `Chọn đúng ${plans[0].tributeHandles.length} lá hiến tế. Ô đang có bài chỉ dùng được nếu lá tại ô đó được hiến tế.` : 'Không cần hiến tế.'));
     (plans[0].tributeHandles.length ? view.players.find(p => p.playerId === view.viewerId).monsters.filter(Boolean) : []).forEach(c => { const l = node('label'), input = node('input'); input.type = 'checkbox'; input.value = c.handle; input.disabled = !plans.some(a => a.tributeHandles.includes(c.handle)); checks.push(input); l.append(input, document.createTextNode(` ${label(c)}`)); fields.append(l); });
   }
+  if (discards) {
+    const l = node('label', 'Chọn 1 lá trên tay để bỏ làm chi phí'); selectDiscard = node('select'); selectDiscard.name = 'discard';
+    view.selfHand.filter(c => plans.some(p => p.discardHandle === c.handle)).forEach(c => {
+      const o = node('option', label(c)); o.value = c.handle; selectDiscard.append(o);
+    });
+    l.append(selectDiscard); fields.append(l);
+  }
   if (targets) {
     const l = node('label', 'Chọn mục tiêu'); selectTarget = node('select'); selectTarget.name = 'target';
     targets.forEach(t => { const o = node('option', t.label); o.value = t.handle; o.disabled = !plans.some(a => a.targetHandle === t.handle); selectTarget.append(o); }); const first = [...selectTarget.options].find(o => !o.disabled); if (first) selectTarget.value = first.value; l.append(selectTarget); fields.append(l);
@@ -127,6 +135,7 @@ function chooseAction(title, base, { slots = false, tributes = false, targets = 
     const a = { ...base };
     if (selectSlot) a.slot = Number(selectSlot.value);
     if (tributes) a.tributeHandles = checks.filter(c => c.checked).map(c => c.value);
+    if (selectDiscard) a.discardHandle = selectDiscard.value;
     if (selectTarget) a.targetHandle = selectTarget.value;
     return a;
   };
@@ -165,7 +174,7 @@ function detail() {
       add('Úp quái', () => chooseAction('Set quái thú', { type: 'set-monster', cardHandle: h }, { slots: true, tributes: true }));
     } else {
       add('Úp bài', () => chooseAction('Set Phép / Bẫy', { type: 'set-spell-trap', cardHandle: h, zone: 'spell-trap' }, { slots: true }));
-      if (d.kind === 'spell') add('Kích hoạt', () => chooseAction('Kích hoạt Phép', { type: 'activate-spell', cardHandle: h }, { slots: true }));
+      if (d.kind === 'spell') add('Kích hoạt', () => activateSpell(h));
     }
   }
   if (zone === 'monster') {
@@ -179,9 +188,16 @@ function detail() {
     }
   }
   if (zone === 'spell-trap' && card.position === 'face-down') {
-    if (d.kind === 'spell') add('Kích hoạt', () => command({ type: 'activate-spell', cardHandle: h, slot }));
+    if (d.kind === 'spell') add('Kích hoạt', () => activateSpell(h, slot));
     else add('Kích hoạt Bẫy', () => chooseAction('Chọn quái vừa triệu hồi', { type: 'activate-trap', cardHandle: h }, { targets: view.players.find(p => p.playerId !== view.viewerId).monsters.flatMap((c, i) => c ? [{ handle: c.handle, label: `Ô ${i + 1}: ${label(c)}` }] : []) }), view.timing.priorityPlayer === view.viewerId && ['summon-response', 'chain-response'].includes(view.timing.window) && !view.decision);
   }
+}
+function activateSpell(handle, slot) {
+  const base = { type: 'activate-spell', cardHandle: handle, ...(slot === undefined ? {} : { slot }) };
+  const cost = matchingActions(base).some(a => a.discardHandle !== undefined);
+  if (!cost && slot !== undefined) return command(base);
+  const targets = cost ? view.players.flatMap(p => p.monsters.filter(Boolean).map(c => ({ handle: c.handle, label: optionLabel(c.handle) }))) : null;
+  chooseAction(cost ? 'Bỏ 1 lá làm chi phí và chọn quái để phá' : 'Kích hoạt Phép', base, { slots: slot === undefined, discards: cost, targets });
 }
 function renderGuide() {
   let title = '', text = '', transfer = null;

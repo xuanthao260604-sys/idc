@@ -19,6 +19,14 @@ export function availableActions(registry: Registry, state: DuelState, projectio
   const offer = (publicAction: DuelAction, action: EngineAction) => {
     if (applyAction(registry, state, { actorId, expectedStateVersion: state.stateVersion, action }).accepted) actions.push(publicAction);
   };
+  const offerSpell = (handle: string, id: string, slot: Slot) => {
+    if (registry.spellHandlers[state.cards[id]!.definition.id]?.handler === 'discard-destroy-target-monster') {
+      for (const discard of view.selfHand.filter(c => c.handle !== handle))
+        for (const target of [...board.monsters, ...opponent.monsters]) if (target)
+          offer({ type: 'activate-spell', cardHandle: handle, slot, discardHandle: discard.handle, targetHandle: target.handle },
+            { type: 'activate-spell', instanceId: id, slot, discardId: resolve(discard.handle), targetId: resolve(target.handle) });
+    } else offer({ type: 'activate-spell', cardHandle: handle, slot }, { type: 'activate-spell', instanceId: id, slot });
+  };
   offer({ type: 'concede' }, { type: 'concede' });
   offer({ type: 'pass' }, { type: 'pass' });
   for (const phase of ['draw', 'standby', 'main1', 'battle', 'main2', 'end'] as const)
@@ -42,7 +50,7 @@ export function availableActions(registry: Registry, state: DuelState, projectio
       } else for (let slot = 0; slot < 5; slot++) {
         offer({ type: 'set-spell-trap', cardHandle: c.handle, zone: 'spell-trap', slot: slot as Slot },
           { type: def.kind === 'spell' ? 'set-spell' : 'set-trap', instanceId: id, slot });
-        if (def.kind === 'spell') offer({ type: 'activate-spell', cardHandle: c.handle, slot: slot as Slot }, { type: 'activate-spell', instanceId: id, slot });
+        if (def.kind === 'spell') offerSpell(c.handle, id, slot as Slot);
       }
     }
     for (const c of monsters) for (const type of ['flip-summon', 'change-position'] as const)
@@ -52,7 +60,7 @@ export function availableActions(registry: Registry, state: DuelState, projectio
     const c = board.spellsTraps[slot];
     if (!c || c.visibility !== 'known' || c.position !== 'face-down') continue;
     const id = own.spellsTraps[slot]!, def = registry.cards[state.cards[id]!.definition.id]!;
-    if (def.kind === 'spell') offer({ type: 'activate-spell', cardHandle: c.handle, slot: slot as Slot }, { type: 'activate-spell', instanceId: id, slot });
+    if (def.kind === 'spell') offerSpell(c.handle, id, slot as Slot);
     if (def.kind === 'trap') for (const target of opponent.monsters) {
       if (!target || target.visibility !== 'known' || target.position === 'face-down-defense') continue;
       offer({ type: 'activate-trap', cardHandle: c.handle, targetHandle: target.handle }, { type: 'activate-trap', instanceId: id, targetId: resolve(target.handle) });

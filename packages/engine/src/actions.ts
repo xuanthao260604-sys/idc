@@ -7,7 +7,7 @@ export const ActionSchema = z.discriminatedUnion('type', [
   z.strictObject({ type: z.literal('set-monster'), instanceId: instance, slot, tributeIds: z.array(instance).max(5) }),
   z.strictObject({ type: z.literal('set-trap'), instanceId: instance, slot }),
   z.strictObject({ type: z.literal('activate-trap'), instanceId: instance, targetId: instance }),
-  z.strictObject({ type: z.literal('activate-spell'), instanceId: instance, slot }),
+  z.strictObject({ type: z.literal('activate-spell'), instanceId: instance, slot, discardId: instance.optional(), targetId: instance.optional() }),
   z.strictObject({ type: z.literal('set-spell'), instanceId: instance, slot }),
   z.strictObject({ type: z.literal('flip-summon'), instanceId: instance }),
   z.strictObject({ type: z.literal('change-position'), instanceId: instance }),
@@ -21,7 +21,7 @@ export const RequestSchema = z.strictObject({ actorId: instance, expectedStateVe
 export type EngineAction = z.infer<typeof ActionSchema>;
 export type EngineRequest = z.infer<typeof RequestSchema>;
 export type RejectionCode = 'invalid-action' | 'invalid-player' | 'stale-state' | 'duel-ended' | 'not-your-action'
-  | 'illegal-timing' | 'invalid-target' | 'invalid-choice' | 'quota-used' | 'unpayable-tribute' | 'occupied-zone' | 'invalid-position';
+  | 'unpayable-cost' | 'illegal-timing' | 'invalid-target' | 'invalid-choice' | 'quota-used' | 'unpayable-tribute' | 'occupied-zone' | 'invalid-position';
 export class RuleError extends Error {
   constructor(readonly code: RejectionCode, message: string) { super(message); }
 }

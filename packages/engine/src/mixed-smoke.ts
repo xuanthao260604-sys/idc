@@ -51,12 +51,18 @@ export function runMixedSmoke(registry: Registry, seedHex: string) {
     if (state.turn.phase === 'standby') { advance('main1'); continue; }
     if (state.turn.phase === 'main1' || state.turn.phase === 'main2') {
       const free = p.spellsTraps.indexOf(null);
-      const spell = free >= 0 && p.hand.find(id => ['draw', 'inflict-damage', 'gain-life-points'].includes(registry.spellHandlers[def(id).id]?.handler ?? '')
+      const spell = free >= 0 && p.hand.find(id => (registry.spellHandlers[def(id).id]?.handler === 'discard-destroy-target-monster'
+          && p.hand.length >= 2 && [...p.monsters, ...opponent.monsters].some(id => id !== null))
+        || ['draw', 'inflict-damage', 'gain-life-points'].includes(registry.spellHandlers[def(id).id]?.handler ?? '')
         || (registry.spellHandlers[def(id).id]?.handler === 'destroy-highest-face-up-attack-position'
           && [...p.monsters, ...opponent.monsters].some(id => id !== null && state.cards[id]!.position === 'face-up-attack'))
         || (['destroy-lowest-opposing-face-up-attack', 'destroy-highest-opposing-face-up-defense'].includes(registry.spellHandlers[def(id).id]?.handler ?? '')
           && opponent.monsters.some(id => id !== null && state.cards[id]!.position !== 'face-down-defense')));
-      if (spell) { act(active, { type: 'activate-spell', instanceId: spell, slot: free }); continue; }
+      if (spell) {
+        const costTarget = registry.spellHandlers[def(spell).id]?.handler === 'discard-destroy-target-monster';
+        act(active, { type: 'activate-spell', instanceId: spell, slot: free, ...(costTarget
+          ? { discardId: p.hand.find(id => id !== spell)!, targetId: [...opponent.monsters, ...p.monsters].find((id): id is string => id !== null)! } : {}) }); continue;
+      }
       const trap = free >= 0 && p.hand.find(id => registry.trapHandlers[def(id).id]);
       if (trap) { act(active, { type: 'set-trap', instanceId: trap, slot: free }); continue; }
       const flip = p.monsters.find(id => id !== null && state.cards[id]!.position === 'face-down-defense'
@@ -90,7 +96,7 @@ export function runMixedSmoke(registry: Registry, seedHex: string) {
   const activatedDefinitions = [...new Set(events.filter(e => ['spell-activated', 'flip-effect-activated', 'trap-activated'].includes(e.kind))
     .map(e => state.cards[e.affectedInstances[0]!]!.definition.id))].sort();
   return { state, events, report: { deckSize: deck.length, deckDefinitions: new Set(deck).size, turns: state.turn.number, commands,
-    draws: count('card-drawn'), spellActivations: count('spell-activated'), flipActivations: count('flip-effect-activated'), trapActivations: count('trap-activated'),
+    draws: count('card-drawn'), discardCosts: events.filter(e => e.kind === 'cards-discarded' && e.details.reason === 'activation-cost').length, spellActivations: count('spell-activated'), flipActivations: count('flip-effect-activated'), trapActivations: count('trap-activated'),
     returnedToHand: count('returned-to-hand'), effectDestructions: count('effect-destroyed'), battleDamageEvents: count('battle-damage'),
     activatedDefinitions, result: state.result, lifePoints: state.players.map(p => p.lifePoints) } };
 }

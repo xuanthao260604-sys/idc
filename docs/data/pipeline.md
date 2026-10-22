@@ -1,4 +1,6 @@
-> Mục hiện tại: [Hammer Shot](../engine/hammer-shot.md), catalog runtime 104; batch riêng hammer-shot. Đã đạt Linux và Windows CI: 519 test, 25 bước, 15 browser report. Trạng thái lịch sử vẫn pending; Windows 11 desktop chưa chạy.
+> Mục hiện tại: [Tribute to The Doomed](../engine/tribute-doomed.md), catalog 105; thêm chi phí bỏ bài và target khi kích hoạt. Đang kiểm chứng nền tảng, snapshot lịch sử vẫn pending.
+
+> Mốc trước: [Hammer Shot](../engine/hammer-shot.md), catalog runtime 104; batch riêng hammer-shot. Đã đạt Linux và Windows CI: 519 test, 25 bước, 15 browser report. Trạng thái lịch sử vẫn pending; Windows 11 desktop chưa chạy.
 
 Mốc trước: [hai Phép LP](../engine/life-point-spells.md), batch `lp-spells` riêng, tổng 102 lá. Snapshot và capability runtime tiếp tục tách biệt.
 

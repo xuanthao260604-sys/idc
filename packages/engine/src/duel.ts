@@ -117,12 +117,27 @@ export function assertDuelInvariants(state: DuelState, registry: Registry) {
     const card = state.cards[link.source];
     const flip = card && registry.flipHandlers[card.definition.id];
     const trap = card && registry.trapHandlers[card.definition.id];
+    const discardTarget = card && registry.spellHandlers[card.definition.id]?.handler === 'discard-destroy-target-monster';
+    const cost = link.costEvents[0], paid = cost?.affectedInstances[0] && state.cards[cost.affectedInstances[0]];
+    const ref = link.targetRefs[0], target = ref && state.cards[ref.instanceId];
+    const targetDefinition = target && registry.cards[target.definition.id];
+    const validDiscardTarget = ref && ref.locationAtSelection.kind === 'monster'
+      && state.players.some(p => p.id === ref.locationAtSelection.playerId)
+      && (targetDefinition?.kind === 'normal-monster' || targetDefinition?.kind === 'effect-monster')
+      && ref.instanceId !== cost?.affectedInstances[0];
+    const validCosts = discardTarget
+      ? link.costEvents.length === 1 && cost!.kind === 'cards-discarded' && cost!.details?.reason === 'activation-cost'
+        && cost!.details?.playerId === link.controllerId && cost!.affectedInstances.length === 1
+        && paid && paid.ownerId === link.controllerId && paid.location.kind === 'graveyard'
+        && Number.isSafeInteger(cost!.sequence) && cost!.sequence > 0 && cost!.sequence < state.eventSequence
+      : link.costEvents.length === 0;
     const validSource = card && (trap
       ? card.location.kind === 'spell-trap' && card.position === 'face-up' && link.effectId === trap && link.targetRefs.length === 1
       : flip
       ? card.location.kind === 'monster' && link.effectId === flip && link.targetRefs.length <= 1
-      : registry.spellHandlers[card.definition.id] && card.location.kind === 'spell-trap' && card.position === 'face-up' && link.effectId === 'normal-spell' && !link.targetRefs.length);
-    if (!validSource || link.controllerId !== card!.controllerId || link.spellSpeed !== (trap ? 2 : 1) || link.costEvents.length
+      : registry.spellHandlers[card.definition.id] && card.location.kind === 'spell-trap' && card.position === 'face-up' && link.effectId === 'normal-spell'
+        && (discardTarget ? link.targetRefs.length === 1 && validDiscardTarget : !link.targetRefs.length));
+    if (!validSource || link.controllerId !== card!.controllerId || link.spellSpeed !== (trap ? 2 : 1) || !validCosts
       || link.activationNegated || link.effectNegated || !['chain-response', 'resolving'].includes(state.timing.window)) throw new Error('Invalid supported Chain');
   }
   if (seen.size !== Object.keys(state.cards).length) throw new Error('Unreferenced card instance');
@@ -418,6 +433,16 @@ function spell(c: Context, actorId: string, action: Extract<EngineRequest['actio
   rule(fromHand || (action.type === 'activate-spell' && fromSet), 'invalid-target', 'Spell is not in an eligible own zone');
   rule(fromSet || p.spellsTraps[action.slot] === null, 'occupied-zone', 'Spell zone occupied');
   const handler = c.registry.spellHandlers[card.definition.id]!;
+  const costEvents: Mutable<EventRef>[] = [], targetRefs: Mutable<DuelState['chain'][number]['targetRefs']> = [];
+  if (action.type === 'activate-spell') {
+    if (handler.handler === 'discard-destroy-target-monster') {
+      rule(action.discardId !== undefined && action.targetId !== undefined, 'invalid-action', 'Choose a discard cost and monster target');
+      rule(action.discardId !== card.id && p.hand.includes(action.discardId), 'unpayable-cost', 'Discard one other card from your own hand');
+      const target = c.state.cards[action.targetId];
+      rule(target && target.location.kind === 'monster', 'invalid-target', 'Choose a monster on either field');
+      targetRefs.push({ instanceId: target.id, locationAtSelection: { ...target.location } });
+    } else rule(action.discardId === undefined && action.targetId === undefined, 'invalid-action', 'This Spell takes no discard cost or target');
+  }
   if (action.type === 'activate-spell' && ['destroy-lowest-opposing-face-up-attack', 'destroy-highest-opposing-face-up-defense', 'destroy-highest-face-up-attack-position'].includes(handler.handler))
     rule(planResolution(handler, resolutionBoard(c, actorId)).kind !== 'no-op', 'invalid-target', 'No eligible monster for this Spell');
   if (fromHand) { p.hand.splice(p.hand.indexOf(card.id), 1); p.spellsTraps[action.slot] = card.id; }
@@ -426,8 +451,14 @@ function spell(c: Context, actorId: string, action: Extract<EngineRequest['actio
   if (action.type === 'set-spell') {
     card.markers.setOnTurn = c.state.turn.number; emit(c, 'spell-set', [card.id]); response(c, 'action-response'); return;
   }
+  if (action.type === 'activate-spell' && handler.handler === 'discard-destroy-target-monster') {
+    sendToGraveyard(c, action.discardId!);
+    emit(c, 'cards-discarded', [action.discardId!], { playerId: actorId, reason: 'activation-cost' });
+    const paid = c.events.at(-1)!;
+    costEvents.push({ ...paid, affectedInstances: [...paid.affectedInstances], details: { ...paid.details } });
+  }
   c.state.chain.push({ id: `${c.state.id}:link:${c.state.eventSequence + 1}`, controllerId: actorId, source: card.id,
-    sourceAtActivation: structuredClone(card), effectId: 'normal-spell', spellSpeed: 1, costEvents: [], targetRefs: [], activationNegated: false, effectNegated: false });
+    sourceAtActivation: structuredClone(card), effectId: 'normal-spell', spellSpeed: 1, costEvents, targetRefs, activationNegated: false, effectNegated: false });
   emit(c, 'spell-activated', [card.id]);
   c.state.timing.window = 'chain-response'; c.state.timing.priorityPlayer = other(c.state, actorId).id; c.state.timing.consecutivePasses = 0;
 }
@@ -456,6 +487,12 @@ function resolveSpell(c: Context) {
     rule(Number.isSafeInteger(recipient.lifePoints + plan.amount), 'invalid-action', 'LP exceeds numeric representation');
     recipient.lifePoints += plan.amount;
     emit(c, 'life-points-gained', [], { playerId: recipient.id, amount: plan.amount });
+  }
+  if (plan.kind === 'destroy-selected-monster') {
+    const ref = link.targetRefs[0], target = ref && c.state.cards[ref.instanceId];
+    if (target && target.location.kind === 'monster' && JSON.stringify(target.location) === JSON.stringify(ref!.locationAtSelection)) {
+      sendToGraveyard(c, target.id); emit(c, 'effect-destroyed', [target.id]);
+    }
   }
   if (plan.kind === 'destroy') { sendToGraveyard(c, plan.instanceId); emit(c, 'effect-destroyed', [plan.instanceId]); }
   finishSpell(c);
