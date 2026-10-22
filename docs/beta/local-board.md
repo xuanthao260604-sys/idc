@@ -1,4 +1,4 @@
-> Mục hiện tại: [Hammer Shot](../engine/hammer-shot.md), catalog runtime 104; batch riêng hammer-shot. Đang kiểm chứng Linux và Windows CI; trạng thái lịch sử vẫn pending.
+> Mục hiện tại: [Hammer Shot](../engine/hammer-shot.md), catalog runtime 104; batch riêng hammer-shot. Đã đạt Linux và Windows CI: 519 test, 25 bước, 15 browser report. Trạng thái lịch sử vẫn pending; Windows 11 desktop chưa chạy.
 
 Catalog hiện tại 102 loại, có [hai Phép thay đổi LP](../engine/life-point-spells.md). Starter/deck cũ giữ nguyên; các mốc dưới đây là lịch sử.
 

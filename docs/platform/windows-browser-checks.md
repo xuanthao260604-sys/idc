@@ -1,6 +1,10 @@
 # Kiểm thử giao diện bằng trình duyệt trên Windows
 
-> Mốc hiện hành: [Smashing Ground](../engine/smashing-ground.md), catalog 103; [run 39756279907](https://github.com/xuanthao260604-sys/idc/actions/runs/39756279907), commit 90176b6.
+> Mốc hiện hành: [Hammer Shot](../engine/hammer-shot.md), catalog 104; [run 39774628060](https://github.com/xuanthao260604-sys/idc/actions/runs/39774628060), commit 2ebf56f.
+> Windows/Ubuntu đều đạt; Windows: 519/519 test, 25/25 bước, 15 browser report với Edge 155.0.4283.62, không có runtime exception.
+> Đủ 104 preview; ca hòa ATK giữa hai sân và trận tự nhiên dùng Hammer Shot đều đạt. Windows 11 desktop chưa chạy.
+
+> Mốc trước: [Smashing Ground](../engine/smashing-ground.md), catalog 103; [run 39756279907](https://github.com/xuanthao260604-sys/idc/actions/runs/39756279907), commit 90176b6.
 > Windows/Ubuntu đều đạt; Windows: 488/488 test, 24/24 bước, 14 browser report với Edge 155.0.4283.62, không có runtime exception.
 > Đủ 103 preview; ca hòa DEF và trận tự nhiên dùng Smashing Ground đều đạt. Windows 11 desktop chưa chạy.
 

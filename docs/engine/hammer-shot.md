@@ -76,7 +76,12 @@ với Chromium 154.0.8037.57, runtimeExceptions=0.
 Trận tự nhiên catalog 104: 18 lượt, 351 lệnh, 14 attack, 1 decision;
 dùng Hammer Shot/Hinotama/Man-Eater Bug/Smashing Ground, B thắng LP 0/4200, không chỉnh state khi chơi.
 Pilot 20 vẫn đạt 16 lượt/339 lệnh, đủ 5 hiệu ứng cũ.
-Windows CI chờ xác minh source commit của mục này.
+Windows và Ubuntu CI đều đạt trên source commit 2ebf56f3e0e94756761160e326328ac7aa12e314:
+[run 39774628060](https://github.com/xuanthao260604-sys/idc/actions/runs/39774628060).
+Đã tải và đọc artifact: Windows x64 10.0.26100, Node 24.19.0, npm 11.17.0,
+Edge 155.0.4283.62; 519/519 test, 25/25 bước, 15 browser report, runtimeExceptions=0.
+Đủ 104 preview; ca chọn phá quái của mình khi hòa ATK và trận expanded đạt cùng kết quả Linux
+(18 lượt/351 lệnh/14 attack/1 decision, LP 0/4200).
 Seed expanded đổi từ 90 sang 06 để trận tự nhiên của pool mới thực sự dùng Hammer Shot và có decision;
 kiểm tra browser yêu cầu Hammer Shot đã kích hoạt, không hạ điều kiện có decision/attack/kết thúc trận.
 Windows 11 desktop chưa chạy; artwork vẫn placeholder; chưa đóng gói hoặc bàn giao beta.
