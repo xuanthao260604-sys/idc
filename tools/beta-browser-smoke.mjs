@@ -163,11 +163,42 @@ try {
       assert.match(await evaluate(`document.querySelector(${JSON.stringify(scope)}).textContent`),/Danh tính lá bài được giữ kín/);
     }
   }
+  async function inspectDecision(index, escape = false) {
+    const before = await evaluate('JSON.stringify(view)');
+    const checked = await evaluate(`[...document.querySelectorAll('#decision-form input:checked')].map(e=>e.value)`);
+    const handle = await evaluate(`document.querySelectorAll('#decision-form input')[${index}].value`);
+    const card = await evaluate(`visibleCard(${JSON.stringify(handle)})`);
+    await click(`document.querySelectorAll('#decision-form [data-inspect]')[${index}]`);
+    await wait(`document.getElementById('decision-card-dialog').open`);
+    assert.equal(await evaluate(`document.querySelectorAll('#decision-card-detail button').length`),0);
+    if (card.visibility === 'known') {
+      assert.equal(await evaluate(`document.querySelector('#decision-card-detail h2').textContent`),r.cards[card.definition.id].name);
+      assert.equal(await evaluate(`document.querySelector('#decision-card-detail p').textContent`),r.cards[card.definition.id].text);
+    } else assert.equal(await evaluate(`document.querySelector('#decision-card-detail h2').textContent`),'Bài úp');
+    if (process.argv.includes('--screenshots')) {
+      const folder=join(projectRoot,'artifacts','decision-previews');await mkdir(folder,{recursive:true});
+      for(const [label,width,height] of [['desktop',1440,1000],['narrow',390,844]]) {
+        await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
+        assert.equal(await evaluate(`(()=>{const d=document.getElementById('decision-card-dialog'),r=d.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1&&d.scrollWidth<=d.clientWidth+1&&r.height<=innerHeight})()`),true);
+        const shot=await send('Page.captureScreenshot',{format:'png'});await writeFile(join(folder,label+'.png'),Buffer.from(shot.data,'base64'));
+      }
+      await send('Emulation.clearDeviceMetricsOverride');
+    }
+    if (escape) {
+      await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});
+      await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});
+    } else await click(`document.getElementById('close-decision-card')`);
+    await wait(`!document.getElementById('decision-card-dialog').open && document.getElementById('decision-card-detail').textContent===''`);
+    assert.deepEqual(await evaluate(`[...document.querySelectorAll('#decision-form input:checked')].map(e=>e.value)`),checked);
+    assert.equal(await evaluate('JSON.stringify(view)'),before);
+  }
   async function decision(name) {
     assert.equal(await evaluate(`document.querySelectorAll('.card.actionable').length`),0);
     assert.match(await evaluate(`document.getElementById('guide-title').textContent`), /Bạn cần chọn bài/);
     assert.equal(await evaluate(`document.querySelector('#decision-form input').type`), 'radio');
     assert.match(await evaluate(`document.querySelector('#decision-form').textContent`), /Người chơi A · Quái ô/);
+    const index = await evaluate(`[...document.querySelectorAll('#decision-form label')].findIndex(e=>e.textContent.includes(${JSON.stringify(name)}))`);
+    await inspectDecision(index);
     await click(`[...document.querySelectorAll('#decision-form label')].find(e=>e.textContent.includes(${JSON.stringify(name)})).querySelector('input')`);
     await actionClick(`document.querySelector('#decision-form button[type="submit"]')`);
   }
@@ -402,6 +433,7 @@ try {
     assert.ok(labels.some(t=>t.includes('Người chơi B') && t.includes('Dark Magician')));
     assert.equal(await evaluate(`document.getElementById('pass').disabled`),true);
     await seat('b'); assert.equal(await evaluate('view.decision'),null); await seat('a');
+    await inspectDecision(await evaluate(`[...document.querySelectorAll('#decision-form label')].findIndex(e=>e.textContent.includes('Người chơi A'))`));
     await click(`[...document.querySelectorAll('#decision-form label')].find(e=>e.textContent.includes('Người chơi A')).querySelector('input')`);
     await actionClick(`document.querySelector('#decision-form button[type="submit"]')`);
     assert.equal(await evaluate('view.players[0].monsters[0]'),null);
@@ -414,7 +446,7 @@ try {
     assert.match(await evaluate(`document.getElementById('status').textContent`),/1 quái bị phá bởi hiệu ứng/);
     await inspectGraveyard('self',['Hammer Shot','Dark Magician']); await inspectGraveyard('opponent',[]);
     assert.deepEqual(await evaluate('view.players.map(p=>p.lifePoints)'),[8000,8000]); assert.equal(errors.length,0);
-    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'hammer-shot',nonTargeting:true,tiedAcrossFields:true,ownMonsterDestroyed:true,defenseExcluded:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'hammer-shot',decisionPreviews:true,nonTargeting:true,tiedAcrossFields:true,ownMonsterDestroyed:true,defenseExcluded:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
   } else if (smashingGround) {
     await hand('Smashing Ground'); await click(textButton('#actions button','Kích hoạt'));
     assert.equal(await evaluate(`document.querySelectorAll('#action-fields select[name="target"]').length`),0);
@@ -671,10 +703,12 @@ try {
     assert.match(await evaluate(`document.getElementById('guide-title').textContent`), /đang chọn bài/);
     assert.equal(await evaluate(`document.getElementById('pass').disabled`), true);
     assert.equal(await evaluate(`document.getElementById('decision-panel').hidden`), true);
+    assert.equal(await evaluate(`document.querySelectorAll('#decision-form [data-inspect]').length`),0);
     await seat('a');
     assert.equal(await evaluate('view.decision.kind'), 'discard');
     assert.equal(await evaluate('view.decision.min'), 2);
     assert.equal(await evaluate(`document.querySelector('#decision-form input').type`), 'checkbox');
+    await inspectDecision(0);
     const disabled = () => evaluate(`document.querySelector('#decision-form button[type="submit"]').disabled`);
     assert.equal(await disabled(), true);
     await click(`document.querySelectorAll('#decision-form input')[0]`); assert.equal(await disabled(), true);
@@ -682,6 +716,7 @@ try {
     await click(`document.querySelectorAll('#decision-form input')[2]`); assert.equal(await disabled(), true);
     await click(`document.querySelectorAll('#decision-form input')[2]`);
     assert.match(await evaluate(`document.getElementById('decision-progress').textContent`), /2\/2/);
+    await inspectDecision(1,true); assert.equal(await disabled(),false);
     await actionClick(`document.querySelector('#decision-form button[type="submit"]')`);
     assert.equal(await evaluate('view.selfHand.length'), 6);
     assert.equal(await evaluate('view.players[0].graveyard.length'), 2);
@@ -691,7 +726,7 @@ try {
     assert.equal(await evaluate('view.turn.activePlayer'), 'b');
     assert.equal(await evaluate('view.turn.number'), 2);
     assert.equal(errors.length, 0);
-    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'discard', handAfterDiscard: 6, discarded: 2, nextPlayer: 'b', runtimeExceptions: errors.length }));
+    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'discard', decisionPreviews: true, viewingPreservesSelection: true, escapeClearsPreview: true, handAfterDiscard: 6, discarded: 2, nextPlayer: 'b', runtimeExceptions: errors.length }));
   } else if (newGame) {
     const before = await evaluate('JSON.stringify(view)');
     await click(`document.getElementById('reset')`);
@@ -780,7 +815,7 @@ try {
   assert.equal(await evaluate('view.players[0].monsters.filter(Boolean).length'), 0);
   assert.equal(await evaluate(`['Pot of Greed','Hane-Hane','Man-Eater Bug','Trap Hole','Fissure'].some(name=>document.getElementById('activity').textContent.includes(name))`), false);
   assert.equal(errors.length, 0);
-  console.log(JSON.stringify({ browser: browser.brand, browserVersion: browserVersion.product, platform: process.platform, fixtureOnlyAtSetup: true, legalActionCues: ['main-hand', 'pass-only-chain', 'trap-summon-response', 'battle', 'mandatory-choice', 'own-only'], sharedBack: ['monster', 'spell', 'trap'], effectFlows: ['Pot of Greed', 'Fissure', 'Trap Hole', 'Hane-Hane', 'Man-Eater Bug'], interaction: 'mouse controls and dialogs', graveyard: ['empty', 'inline card text', 'top-first order', 'read-only both players'], runtimeExceptions: errors.length }));
+  console.log(JSON.stringify({ browser: browser.brand, browserVersion: browserVersion.product, platform: process.platform, fixtureOnlyAtSetup: true, flipDecisionPreviews: true, legalActionCues: ['main-hand', 'pass-only-chain', 'trap-summon-response', 'battle', 'mandatory-choice', 'own-only'], sharedBack: ['monster', 'spell', 'trap'], effectFlows: ['Pot of Greed', 'Fissure', 'Trap Hole', 'Hane-Hane', 'Man-Eater Bug'], interaction: 'mouse controls and dialogs', graveyard: ['empty', 'inline card text', 'top-first order', 'read-only both players'], runtimeExceptions: errors.length }));
   }
 
 } finally {
