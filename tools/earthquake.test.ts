@@ -94,3 +94,75 @@ describe('Reviewed Earthquake simultaneous non-targeting position change',()=>{
     const done=room.getView('a');expect(room.submit('a',command)).toEqual(receipt);expect(room.getView('a').stateVersion).toBe(done.stateVersion);expect(done.activity.flatMap(e=>e.resolution??[])).toEqual([{kind:'effect-position-changed',count:3}]);expect(room.getView('b').activity).toEqual(done.activity);expect(JSON.stringify(room.getView('b'))).not.toContain(f.own);
   });
 });
+
+describe.each(['a','b'])('Earthquake interaction audit, controller %s',actor=>{
+  it('leaves Hammer Shot and Block Attack ineligible after all attackers become defenders',()=>{
+    const f=setup(actor),spells=['Hammer Shot','Block Attack'].map(name=>f.move(name));
+    const s=settle(step(f.state,actor,activation(f)).state),before=structuredClone(s);
+    for(const instanceId of spells){
+      const action:EngineAction={type:'activate-spell',instanceId,slot:0,...(s.cards[instanceId]!.definition.id==='official:25880422'?{targetId:f.opposing}:{})};
+      expect(act(s,actor,action)).toMatchObject({accepted:false,code:'invalid-target',state:s});
+      expect(s).toEqual(before);expect(s.cards[instanceId]!.location.kind).toBe('hand');
+      expect(step(s,actor,{type:'set-spell',instanceId,slot:0}).state.cards[instanceId]!.position).toBe('face-down');
+    }
+  });
+  it('Fissure still destroys the lowest-ATK face-up opponent in Defense Position',()=>{
+    const f=setup(actor),source=f.move('Fissure');
+    let s=settle(step(f.state,actor,activation(f)).state);
+    s=settle(step(s,actor,{type:'activate-spell',instanceId:source,slot:0}).state);
+    expect(s.cards[f.flip]!.location).toEqual({kind:'graveyard',playerId:f.other});
+    for(const id of [f.own,f.opposing,f.opponentDefense])expect(s.cards[id]!.location.kind).toBe('monster');
+    expect(s.cards[f.opponentHidden]!.position).toBe('face-down-defense');
+    expect(s.pendingTriggers).toEqual([]);expect(s.pendingDecision).toBeNull();
+  });
+  it('Smashing Ground includes defenders and does not swap their ATK and DEF',()=>{
+    const f=setup(actor),source=f.move('Smashing Ground');
+    let s=settle(step(f.state,actor,activation(f)).state);
+    s=settle(step(s,actor,{type:'activate-spell',instanceId:source,slot:0}).state);
+    expect(s.cards[f.opponentDefense]!.location).toEqual({kind:'graveyard',playerId:f.other});
+    for(const id of [f.own,f.opposing,f.flip])expect(s.cards[id]!.location.kind).toBe('monster');
+    expect(s.cards[f.opponentHidden]!.position).toBe('face-down-defense');
+    expect(s.pendingDecision).toBeNull();expect(s.players.map(p=>p.lifePoints)).toEqual([8000,8000]);
+  });
+  it('Smashing Ground retains a DEF tie and destroys only the chosen defender',()=>{
+    const f=setup(actor),source=f.move('Smashing Ground'),giant=f.move('Giant Soldier of Stone',f.other,4);
+    let s=settle(step(f.state,actor,activation(f)).state);
+    expect(s.cards[giant]!.position).toBe('face-up-defense');
+    s=step(s,actor,{type:'activate-spell',instanceId:source,slot:0}).state;
+    s=step(s,f.other,{type:'pass'}).state;s=step(s,actor,{type:'pass'}).state;
+    const d=s.pendingDecision!;expect(d.kind).toBe('effect-choice');expect(d.playerId).toBe(actor);
+    expect(new Set(d.optionIds)).toEqual(new Set([giant,f.opponentDefense]));
+    s=settle(step(s,actor,{type:'answer-decision',decisionId:d.id,optionIds:[giant]}).state);
+    expect(s.cards[giant]!.location).toEqual({kind:'graveyard',playerId:f.other});
+    expect(s.cards[f.opponentDefense]!.location.kind).toBe('monster');expect(s.pendingDecision).toBeNull();
+    expect(s.cards[f.opponentHidden]!.position).toBe('face-down-defense');
+  });
+  it('Hammer Shot may destroy the caster monster after a legal manual return to Attack Position',()=>{
+    const f=setup(actor),source=f.move('Hammer Shot');
+    let s=settle(step(f.state,actor,activation(f)).state);
+    s=settle(step(s,actor,{type:'change-position',instanceId:f.own}).state);
+    s=settle(step(s,actor,{type:'activate-spell',instanceId:source,slot:0}).state);
+    expect(s.cards[f.own]!.location).toEqual({kind:'graveyard',playerId:actor});
+    for(const id of [f.opposing,f.flip,f.opponentDefense]){expect(s.cards[id]!.location.kind).toBe('monster');expect(s.cards[id]!.position).toBe('face-up-defense');}
+    expect(s.players.map(p=>p.lifePoints)).toEqual([8000,8000]);
+  });
+  it('a restored attacker battles against DEF without flipping an already face-up FLIP monster',()=>{
+    const f=setup(actor);let s=settle(step(f.state,actor,activation(f)).state);
+    s=settle(step(s,actor,{type:'change-position',instanceId:f.own}).state);s=phase(s,'battle');
+    s=settle(step(s,actor,{type:'declare-attack',attackerId:f.own,targetId:f.flip}).state);
+    expect(s.cards[f.flip]!.location).toEqual({kind:'graveyard',playerId:f.other});
+    expect(s.cards[f.own]!.location.kind).toBe('monster');expect(s.cards[f.own]!.markers.attackCountConsumedThisTurn).toBe(1);
+    expect(s.pendingDecision).toBeNull();expect(s.pendingTriggers).toEqual([]);
+    expect(s.players.map(p=>p.lifePoints)).toEqual([8000,8000]);
+    expect(s.cards[f.opponentHidden]!.position).toBe('face-down-defense');
+  });
+  it('the opposing controller may change back on their next turn without losing their Normal quota',()=>{
+    const f=setup(actor);let s=settle(step(f.state,actor,activation(f)).state);
+    s=phase(phase(s,'end'),'draw');s=phase(phase(s,'standby'),'main1');expect(s.turn.activePlayer).toBe(f.other);
+    s=settle(step(s,f.other,{type:'change-position',instanceId:f.opposing}).state);
+    expect(s.cards[f.opposing]!.position).toBe('face-up-attack');expect(s.cards[f.flip]!.position).toBe('face-up-defense');
+    expect(s.players.find(p=>p.id===f.other)!.normalSummonsOrSetsUsed).toBe(0);
+    expect(act(s,f.other,{type:'change-position',instanceId:f.opposing})).toMatchObject({accepted:false,code:'invalid-position'});
+    expect(s.cards[f.opponentHidden]!.position).toBe('face-down-defense');
+  });
+});
