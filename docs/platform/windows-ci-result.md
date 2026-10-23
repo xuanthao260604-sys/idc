@@ -1,6 +1,10 @@
 # Kết quả Windows CI
 
-> Mốc hiện hành: [rà soát tương tác đổi tư thế](../engine/position-interaction-audit.md), catalog 107; [run 39929849389](https://github.com/xuanthao260604-sys/idc/actions/runs/39929849389), commit 9c03e1b.
+> Mốc hiện hành: [Earthquake](../engine/earthquake.md), catalog 108; [run 39949979799](https://github.com/xuanthao260604-sys/idc/actions/runs/39949979799), commit af56b17.
+> Windows/Ubuntu đạt; Windows: 712/712 test, 30/30 bước, 20 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Đã đọc artifact windows-validation-39949979799-1; đổi tư thế đồng thời hai sân và trận tự nhiên có Earthquake đạt. Dữ liệu/deck cũ giữ nguyên; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [rà soát tương tác đổi tư thế](../engine/position-interaction-audit.md), catalog 107; [run 39929849389](https://github.com/xuanthao260604-sys/idc/actions/runs/39929849389), commit 9c03e1b.
 > Windows/Ubuntu đạt; Windows: 686/686 test, 29/29 bước, 19 browser report với Edge 154.0.4258.62, runtimeExceptions=0.
 > Thêm 10 test Block Attack với Hammer Shot/Fissure/Smashing Ground; không đổi engine hoặc dữ liệu. Windows 11 desktop chưa chạy.
 

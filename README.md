@@ -6,22 +6,24 @@ Game đấu bài hai người theo Goat Format Bắc Mỹ: cutoff 17/8/2005, ban
 
 ## Tiến độ hiện tại
 
-Đã có bàn đấu hotseat hai người thay phiên cùng máy, catalog 107 loại và deck mẫu hợp lệ 40 lá; deck A/B tự xây vẫn được giữ.
-Core hỗ trợ 95 quái thường; 12 hiệu ứng Pot of Greed, Fissure, Trap Hole, Hane-Hane, Man-Eater Bug,
-Hinotama, Dian Keto the Cure Master, Smashing Ground, Hammer Shot, Tribute to The Doomed, Monster Reincarnation và Block Attack được mở bằng hồ sơ review và kiểm thử trong scope giới hạn.
+Đã có bàn đấu hotseat hai người thay phiên cùng máy, catalog 108 loại và deck mẫu hợp lệ 40 lá; deck A/B tự xây vẫn được giữ.
+Core hỗ trợ 95 quái thường; 13 hiệu ứng Pot of Greed, Fissure, Trap Hole, Hane-Hane, Man-Eater Bug,
+Hinotama, Dian Keto the Cure Master, Smashing Ground, Hammer Shot, Tribute to The Doomed, Monster Reincarnation, Block Attack và Earthquake được mở bằng hồ sơ review và kiểm thử trong scope giới hạn.
 
 Đã hoàn tất [hotseat nội bộ 20 lá](docs/milestones/hotseat-20.md) và [xây/lưu deck A/B](docs/beta/deck-builder.md) trong scope giới hạn.
 Đã kiểm chứng [hai Phép thay đổi LP](docs/engine/life-point-spells.md) trên Linux và Windows CI; còn ca Windows 11 desktop chưa chạy.
 Không coi việc cấu hình CI Windows hoặc chạy Linux là đã kiểm chứng Windows.
 
-686/686 test đạt trên Linux và Windows CI cho catalog 107.
-29/29 bước validation và 19 browser run đạt bằng Edge trên Windows CI; chi tiết tại [rà soát tương tác đổi tư thế](docs/engine/position-interaction-audit.md).
+712/712 test đạt trên Linux và Windows CI cho catalog 108.
+30/30 bước validation và 20 browser run đạt bằng Edge trên Windows CI; chi tiết tại [Earthquake](docs/engine/earthquake.md).
 Browser regression tính riêng: xây/lưu deck, 5 hiệu ứng, xem Mộ, tạo trận A/B/ngẫu nhiên, bỏ bài,
 Pot với deck 0/1/2 lá, đầu hàng/hủy và tạo trận sau kết thúc, trận tự nhiên đầy đủ.
 Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không phải game hoàn tất mọi luật Yu-Gi-Oh!.
 
 Đã nhận bộ khung người dùng: [mặt sau chung](docs/beta/card-frames.md) được dùng cho bài úp của cả ba loại.
 Đã ghép [ba khung mặt trước](docs/beta/card-fronts.md), hàng sao và chỉ số lấy từ dữ liệu; ảnh minh họa từng lá sẽ bổ sung sau.
+
+Đã thêm [Earthquake](docs/engine/earthquake.md): chuyển đồng thời quái ngửa tấn công trên cả hai sân sang phòng thủ; không target, không lật bài úp.
 
 Đã thêm [Block Attack](docs/engine/block-attack.md): chọn quái ngửa tấn công của đối thủ và chuyển phòng thủ khi hiệu ứng xử lý; không tiêu lượt đổi tư thế thủ công.
 
@@ -62,10 +64,10 @@ Người dùng chưa cần nhận beta hoặc tự kiểm thử ở thời đi�
 ## Phạm vi và dữ liệu
 
 [Pipeline nhập](docs/data/pipeline.md) bảo vệ dữ liệu cũ khi nhập lại lỗi, giữ raw/evidence/overlay
-riêng. Hiện có 14 bundle với 107 định nghĩa: 95 verified data và 12 pending rà soát văn bản lịch sử.
+riêng. Hiện có 15 bundle với 108 định nghĩa: 95 verified data và 13 pending rà soát văn bản lịch sử.
 Các số implemented/tested/playable=0 trong snapshot nhập là metadata lần nhập;
-runtime mở riêng 95 quái thường và 12 lá hiệu ứng qua review/kiểm thử trong scope giới hạn.
-Reimport lỗi giữ cả 14 bundle; deck cũ tải nguyên byte. `cards:import` nhập offline,
+runtime mở riêng 95 quái thường và 13 lá hiệu ứng qua review/kiểm thử trong scope giới hạn.
+Reimport lỗi giữ cả 15 bundle; deck cũ tải nguyên byte. `cards:import` nhập offline,
 `cards:fetch` chỉ dùng khi chủ động refresh nguồn.
 
 Xem [Phép](docs/engine/reviewed-spells.md), [FLIP](docs/engine/reviewed-flips.md),

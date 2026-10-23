@@ -1,4 +1,6 @@
-> Mốc hiện tại: [rà soát tương tác đổi tư thế](../engine/position-interaction-audit.md), catalog 107; thêm 10 test, không đổi engine/dữ liệu. Linux và Windows CI đạt 686 test; Windows đạt 29 bước, 19 browser report. Windows 11 desktop chưa chạy.
+> Mốc hiện tại: [Earthquake](../engine/earthquake.md), catalog 108 trong 15 bundle; 95 verified data và 13 pending lịch sử. Runtime mở riêng 95 quái thường và 13 hiệu ứng trong scope giới hạn. Linux/Windows CI đạt 712 test; Windows đạt 30 bước, 20 browser report. Reimport lỗi và deck cũ được kiểm tra bảo toàn; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [rà soát tương tác đổi tư thế](../engine/position-interaction-audit.md), catalog 107; thêm 10 test, không đổi engine/dữ liệu. Linux và Windows CI đạt 686 test; Windows đạt 29 bước, 19 browser report. Windows 11 desktop chưa chạy.
 
 > Mốc trước: [Tribute to The Doomed](../engine/tribute-doomed.md), catalog 105; thêm chi phí bỏ bài và target khi kích hoạt. Đã đạt Linux và Windows CI: 579 test, 26 bước, 16 browser report. Snapshot lịch sử vẫn pending; Windows 11 desktop chưa chạy.
 

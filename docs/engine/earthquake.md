@@ -56,5 +56,18 @@ Browser --earthquake: hủy giữ state; dùng own Set; không có selector targ
 qua một pass chưa đổi tư thế, sau resolution ba quái trên hai sân cùng phòng thủ;
 bài úp giữ nguyên, không quyết định FLIP, LP giữ nguyên, runtimeExceptions=0.
 
-Trạng thái kiểm chứng toàn nền tảng sẽ được bổ sung sau khi đọc report thực tế.
+Trận tự nhiên catalog 108 dùng seed hex 32: 15 lượt, 309 lệnh, 12 attack,
+2 decision; dùng Earthquake/Fissure/Hane-Hane/Reincarnation/Trap Hole; B thắng,
+LP 0/6700. Không sửa state khi chơi. Pilot 20 giữ hồi quy seed 08: 16 lượt,
+339 lệnh, 15 attack, 4 decision và đủ 5 hiệu ứng cũ.
+
+Linux đạt typecheck, 712/712 test trong 33 file, kiểm tra đủ 15 batch,
+30/30 bước validation, 20 browser report; Chromium 154.0.8037.57, runtimeExceptions=0.
+Windows/Ubuntu CI [run 39949979799](https://github.com/xuanthao260604-sys/idc/actions/runs/39949979799)
+đạt trên source commit af56b178afee34ccafe4c5f074b2b62f34951dff. Đã tải và đọc
+artifact windows-validation-39949979799-1: win32/x64, OS 10.0.26100,
+Node 24.19.0, npm 11.17.0; 712/712 test trong 33 file, 30/30 bước,
+20 browser report với Edge 155.0.4283.62, tổng runtimeExceptions=0.
+Ca Earthquake và trận tự nhiên cho kết quả khớp Linux. Report ghi rõ
+windows11DesktopVerified=false.
 Windows 11 desktop chưa kiểm tra; chưa đóng gói hoặc bàn giao beta.
