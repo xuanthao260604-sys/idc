@@ -429,9 +429,17 @@ function renderDeck() {
   const issues = draftIssues(); $('deck-issues').replaceChildren(...issues.map(text => node('li', text)));
   $('deck-save').disabled = busy || !!issues.length;
   $('deck-export').disabled = busy || !!issues.length;
-  for (const id of ['deck-default', 'deck-close', 'deck-search', 'deck-kind', 'deck-presence', 'deck-import', 'deck-file']) $(id).disabled = busy;
+  for (const id of ['deck-default', 'deck-close', 'deck-search', 'deck-kind', 'deck-presence', 'deck-sort', 'deck-import', 'deck-file']) $(id).disabled = busy;
   const query = $('deck-search').value.trim().toLocaleLowerCase(), kind = $('deck-kind').value, included = $('deck-presence').value === 'included';
-  const rows = [...catalog.values()].filter(c => (!included || counts.has(c.id)) && (!query || (c.name + ' ' + c.text).toLocaleLowerCase().includes(query)) && (kind === 'all' || (kind === 'monster' ? c.kind.includes('monster') : c.kind === kind))).map(c => {
+  const sort = $('deck-sort').value;
+  const compareName = (a, b) => a.name.localeCompare(b.name, 'en') || a.id.localeCompare(b.id, 'en');
+  const sorted = [...catalog.values()];
+  if (sort !== 'catalog') sorted.sort((a, b) => {
+    if (sort === 'name') return compareName(a, b);
+    const value = card => sort === 'copies' ? (counts.get(card.id) || 0) : (card[sort] ?? -1);
+    return value(b) - value(a) || compareName(a, b);
+  });
+  const rows = sorted.filter(c => (!included || counts.has(c.id)) && (!query || (c.name + ' ' + c.text).toLocaleLowerCase().includes(query)) && (kind === 'all' || (kind === 'monster' ? c.kind.includes('monster') : c.kind === kind))).map(c => {
     const row = node('div', undefined, 'deck-row'); row.dataset.cardId = c.id;
     const count = counts.get(c.id) || 0;
     const read = button(c.name, () => cardInfo($('deck-preview'), { visibility: 'known', definition: { id: c.id } }), 'deck-name');
@@ -449,14 +457,14 @@ $('deck-builder').addEventListener('click', async () => {
   if (busy || !view) return; busy = true; render();
   try {
     const saved = await api('/api/deck'); if (saved.seat !== view.viewerId) throw new Error('Người chơi đã thay đổi. Hãy chọn lại góc nhìn trước khi sửa deck.'); deckDraft = { ...saved, cards: [...saved.cards] };
-    $('deck-search').value = ''; $('deck-kind').value = 'all'; $('deck-presence').value = 'all'; $('deck-error').textContent = '';
+    $('deck-search').value = ''; $('deck-kind').value = 'all'; $('deck-presence').value = 'all'; $('deck-sort').value = 'catalog'; $('deck-error').textContent = '';
     $('deck-preview').replaceChildren(node('p', 'Chọn tên lá bài để xem nội dung và chỉ số.'));
     $('deck-dialog').showModal();
   } catch (error) { message = error.message; }
   finally { busy = false; render(); renderDeck(); }
 });
 $('deck-search').addEventListener('keydown', e => { if (e.key === 'Enter') e.preventDefault(); });
-$('deck-search').addEventListener('input', renderDeck); $('deck-kind').addEventListener('change', renderDeck); $('deck-presence').addEventListener('change', renderDeck);
+$('deck-search').addEventListener('input', renderDeck); $('deck-kind').addEventListener('change', renderDeck); $('deck-presence').addEventListener('change', renderDeck); $('deck-sort').addEventListener('change', renderDeck);
 $('deck-close').addEventListener('click', () => { if (!busy) { $('deck-dialog').close(); deckDraft = null; } });
 $('deck-dialog').addEventListener('cancel', e => { if (busy) e.preventDefault(); else deckDraft = null; });
 $('deck-default').addEventListener('click', () => { if (!busy && deckDraft) { deckDraft.cards = [...deckDraft.defaultCards]; $('deck-error').textContent = ''; renderDeck(); } });

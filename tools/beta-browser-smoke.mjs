@@ -673,6 +673,23 @@ try {
     const before=await evaluate('JSON.stringify(view)');await openDeck();
     const saved=await evaluate(`api('/api/deck')`),original=await evaluate('JSON.stringify(deckDraft.cards)');
     assert.equal((await rows()).length,108);await verifyComposition();
+    const catalogOrder=await rows();
+    const expectedSort=(ids,mode,cards)=>[...ids].sort((left,right)=>{
+      const a=r.cards[left],b=r.cards[right];
+      const value=c=>mode==='copies'?cards.filter(id=>id===c.id).length:(c[mode]??-1);
+      return (mode==='name'?0:value(b)-value(a))||a.name.localeCompare(b.name,'en')||a.id.localeCompare(b.id,'en');
+    });
+    for(const mode of ['name','level','attack','copies']){
+      await filter('deck-sort',mode);assert.deepEqual(await rows(),expectedSort(catalogOrder,mode,saved.cards));
+      assert.equal(await evaluate('JSON.stringify(deckDraft.cards)'),original);
+      if(mode==='level'||mode==='attack'){
+        assert.equal((await rows())[0],'official:89631139');
+        const ordered=await rows(),firstSpell=ordered.findIndex(id=>r.cards[id].kind==='spell');
+        assert.ok(ordered.slice(firstSpell).every(id=>!r.cards[id].kind.includes('monster')));
+      }
+    }
+    await filter('deck-sort','catalog');assert.deepEqual(await rows(),catalogOrder);
+
     await filter('deck-presence','included');
     assert.deepEqual(new Set(await rows()),new Set(saved.cards));
     assert.equal(await evaluate('JSON.stringify(deckDraft.cards)'),original);
@@ -690,6 +707,14 @@ try {
     assert.ok((await rows()).includes(removed));await verifyComposition();
     const distinctBefore=(await rows()).length;await change(removed,'add');await verifyComposition();
     assert.equal((await rows()).length,distinctBefore);
+    await filter('deck-sort','copies');
+    assert.equal((await rows())[0],removed);
+    assert.deepEqual(await rows(),expectedSort([...new Set(saved.cards)],'copies',await evaluate('deckDraft.cards')));
+    await filter('deck-kind','monster');
+    const monsters=[...new Set(saved.cards)].filter(id=>r.cards[id].kind.includes('monster'));
+    await filter('deck-sort','level');assert.deepEqual(await rows(),expectedSort(monsters,'level',await evaluate('deckDraft.cards')));
+    await filter('deck-kind','all');
+
     await click(`document.getElementById('deck-default')`);await verifyComposition();
     assert.deepEqual(new Set(await rows()),new Set(saved.defaultCards));
     // Read previews and check the dialog fits both target viewport sizes.
@@ -698,20 +723,23 @@ try {
     for(const [label,width,height]of [['desktop',1440,1000],['narrow',390,844]]){
       await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
       assert.equal(await evaluate(`(()=>{const d=document.getElementById('deck-dialog'),r=d.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1&&d.scrollWidth<=d.clientWidth+1})()`),true);
+      await evaluate(`document.getElementById('deck-dialog').scrollTop=0`);
       if(process.argv.includes('--screenshots')){const folder=join(projectRoot,'artifacts','deck-overview');await mkdir(folder,{recursive:true});const shot=await send('Page.captureScreenshot',{format:'png'});await writeFile(join(folder,label+'.png'),Buffer.from(shot.data,'base64'));}
     }
     await send('Emulation.clearDeviceMetricsOverride');
     await click(`document.getElementById('deck-close')`);assert.deepEqual(await evaluate(`api('/api/deck')`),saved);
     await openDeck();assert.equal(await evaluate(`document.getElementById('deck-presence').value`),'all');
+    assert.equal(await evaluate(`document.getElementById('deck-sort').value`),'catalog');
     assert.equal(await evaluate('JSON.stringify(deckDraft.cards)'),original);await click(`document.getElementById('deck-close')`);
     assert.equal(await evaluate('JSON.stringify(view)'),before);
     await seat('b');await openDeck();await verifyComposition();
     assert.equal(await evaluate(`document.getElementById('deck-presence').value`),'all');
+    assert.equal(await evaluate(`document.getElementById('deck-sort').value`),'catalog');
     await click(`document.getElementById('deck-close')`);await seat('a');
     // Seat handoff deliberately rotates private handles; compare public game state without handles.
     const withoutHandles=value=>JSON.stringify(value,(key,item)=>key==='handle'?undefined:item);
     assert.equal(withoutHandles(await evaluate('view')),withoutHandles(JSON.parse(before)));assert.equal(errors.length,0);
-    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'deck-overview',catalog:108,compositionCountsCopies:true,combinedFilters:true,removedLastCopyDisappears:true,addRestoresRow:true,defaultRefreshesCounts:true,preview:true,filterPreservesDraft:true,cancelPreservesSaved:true,seatReset:true,responsiveWidths:[1440,390],runtimeExceptions:errors.length}));
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'deck-overview',catalog:108,compositionCountsCopies:true,sortModes:['catalog','name','level','attack','copies'],sortingPreservesDeckOrder:true,combinedFilters:true,removedLastCopyDisappears:true,addRestoresRow:true,defaultRefreshesCounts:true,preview:true,filterPreservesDraft:true,cancelPreservesSaved:true,seatReset:true,responsiveWidths:[1440,390],runtimeExceptions:errors.length}));
   } else if (deckBuilder) {
     const openDeck = async () => { await click(`document.getElementById('deck-builder')`); await wait(`!busy && document.getElementById('deck-dialog').open`); };
     const change = (id, direction) => click(`document.querySelector('#deck-catalog [data-card-id="${id}"] [data-change="${direction}"]')`);
