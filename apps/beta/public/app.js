@@ -415,6 +415,13 @@ function draftIssues() {
 }
 function renderDeck() {
   if (!deckDraft) return;
+  const list = $('deck-catalog'), active = document.activeElement;
+  const focusedRow = active?.closest('.deck-row');
+  const focus = focusedRow && list.contains(focusedRow) ? {
+    cardId: focusedRow.dataset.cardId, change: active.dataset.change,
+    index: [...list.children].indexOf(focusedRow),
+  } : null;
+  const scrollTop = list.scrollTop;
   $('deck-title').textContent = `Xây deck · ${names[deckDraft.seat]}`;
   $('deck-count').textContent = `${deckDraft.cards.length} lá · Tối thiểu ${deckRules.mainMin}${deckRules.mainMax === null ? ' · Không có trần 60 lá hiện đại' : ' · Tối đa ' + deckRules.mainMax}`;
   const counts = new Map();
@@ -451,7 +458,15 @@ function renderDeck() {
     row.append(read, minus, node('span', `${count}/${c.maxCopies}`, 'deck-copies'), plus); return row;
   });
   $('deck-results').textContent = `Hiển thị ${rows.length} loại bài${included ? ' có trong deck' : ''}.`;
-  $('deck-catalog').replaceChildren(...(rows.length ? rows : [node('p', 'Không có lá phù hợp.') ]));
+  list.replaceChildren(...(rows.length ? rows : [node('p', 'Không có lá phù hợp.') ]));
+  list.scrollTop = scrollTop;
+  if (focus) {
+    const row = rows.find(row => row.dataset.cardId === focus.cardId) || rows[Math.min(focus.index, rows.length - 1)];
+    const matchingControl = focus.change && row?.querySelector(`[data-change="${focus.change}"]`);
+    const target = (matchingControl && !matchingControl.disabled ? matchingControl : row?.querySelector('.deck-name')) || $('deck-search');
+    target.focus({ preventScroll: true });
+    if (row) target.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  }
 }
 $('deck-builder').addEventListener('click', async () => {
   if (busy || !view) return; busy = true; render();

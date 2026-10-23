@@ -673,6 +673,37 @@ try {
     const before=await evaluate('JSON.stringify(view)');await openDeck();
     const saved=await evaluate(`api('/api/deck')`),original=await evaluate('JSON.stringify(deckDraft.cards)');
     assert.equal((await rows()).length,108);await verifyComposition();
+    const key=async(key,code,windowsVirtualKeyCode)=>{await send('Input.dispatchKeyEvent',{type:'keyDown',key,code,windowsVirtualKeyCode,...(code==='Space'?{text:' '}:code==='Enter'?{text:'\r'}:{})});await send('Input.dispatchKeyEvent',{type:'keyUp',key,code,windowsVirtualKeyCode});await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');};
+    const focusState=()=>evaluate(`({id:document.activeElement.closest('.deck-row')?.dataset.cardId,change:document.activeElement.dataset.change,name:document.activeElement.classList.contains('deck-name'),control:document.activeElement.id})`);
+    const keyboardCard=saved.cards.find(id=>r.cards[id].legality.maxCopies===3&&saved.cards.filter(c=>c===id).length===1);
+    assert.ok(keyboardCard);
+    await evaluate(`document.querySelector('#deck-catalog [data-card-id="${keyboardCard}"] [data-change="add"]').focus()`);
+    await key('Enter','Enter',13);
+    assert.equal(await evaluate(`deckDraft.cards.filter(id=>id===${JSON.stringify(keyboardCard)}).length`),2);
+    assert.deepEqual(await focusState(),{id:keyboardCard,change:'add',name:false,control:''});
+    await key(' ','Space',32);
+    assert.deepEqual(await focusState(),{id:keyboardCard,name:true,control:''});
+    assert.equal(await evaluate(`deckDraft.cards.filter(id=>id===${JSON.stringify(keyboardCard)}).length`),3);
+    await key('Enter','Enter',13);assert.ok(await evaluate(`document.querySelector('#deck-preview h2').textContent.length>0`));
+    assert.equal(await evaluate(`deckDraft.cards.filter(id=>id===${JSON.stringify(keyboardCard)}).length`),3);
+    await key('Tab','Tab',9);assert.deepEqual(await focusState(),{id:keyboardCard,change:'remove',name:false,control:''});
+    await filter('deck-presence','included');
+    const includedBefore=await rows(),keyboardIndex=includedBefore.indexOf(keyboardCard),following=includedBefore[keyboardIndex+1]??includedBefore[keyboardIndex-1];
+    for(let n=0;n<3;n++)await key(' ','Space',32);
+    assert.ok(!(await rows()).includes(keyboardCard));
+    assert.deepEqual(await focusState(),{id:following,change:'remove',name:false,control:''});
+    await click(`document.getElementById('deck-default')`);
+    // When the only matching row disappears, return to search rather than losing focus.
+    await evaluate(`document.getElementById('deck-search').value=${JSON.stringify(r.cards[keyboardCard].name)};document.getElementById('deck-search').dispatchEvent(new Event('input'))`);
+    assert.deepEqual(await rows(),[keyboardCard]);
+    await evaluate(`document.querySelector('#deck-catalog [data-card-id="${keyboardCard}"] [data-change="remove"]').focus()`);
+    await key('Enter','Enter',13);assert.equal((await rows()).length,0);
+    assert.equal((await focusState()).control,'deck-search');
+    await click(`document.getElementById('deck-default')`);
+    await evaluate(`document.getElementById('deck-search').value='';document.getElementById('deck-search').dispatchEvent(new Event('input'))`);
+    await filter('deck-presence','all');
+    assert.equal(await evaluate('JSON.stringify(deckDraft.cards)'),original);
+
     const catalogOrder=await rows();
     const expectedSort=(ids,mode,cards)=>[...ids].sort((left,right)=>{
       const a=r.cards[left],b=r.cards[right];
@@ -739,7 +770,7 @@ try {
     // Seat handoff deliberately rotates private handles; compare public game state without handles.
     const withoutHandles=value=>JSON.stringify(value,(key,item)=>key==='handle'?undefined:item);
     assert.equal(withoutHandles(await evaluate('view')),withoutHandles(JSON.parse(before)));assert.equal(errors.length,0);
-    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'deck-overview',catalog:108,compositionCountsCopies:true,sortModes:['catalog','name','level','attack','copies'],sortingPreservesDeckOrder:true,combinedFilters:true,removedLastCopyDisappears:true,addRestoresRow:true,defaultRefreshesCounts:true,preview:true,filterPreservesDraft:true,cancelPreservesSaved:true,seatReset:true,responsiveWidths:[1440,390],runtimeExceptions:errors.length}));
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'deck-overview',catalog:108,compositionCountsCopies:true,sortModes:['catalog','name','level','attack','copies'],sortingPreservesDeckOrder:true,keyboardFocusRetained:true,copyLimitFocusFallback:true,removedRowFocusFallback:true,emptyListFocusSearch:true,combinedFilters:true,removedLastCopyDisappears:true,addRestoresRow:true,defaultRefreshesCounts:true,preview:true,filterPreservesDraft:true,cancelPreservesSaved:true,seatReset:true,responsiveWidths:[1440,390],runtimeExceptions:errors.length}));
   } else if (deckBuilder) {
     const openDeck = async () => { await click(`document.getElementById('deck-builder')`); await wait(`!busy && document.getElementById('deck-dialog').open`); };
     const change = (id, direction) => click(`document.querySelector('#deck-catalog [data-card-id="${id}"] [data-change="${direction}"]')`);
