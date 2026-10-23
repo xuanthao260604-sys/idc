@@ -1,6 +1,10 @@
 # Kết quả Windows CI
 
-> Mốc hiện hành: [Hoàn tác/Làm lại deck](../beta/deck-undo-redo.md), catalog 108; [run 39959852093](https://github.com/xuanthao260604-sys/idc/actions/runs/39959852093), commit 9a4e510.
+> Mốc hiện hành: [phím tắt sửa deck](../beta/deck-history-shortcuts.md), catalog 108; [run 39962411614](https://github.com/xuanthao260604-sys/idc/actions/runs/39962411614), commit 1c17ecd.
+> Windows/Ubuntu đạt; Windows: 726/726 test, 31/31 bước, 21 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Đã đọc artifact windows-validation-39962411614-1: Ctrl+Z/Ctrl+Y/Ctrl+Shift+Z đúng, ô tìm kiếm giữ undo/redo văn bản gốc. Windows 11 desktop chưa chạy.
+
+> Mốc trước: [Hoàn tác/Làm lại deck](../beta/deck-undo-redo.md), catalog 108; [run 39959852093](https://github.com/xuanthao260604-sys/idc/actions/runs/39959852093), commit 9a4e510.
 > Windows/Ubuntu đạt; Windows: 726/726 test, 31/31 bước, 21 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Đã đọc artifact windows-validation-39959852093-1: lịch sử 50 bước, default/import undo-redo, lỗi giữ lịch sử và mở lại reset đạt. Windows 11 desktop chưa chạy.
 

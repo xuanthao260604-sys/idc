@@ -23,6 +23,13 @@ Input.insertText, Ctrl+Z xóa văn bản và Ctrl+Y khôi phục Blue mà deck k
 Tab sang select loại bài rồi Ctrl+Z cũng không sửa deck. Giữ toàn bộ ca thống
 kê/lọc/sắp xếp/50 bước/focus/deck riêng A/B và các ca nhập/xuất/lỗi mạng trước đó.
 
-Ca riêng Chromium đã đạt, runtimeExceptions=0. Đang xác nhận bộ tổng hợp Linux
-và Windows CI; kết quả sẽ ghi sau khi đọc report.
+Linux đạt typecheck, 726/726 test trong 33 file; 31/31 bước validation,
+21 browser report với Chromium 154.0.8037.57, tổng runtimeExceptions=0.
+Windows và Ubuntu CI [run 39962411614](https://github.com/xuanthao260604-sys/idc/actions/runs/39962411614)
+đạt trên source commit 1c17ecd14afc27ad0af1982600d53c11aa450203. Đã tải và đọc
+artifact windows-validation-39962411614-1: win32 x64, OS 10.0.26100,
+Node 24.19.0, npm 11.17.0, Edge 155.0.4283.62. Windows đạt 726/726 test
+trong 33 file, 31/31 bước, 21 browser report; tổng runtimeExceptions=0.
+Ca deck-overview xác nhận windowsHistoryShortcuts và nativeSearchUndoPreserved
+đều true; report ghi windows11DesktopVerified=false.
 Windows 11 desktop chưa thử trực tiếp; chưa đóng gói hoặc bàn giao beta.
