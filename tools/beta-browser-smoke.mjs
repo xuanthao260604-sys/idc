@@ -163,6 +163,27 @@ try {
   async function pass(who) { await seat(who); await actionClick(`document.getElementById('pass')`); }
   async function hand(name) { await seat('a'); await click(`[...document.querySelectorAll('#hand .card')].find(e=>e.querySelector('.card-name')?.textContent===${JSON.stringify(name)})`); }
   async function confirm() { await actionClick(`document.querySelector('#action-form button[type="submit"]')`); }
+  async function inspectChain(role, expectedName, escape = false, responsive = false) {
+    const before=await evaluate('JSON.stringify(view)');
+    await click(`document.querySelector('#chain-links [data-chain-card="${role}"]')`);
+    await wait(`document.getElementById('chain-card-dialog').open`);
+    assert.equal(await evaluate(`document.querySelectorAll('#chain-card-detail button').length`),0);
+    assert.equal(await evaluate(`document.querySelector('#chain-card-detail h2').textContent`),expectedName??'Bài úp');
+    if(expectedName){const d=Object.values(r.cards).find(c=>c.name===expectedName);assert.equal(await evaluate(`document.querySelector('#chain-card-detail p').textContent`),d.text);}
+    else{assert.equal(await evaluate(`document.querySelectorAll('#chain-card-detail .card-preview').length`),0);assert.equal(await evaluate(`document.getElementById('chain-card-detail').textContent.includes('Man-Eater Bug')`),false);}
+    if(responsive){
+      for(const [label,width,height]of [['desktop',1440,1000],['narrow',390,844]]){
+        await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
+        assert.equal(await evaluate(`(()=>{const e=document.getElementById('chain-card-dialog'),r=e.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1&&e.scrollWidth<=e.clientWidth+1&&r.height<=innerHeight})()`),true);
+        if(process.argv.includes('--screenshots')){const folder=join(projectRoot,'artifacts','chain-card-preview');await mkdir(folder,{recursive:true});const shot=await send('Page.captureScreenshot',{format:'png'});await writeFile(join(folder,label+'.png'),Buffer.from(shot.data,'base64'));}
+      }
+      await send('Emulation.clearDeviceMetricsOverride');await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
+    }
+    if(escape){await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});}
+    else await click(`document.getElementById('close-chain-card')`);
+    await wait(`!document.getElementById('chain-card-dialog').open && document.getElementById('chain-card-detail').textContent==='' && document.getElementById('chain-card-location').textContent===''`);
+    assert.equal(await evaluate('JSON.stringify(view)'),before);
+  }
   async function marked(scope, name, expected) {
     const selector = `${scope} .card`;
     const card = `[...document.querySelectorAll(${JSON.stringify(selector)})].find(e=>e.querySelector('.card-name')?.textContent===${JSON.stringify(name)})`;
@@ -402,6 +423,7 @@ try {
     await pass('a');await seat('b');
     await click(trap(1));await click(textButton('#actions button','Kích hoạt Bẫy'));await chooseTarget(0);await confirm();
     assert.equal(await evaluate('view.chain.length'),2);
+    await inspectChain('source','Trap Hole',false,true);await inspectChain('target','Battle Ox',true);
     const publicText=await evaluate(`document.getElementById('chain-links').textContent`),version=await evaluate('view.stateVersion');
     assert.deepEqual(await evaluate(`[...document.querySelectorAll('#chain-links strong')].map(e=>e.textContent.match(/Liên kết (\\d+)/)[1])`),['2','1']);
     assert.ok(!publicText.includes('Man-Eater Bug'));assert.ok(!publicText.includes('official:'));
@@ -423,12 +445,13 @@ try {
     const handCount=await evaluate('view.selfHand.length');await hand('Pot of Greed');await click(textButton('#actions button','Kích hoạt'));await confirm();
     assert.match(await evaluate(`document.getElementById('chain-links').textContent`),/Liên kết 1.*Pot of Greed/);
     assert.match(await evaluate(`document.getElementById('chain-links').textContent`),/Không chọn mục tiêu khi kích hoạt/);
+    await inspectChain('source','Pot of Greed',true);
     await pass('b');await pass('a');
     assert.equal(await evaluate('view.selfHand.length'),handCount+1);
     assert.equal(await evaluate(`document.getElementById('chain-panel').hidden`),true);
     assert.equal(await evaluate(`document.getElementById('chain-links').textContent`),'');
     assert.deepEqual(await evaluate('view.players.map(p=>p.lifePoints)'),[8000,8000]);assert.equal(errors.length,0);
-    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'chain-view',twoTrapLinks:true,reverseResolutionOrder:true,publicTarget:true,hiddenMonsterPrivacy:true,samePublicChainAcrossSeats:true,singleNormalSpell:true,cancelPreservesState:true,clearedAfterResolution:true,responsiveWidths:[1440,390],fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'chain-view',readOnlySourceAndTargetPreviews:true,escapeClearsPreview:true,previewPreservesState:true,twoTrapLinks:true,reverseResolutionOrder:true,publicTarget:true,hiddenMonsterPrivacy:true,samePublicChainAcrossSeats:true,singleNormalSpell:true,cancelPreservesState:true,clearedAfterResolution:true,responsiveWidths:[1440,390],fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
   } else if (earthquake) {
     const before=await evaluate('JSON.stringify(view)');
     await hand('Earthquake');await click(textButton('#actions button','Kích hoạt'));
@@ -539,9 +562,11 @@ try {
     assert.equal(await evaluate('view.chain[0].targetHandles.length'),1);
     assert.match(await evaluate(`document.getElementById('status').textContent`),/Người chơi A bỏ 1 lá làm chi phí/);
     assert.match(await evaluate(`document.getElementById('chain-links').textContent`),/Mục tiêu:.*Bài úp/);
+    await inspectChain('target',null,true);
     assert.equal(await evaluate(`document.getElementById('chain-links').textContent.includes('Man-Eater Bug')`),false);
     const chainVersion=await evaluate('view.stateVersion');await seat('b');
     assert.match(await evaluate(`document.getElementById('chain-links').textContent`),/Man-Eater Bug/);
+    await inspectChain('target','Man-Eater Bug');
     assert.equal(await evaluate('view.stateVersion'),chainVersion);await seat('a');
     assert.equal(await evaluate(`document.getElementById('chain-links').textContent.includes('Man-Eater Bug')`),false);
 
@@ -553,7 +578,7 @@ try {
     await inspectGraveyard('self',['Tribute to The Doomed','Battle Ox']); await inspectGraveyard('opponent',['Man-Eater Bug']);
     const facts = await evaluate('view.activity.flatMap(x=>x.resolution||[])');
     assert.deepEqual(facts,[{kind:'discard-cost',playerId:'a',count:1},{kind:'effect-destroyed',count:1}]); assert.equal(errors.length,0);
-    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'tribute-doomed',cancelPreservesCards:true,fromOwnSet:true,costPaidAtActivation:true,targetDestroyedAtResolution:true,hiddenTarget:true,chainTargetPrivacy:true,choicePreviews:true,previewKeepsHiddenIdentity:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'tribute-doomed',cancelPreservesCards:true,fromOwnSet:true,costPaidAtActivation:true,targetDestroyedAtResolution:true,hiddenTarget:true,chainTargetPrivacy:true,chainPreviewPrivacy:true,choicePreviews:true,previewKeepsHiddenIdentity:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
   } else if (hammerShot) {
     await hand('Hammer Shot'); await click(textButton('#actions button','Kích hoạt'));
     assert.equal(await evaluate(`document.querySelectorAll('#action-fields select[name="target"]').length`),0);

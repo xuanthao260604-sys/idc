@@ -72,6 +72,18 @@ function cardButton(card, zone, player, slot, onSelect) {
   if (zone !== 'hand') b.append(node('span', card.position === 'face-down-defense' || card.position === 'face-down' ? 'ÚP' : card.position === 'face-up-defense' ? 'PHÒNG THỦ' : card.position === 'face-up-attack' ? 'TẤN CÔNG' : 'NGỬA', 'card-position'));
   return b;
 }
+function clearChainCard() {
+  $('chain-card-dialog').close();
+  $('chain-card-detail').replaceChildren();
+  $('chain-card-location').textContent = '';
+}
+function showChainCard(handle, location) {
+  const card = visibleCard(handle);
+  if (busy || !card) return;
+  cardInfo($('chain-card-detail'), card);
+  $('chain-card-location').textContent = location;
+  $('chain-card-dialog').showModal();
+}
 function renderChain() {
   const links = view.result ? [] : view.chain;
   $('chain-panel').hidden = !links.length;
@@ -80,6 +92,16 @@ function renderChain() {
     const item = node('li');
     item.append(node('strong', `Liên kết ${index + 1} · ${names[link.controllerId]} · ${label(visibleCard(link.sourceHandle))}`));
     item.append(node('p', `Tốc độ ${link.spellSpeed} · ${link.targetHandles.length ? 'Mục tiêu: ' + link.targetHandles.map(optionLabel).join('; ') : 'Không chọn mục tiêu khi kích hoạt.'}`));
+    const controls = node('div', undefined, 'chain-card-controls');
+    const source = button('Đọc lá nguồn', () => showChainCard(link.sourceHandle, `Liên kết ${index + 1} · Lá nguồn · ${optionLabel(link.sourceHandle)}`));
+    source.dataset.chainCard = 'source'; source.disabled = busy;
+    controls.append(source);
+    link.targetHandles.forEach((handle, targetIndex) => {
+      const read = button(`Đọc mục tiêu ${targetIndex + 1}`, () => showChainCard(handle, `Liên kết ${index + 1} · Mục tiêu ${targetIndex + 1} · ${optionLabel(handle)}`));
+      read.dataset.chainCard = 'target'; read.disabled = busy;
+      controls.append(read);
+    });
+    item.append(controls);
     return item;
   }).reverse());
 }
@@ -342,6 +364,7 @@ function renderGuide() {
   $('concede').disabled = busy || !!view.result;
 }
 function render() {
+  clearChainCard();
   $('decision-card-dialog').close(); $('decision-card-detail').replaceChildren(); $('decision-card-location').textContent = '';
   if (!view) return;
   const self = view.players.find(p => p.playerId === view.viewerId), opponent = view.players.find(p => p.playerId !== view.viewerId);
@@ -396,7 +419,7 @@ function render() {
     form.onsubmit = e => { e.preventDefault(); if (busy) return; const optionIds = [...form.querySelectorAll('input:checked')].map(i => i.value); if (optionIds.length < d.min || optionIds.length > d.max) { message = 'Hãy chọn đúng số lá.'; $('status').textContent = message; return; } command({ type: 'answer-decision', decisionId: d.id, optionIds }); };
   }
 }
-function handoff() { decisionDraft = null; document.body.classList.add('concealed'); selected = null; $('seat-dialog').showModal(); }
+function handoff() { clearChainCard(); decisionDraft = null; document.body.classList.add('concealed'); selected = null; $('seat-dialog').showModal(); }
 $('seat-dialog').addEventListener('cancel', e => e.preventDefault());
 for (const b of document.querySelectorAll('[data-seat]')) b.addEventListener('click', async () => {
   if (busy) return; busy = true;
@@ -405,6 +428,8 @@ for (const b of document.querySelectorAll('[data-seat]')) b.addEventListener('cl
 });
 $('switch').addEventListener('click', handoff);
 $('handoff-next').addEventListener('click', handoff);
+$('close-chain-card').addEventListener('click', clearChainCard);
+$('chain-card-dialog').addEventListener('close', () => { if (!$('chain-card-dialog').open) { $('chain-card-detail').replaceChildren(); $('chain-card-location').textContent = ''; } });
 $('close-graveyard').addEventListener('click', () => $('graveyard-dialog').close());
 $('close-decision-card').addEventListener('click', () => $('decision-card-dialog').close());
 $('decision-card-dialog').addEventListener('close', () => { $('decision-card-detail').replaceChildren(); $('decision-card-location').textContent = ''; });

@@ -66,3 +66,5 @@
 #battle-status{padding:10px 12px;border-left:3px solid #e5a65b;background:#15271f;border-radius:4px;color:#eee8dc;overflow-wrap:anywhere}.card.battle-attacker{box-shadow:0 0 0 3px #e5a65b,0 3px 6px #0005}.card.battle-target{box-shadow:0 0 0 3px #83cbe5,0 3px 6px #0005}
 
 .chain-panel{margin:12px 0;padding:12px;border:1px solid #75816a;border-radius:6px;background:#14271f;overflow-wrap:anywhere}.chain-panel h2{margin:0;font-size:14px;color:var(--gold)}.chain-panel p{margin:7px 0;font-size:12px}.chain-panel ol{list-style:none;padding:0;margin:0}.chain-panel li{border-top:1px solid var(--line);padding:9px 0 0;font-size:12px}
+
+.chain-card-controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}#chain-card-dialog{max-height:90vh;overflow:auto}#chain-card-detail,#chain-card-location{overflow-wrap:anywhere}#chain-card-detail p{white-space:pre-wrap}
