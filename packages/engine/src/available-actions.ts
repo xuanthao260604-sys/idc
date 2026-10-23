@@ -31,6 +31,9 @@ export function availableActions(registry: Registry, state: DuelState, projectio
           offer({ type: 'activate-spell', cardHandle: handle, slot, discardHandle: discard.handle, targetHandle: target.handle },
             { type: 'activate-spell', instanceId: id, slot, discardId: resolve(discard.handle), targetId: resolve(target.handle) });
       }
+    } else if (handler === 'target-opposing-attack-to-defense') {
+      for (const target of opponent.monsters) if (target?.visibility === 'known' && target.position === 'face-up-attack')
+        offer({ type: 'activate-spell', cardHandle: handle, slot, targetHandle: target.handle }, { type: 'activate-spell', instanceId: id, slot, targetId: resolve(target.handle) });
     } else offer({ type: 'activate-spell', cardHandle: handle, slot }, { type: 'activate-spell', instanceId: id, slot });
   };
   offer({ type: 'concede' }, { type: 'concede' });

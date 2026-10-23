@@ -24,6 +24,7 @@ export type ResolutionPlan =
   | { readonly kind: 'effect-damage'; readonly controllerId: string; readonly amount: number }
   | { readonly kind: 'life-points-gained'; readonly playerId: string; readonly amount: number }
   | { readonly kind: 'no-op' }
+  | { readonly kind: 'change-selected-monster-to-defense' }
   | { readonly kind: 'destroy-selected-monster' }
   | { readonly kind: 'return-selected-graveyard-monster' }
   | { readonly kind: 'destroy'; readonly instanceId: string }
@@ -37,6 +38,7 @@ export type ResolutionPlan =
 export function planResolution(requestInput: unknown, boardInput: unknown): ResolutionPlan {
   const request = Request.parse(requestInput);
   const board = Board.parse(boardInput);
+  if (request.handler === 'target-opposing-attack-to-defense') return freeze({ kind: 'change-selected-monster-to-defense' });
   if (request.handler === 'discard-return-own-graveyard-monster') return freeze({ kind: 'return-selected-graveyard-monster' });
   if (request.handler === 'discard-destroy-target-monster') return freeze({ kind: 'destroy-selected-monster' });
   if (request.handler === 'draw')

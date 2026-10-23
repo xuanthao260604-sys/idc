@@ -33,7 +33,7 @@ export type CommandOutcome =
 export type PublicResolution =
   | { kind: 'draw' | 'return-to-hand' | 'discard' | 'discard-cost' | 'tribute'; playerId: string; count: number }
   | { kind: 'battle-damage' | 'effect-damage' | 'life-points-gained'; playerId: string; amount: number }
-  | { kind: 'effect-destroyed' | 'battle-destroyed'; count: number };
+  | { kind: 'effect-destroyed' | 'battle-destroyed' | 'effect-position-changed'; count: number };
 
 /** Public action summaries only; never raw engine events or private card references. */
 export interface PublicActivity {

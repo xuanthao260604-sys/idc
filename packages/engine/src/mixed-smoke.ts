@@ -51,10 +51,12 @@ export function runMixedSmoke(registry: Registry, seedHex: string) {
     if (state.turn.phase === 'standby') { advance('main1'); continue; }
     if (state.turn.phase === 'main1' || state.turn.phase === 'main2') {
       const free = p.spellsTraps.indexOf(null);
+      const positionTarget = opponent.monsters.find(id=>id!==null && state.cards[id]!.position==='face-up-attack');
       const spell = free >= 0 && p.hand.find(id => (registry.spellHandlers[def(id).id]?.handler === 'discard-return-own-graveyard-monster'
           && p.hand.length >= 2 && p.graveyard.some(id => ['normal-monster','effect-monster'].includes(def(id).kind)))
         || (registry.spellHandlers[def(id).id]?.handler === 'discard-destroy-target-monster'
           && p.hand.length >= 2 && [...p.monsters, ...opponent.monsters].some(id => id !== null))
+        || (registry.spellHandlers[def(id).id]?.handler === 'target-opposing-attack-to-defense' && !!positionTarget)
         || ['draw', 'inflict-damage', 'gain-life-points'].includes(registry.spellHandlers[def(id).id]?.handler ?? '')
         || (registry.spellHandlers[def(id).id]?.handler === 'destroy-highest-face-up-attack-position'
           && [...p.monsters, ...opponent.monsters].some(id => id !== null && state.cards[id]!.position === 'face-up-attack'))
@@ -63,7 +65,7 @@ export function runMixedSmoke(registry: Registry, seedHex: string) {
       if (spell) {
         const recovery = registry.spellHandlers[def(spell).id]?.handler === 'discard-return-own-graveyard-monster';
         const costTarget = recovery || registry.spellHandlers[def(spell).id]?.handler === 'discard-destroy-target-monster';
-        act(active, { type: 'activate-spell', instanceId: spell, slot: free, ...(costTarget
+        act(active, { type: 'activate-spell', instanceId: spell, slot: free, ...(registry.spellHandlers[def(spell).id]?.handler==='target-opposing-attack-to-defense'?{targetId:positionTarget!}:{}), ...(costTarget
           ? { discardId: p.hand.find(id => id !== spell)!, targetId: recovery ? p.graveyard.find(id => ['normal-monster','effect-monster'].includes(def(id).kind))! : [...opponent.monsters, ...p.monsters].find((id): id is string => id !== null)! } : {}) }); continue;
       }
       const trap = free >= 0 && p.hand.find(id => registry.trapHandlers[def(id).id]);

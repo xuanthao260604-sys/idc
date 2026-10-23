@@ -102,6 +102,7 @@ function resolutionText(fact) {
   if (fact.kind === 'battle-damage') return `${player} nhận ${fact.amount} sát thương chiến đấu`;
   if (fact.kind === 'effect-damage') return `${player} nhận ${fact.amount} sát thương hiệu ứng`;
   if (fact.kind === 'life-points-gained') return `${player} hồi ${fact.amount} LP`;
+  if (fact.kind === 'effect-position-changed') return `${fact.count} quái chuyển sang phòng thủ bởi hiệu ứng`;
   if (fact.kind === 'effect-destroyed') return `${fact.count} quái bị phá bởi hiệu ứng`;
   if (fact.kind === 'battle-destroyed') return `${fact.count} quái bị phá bởi chiến đấu`;
   if (fact.kind === 'return-to-hand') return `${fact.count} lá trở về tay ${player}`;
@@ -260,10 +261,11 @@ function detail() {
 function activateSpell(handle, slot) {
   const base = { type: 'activate-spell', cardHandle: handle, ...(slot === undefined ? {} : { slot }) };
   const plans = matchingActions(base), cost = plans.some(a => a.discardHandle !== undefined);
-  if (!cost && slot !== undefined) return command(base);
+  const targeted = plans.some(a => a.targetHandle !== undefined);
+  if (!targeted && slot !== undefined) return command(base);
   const graveyard = view.players.find(p => p.playerId === view.viewerId).graveyard;
   const recovery = cost && plans.some(a => graveyard.some(c => c.handle === a.targetHandle));
-  const targets = cost ? [...new Set(plans.map(a => a.targetHandle))].map(h => {
+  const targets = targeted ? [...new Set(plans.map(a => a.targetHandle))].map(h => {
     const fromHand = recovery && view.selfHand.find(c => c.handle === h);
     return { handle: h, label: fromHand ? `Lá sẽ bỏ làm chi phí — ${label(fromHand)}` : optionLabel(h) };
   }) : null;

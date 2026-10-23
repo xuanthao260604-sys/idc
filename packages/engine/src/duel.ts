@@ -129,6 +129,7 @@ export function assertDuelInvariants(state: DuelState, registry: Registry) {
     const card = state.cards[link.source];
     const flip = card && registry.flipHandlers[card.definition.id];
     const trap = card && registry.trapHandlers[card.definition.id];
+    const positionTarget = card && registry.spellHandlers[card.definition.id]?.handler === 'target-opposing-attack-to-defense';
     const graveyardReturn = card && registry.spellHandlers[card.definition.id]?.handler === 'discard-return-own-graveyard-monster';
     const discardTarget = graveyardReturn || (card && registry.spellHandlers[card.definition.id]?.handler === 'discard-destroy-target-monster');
     const cost = link.costEvents[0], paid = cost?.affectedInstances[0] && state.cards[cost.affectedInstances[0]];
@@ -149,7 +150,11 @@ export function assertDuelInvariants(state: DuelState, registry: Registry) {
       : flip
       ? card.location.kind === 'monster' && link.effectId === flip && link.targetRefs.length <= 1
       : registry.spellHandlers[card.definition.id] && card.location.kind === 'spell-trap' && card.position === 'face-up' && link.effectId === 'normal-spell'
-        && (discardTarget ? link.targetRefs.length === 1 && validDiscardTarget : !link.targetRefs.length));
+        && (discardTarget ? link.targetRefs.length === 1 && validDiscardTarget : positionTarget
+          ? link.targetRefs.length === 1 && ref?.locationAtSelection.kind === 'monster' && ref.locationAtSelection.playerId !== link.controllerId
+            && target?.location.kind === 'monster' && target.controllerId !== link.controllerId && target.position === 'face-up-attack'
+            && JSON.stringify(target.location) === JSON.stringify(ref.locationAtSelection)
+          : !link.targetRefs.length));
     if (!validSource || link.controllerId !== card!.controllerId || link.spellSpeed !== (trap ? 2 : 1) || !validCosts
       || link.activationNegated || link.effectNegated || !['chain-response', 'resolving'].includes(state.timing.window)) throw new Error('Invalid supported Chain');
   }
@@ -440,6 +445,7 @@ function spell(c: Context, actorId: string, action: Extract<EngineRequest['actio
   rule(fromHand || (action.type === 'activate-spell' && fromSet), 'invalid-target', 'Spell is not in an eligible own zone');
   rule(fromSet || p.spellsTraps[action.slot] === null, 'occupied-zone', 'Spell zone occupied');
   const handler = c.registry.spellHandlers[card.definition.id]!;
+  const positionTarget = handler.handler === 'target-opposing-attack-to-defense';
   const graveyardReturn = handler.handler === 'discard-return-own-graveyard-monster';
   const discardTarget = graveyardReturn || handler.handler === 'discard-destroy-target-monster';
   const costEvents: Mutable<EventRef>[] = [], targetRefs: Mutable<DuelState['chain'][number]['targetRefs']> = [];
@@ -455,6 +461,11 @@ function spell(c: Context, actorId: string, action: Extract<EngineRequest['actio
           ((target.location.kind === 'graveyard' && target.location.playerId === actorId) || target.id === action.discardId),
           'invalid-target', 'Choose an own Graveyard monster or the monster being discarded as cost');
       } else rule(target && target.location.kind === 'monster', 'invalid-target', 'Choose a monster on either field');
+    } else if (positionTarget) {
+      rule(action.discardId === undefined && action.targetId !== undefined, 'invalid-action', 'Choose one target and no discard cost');
+      const target = c.state.cards[action.targetId];
+      rule(target && target.location.kind === 'monster' && target.controllerId !== actorId && target.position === 'face-up-attack',
+        'invalid-target', 'Choose an opposing face-up Attack Position monster');
     } else rule(action.discardId === undefined && action.targetId === undefined, 'invalid-action', 'This Spell takes no discard cost or target');
   }
   if (action.type === 'activate-spell' && ['destroy-lowest-opposing-face-up-attack', 'destroy-highest-opposing-face-up-defense', 'destroy-highest-face-up-attack-position'].includes(handler.handler))
@@ -473,6 +484,7 @@ function spell(c: Context, actorId: string, action: Extract<EngineRequest['actio
     const target = c.state.cards[action.targetId!]!;
     targetRefs.push({ instanceId: target.id, locationAtSelection: { ...target.location } });
   }
+  if (positionTarget) { const target = c.state.cards[action.targetId!]!; targetRefs.push({ instanceId: target.id, locationAtSelection: { ...target.location } }); }
   c.state.chain.push({ id: `${c.state.id}:link:${c.state.eventSequence + 1}`, controllerId: actorId, source: card.id,
     sourceAtActivation: structuredClone(card), effectId: 'normal-spell', spellSpeed: 1, costEvents, targetRefs, activationNegated: false, effectNegated: false });
   emit(c, 'spell-activated', [card.id]);
@@ -508,6 +520,14 @@ function resolveSpell(c: Context) {
     const ref = link.targetRefs[0], target = ref && c.state.cards[ref.instanceId];
     if (target && target.location.kind === 'graveyard' && target.location.playerId === link.controllerId
       && JSON.stringify(target.location) === JSON.stringify(ref!.locationAtSelection)) returnToOwnerHand(c, target.id);
+  }
+  if (plan.kind === 'change-selected-monster-to-defense') {
+    const ref = link.targetRefs[0], target = ref && c.state.cards[ref.instanceId];
+    if (target && target.location.kind === 'monster' && target.controllerId !== link.controllerId && target.position === 'face-up-attack'
+      && JSON.stringify(target.location) === JSON.stringify(ref!.locationAtSelection)) {
+      target.position = 'face-up-defense';
+      emit(c, 'position-changed', [target.id], { playerId: target.controllerId, reason: 'effect' });
+    }
   }
   if (plan.kind === 'destroy-selected-monster') {
     const ref = link.targetRefs[0], target = ref && c.state.cards[ref.instanceId];

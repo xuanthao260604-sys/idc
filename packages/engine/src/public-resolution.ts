@@ -22,6 +22,7 @@ export function publicResolution(events: readonly EngineEvent[], after: DuelStat
     if (event.kind === 'card-drawn' && count && player(playerId)) add({ kind: 'draw', playerId, count });
     else if ((event.kind === 'battle-damage' || event.kind === 'effect-damage' || event.kind === 'life-points-gained') && player(playerId) && typeof event.details.amount === 'number'
       && Number.isSafeInteger(event.details.amount) && event.details.amount > 0) add({ kind: event.kind, playerId, amount: event.details.amount });
+    else if (event.kind === 'position-changed' && event.details.reason === 'effect' && count) add({ kind: 'effect-position-changed', count });
     else if (event.kind === 'effect-destroyed' && count) add({ kind: 'effect-destroyed', count });
     else if (event.kind === 'battle-destroyed' && count) add({ kind: 'battle-destroyed', count });
     else if (event.kind === 'cards-discarded' && count && player(playerId)) add({ kind: event.details.reason === 'activation-cost' ? 'discard-cost' : 'discard', playerId, count });

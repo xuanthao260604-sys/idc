@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "format": {
+    "id": "goat-2005-08-17",
+    "revision": 4
+  },
+  "provenance": {
+    "upstreamSha256": "cf6990ad891b91c453b877fcd8d0ef90654a5e3f24c78ef0166bbc12bad213b1",
+    "manifestSha256": "bc72dbfa48f54cd42e7954e410ee623d701edd7da0cd495f7e417b53f7371ecb",
+    "reviewSha256": "2e19c56d02abd95cfe9ec46da18cf561c76e25348823151dcf3b1463e2dbd117",
+    "officialEvidenceSha256": "ee2ce959554dbf501f2611249be39abe74cf7692809a3a5d0944c28481b4c766"
+  },
+  "cards": [
+    {
+      "schemaVersion": 1,
+      "id": "official:25880422",
+      "origin": "official",
+      "revision": 1,
+      "name": "Block Attack",
+      "passcode": "25880422",
+      "text": "Target 1 face-up Attack Position monster your opponent controls; change that target to face-up Defense Position.",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=25880422&misc=yes",
+          "accessedOn": "2026-10-23",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4874&request_locale=en",
+          "accessedOn": "2026-10-23",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 4874."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4874&request_locale=en",
+          "accessedOn": "2026-10-23",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4874&request_locale=en",
+          "accessedOn": "2026-10-23",
+          "scope": "text",
+          "notes": "Current reference, not claimed as original 2005 text."
+        }
+      ],
+      "verification": "pending",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4874&request_locale=en",
+            "accessedOn": "2026-10-23",
+            "scope": "release",
+            "notes": "Reviewed North American print MRD-133, 2002-06-26, METAL RAIDERS; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-23",
+            "scope": "release",
+            "notes": "Goat cardpool lists Metal Raiders; original North American MRD-133 date independently read on Konami."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "kind": "spell",
+      "subtype": "normal"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "official:25880422",
+      "fingerprint": "203f27f34fbef8082d96f72eb34083d13affc9fabeef7e3b576c692368d47a23",
+      "historicalTextReview": "pending",
+      "upstreamText": "Target 1 face-up Attack Position monster your opponent controls; change that target to face-up Defense Position.",
+      "referenceText": "Target 1 face-up Attack Position monster your opponent controls; change that target to face-up Defense Position.",
+      "notes": "Current reference copied verbatim; original printed wording pending, runtime semantic review separate.",
+      "printing": {
+        "date": "2002-06-26",
+        "setCode": "MRD-133",
+        "product": "METAL RAIDERS"
+      },
+      "upstreamTcgDate": "2002-06-26"
+    }
+  ],
+  "summary": {
+    "imported": 1,
+    "verifiedData": 0,
+    "historicalReviewPending": 1,
+    "implemented": 0,
+    "testedEffects": 0,
+    "playable": 0
+  }
+}

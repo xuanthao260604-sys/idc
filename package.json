@@ -17,7 +17,7 @@
     "build": "tsc -p tsconfig.build.json",
     "cards:fetch": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js fetch",
     "cards:import": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js import",
-    "cards:check": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js check && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10 && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10b && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10c && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10d && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10e && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10f && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-20 && node --use-env-proxy dist/tools/card-import/src/cli.js check lp-spells && node --use-env-proxy dist/tools/card-import/src/cli.js check defense-spell && node --use-env-proxy dist/tools/card-import/src/cli.js check hammer-shot && node --use-env-proxy dist/tools/card-import/src/cli.js check tribute-doomed && node --use-env-proxy dist/tools/card-import/src/cli.js check reincarnation",
+    "cards:check": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js check && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10 && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10b && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10c && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10d && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10e && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10f && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-20 && node --use-env-proxy dist/tools/card-import/src/cli.js check lp-spells && node --use-env-proxy dist/tools/card-import/src/cli.js check defense-spell && node --use-env-proxy dist/tools/card-import/src/cli.js check hammer-shot && node --use-env-proxy dist/tools/card-import/src/cli.js check tribute-doomed && node --use-env-proxy dist/tools/card-import/src/cli.js check reincarnation && node --use-env-proxy dist/tools/card-import/src/cli.js check block-attack",
     "cards:classic-fetch": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js fetch classic-10",
     "cards:classic-import": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js import classic-10",
     "engine:smoke": "npm run build && node dist/tools/engine-smoke.js",
@@ -62,7 +62,10 @@
     "beta:browser-tribute": "npm run build && node tools/beta-browser-smoke.mjs --tribute-doomed",
     "cards:reincarnation-fetch": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js fetch reincarnation",
     "cards:reincarnation-import": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js import reincarnation",
-    "beta:browser-reincarnation": "npm run build && node tools/beta-browser-smoke.mjs --reincarnation=grave && node tools/beta-browser-smoke.mjs --reincarnation=cost"
+    "beta:browser-reincarnation": "npm run build && node tools/beta-browser-smoke.mjs --reincarnation=grave && node tools/beta-browser-smoke.mjs --reincarnation=cost",
+    "cards:block-attack-fetch": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js fetch block-attack",
+    "cards:block-attack-import": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js import block-attack",
+    "beta:browser-block-attack": "npm run build && node tools/beta-browser-smoke.mjs --block-attack"
   },
   "devDependencies": {
     "@types/node": "24.19.2",

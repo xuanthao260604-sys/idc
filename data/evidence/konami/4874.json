@@ -1,0 +1,18 @@
+{
+  "passcode": "25880422",
+  "konamiId": 4874,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4874&request_locale=en",
+  "accessedOn": "2026-10-23",
+  "htmlSha256": "a4be5a08b73b28b1362e528b2e2a5b1e0a64537a3ec1549f75752c6d15ce601f",
+  "currentFacts": {
+    "name": "Block Attack",
+    "text": "Target 1 face-up Attack Position monster your opponent controls; change that target to face-up Defense Position.",
+    "kind": "spell",
+    "subtype": "normal"
+  },
+  "printing": {
+    "date": "2002-06-26",
+    "setCode": "MRD-133",
+    "product": "METAL RAIDERS"
+  }
+}

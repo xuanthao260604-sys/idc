@@ -1,0 +1,26 @@
+[
+  {
+    "cardId": "official:25880422",
+    "definitionSha256": "93aa075ddd05f9f30b3e03f045c8720aa065ff3684a2b7d0590987d02912a3d5",
+    "revision": 1,
+    "format": {
+      "id": "goat-2005-08-17",
+      "revision": 4
+    },
+    "status": "reviewed-for-supported-scope",
+    "scope": "normal-spell-target-position-single-link-v1",
+    "handler": {
+      "handler": "target-opposing-attack-to-defense"
+    },
+    "evidence": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4874&request_locale=en",
+        "accessedOn": "2026-10-23",
+        "sourceKind": "official-current",
+        "quotation": "Target 1 face-up Attack Position monster your opponent controls; change that target to face-up Defense Position.",
+        "historicalApplicability": "Current reference semantics in limited scope. Original MRD-133 printing date independently read on Konami as 2002-06-26. Historical printed wording remains pending; not presented as primary 2005 wording."
+      }
+    ],
+    "notes": "Own open Main; hand or own Set. No discard cost. Target one opposing face-up Attack Position monster at activation; change to face-up Defense only after resolution. Does not change manual position-change markers or consume a summon. No face-down targets/FLIP, modifiers, immunity, replacements, general mixed Chain or negation."
+  }
+]
