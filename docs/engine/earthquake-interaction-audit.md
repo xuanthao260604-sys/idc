@@ -25,5 +25,12 @@ Smashing Ground và Block Attack; không thêm ruling hoặc mở Trigger/SEGOC 
 
 Linux đạt typecheck và toàn bộ 726/726 test trong 33 file; riêng Earthquake
 37/37 test. Không chạy lại browser Linux vì không đổi logic sản phẩm hoặc UI;
-báo cáo browser triển khai giữ tại mốc Earthquake. Đang xác nhận Windows CI.
+báo cáo browser triển khai giữ tại mốc Earthquake.
+
+Windows và Ubuntu CI đạt trên source commit 909c2bc55ef4016a839718eaf4efed3af27bc94e:
+[run 39953358379](https://github.com/xuanthao260604-sys/idc/actions/runs/39953358379).
+Đã tải và đọc artifact windows-validation-39953358379-1: win32 x64,
+OS 10.0.26100, Node 24.19.0, npm 11.17.0, Edge 155.0.4283.62.
+Windows đạt 726/726 test trong 33 file, 30/30 bước validation và 20 browser report,
+tổng runtimeExceptions=0; windows11DesktopVerified=false.
 Windows 11 desktop chưa thử trực tiếp; chưa đóng gói hoặc bàn giao beta.

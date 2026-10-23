@@ -1,6 +1,10 @@
 # Kết quả Windows CI
 
-> Mốc hiện hành: [Earthquake](../engine/earthquake.md), catalog 108; [run 39949979799](https://github.com/xuanthao260604-sys/idc/actions/runs/39949979799), commit af56b17.
+> Mốc hiện hành: [rà soát tương tác Earthquake](../engine/earthquake-interaction-audit.md), catalog 108; [run 39953358379](https://github.com/xuanthao260604-sys/idc/actions/runs/39953358379), commit 909c2bc.
+> Windows/Ubuntu đạt; Windows: 726/726 test, 30/30 bước, 20 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Thêm 14 test tương tác phá quái/đổi tư thế/chiến đấu cho A/B; không đổi engine hoặc dữ liệu. Đã đọc artifact windows-validation-39953358379-1; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [Earthquake](../engine/earthquake.md), catalog 108; [run 39949979799](https://github.com/xuanthao260604-sys/idc/actions/runs/39949979799), commit af56b17.
 > Windows/Ubuntu đạt; Windows: 712/712 test, 30/30 bước, 20 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Đã đọc artifact windows-validation-39949979799-1; đổi tư thế đồng thời hai sân và trận tự nhiên có Earthquake đạt. Dữ liệu/deck cũ giữ nguyên; Windows 11 desktop chưa chạy.
 
