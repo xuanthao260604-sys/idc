@@ -27,6 +27,14 @@ Bug hoặc card-preview; B đọc đúng tên/text lá của mình; đổi lại
 Đã chụp và xem hộp thoại Chromium ở 1440×1000 và 390×844, không tràn ngang,
 chiều cao nằm trong viewport và cuộn được khi nội dung dài.
 
-Các ca riêng đã đạt, runtimeExceptions=0. Đang xác nhận bộ tổng hợp Linux và
-Windows CI; kết quả sẽ ghi sau khi đọc report.
+Linux đạt typecheck, 726/726 test trong 33 file; 32/32 bước validation,
+22 browser report với Chromium 154.0.8037.57, tổng runtimeExceptions=0.
+Windows và Ubuntu CI [run 39969387989](https://github.com/xuanthao260604-sys/idc/actions/runs/39969387989)
+đạt trên source commit 66304e01cf92c7db7009679d7197578b3ad28759. Đã tải và đọc
+artifact windows-validation-39969387989-1: win32 x64, OS 10.0.26100,
+Node 24.19.0, npm 11.17.0, Edge 155.0.4283.62. Windows đạt 726/726 test
+trong 33 file, 32/32 bước, 22 browser report; tổng runtimeExceptions=0.
+Ca chain-view xác nhận readOnlySourceAndTargetPreviews, escapeClearsPreview,
+previewPreservesState; Tribute to The Doomed xác nhận chainPreviewPrivacy=true.
+Report ghi windows11DesktopVerified=false.
 Windows 11 desktop chưa thử trực tiếp; chưa đóng gói hoặc bàn giao beta.
