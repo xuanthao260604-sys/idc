@@ -1,6 +1,10 @@
 # Kiểm thử giao diện bằng trình duyệt trên Windows
 
-> Mốc hiện hành: [thống kê và lọc deck](../beta/deck-overview.md), catalog 108; [run 39954467903](https://github.com/xuanthao260604-sys/idc/actions/runs/39954467903), commit da4e3ed.
+> Mốc hiện hành: [sắp xếp danh sách deck](../beta/deck-sorting.md), catalog 108; [run 39956787294](https://github.com/xuanthao260604-sys/idc/actions/runs/39956787294), commit 7b9da24.
+> Windows/Ubuntu đạt; Windows: 726/726 test, 31/31 bước, 21 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Đã đọc artifact windows-validation-39956787294-1: năm chế độ sắp xếp kết hợp bộ lọc đạt, không đổi thứ tự bản nháp/deck. Windows 11 desktop chưa chạy.
+
+> Mốc trước: [thống kê và lọc deck](../beta/deck-overview.md), catalog 108; [run 39954467903](https://github.com/xuanthao260604-sys/idc/actions/runs/39954467903), commit da4e3ed.
 > Windows/Ubuntu đạt; Windows: 726/726 test, 31/31 bước, 21 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Đã đọc artifact windows-validation-39954467903-1: bộ lọc có-trong-deck, thống kê bản sao, thêm/bớt/khôi phục và bố cục 1440/390 đạt; không đổi engine/dữ liệu. Windows 11 desktop chưa chạy.
 

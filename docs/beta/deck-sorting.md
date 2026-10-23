@@ -23,5 +23,16 @@ Có trong deck, kiểm tra lá có hai bản đứng đầu, kết hợp Quái/c
 preview, thống kê, bỏ bản cuối/thêm lại/default, đóng không lưu và reset A/B.
 Các ảnh Chromium 1440×1000 và 390×844 đã được xem, không tràn ngang.
 
-Đang xác nhận bộ tổng hợp Linux và Windows CI; kết quả sẽ bổ sung từ report.
+Linux đạt typecheck, 726/726 test trong 33 file; 31/31 bước validation và
+21 browser report với Chromium 154.0.8037.57, tổng runtimeExceptions=0.
+Ca deck-overview cuối có thêm kiểm tra cụ thể quái đứng đầu và Phép/Bẫy ở cuối
+cũng đạt khi chạy riêng.
+
+Windows và Ubuntu CI [run 39956787294](https://github.com/xuanthao260604-sys/idc/actions/runs/39956787294)
+đạt trên source commit 7b9da241ba91e2824b25bba7142f8a2bef7ac4cf. Đã tải và đọc
+artifact windows-validation-39956787294-1: win32 x64, OS 10.0.26100,
+Node 24.19.0, npm 11.17.0, Edge 155.0.4283.62. Windows đạt 726/726 test
+trong 33 file, 31/31 bước, 21 browser report; tổng runtimeExceptions=0.
+Ca deck-overview ghi đủ năm sortModes và sortingPreservesDeckOrder=true;
+report ghi windows11DesktopVerified=false.
 Windows 11 desktop chưa thử trực tiếp; chưa đóng gói hoặc bàn giao beta.
