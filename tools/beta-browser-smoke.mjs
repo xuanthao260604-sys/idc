@@ -673,6 +673,31 @@ try {
     const before=await evaluate('JSON.stringify(view)');await openDeck();
     const saved=await evaluate(`api('/api/deck')`),original=await evaluate('JSON.stringify(deckDraft.cards)');
     assert.equal((await rows()).length,108);await verifyComposition();
+    assert.equal(await evaluate(`document.getElementById('deck-undo').disabled`),true);
+    assert.equal(await evaluate(`document.getElementById('deck-redo').disabled`),true);
+    const historyCard=saved.cards.find(id=>r.cards[id].legality.maxCopies>saved.cards.filter(c=>c===id).length);
+    await change(historyCard,'add');const changed=await evaluate('JSON.stringify(deckDraft.cards)');
+    await click(`document.getElementById('deck-undo')`);assert.equal(await evaluate('JSON.stringify(deckDraft.cards)'),original);
+    assert.equal(await evaluate('document.activeElement.id'),'deck-redo');
+    await click(`document.getElementById('deck-redo')`);assert.equal(await evaluate('JSON.stringify(deckDraft.cards)'),changed);
+    await click(`document.getElementById('deck-undo')`);
+    await click(`document.getElementById('deck-default')`);assert.equal(await evaluate(`document.getElementById('deck-redo').disabled`),false);
+    await change(historyCard,'remove');assert.equal(await evaluate(`document.getElementById('deck-redo').disabled`),true);
+    await click(`document.getElementById('deck-undo')`);assert.equal(await evaluate('JSON.stringify(deckDraft.cards)'),original);
+    await filter('deck-kind','spell');await filter('deck-kind','all');
+    assert.equal(await evaluate(`document.getElementById('deck-redo').disabled`),false);
+    await click(`document.getElementById('deck-redo')`);
+    const beforeDefault=await evaluate('JSON.stringify(deckDraft.cards)');await click(`document.getElementById('deck-default')`);
+    assert.equal(await evaluate('JSON.stringify(deckDraft.cards)'),original);
+    await click(`document.getElementById('deck-undo')`);assert.equal(await evaluate('JSON.stringify(deckDraft.cards)'),beforeDefault);
+    await click(`document.getElementById('deck-redo')`);assert.equal(await evaluate('JSON.stringify(deckDraft.cards)'),original);
+    assert.deepEqual(await evaluate(`api('/api/deck')`),saved);
+
+    for(let n=0;n<26;n++){await change(historyCard,'add');await change(historyCard,'remove');}
+    assert.equal(await evaluate('deckDraft.undo.length'),50);
+    assert.equal(await evaluate('JSON.stringify(deckDraft.cards)'),original);
+    await click(`document.getElementById('deck-close')`);await openDeck();
+    assert.deepEqual(await evaluate('[deckDraft.undo,deckDraft.redo]'),[[],[]]);
     const key=async(key,code,windowsVirtualKeyCode)=>{await send('Input.dispatchKeyEvent',{type:'keyDown',key,code,windowsVirtualKeyCode,...(code==='Space'?{text:' '}:code==='Enter'?{text:'\r'}:{})});await send('Input.dispatchKeyEvent',{type:'keyUp',key,code,windowsVirtualKeyCode});await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');};
     const focusState=()=>evaluate(`({id:document.activeElement.closest('.deck-row')?.dataset.cardId,change:document.activeElement.dataset.change,name:document.activeElement.classList.contains('deck-name'),control:document.activeElement.id})`);
     const keyboardCard=saved.cards.find(id=>r.cards[id].legality.maxCopies===3&&saved.cards.filter(c=>c===id).length===1);
@@ -761,7 +786,8 @@ try {
     await click(`document.getElementById('deck-close')`);assert.deepEqual(await evaluate(`api('/api/deck')`),saved);
     await openDeck();assert.equal(await evaluate(`document.getElementById('deck-presence').value`),'all');
     assert.equal(await evaluate(`document.getElementById('deck-sort').value`),'catalog');
-    assert.equal(await evaluate('JSON.stringify(deckDraft.cards)'),original);await click(`document.getElementById('deck-close')`);
+    assert.equal(await evaluate('JSON.stringify(deckDraft.cards)'),original);
+    assert.deepEqual(await evaluate('[deckDraft.undo,deckDraft.redo]'),[[],[]]);await click(`document.getElementById('deck-close')`);
     assert.equal(await evaluate('JSON.stringify(view)'),before);
     await seat('b');await openDeck();await verifyComposition();
     assert.equal(await evaluate(`document.getElementById('deck-presence').value`),'all');
@@ -770,7 +796,7 @@ try {
     // Seat handoff deliberately rotates private handles; compare public game state without handles.
     const withoutHandles=value=>JSON.stringify(value,(key,item)=>key==='handle'?undefined:item);
     assert.equal(withoutHandles(await evaluate('view')),withoutHandles(JSON.parse(before)));assert.equal(errors.length,0);
-    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'deck-overview',catalog:108,compositionCountsCopies:true,sortModes:['catalog','name','level','attack','copies'],sortingPreservesDeckOrder:true,keyboardFocusRetained:true,copyLimitFocusFallback:true,removedRowFocusFallback:true,emptyListFocusSearch:true,combinedFilters:true,removedLastCopyDisappears:true,addRestoresRow:true,defaultRefreshesCounts:true,preview:true,filterPreservesDraft:true,cancelPreservesSaved:true,seatReset:true,responsiveWidths:[1440,390],runtimeExceptions:errors.length}));
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'deck-overview',catalog:108,undoRedo:true,historyLimit:50,defaultUndoable:true,historyResetOnReopen:true,compositionCountsCopies:true,sortModes:['catalog','name','level','attack','copies'],sortingPreservesDeckOrder:true,keyboardFocusRetained:true,copyLimitFocusFallback:true,removedRowFocusFallback:true,emptyListFocusSearch:true,combinedFilters:true,removedLastCopyDisappears:true,addRestoresRow:true,defaultRefreshesCounts:true,preview:true,filterPreservesDraft:true,cancelPreservesSaved:true,seatReset:true,responsiveWidths:[1440,390],runtimeExceptions:errors.length}));
   } else if (deckBuilder) {
     const openDeck = async () => { await click(`document.getElementById('deck-builder')`); await wait(`!busy && document.getElementById('deck-dialog').open`); };
     const change = (id, direction) => click(`document.querySelector('#deck-catalog [data-card-id="${id}"] [data-change="${direction}"]')`);
@@ -806,11 +832,18 @@ try {
       await wait(`!busy && document.getElementById('deck-file').value===''`);
     };
     const invalidPath=join(downloads,'invalid.json');await writeFile(invalidPath,'{');
+    const historyBeforeInvalid=await evaluate('JSON.stringify([deckDraft.undo,deckDraft.redo])');
     await upload(invalidPath);
     assert.match(await evaluate(`document.getElementById('deck-error').textContent`),/Không nhập được/);
+    assert.equal(await evaluate('JSON.stringify([deckDraft.undo,deckDraft.redo])'),historyBeforeInvalid);
     assert.equal(await evaluate('deckDraft.cards.length'),41);
     await change('official:89631139','remove'); assert.equal(await evaluate('deckDraft.cards.length'),40);
+    const beforeImport=await evaluate('JSON.stringify(deckDraft.cards)');
     await upload(exportedPath); assert.equal(await evaluate('deckDraft.cards.length'),41);
+    const importedCards=await evaluate('JSON.stringify(deckDraft.cards)');
+    await click(`document.getElementById('deck-undo')`);assert.equal(await evaluate('JSON.stringify(deckDraft.cards)'),beforeImport);
+    await click(`document.getElementById('deck-redo')`);assert.equal(await evaluate('JSON.stringify(deckDraft.cards)'),importedCards);
+    await upload(exportedPath);
     assert.match(await evaluate(`document.getElementById('deck-error').textContent`),/bản nháp/);
     assert.equal(await evaluate(`(async()=> (await api('/api/deck')).cards.length)()`),40);
     assert.equal(await evaluate('JSON.stringify(view)'),before);
@@ -829,12 +862,14 @@ try {
       await send('Emulation.clearDeviceMetricsOverride');
     }
 
+    const historyBeforeSaveError=await evaluate('JSON.stringify([deckDraft.undo,deckDraft.redo])');
     await send('Network.enable');
     await send('Network.emulateNetworkConditions', { offline: true, latency: 0, downloadThroughput: 0, uploadThroughput: 0 });
     await click(`document.getElementById('deck-save')`);
     await wait(`!busy && document.getElementById('deck-error').textContent.length>0`);
     assert.equal(await evaluate(`document.getElementById('deck-dialog').open`), true);
     assert.equal(await evaluate('deckDraft.cards.length'), 41);
+    assert.equal(await evaluate('JSON.stringify([deckDraft.undo,deckDraft.redo])'),historyBeforeSaveError);
     await send('Network.emulateNetworkConditions', { offline: false, latency: 0, downloadThroughput: -1, uploadThroughput: -1 });
     assert.equal(await evaluate(`(async()=> (await api('/api/deck')).cards.length)()`), 40);
     await saveDeck(); assert.equal(await evaluate('JSON.stringify(view)'), before);
@@ -867,7 +902,7 @@ try {
     await seat('a'); await openDeck(); assert.equal(await evaluate('deckDraft.cards.length'), 41);
     await click(`document.getElementById('deck-close')`);
     assert.equal(errors.length, 0);
-    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'deck-builder', portableFileRoundtrip: true, invalidImportPreservesDraft: true, importRequiresSave: true, decks: [41,42], invalidSizeBlocked: true, copyLimits: true, cancelPreservesSaved: true, networkErrorPreservesDraft: true, savePreservesDuel: true, appliedOnNewDuel: true, runtimeExceptions: errors.length }));
+    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'deck-builder', importedDeckUndoRedo:true,invalidImportPreservesHistory:true,portableFileRoundtrip: true, invalidImportPreservesDraft: true, importRequiresSave: true, decks: [41,42], invalidSizeBlocked: true, copyLimits: true, cancelPreservesSaved: true, networkErrorPreservesDraft: true, savePreservesDuel: true, appliedOnNewDuel: true, runtimeExceptions: errors.length }));
   } else if (concede) {
     const before = await evaluate('JSON.stringify(view)');
     dialogAnswer = false; await click(`document.getElementById('concede')`);

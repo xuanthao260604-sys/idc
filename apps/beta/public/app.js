@@ -413,6 +413,22 @@ function draftIssues() {
   if (cards.some(id => !catalog.has(id))) issues.push('Có bài chưa được hỗ trợ.');
   return issues;
 }
+function editDeck(cards) {
+  if (JSON.stringify(cards) === JSON.stringify(deckDraft.cards)) return;
+  deckDraft.undo.push([...deckDraft.cards]);
+  if (deckDraft.undo.length > 50) deckDraft.undo.shift();
+  deckDraft.redo = [];
+  deckDraft.cards = [...cards];
+}
+function navigateDeckHistory(direction) {
+  if (busy || !deckDraft || !deckDraft[direction].length) return;
+  const opposite = direction === 'undo' ? 'redo' : 'undo';
+  deckDraft[opposite].push([...deckDraft.cards]);
+  deckDraft.cards = deckDraft[direction].pop();
+  $('deck-error').textContent = '';
+  renderDeck();
+  if ($('deck-' + direction).disabled) $('deck-' + opposite).focus();
+}
 function renderDeck() {
   if (!deckDraft) return;
   const list = $('deck-catalog'), active = document.activeElement;
@@ -436,6 +452,8 @@ function renderDeck() {
   const issues = draftIssues(); $('deck-issues').replaceChildren(...issues.map(text => node('li', text)));
   $('deck-save').disabled = busy || !!issues.length;
   $('deck-export').disabled = busy || !!issues.length;
+  $('deck-undo').disabled = busy || !deckDraft.undo.length;
+  $('deck-redo').disabled = busy || !deckDraft.redo.length;
   for (const id of ['deck-default', 'deck-close', 'deck-search', 'deck-kind', 'deck-presence', 'deck-sort', 'deck-import', 'deck-file']) $(id).disabled = busy;
   const query = $('deck-search').value.trim().toLocaleLowerCase(), kind = $('deck-kind').value, included = $('deck-presence').value === 'included';
   const sort = $('deck-sort').value;
@@ -451,9 +469,9 @@ function renderDeck() {
     const count = counts.get(c.id) || 0;
     const read = button(c.name, () => cardInfo($('deck-preview'), { visibility: 'known', definition: { id: c.id } }), 'deck-name');
     read.disabled = busy;
-    const minus = button('−', () => { deckDraft.cards.splice(deckDraft.cards.indexOf(c.id), 1); $('deck-error').textContent = ''; renderDeck(); });
+    const minus = button('−', () => { const next = [...deckDraft.cards]; next.splice(next.indexOf(c.id), 1); editDeck(next); $('deck-error').textContent = ''; renderDeck(); });
     minus.dataset.change = 'remove'; minus.disabled = busy || !count; minus.setAttribute('aria-label', `Bớt ${c.name}`);
-    const plus = button('+', () => { deckDraft.cards.push(c.id); $('deck-error').textContent = ''; renderDeck(); });
+    const plus = button('+', () => { editDeck([...deckDraft.cards, c.id]); $('deck-error').textContent = ''; renderDeck(); });
     plus.dataset.change = 'add'; plus.disabled = busy || count >= c.maxCopies; plus.setAttribute('aria-label', `Thêm ${c.name}`);
     row.append(read, minus, node('span', `${count}/${c.maxCopies}`, 'deck-copies'), plus); return row;
   });
@@ -471,7 +489,7 @@ function renderDeck() {
 $('deck-builder').addEventListener('click', async () => {
   if (busy || !view) return; busy = true; render();
   try {
-    const saved = await api('/api/deck'); if (saved.seat !== view.viewerId) throw new Error('Người chơi đã thay đổi. Hãy chọn lại góc nhìn trước khi sửa deck.'); deckDraft = { ...saved, cards: [...saved.cards] };
+    const saved = await api('/api/deck'); if (saved.seat !== view.viewerId) throw new Error('Người chơi đã thay đổi. Hãy chọn lại góc nhìn trước khi sửa deck.'); deckDraft = { ...saved, cards: [...saved.cards], undo: [], redo: [] };
     $('deck-search').value = ''; $('deck-kind').value = 'all'; $('deck-presence').value = 'all'; $('deck-sort').value = 'catalog'; $('deck-error').textContent = '';
     $('deck-preview').replaceChildren(node('p', 'Chọn tên lá bài để xem nội dung và chỉ số.'));
     $('deck-dialog').showModal();
@@ -482,7 +500,9 @@ $('deck-search').addEventListener('keydown', e => { if (e.key === 'Enter') e.pre
 $('deck-search').addEventListener('input', renderDeck); $('deck-kind').addEventListener('change', renderDeck); $('deck-presence').addEventListener('change', renderDeck); $('deck-sort').addEventListener('change', renderDeck);
 $('deck-close').addEventListener('click', () => { if (!busy) { $('deck-dialog').close(); deckDraft = null; } });
 $('deck-dialog').addEventListener('cancel', e => { if (busy) e.preventDefault(); else deckDraft = null; });
-$('deck-default').addEventListener('click', () => { if (!busy && deckDraft) { deckDraft.cards = [...deckDraft.defaultCards]; $('deck-error').textContent = ''; renderDeck(); } });
+$('deck-undo').addEventListener('click', () => navigateDeckHistory('undo'));
+$('deck-redo').addEventListener('click', () => navigateDeckHistory('redo'));
+$('deck-default').addEventListener('click', () => { if (!busy && deckDraft) { editDeck(deckDraft.defaultCards); $('deck-error').textContent = ''; renderDeck(); } });
 $('deck-form').addEventListener('submit', async e => {
   e.preventDefault(); if (busy || !deckDraft || draftIssues().length) return;
   busy = true; renderDeck();
@@ -515,7 +535,7 @@ $('deck-file').addEventListener('change', async () => {
   try {
     if (file.size > 12000) throw new Error('File deck vượt 12.000 byte.');
     const data = await api('/api/deck/import', { seat: deckDraft.seat, text: await file.text() });
-    deckDraft.cards = [...data.cards];
+    editDeck(data.cards);
     $('deck-error').textContent = 'Đã nhập vào bản nháp. Kiểm tra rồi bấm Lưu deck để áp dụng cho trận mới.';
   } catch (error) { $('deck-error').textContent = 'Không nhập được; giữ nguyên bản nháp và deck đã lưu. ' + error.message; }
   finally { $('deck-file').value = ''; busy = false; renderDeck(); }
