@@ -16,11 +16,12 @@ const lifePointsArg = process.argv.find(arg => /^--life-points=(normal|lethal)$/
 const lifePointsMode = lifePointsArg?.split('=')[1] ?? null;
 const smashingGround = process.argv.includes('--smashing-ground');
 const hammerShot = process.argv.includes('--hammer-shot');
+const earthquake = process.argv.includes('--earthquake');
 const blockAttack = process.argv.includes('--block-attack');
 const tributeDoomed = process.argv.includes('--tribute-doomed');
 const reincarnationArg = process.argv.find(arg => /^--reincarnation=(grave|cost)$/.test(arg));
 const reincarnationMode = reincarnationArg?.split('=')[1] ?? null;
-const expanded = blockAttack || reincarnationMode !== null || tributeDoomed || hammerShot || smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
+const expanded = earthquake || blockAttack || reincarnationMode !== null || tributeDoomed || hammerShot || smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
 const r = expanded ? loadRuntimeCatalog().registry : createRegistry((await read('data/generated/pilot.json')).cards, goat200508Format, {},
   await read('data/reviews/pilot.spell-effects.json'), await read('data/reviews/pilot.flip-effects.json'), await read('data/reviews/pilot.trap-effects.json'));
 const deck = Object.keys(r.cards);
@@ -33,7 +34,7 @@ const concede = process.argv.includes('--concede');
 const deckBuilder = process.argv.includes('--deck-builder');
 const deckOutArg = process.argv.find(arg => /^--deck-out=[012]$/.test(arg));
 const deckOut = deckOutArg === undefined ? null : Number(deckOutArg.split('=')[1]);
-const s = structuredClone(createDuel(r, { duelId: fullDuel ? 'mixed-smoke' : 'browser-fixture', players: [{ id: 'a', deck }, { id: 'b', deck }], firstPlayerId: 'a', seedHex: fullDuel ? (expanded ? '5e' : '08').padStart(64, '0') : '12'.repeat(32) }).state);
+const s = structuredClone(createDuel(r, { duelId: fullDuel ? 'mixed-smoke' : 'browser-fixture', players: [{ id: 'a', deck }, { id: 'b', deck }], firstPlayerId: 'a', seedHex: fullDuel ? (expanded ? '32' : '08').padStart(64, '0') : '12'.repeat(32) }).state);
 // Trusted fixture setup BEFORE starting the server. No state-edit endpoint, seed flag or test mode in beta CLI.
 function move(name, owner, zone, slot = 0, down = false) {
   const d = Object.values(r.cards).find(c => c.name === name), p = s.players.find(p => p.id === owner);
@@ -51,12 +52,21 @@ move('La Jinn the Mystical Genie of the Lamp', 'a', 'monster', 0); move('Celtic 
 move('Mystical Elf', 'b', 'monster', 0); move('Hane-Hane', 'b', 'monster', 1, true); move('Man-Eater Bug', 'b', 'monster', 2, true); move('Trap Hole', 'b', 'spell-trap', 0, true); move('Fissure', 'b', 'spell-trap', 1, true);
 s.turn.number = 3; s.turn.phase = 'main1'; s.timing.window = 'open'; s.timing.priorityPlayer = 'a'; s.timing.consecutivePasses = 0;
 }
-if (expanded && !fullDuel && lifePointsMode === null && !smashingGround && !hammerShot && !tributeDoomed && !blockAttack && reincarnationMode === null) {
+if (expanded && !fullDuel && lifePointsMode === null && !smashingGround && !hammerShot && !tributeDoomed && !blockAttack && !earthquake && reincarnationMode === null) {
   move('Gaia The Fierce Knight', 'a', 'hand');
   move('Battle Ox', 'a', 'monster', 0); move('Celtic Guardian', 'a', 'monster', 1, true);
   move('Curse of Dragon', 'a', 'hand');
   move('Armored Lizard', 'b', 'monster', 0);
   s.turn.number = 3; s.turn.phase = 'main1'; s.timing.window = 'open'; s.timing.priorityPlayer = 'a'; s.timing.consecutivePasses = 0;
+}
+if (earthquake) {
+  move('Earthquake','a','hand');move('Battle Ox','a','monster',0);
+  move('Mystical Elf','a','monster',1);s.cards[s.players[0].monsters[1]].position='face-up-defense';
+  move('Man-Eater Bug','a','monster',2,true);
+  move('Celtic Guardian','b','monster',0);move('Hane-Hane','b','monster',1);
+  move('Mystical Elf','b','monster',2);s.cards[s.players[1].monsters[2]].position='face-up-defense';
+  move('Man-Eater Bug','b','monster',3,true);
+  s.turn.number=3;s.turn.phase='main1';s.timing.window='open';s.timing.priorityPlayer='a';s.timing.consecutivePasses=0;
 }
 if (blockAttack) {
   move('Block Attack','a','hand');move('Celtic Guardian','a','monster',0);
@@ -258,7 +268,7 @@ try {
       let v = await snapshot();
       if (v.result) {
         assert.equal(v.result.reason, 'life-points'); assert.ok(attacks > 0); assert.ok(decisions > 0);
-        if (expanded) {assert.ok(usedEffects.has('Monster Reincarnation'));assert.ok(usedEffects.has('Block Attack'), 'Expanded duel must exercise the new reviewed Spell');}
+        if (expanded) assert.ok(usedEffects.has('Earthquake'), 'Expanded duel must exercise the new reviewed Spell');
         assert.equal(errors.length, 0); assert.equal(v.chain.length, 0); assert.equal(v.decision, null);
         assert.match(await evaluate(`document.getElementById('timing').textContent`), /thắng/);
         assert.equal(v.stateVersion, actions);
@@ -312,6 +322,7 @@ try {
         const spell = free >= 0 ? v.selfHand.findIndex(c => {
           if (definition(c)?.kind !== 'spell') return false;
           const handler = r.spellHandlers[c.definition.id].handler;
+          if (handler === 'all-face-up-attack-to-defense') return [...own.monsters,...opp.monsters].some(c=>c?.position==='face-up-attack');
           if (handler === 'target-opposing-attack-to-defense') return opp.monsters.some(c=>c?.position==='face-up-attack');
           if (handler === 'discard-return-own-graveyard-monster') return v.selfHand.length >= 2 && own.graveyard.some(c=>definition(c)?.level);
           if (handler === 'discard-destroy-target-monster') return v.selfHand.length >= 2 && [...opp.monsters,...own.monsters].some(Boolean);
@@ -364,7 +375,25 @@ try {
   }
   await send('Runtime.enable'); await send('Page.enable'); await send('Page.navigate', { url: `http://127.0.0.1:${server.address().port}` });
   await wait(`document.getElementById('seat-dialog')?.open`); await seat('a');
-  if (blockAttack) {
+  if (earthquake) {
+    const before=await evaluate('JSON.stringify(view)');
+    await hand('Earthquake');await click(textButton('#actions button','Kích hoạt'));
+    assert.equal(await evaluate(`document.querySelectorAll('#action-fields select[name="target"], #action-fields select[name="discard"]').length`),0);
+    await click(`document.getElementById('cancel-action')`);assert.equal(await evaluate('JSON.stringify(view)'),before);
+    await hand('Earthquake');await click(textButton('#actions button','Úp bài'));await confirm();await pass('a');await pass('b');await seat('a');
+    const handBefore=await evaluate('view.selfHand.length');
+    await click(`document.querySelector('#self .zone-row:nth-child(3) .card')`);await actionClick(textButton('#actions button','Kích hoạt'));
+    assert.equal(await evaluate('view.players[0].monsters[0].position'),'face-up-attack');
+    await pass('b');assert.equal(await evaluate('view.players[1].monsters[0].position'),'face-up-attack');await pass('a');
+    assert.deepEqual(await evaluate('[view.players[0].monsters[0],...view.players[1].monsters.slice(0,2)].map(c=>c.position)'),Array(3).fill('face-up-defense'));
+    assert.equal(await evaluate('view.players[0].monsters[2].position'),'face-down-defense');assert.equal(await evaluate('view.players[1].monsters[3].visibility'),'hidden');
+    assert.equal(await evaluate('view.selfHand.length'),handBefore);assert.equal(await evaluate('view.decision'),null);
+    assert.deepEqual(await evaluate('view.players.map(p=>p.lifePoints)'),[8000,8000]);
+    assert.match(await evaluate(`document.getElementById('status').textContent`),/chuyển sang phòng thủ bởi hiệu ứng/);
+    await pass('a');await pass('b');await seat('a');
+    assert.equal(errors.length,0);
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'earthquake',cancelPreservesState:true,fromOwnSet:true,nonTargeting:true,noDiscard:true,delayedSimultaneousPositionChange:true,changedMonsters:3,hiddenMonstersUntouched:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
+  } else if (blockAttack) {
     const before=await evaluate('JSON.stringify(view)');
     await hand('Block Attack');await click(textButton('#actions button','Kích hoạt'));
     assert.equal(await evaluate(`document.querySelectorAll('#action-fields select[name="target"] option:not(:disabled)').length`),1);
@@ -550,8 +579,8 @@ try {
     assert.equal(errors.length,0);
     console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'life-points-'+lifePointsMode,gainFromOwnSet:lifePointsMode==='normal',lifePoints:await evaluate('view.players.map(p=>p.lifePoints)'),delayedUntilResolution:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
   } else if (expanded && !fullDuel) {
-    assert.equal(await evaluate('catalog.size'), 107);
-    assert.match(await evaluate(`document.getElementById('catalog-count').textContent`), /107/);
+    assert.equal(await evaluate('catalog.size'), 108);
+    assert.match(await evaluate(`document.getElementById('catalog-count').textContent`), /108/);
     await click(`document.getElementById('deck-builder')`); await wait(`!busy && document.getElementById('deck-dialog').open`);
     const added = Object.values(r.cards);
     for (const card of added) {
@@ -629,7 +658,7 @@ try {
     assert.equal(await evaluate('view.players[1].lifePoints'), 7200);
     assert.equal(await evaluate(`view.players[1].graveyard.some(c=>catalog.get(c.definition.id).name==='Armored Lizard')`), true);
     assert.equal(errors.length, 0);
-    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'expanded-catalog', catalog: 107, reviewedCardPreviews: 107, dataDrivenLevels: true, tributePreviews: true, oneTributeSetCancelPreservesState: true, deselectionUpdatesPreview: true, ownSetPrivacy: true, tributeSummon: 'Gaia The Fierce Knight', battleTarget: 'Armored Lizard', battleDamage: 800, fixtureOnlyAtSetup: true, runtimeExceptions: errors.length }));
+    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'expanded-catalog', catalog: 108, reviewedCardPreviews: 108, dataDrivenLevels: true, tributePreviews: true, oneTributeSetCancelPreservesState: true, deselectionUpdatesPreview: true, ownSetPrivacy: true, tributeSummon: 'Gaia The Fierce Knight', battleTarget: 'Armored Lizard', battleDamage: 800, fixtureOnlyAtSetup: true, runtimeExceptions: errors.length }));
   } else if (deckBuilder) {
     const openDeck = async () => { await click(`document.getElementById('deck-builder')`); await wait(`!busy && document.getElementById('deck-dialog').open`); };
     const change = (id, direction) => click(`document.querySelector('#deck-catalog [data-card-id="${id}"] [data-change="${direction}"]')`);

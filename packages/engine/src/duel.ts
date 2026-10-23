@@ -468,7 +468,7 @@ function spell(c: Context, actorId: string, action: Extract<EngineRequest['actio
         'invalid-target', 'Choose an opposing face-up Attack Position monster');
     } else rule(action.discardId === undefined && action.targetId === undefined, 'invalid-action', 'This Spell takes no discard cost or target');
   }
-  if (action.type === 'activate-spell' && ['destroy-lowest-opposing-face-up-attack', 'destroy-highest-opposing-face-up-defense', 'destroy-highest-face-up-attack-position'].includes(handler.handler))
+  if (action.type === 'activate-spell' && ['destroy-lowest-opposing-face-up-attack', 'destroy-highest-opposing-face-up-defense', 'destroy-highest-face-up-attack-position', 'all-face-up-attack-to-defense'].includes(handler.handler))
     rule(planResolution(handler, resolutionBoard(c, actorId)).kind !== 'no-op', 'invalid-target', 'No eligible monster for this Spell');
   if (fromHand) { p.hand.splice(p.hand.indexOf(card.id), 1); p.spellsTraps[action.slot] = card.id; }
   card.location = { kind: 'spell-trap', playerId: actorId, slot: action.slot as Slot };
@@ -520,6 +520,11 @@ function resolveSpell(c: Context) {
     const ref = link.targetRefs[0], target = ref && c.state.cards[ref.instanceId];
     if (target && target.location.kind === 'graveyard' && target.location.playerId === link.controllerId
       && JSON.stringify(target.location) === JSON.stringify(ref!.locationAtSelection)) returnToOwnerHand(c, target.id);
+  }
+  if (plan.kind === 'change-all-to-defense') {
+    // One event/group for all changed monsters: no intermediate Trigger/decision window.
+    for (const id of plan.instanceIds) c.state.cards[id]!.position = 'face-up-defense';
+    emit(c, 'position-changed', [...plan.instanceIds], { reason: 'effect' });
   }
   if (plan.kind === 'change-selected-monster-to-defense') {
     const ref = link.targetRefs[0], target = ref && c.state.cards[ref.instanceId];

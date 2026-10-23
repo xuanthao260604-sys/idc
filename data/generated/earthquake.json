@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "format": {
+    "id": "goat-2005-08-17",
+    "revision": 4
+  },
+  "provenance": {
+    "upstreamSha256": "4d1b17d7de8df0415c557bd7c276a5607cbef98c9c7c1acb8c986822685d3de0",
+    "manifestSha256": "2c80790e5841a33ad3896353b59681a47c75562b559448627dcf7b56db2cf278",
+    "reviewSha256": "674f60e50f357136cd981c96ca015f1c107c4dec150bf14e04b5275e77bc1ca1",
+    "officialEvidenceSha256": "3fe4c554ec5c9ec07fa7b23b5b808081f958a731b60d75e7439db3efb49ccaa4"
+  },
+  "cards": [
+    {
+      "schemaVersion": 1,
+      "id": "official:82828051",
+      "origin": "official",
+      "revision": 1,
+      "name": "Earthquake",
+      "passcode": "82828051",
+      "text": "Change all face-up monsters on the field to Defense Position.",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?id=82828051&misc=yes",
+          "accessedOn": "2026-10-23",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=5983&request_locale=en",
+          "accessedOn": "2026-10-23",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 5983."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=5983&request_locale=en",
+          "accessedOn": "2026-10-23",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=5983&request_locale=en",
+          "accessedOn": "2026-10-23",
+          "scope": "text",
+          "notes": "Current reference, not claimed as original 2005 wording."
+        }
+      ],
+      "verification": "pending",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=5983&request_locale=en",
+            "accessedOn": "2026-10-23",
+            "scope": "release",
+            "notes": "Reviewed North American print AST-043, 2004-06-01, ANCIENT SANCTUARY; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-23",
+            "scope": "release",
+            "notes": "Goat cardpool lists Ancient Sanctuary; original North American AST-043 printing independently read on Konami."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "kind": "spell",
+      "subtype": "normal"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "official:82828051",
+      "fingerprint": "d515e680786f542282a18f5b5161ca0d1aaf5e574a6b0bfcaf1de0a6699494e6",
+      "historicalTextReview": "pending",
+      "upstreamText": "Change all face-up monsters on the field to Defense Position.",
+      "referenceText": "Change all face-up monsters on the field to Defense Position.",
+      "notes": "Current reference copied verbatim; original printed wording pending, runtime review separate.",
+      "printing": {
+        "date": "2004-06-01",
+        "setCode": "AST-043",
+        "product": "ANCIENT SANCTUARY"
+      },
+      "upstreamTcgDate": "2004-06-01"
+    }
+  ],
+  "summary": {
+    "imported": 1,
+    "verifiedData": 0,
+    "historicalReviewPending": 1,
+    "implemented": 0,
+    "testedEffects": 0,
+    "playable": 0
+  }
+}

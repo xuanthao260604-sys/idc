@@ -56,6 +56,7 @@ export function runMixedSmoke(registry: Registry, seedHex: string) {
           && p.hand.length >= 2 && p.graveyard.some(id => ['normal-monster','effect-monster'].includes(def(id).kind)))
         || (registry.spellHandlers[def(id).id]?.handler === 'discard-destroy-target-monster'
           && p.hand.length >= 2 && [...p.monsters, ...opponent.monsters].some(id => id !== null))
+        || (registry.spellHandlers[def(id).id]?.handler === 'all-face-up-attack-to-defense' && [...p.monsters,...opponent.monsters].some(id=>id!==null&&state.cards[id]!.position==='face-up-attack'))
         || (registry.spellHandlers[def(id).id]?.handler === 'target-opposing-attack-to-defense' && !!positionTarget)
         || ['draw', 'inflict-damage', 'gain-life-points'].includes(registry.spellHandlers[def(id).id]?.handler ?? '')
         || (registry.spellHandlers[def(id).id]?.handler === 'destroy-highest-face-up-attack-position'

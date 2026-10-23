@@ -6,6 +6,7 @@ import { EvidenceSchema } from '../../card-data/src/format.js';
 export const SpellHandlerSchema = z.discriminatedUnion('handler', [
   z.strictObject({ handler: z.literal('discard-destroy-target-monster') }),
   z.strictObject({ handler: z.literal('discard-return-own-graveyard-monster') }),
+  z.strictObject({ handler: z.literal('all-face-up-attack-to-defense') }),
   z.strictObject({ handler: z.literal('target-opposing-attack-to-defense') }),
   z.strictObject({ handler: z.literal('draw'), count: z.number().int().positive().max(100) }),
   z.strictObject({ handler: z.literal('destroy-lowest-opposing-face-up-attack') }),
@@ -21,11 +22,13 @@ export const SpellReviewSchema = z.strictObject({
   revision: z.number().int().positive(),
   format: z.strictObject({ id: z.string().min(1), revision: z.number().int().positive() }),
   status: z.literal('reviewed-for-supported-scope'),
-  scope: z.enum(['normal-spell-single-link-vanilla-v1', 'normal-spell-life-points-single-link-v1', 'normal-spell-highest-defense-single-link-v1', 'normal-spell-highest-attack-position-single-link-v1', 'normal-spell-discard-target-single-link-v1', 'normal-spell-discard-graveyard-single-link-v1', 'normal-spell-target-position-single-link-v1']),
+  scope: z.enum(['normal-spell-single-link-vanilla-v1', 'normal-spell-life-points-single-link-v1', 'normal-spell-highest-defense-single-link-v1', 'normal-spell-highest-attack-position-single-link-v1', 'normal-spell-discard-target-single-link-v1', 'normal-spell-discard-graveyard-single-link-v1', 'normal-spell-target-position-single-link-v1', 'normal-spell-all-position-single-link-v1']),
   handler: SpellHandlerSchema,
   evidence: z.array(EvidenceSchema).min(1),
   notes: z.string().min(1),
 }).superRefine((review, ctx) => {
+  if ((review.handler.handler === 'all-face-up-attack-to-defense') !== (review.scope === 'normal-spell-all-position-single-link-v1'))
+    ctx.addIssue({ code: 'custom', message: 'Spell handler requires its reviewed scope' });
   if ((review.handler.handler === 'target-opposing-attack-to-defense') !== (review.scope === 'normal-spell-target-position-single-link-v1'))
     ctx.addIssue({ code: 'custom', message: 'Spell handler requires its reviewed scope' });
   const graveyardReturn = review.handler.handler === 'discard-return-own-graveyard-monster';

@@ -1,0 +1,18 @@
+{
+  "passcode": "82828051",
+  "konamiId": 5983,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=5983&request_locale=en",
+  "accessedOn": "2026-10-23",
+  "htmlSha256": "a15ccadc50ce7e66ec9b6015dbc87831c12d52be19340239749e1d240f46785e",
+  "currentFacts": {
+    "name": "Earthquake",
+    "text": "Change all face-up monsters on the field to Defense Position.",
+    "kind": "spell",
+    "subtype": "normal"
+  },
+  "printing": {
+    "date": "2004-06-01",
+    "setCode": "AST-043",
+    "product": "ANCIENT SANCTUARY"
+  }
+}
