@@ -28,5 +28,16 @@ Cùng ca này đã chạy với app.js trước sửa và thất bại ngay sau 
 focus không còn card ID/nút add. Với bản sửa, ca riêng đạt và runtimeExceptions=0.
 Không thêm unit test giả DOM; kiểm chứng bằng Chromium thực trên Linux.
 
-Đang xác nhận bộ tổng hợp Linux và Windows CI; kết quả sẽ ghi sau khi đọc report.
+Linux đạt typecheck, 726/726 test trong 33 file; 31/31 bước validation,
+21 browser report với Chromium 154.0.8037.57, tổng runtimeExceptions=0.
+Ca riêng cuối có Space/Enter/Tab cũng đạt.
+
+Windows và Ubuntu CI [run 39958158114](https://github.com/xuanthao260604-sys/idc/actions/runs/39958158114)
+đạt trên source commit 2799108308b8041bd6582841e636c03ef76aa346. Đã tải và đọc
+artifact windows-validation-39958158114-1: win32 x64, OS 10.0.26100,
+Node 24.19.0, npm 11.17.0, Edge 155.0.4283.62. Windows đạt 726/726 test
+trong 33 file, 31/31 bước, 21 browser report; tổng runtimeExceptions=0.
+Ca deck-overview xác nhận keyboardFocusRetained, copyLimitFocusFallback,
+removedRowFocusFallback, emptyListFocusSearch đều true;
+report ghi windows11DesktopVerified=false.
 Windows 11 desktop chưa thử trực tiếp; chưa đóng gói hoặc bàn giao beta.

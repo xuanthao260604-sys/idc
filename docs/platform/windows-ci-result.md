@@ -1,6 +1,10 @@
 # Kết quả Windows CI
 
-> Mốc hiện hành: [sắp xếp danh sách deck](../beta/deck-sorting.md), catalog 108; [run 39956787294](https://github.com/xuanthao260604-sys/idc/actions/runs/39956787294), commit 7b9da24.
+> Mốc hiện hành: [giữ vị trí bàn phím khi sửa deck](../beta/deck-keyboard-focus.md), catalog 108; [run 39958158114](https://github.com/xuanthao260604-sys/idc/actions/runs/39958158114), commit 2799108.
+> Windows/Ubuntu đạt; Windows: 726/726 test, 31/31 bước, 21 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Đã đọc artifact windows-validation-39958158114-1: Enter/Space/Tab giữ focus, đạt giới hạn/bỏ hàng/danh sách trống có vị trí tiếp tục phù hợp. Windows 11 desktop chưa chạy.
+
+> Mốc trước: [sắp xếp danh sách deck](../beta/deck-sorting.md), catalog 108; [run 39956787294](https://github.com/xuanthao260604-sys/idc/actions/runs/39956787294), commit 7b9da24.
 > Windows/Ubuntu đạt; Windows: 726/726 test, 31/31 bước, 21 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Đã đọc artifact windows-validation-39956787294-1: năm chế độ sắp xếp kết hợp bộ lọc đạt, không đổi thứ tự bản nháp/deck. Windows 11 desktop chưa chạy.
 
