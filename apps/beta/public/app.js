@@ -417,14 +417,23 @@ function renderDeck() {
   if (!deckDraft) return;
   $('deck-title').textContent = `Xây deck · ${names[deckDraft.seat]}`;
   $('deck-count').textContent = `${deckDraft.cards.length} lá · Tối thiểu ${deckRules.mainMin}${deckRules.mainMax === null ? ' · Không có trần 60 lá hiện đại' : ' · Tối đa ' + deckRules.mainMax}`;
+  const counts = new Map();
+  const composition = { monster: 0, spell: 0, trap: 0 };
+  for (const id of deckDraft.cards) {
+    counts.set(id, (counts.get(id) || 0) + 1);
+    const kind = catalog.get(id)?.kind;
+    if (kind?.includes('monster')) composition.monster++;
+    else if (kind === 'spell' || kind === 'trap') composition[kind]++;
+  }
+  $('deck-composition').textContent = `Quái: ${composition.monster} · Phép: ${composition.spell} · Bẫy: ${composition.trap} · ${counts.size} loại bài`;
   const issues = draftIssues(); $('deck-issues').replaceChildren(...issues.map(text => node('li', text)));
   $('deck-save').disabled = busy || !!issues.length;
   $('deck-export').disabled = busy || !!issues.length;
-  for (const id of ['deck-default', 'deck-close', 'deck-search', 'deck-kind', 'deck-import', 'deck-file']) $(id).disabled = busy;
-  const query = $('deck-search').value.trim().toLocaleLowerCase(), kind = $('deck-kind').value;
-  const rows = [...catalog.values()].filter(c => (!query || (c.name + ' ' + c.text).toLocaleLowerCase().includes(query)) && (kind === 'all' || (kind === 'monster' ? c.kind.includes('monster') : c.kind === kind))).map(c => {
+  for (const id of ['deck-default', 'deck-close', 'deck-search', 'deck-kind', 'deck-presence', 'deck-import', 'deck-file']) $(id).disabled = busy;
+  const query = $('deck-search').value.trim().toLocaleLowerCase(), kind = $('deck-kind').value, included = $('deck-presence').value === 'included';
+  const rows = [...catalog.values()].filter(c => (!included || counts.has(c.id)) && (!query || (c.name + ' ' + c.text).toLocaleLowerCase().includes(query)) && (kind === 'all' || (kind === 'monster' ? c.kind.includes('monster') : c.kind === kind))).map(c => {
     const row = node('div', undefined, 'deck-row'); row.dataset.cardId = c.id;
-    const count = deckDraft.cards.filter(id => id === c.id).length;
+    const count = counts.get(c.id) || 0;
     const read = button(c.name, () => cardInfo($('deck-preview'), { visibility: 'known', definition: { id: c.id } }), 'deck-name');
     read.disabled = busy;
     const minus = button('−', () => { deckDraft.cards.splice(deckDraft.cards.indexOf(c.id), 1); $('deck-error').textContent = ''; renderDeck(); });
@@ -433,20 +442,21 @@ function renderDeck() {
     plus.dataset.change = 'add'; plus.disabled = busy || count >= c.maxCopies; plus.setAttribute('aria-label', `Thêm ${c.name}`);
     row.append(read, minus, node('span', `${count}/${c.maxCopies}`, 'deck-copies'), plus); return row;
   });
+  $('deck-results').textContent = `Hiển thị ${rows.length} loại bài${included ? ' có trong deck' : ''}.`;
   $('deck-catalog').replaceChildren(...(rows.length ? rows : [node('p', 'Không có lá phù hợp.') ]));
 }
 $('deck-builder').addEventListener('click', async () => {
   if (busy || !view) return; busy = true; render();
   try {
     const saved = await api('/api/deck'); if (saved.seat !== view.viewerId) throw new Error('Người chơi đã thay đổi. Hãy chọn lại góc nhìn trước khi sửa deck.'); deckDraft = { ...saved, cards: [...saved.cards] };
-    $('deck-search').value = ''; $('deck-kind').value = 'all'; $('deck-error').textContent = '';
+    $('deck-search').value = ''; $('deck-kind').value = 'all'; $('deck-presence').value = 'all'; $('deck-error').textContent = '';
     $('deck-preview').replaceChildren(node('p', 'Chọn tên lá bài để xem nội dung và chỉ số.'));
     $('deck-dialog').showModal();
   } catch (error) { message = error.message; }
   finally { busy = false; render(); renderDeck(); }
 });
 $('deck-search').addEventListener('keydown', e => { if (e.key === 'Enter') e.preventDefault(); });
-$('deck-search').addEventListener('input', renderDeck); $('deck-kind').addEventListener('change', renderDeck);
+$('deck-search').addEventListener('input', renderDeck); $('deck-kind').addEventListener('change', renderDeck); $('deck-presence').addEventListener('change', renderDeck);
 $('deck-close').addEventListener('click', () => { if (!busy) { $('deck-dialog').close(); deckDraft = null; } });
 $('deck-dialog').addEventListener('cancel', e => { if (busy) e.preventDefault(); else deckDraft = null; });
 $('deck-default').addEventListener('click', () => { if (!busy && deckDraft) { deckDraft.cards = [...deckDraft.defaultCards]; $('deck-error').textContent = ''; renderDeck(); } });

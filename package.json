@@ -68,7 +68,8 @@
     "beta:browser-block-attack": "npm run build && node tools/beta-browser-smoke.mjs --block-attack",
     "cards:earthquake-fetch": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js fetch earthquake",
     "cards:earthquake-import": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js import earthquake",
-    "beta:browser-earthquake": "npm run build && node tools/beta-browser-smoke.mjs --earthquake"
+    "beta:browser-earthquake": "npm run build && node tools/beta-browser-smoke.mjs --earthquake",
+    "beta:browser-deck-overview": "npm run build && node tools/beta-browser-smoke.mjs --deck-overview"
   },
   "devDependencies": {
     "@types/node": "24.19.2",

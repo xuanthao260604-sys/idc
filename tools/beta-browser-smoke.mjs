@@ -21,7 +21,8 @@ const blockAttack = process.argv.includes('--block-attack');
 const tributeDoomed = process.argv.includes('--tribute-doomed');
 const reincarnationArg = process.argv.find(arg => /^--reincarnation=(grave|cost)$/.test(arg));
 const reincarnationMode = reincarnationArg?.split('=')[1] ?? null;
-const expanded = earthquake || blockAttack || reincarnationMode !== null || tributeDoomed || hammerShot || smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
+const deckOverview = process.argv.includes('--deck-overview');
+const expanded = deckOverview || earthquake || blockAttack || reincarnationMode !== null || tributeDoomed || hammerShot || smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
 const r = expanded ? loadRuntimeCatalog().registry : createRegistry((await read('data/generated/pilot.json')).cards, goat200508Format, {},
   await read('data/reviews/pilot.spell-effects.json'), await read('data/reviews/pilot.flip-effects.json'), await read('data/reviews/pilot.trap-effects.json'));
 const deck = Object.keys(r.cards);
@@ -52,7 +53,7 @@ move('La Jinn the Mystical Genie of the Lamp', 'a', 'monster', 0); move('Celtic 
 move('Mystical Elf', 'b', 'monster', 0); move('Hane-Hane', 'b', 'monster', 1, true); move('Man-Eater Bug', 'b', 'monster', 2, true); move('Trap Hole', 'b', 'spell-trap', 0, true); move('Fissure', 'b', 'spell-trap', 1, true);
 s.turn.number = 3; s.turn.phase = 'main1'; s.timing.window = 'open'; s.timing.priorityPlayer = 'a'; s.timing.consecutivePasses = 0;
 }
-if (expanded && !fullDuel && lifePointsMode === null && !smashingGround && !hammerShot && !tributeDoomed && !blockAttack && !earthquake && reincarnationMode === null) {
+if (expanded && !fullDuel && lifePointsMode === null && !smashingGround && !hammerShot && !tributeDoomed && !blockAttack && !earthquake && !deckOverview && reincarnationMode === null) {
   move('Gaia The Fierce Knight', 'a', 'hand');
   move('Battle Ox', 'a', 'monster', 0); move('Celtic Guardian', 'a', 'monster', 1, true);
   move('Curse of Dragon', 'a', 'hand');
@@ -116,7 +117,7 @@ if (deckOut !== null) {
   s.turn.phase = 'main1'; s.timing.window = 'open'; s.timing.consecutivePasses = 0;
 }
 assertDuelInvariants(s, r);
-const server = createBetaServer(r, undefined, newGame || concede || deckBuilder ? undefined : s), directory = await mkdtemp(join(tmpdir(), 'ygo-browser-'));
+const server = createBetaServer(r, undefined, newGame || concede || deckBuilder || deckOverview ? undefined : s), directory = await mkdtemp(join(tmpdir(), 'ygo-browser-'));
 let chrome, ws, closeBrowser, browser, dialogAnswer; const nativeDialogs = []; const pending = new Map(), errors = []; let nextId = 0;
 const timeout = setTimeout(() => { console.error('Browser regression timed out'); chrome?.kill(); server.closeAllConnections(); process.exit(1); }, fullDuel ? 240000 : 90000);
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -578,7 +579,7 @@ try {
     } else assert.equal(await evaluate('view.result'),null);
     assert.equal(errors.length,0);
     console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'life-points-'+lifePointsMode,gainFromOwnSet:lifePointsMode==='normal',lifePoints:await evaluate('view.players.map(p=>p.lifePoints)'),delayedUntilResolution:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
-  } else if (expanded && !fullDuel) {
+  } else if (expanded && !fullDuel && !deckOverview) {
     assert.equal(await evaluate('catalog.size'), 108);
     assert.match(await evaluate(`document.getElementById('catalog-count').textContent`), /108/);
     await click(`document.getElementById('deck-builder')`); await wait(`!busy && document.getElementById('deck-dialog').open`);
@@ -659,6 +660,58 @@ try {
     assert.equal(await evaluate(`view.players[1].graveyard.some(c=>catalog.get(c.definition.id).name==='Armored Lizard')`), true);
     assert.equal(errors.length, 0);
     console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'expanded-catalog', catalog: 108, reviewedCardPreviews: 108, dataDrivenLevels: true, tributePreviews: true, oneTributeSetCancelPreservesState: true, deselectionUpdatesPreview: true, ownSetPrivacy: true, tributeSummon: 'Gaia The Fierce Knight', battleTarget: 'Armored Lizard', battleDamage: 800, fixtureOnlyAtSetup: true, runtimeExceptions: errors.length }));
+  } else if (deckOverview) {
+    const openDeck=async()=>{await click(`document.getElementById('deck-builder')`);await wait(`!busy && document.getElementById('deck-dialog').open`);};
+    const change=(id,direction)=>click(`document.querySelector('#deck-catalog [data-card-id="${id}"] [data-change="${direction}"]')`);
+    const filter=async(id,value)=>evaluate(`document.getElementById(${JSON.stringify(id)}).value=${JSON.stringify(value)};document.getElementById(${JSON.stringify(id)}).dispatchEvent(new Event('change'))`);
+    const rows=()=>evaluate(`[...document.querySelectorAll('#deck-catalog .deck-row')].map(e=>e.dataset.cardId)`);
+    async function verifyComposition(){
+      const cards=await evaluate('deckDraft.cards'),sum={monster:0,spell:0,trap:0};
+      for(const id of cards){const k=r.cards[id].kind;sum[k.includes('monster')?'monster':k]++;}
+      assert.equal(await evaluate(`document.getElementById('deck-composition').textContent`),`Quái: ${sum.monster} · Phép: ${sum.spell} · Bẫy: ${sum.trap} · ${new Set(cards).size} loại bài`);
+    }
+    const before=await evaluate('JSON.stringify(view)');await openDeck();
+    const saved=await evaluate(`api('/api/deck')`),original=await evaluate('JSON.stringify(deckDraft.cards)');
+    assert.equal((await rows()).length,108);await verifyComposition();
+    await filter('deck-presence','included');
+    assert.deepEqual(new Set(await rows()),new Set(saved.cards));
+    assert.equal(await evaluate('JSON.stringify(deckDraft.cards)'),original);
+    assert.equal(await evaluate(`document.getElementById('deck-results').textContent`),`Hiển thị ${new Set(saved.cards).size} loại bài có trong deck.`);
+    await filter('deck-kind','spell');assert.ok((await rows()).every(id=>r.cards[id].kind==='spell'&&saved.cards.includes(id)));
+    await evaluate(`document.getElementById('deck-search').value='no such card';document.getElementById('deck-search').dispatchEvent(new Event('input'))`);
+    assert.equal((await rows()).length,0);await verifyComposition();
+    await evaluate(`document.getElementById('deck-search').value='';document.getElementById('deck-search').dispatchEvent(new Event('input'))`);
+    await filter('deck-kind','all');
+    const removed=saved.cards[0],count=saved.cards.filter(id=>id===removed).length;
+    for(let n=0;n<count;n++)await change(removed,'remove');
+    assert.ok(!(await rows()).includes(removed));await verifyComposition();
+    assert.equal(await evaluate(`document.getElementById('deck-save').disabled`),true);
+    await filter('deck-presence','all');await change(removed,'add');await filter('deck-presence','included');
+    assert.ok((await rows()).includes(removed));await verifyComposition();
+    const distinctBefore=(await rows()).length;await change(removed,'add');await verifyComposition();
+    assert.equal((await rows()).length,distinctBefore);
+    await click(`document.getElementById('deck-default')`);await verifyComposition();
+    assert.deepEqual(new Set(await rows()),new Set(saved.defaultCards));
+    // Read previews and check the dialog fits both target viewport sizes.
+    await click(`document.querySelector('#deck-catalog .deck-name')`);
+    assert.ok(await evaluate(`document.querySelector('#deck-preview h2').textContent.length>0`));
+    for(const [label,width,height]of [['desktop',1440,1000],['narrow',390,844]]){
+      await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
+      assert.equal(await evaluate(`(()=>{const d=document.getElementById('deck-dialog'),r=d.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1&&d.scrollWidth<=d.clientWidth+1})()`),true);
+      if(process.argv.includes('--screenshots')){const folder=join(projectRoot,'artifacts','deck-overview');await mkdir(folder,{recursive:true});const shot=await send('Page.captureScreenshot',{format:'png'});await writeFile(join(folder,label+'.png'),Buffer.from(shot.data,'base64'));}
+    }
+    await send('Emulation.clearDeviceMetricsOverride');
+    await click(`document.getElementById('deck-close')`);assert.deepEqual(await evaluate(`api('/api/deck')`),saved);
+    await openDeck();assert.equal(await evaluate(`document.getElementById('deck-presence').value`),'all');
+    assert.equal(await evaluate('JSON.stringify(deckDraft.cards)'),original);await click(`document.getElementById('deck-close')`);
+    assert.equal(await evaluate('JSON.stringify(view)'),before);
+    await seat('b');await openDeck();await verifyComposition();
+    assert.equal(await evaluate(`document.getElementById('deck-presence').value`),'all');
+    await click(`document.getElementById('deck-close')`);await seat('a');
+    // Seat handoff deliberately rotates private handles; compare public game state without handles.
+    const withoutHandles=value=>JSON.stringify(value,(key,item)=>key==='handle'?undefined:item);
+    assert.equal(withoutHandles(await evaluate('view')),withoutHandles(JSON.parse(before)));assert.equal(errors.length,0);
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'deck-overview',catalog:108,compositionCountsCopies:true,combinedFilters:true,removedLastCopyDisappears:true,addRestoresRow:true,defaultRefreshesCounts:true,preview:true,filterPreservesDraft:true,cancelPreservesSaved:true,seatReset:true,responsiveWidths:[1440,390],runtimeExceptions:errors.length}));
   } else if (deckBuilder) {
     const openDeck = async () => { await click(`document.getElementById('deck-builder')`); await wait(`!busy && document.getElementById('deck-dialog').open`); };
     const change = (id, direction) => click(`document.querySelector('#deck-catalog [data-card-id="${id}"] [data-change="${direction}"]')`);
