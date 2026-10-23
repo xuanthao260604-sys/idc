@@ -298,7 +298,7 @@ try {
       if (v.result) {
         assert.equal(v.result.reason, 'life-points'); assert.ok(attacks > 0); assert.ok(decisions > 0);
         if (expanded) assert.ok(usedEffects.has('Earthquake'), 'Expanded duel must exercise the new reviewed Spell');
-        assert.equal(errors.length, 0); assert.equal(await evaluate(`document.getElementById('battle-status').hidden`),true); assert.equal(v.chain.length, 0); assert.equal(v.decision, null);
+        assert.equal(errors.length, 0); assert.equal(await evaluate(`document.getElementById('battle-status').hidden`),true); assert.equal(await evaluate(`document.getElementById('summon-quota').hidden`),true); assert.equal(v.chain.length, 0); assert.equal(v.decision, null);
         assert.match(await evaluate(`document.getElementById('timing').textContent`), /thắng/);
         assert.equal(v.stateVersion, actions);
         assert.match(await evaluate(`document.getElementById('guide-title').textContent`), /thắng/);
@@ -383,6 +383,7 @@ try {
             const d=definition(v.selfHand[choice.index]), set=!!r.flipHandlers[d.id];
             if(set)monsterSets[v.viewerId][slot]=v.turn.number;
             await handAction(choice.index,set?'Úp quái':'Triệu hồi',slot,tributeHandles);
+            assert.equal(await evaluate('view.normalSummonQuota.remaining'),0);
             normalUsed=true; lastSummon=set?null:{player:v.viewerId,slot}; actions++; continue;
           }
         }
@@ -411,7 +412,9 @@ try {
   await wait(`document.getElementById('seat-dialog')?.open`); await seat('a');
   if (chainView) {
     assert.equal(await evaluate(`document.getElementById('chain-panel').hidden`),true);
+    assert.match(await evaluate(`document.getElementById('summon-quota').textContent`),/Người chơi A.*còn 1\/1 lượt/);
     await hand('Battle Ox');await click(textButton('#actions button','Triệu hồi'));await confirm();await pass('a');await seat('b');
+    assert.match(await evaluate(`document.getElementById('summon-quota').textContent`),/Người chơi A.*còn 0\/1 lượt/);
     const trap=slot=>`document.querySelector('#self .zone-row:nth-child(3) .slot:nth-child(${slot+1}) .card')`;
     await click(trap(0));await click(textButton('#actions button','Kích hoạt Bẫy'));await chooseTarget(0);
     const before=await evaluate('JSON.stringify(view)');await click(`document.getElementById('cancel-action')`);
@@ -440,6 +443,7 @@ try {
     assert.equal(await evaluate('view.chain.length'),0);assert.equal(await evaluate(`document.getElementById('chain-panel').hidden`),true);
     assert.equal(await evaluate(`document.getElementById('chain-links').textContent`),'');
     assert.equal(await evaluate(`view.players[0].graveyard.filter(c=>catalog.get(c.definition.id).name==='Battle Ox').length`),1);
+    assert.match(await evaluate(`document.getElementById('summon-quota').textContent`),/Người chơi A.*còn 0\/1 lượt/);
     assert.equal(await evaluate(`view.players[1].graveyard.filter(c=>catalog.get(c.definition.id).name==='Trap Hole').length`),2);
     await pass('a');await pass('b');await seat('a');
     const handCount=await evaluate('view.selfHand.length');await hand('Pot of Greed');await click(textButton('#actions button','Kích hoạt'));await confirm();
@@ -451,7 +455,7 @@ try {
     assert.equal(await evaluate(`document.getElementById('chain-panel').hidden`),true);
     assert.equal(await evaluate(`document.getElementById('chain-links').textContent`),'');
     assert.deepEqual(await evaluate('view.players.map(p=>p.lifePoints)'),[8000,8000]);assert.equal(errors.length,0);
-    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'chain-view',readOnlySourceAndTargetPreviews:true,escapeClearsPreview:true,previewPreservesState:true,twoTrapLinks:true,reverseResolutionOrder:true,publicTarget:true,hiddenMonsterPrivacy:true,samePublicChainAcrossSeats:true,singleNormalSpell:true,cancelPreservesState:true,clearedAfterResolution:true,responsiveWidths:[1440,390],fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'chain-view',normalQuotaSurvivesTrapDestruction:true,readOnlySourceAndTargetPreviews:true,escapeClearsPreview:true,previewPreservesState:true,twoTrapLinks:true,reverseResolutionOrder:true,publicTarget:true,hiddenMonsterPrivacy:true,samePublicChainAcrossSeats:true,singleNormalSpell:true,cancelPreservesState:true,clearedAfterResolution:true,responsiveWidths:[1440,390],fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
   } else if (earthquake) {
     const before=await evaluate('JSON.stringify(view)');
     await hand('Earthquake');await click(textButton('#actions button','Kích hoạt'));
@@ -1138,6 +1142,8 @@ try {
         await seat(who);
         assert.equal(await evaluate('view.selfHand.length'), who === active ? 6 : 5);
         assert.equal(await evaluate('view.stateVersion'), 0);
+        assert.equal(await evaluate('view.normalSummonQuota.remaining'),1);
+        assert.equal(await evaluate('view.normalSummonQuota.playerId'),active);
         assert.equal(await evaluate('view.activity.length'), 0);
         assert.equal(await evaluate('view.players.every(p=>p.lifePoints===8000 && p.monsters.every(c=>c===null) && p.spellsTraps.every(c=>c===null))'), true);
       }

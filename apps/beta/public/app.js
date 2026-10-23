@@ -377,6 +377,9 @@ function render() {
     : 'Hiện chưa có lá nào có thao tác hợp lệ. Xem hướng dẫn lượt để tiếp tục.';
   $('score').replaceChildren(...[opponent, self].map(p => { const n = node('div', undefined, `score ${view.turn.activePlayer === p.playerId ? 'active' : ''}`); n.append(node('span', names[p.playerId]), node('div', undefined)); n.lastChild.append(node('small', 'LIFE POINTS'), node('strong', String(p.lifePoints))); return n; }));
   const phases = node('div', undefined, 'phases'); for (const [key, text] of Object.entries(phaseNames)) phases.append(node('span', text, `phase ${view.turn.phase === key ? 'current' : ''}`)); $('phases').replaceChildren(phases);
+  const quota = view.normalSummonQuota;
+  $('summon-quota').hidden = !!view.result;
+  $('summon-quota').textContent = view.result ? '' : `${names[quota.playerId]} · Normal Summon/Set còn ${quota.remaining}/${quota.limit} lượt.`;
   side(opponent, 'opponent', false); side(self, 'self', true); renderBattleStatus(); renderChain();
   $('hand').replaceChildren(...view.selfHand.map(c => cardButton(c, 'hand', view.viewerId, 0))); $('hand-count').textContent = `(${view.selfHand.length})`;
   $('timing').textContent = view.result ? `Kết thúc · ${view.result.winner ? names[view.result.winner] + ' thắng' : 'Hòa'}` : `Lượt ${view.turn.number} · ${names[view.turn.activePlayer]} · ${view.timing.priorityPlayer ? 'Quyền: ' + names[view.timing.priorityPlayer] : 'Đang chọn bài'}${view.chain.length ? ' · Chain ' + view.chain.length : ''}`;

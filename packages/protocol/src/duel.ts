@@ -127,6 +127,8 @@ export interface PlayerView {
   stateVersion: number;
   viewerId: PlayerId;
   turn: DuelState['turn'];
+  /** Public counter for the active player; remaining quota is not permission to act. */
+  normalSummonQuota: { playerId: PlayerId; used: number; limit: number; remaining: number };
   /** Response priority is suspended (null) while a mandatory decision is pending. */
   timing: { window: DuelState['timing']['window']; priorityPlayer: PlayerId | null };
   chain: readonly { controllerId: PlayerId; sourceHandle: string; targetHandles: readonly string[]; spellSpeed: 1 | 2 | 3 }[];
