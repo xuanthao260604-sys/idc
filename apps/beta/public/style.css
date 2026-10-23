@@ -60,3 +60,5 @@
 .decision-option label{flex:1;min-width:0;overflow-wrap:anywhere}.decision-option button{flex-shrink:0;padding:7px}
 #decision-card-dialog{max-height:90vh;overflow:auto}#decision-card-detail{overflow-wrap:anywhere}
 #decision-card-detail p{white-space:pre-wrap}
+
+#deck-form .dialog-buttons{flex-wrap:wrap}

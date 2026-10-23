@@ -784,7 +784,8 @@ try {
       if(process.argv.includes('--screenshots')){const folder=join(projectRoot,'artifacts','deck-overview');await mkdir(folder,{recursive:true});const shot=await send('Page.captureScreenshot',{format:'png'});await writeFile(join(folder,label+'.png'),Buffer.from(shot.data,'base64'));}
     }
     await send('Emulation.clearDeviceMetricsOverride');
-    await click(`document.getElementById('deck-close')`);assert.deepEqual(await evaluate(`api('/api/deck')`),saved);
+    await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
+    await click(`document.getElementById('deck-close')`);await wait(`!document.getElementById('deck-dialog').open`);assert.deepEqual(await evaluate(`api('/api/deck')`),saved);
     await openDeck();assert.equal(await evaluate(`document.getElementById('deck-presence').value`),'all');
     assert.equal(await evaluate(`document.getElementById('deck-sort').value`),'catalog');
     assert.equal(await evaluate('JSON.stringify(deckDraft.cards)'),original);
