@@ -200,7 +200,16 @@ try {
     const index = await evaluate(`[...document.querySelectorAll('#decision-form label')].findIndex(e=>e.textContent.includes(${JSON.stringify(name)}))`);
     await inspectDecision(index);
     await click(`[...document.querySelectorAll('#decision-form label')].find(e=>e.textContent.includes(${JSON.stringify(name)})).querySelector('input')`);
+    const before = await evaluate('JSON.stringify(view)');
+    const checked = await evaluate(`document.querySelector('#decision-form input:checked').value`);
+    await send('Network.enable');
+    await send('Network.emulateNetworkConditions',{offline:true,latency:0,downloadThroughput:0,uploadThroughput:0});
+    await click(`document.querySelector('#decision-form button[type="submit"]')`); await wait('!busy');
+    assert.equal(await evaluate('JSON.stringify(view)'),before);
+    assert.equal(await evaluate(`document.querySelector('#decision-form input:checked')?.value`),checked);
+    await send('Network.emulateNetworkConditions',{offline:false,latency:0,downloadThroughput:-1,uploadThroughput:-1});
     await actionClick(`document.querySelector('#decision-form button[type="submit"]')`);
+    assert.equal(await evaluate('decisionDraft'),null);
   }
   async function inspectGraveyard(side, expectedNames) {
     const before = await evaluate('JSON.stringify(view)');
@@ -717,7 +726,40 @@ try {
     await click(`document.querySelectorAll('#decision-form input')[2]`);
     assert.match(await evaluate(`document.getElementById('decision-progress').textContent`), /2\/2/);
     await inspectDecision(1,true); assert.equal(await disabled(),false);
+    const checkedBeforeFailure = await evaluate(`[...document.querySelectorAll('#decision-form input:checked')].map(e=>e.value)`);
+    const beforeFailure = await evaluate('JSON.stringify(view)');
+    await send('Network.enable');
+    await send('Network.emulateNetworkConditions',{offline:true,latency:0,downloadThroughput:0,uploadThroughput:0});
+    await click(`document.querySelector('#decision-form button[type="submit"]')`); await wait('!busy');
+    assert.equal(await evaluate('JSON.stringify(view)'),beforeFailure);
+    assert.deepEqual(await evaluate(`[...document.querySelectorAll('#decision-form input:checked')].map(e=>e.value)`),checkedBeforeFailure);
+    assert.match(await evaluate(`document.getElementById('status').textContent`),/Chưa xác nhận lựa chọn/);
+    await send('Network.emulateNetworkConditions',{offline:false,latency:0,downloadThroughput:-1,uploadThroughput:-1});
+    // Reading a card and refreshing an unchanged view must also preserve a local choice.
+    await click(`document.querySelector('#hand .card')`);
+    assert.deepEqual(await evaluate(`[...document.querySelectorAll('#decision-form input:checked')].map(e=>e.value)`),checkedBeforeFailure);
+    await click(`document.getElementById('refresh')`); await wait('!busy');
+    assert.deepEqual(await evaluate(`[...document.querySelectorAll('#decision-form input:checked')].map(e=>e.value)`),checkedBeforeFailure);
+    // Seat changes discard private drafts, even when returning to the same still-pending decision.
+    await seat('b'); assert.equal(await evaluate('decisionDraft'),null);
+    assert.equal(await evaluate(`document.querySelectorAll('#decision-form input').length`),0);
+    await seat('a'); assert.equal(await evaluate(`document.querySelectorAll('#decision-form input:checked').length`),0);
+    await click(`document.querySelectorAll('#decision-form input')[0]`);
+    await click(`document.querySelectorAll('#decision-form input')[1]`);
+    const currentSelection = await evaluate(`[...document.querySelectorAll('#decision-form input:checked')].map(e=>e.value)`);
+    const beforeLostResponse = await evaluate('JSON.stringify(view)');
+    // Real server execution, then lose only its response; no state manipulation or automatic retry.
+    await evaluate(`(()=>{const original=window.fetch;window.fetch=async(...args)=>{if(args[0]==='/api/command'){window.fetch=original;await original(...args);throw new Error('Mất phản hồi sau khi server xử lý');}return original(...args);};})()`);
+    await click(`document.querySelector('#decision-form button[type="submit"]')`); await wait('!busy');
+    assert.equal(await evaluate('JSON.stringify(view)'),beforeLostResponse);
+    assert.deepEqual(await evaluate(`[...document.querySelectorAll('#decision-form input:checked')].map(e=>e.value)`),currentSelection);
+    const serverAfterLoss = await evaluate(`api('/api/view')`);
+    assert.equal(serverAfterLoss.selfHand.length,6); assert.equal(serverAfterLoss.decision,null);
     await actionClick(`document.querySelector('#decision-form button[type="submit"]')`);
+    assert.equal(await evaluate('view.stateVersion'),serverAfterLoss.stateVersion);
+    assert.equal(await evaluate('decisionDraft'),null);
+    assert.equal(await evaluate(`view.activity.filter(e=>e.action==='answer-decision').length`),1);
+    assert.match(await evaluate(`document.getElementById('status').textContent`),/Bàn đấu đã thay đổi/);
     assert.equal(await evaluate('view.selfHand.length'), 6);
     assert.equal(await evaluate('view.players[0].graveyard.length'), 2);
     assert.equal(await evaluate('view.decision'), null);
@@ -726,7 +768,7 @@ try {
     assert.equal(await evaluate('view.turn.activePlayer'), 'b');
     assert.equal(await evaluate('view.turn.number'), 2);
     assert.equal(errors.length, 0);
-    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'discard', decisionPreviews: true, viewingPreservesSelection: true, escapeClearsPreview: true, handAfterDiscard: 6, discarded: 2, nextPlayer: 'b', runtimeExceptions: errors.length }));
+    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'discard', networkFailurePreservesSelection: true, unchangedRefreshPreservesSelection: true, seatSwitchClearsDraft: true, lostResponseNoDuplicateDiscard: true, decisionPreviews: true, viewingPreservesSelection: true, escapeClearsPreview: true, handAfterDiscard: 6, discarded: 2, nextPlayer: 'b', runtimeExceptions: errors.length }));
   } else if (newGame) {
     const before = await evaluate('JSON.stringify(view)');
     await click(`document.getElementById('reset')`);
@@ -815,7 +857,7 @@ try {
   assert.equal(await evaluate('view.players[0].monsters.filter(Boolean).length'), 0);
   assert.equal(await evaluate(`['Pot of Greed','Hane-Hane','Man-Eater Bug','Trap Hole','Fissure'].some(name=>document.getElementById('activity').textContent.includes(name))`), false);
   assert.equal(errors.length, 0);
-  console.log(JSON.stringify({ browser: browser.brand, browserVersion: browserVersion.product, platform: process.platform, fixtureOnlyAtSetup: true, flipDecisionPreviews: true, legalActionCues: ['main-hand', 'pass-only-chain', 'trap-summon-response', 'battle', 'mandatory-choice', 'own-only'], sharedBack: ['monster', 'spell', 'trap'], effectFlows: ['Pot of Greed', 'Fissure', 'Trap Hole', 'Hane-Hane', 'Man-Eater Bug'], interaction: 'mouse controls and dialogs', graveyard: ['empty', 'inline card text', 'top-first order', 'read-only both players'], runtimeExceptions: errors.length }));
+  console.log(JSON.stringify({ browser: browser.brand, browserVersion: browserVersion.product, platform: process.platform, fixtureOnlyAtSetup: true, flipDecisionPreviews: true, radioSelectionSurvivesNetworkFailure: true, legalActionCues: ['main-hand', 'pass-only-chain', 'trap-summon-response', 'battle', 'mandatory-choice', 'own-only'], sharedBack: ['monster', 'spell', 'trap'], effectFlows: ['Pot of Greed', 'Fissure', 'Trap Hole', 'Hane-Hane', 'Man-Eater Bug'], interaction: 'mouse controls and dialogs', graveyard: ['empty', 'inline card text', 'top-first order', 'read-only both players'], runtimeExceptions: errors.length }));
   }
 
 } finally {

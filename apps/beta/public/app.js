@@ -3,6 +3,7 @@ const $ = id => document.getElementById(id);
 const catalog = new Map();
 let deckRules, deckDraft = null;
 let actionHints = new Set();
+let decisionDraft = null;
 let view = null, selected = null, busy = false, message = 'Chọn một lá bài để bắt đầu.';
 const names = { a: 'Người chơi A', b: 'Người chơi B' };
 const phaseNames = { draw: 'BỐC BÀI', standby: 'CHUẨN BỊ', main1: 'MAIN 1', battle: 'CHIẾN ĐẤU', main2: 'MAIN 2', end: 'KẾT THÚC' };
@@ -90,7 +91,9 @@ async function command(action) {
     view = data.view; selected = null; const entry = view.activity?.find(e => e.stateVersion === data.outcome.stateVersion);
     const feedback = entry?.resolution?.map(resolutionText).filter(Boolean).join(' · ');
     message = data.outcome.accepted ? (feedback || 'Đã thực hiện.') : (reasonNames[data.outcome.reason] || 'Thao tác không hợp lệ.');
-  } catch (e) { message = e.message; }
+  } catch (e) { message = action.type === 'answer-decision'
+    ? 'Chưa xác nhận lựa chọn. Các ô đã chọn được giữ lại. Hãy cập nhật bàn đấu nếu không rõ kết quả trước khi thử lại. ' + e.message
+    : e.message; }
   finally { busy = false; render(); }
 }
 function resolutionText(fact) {
@@ -305,12 +308,16 @@ function render() {
   const next = { draw: ['standby'], standby: ['main1'], main1: view.turn.number === 1 ? ['end'] : ['battle', 'end'], battle: ['main2'], main2: ['end'], end: ['draw'] };
   if (!view.result && view.turn.activePlayer === view.viewerId) for (const phase of next[view.turn.phase]) { const b = button(phase === 'draw' ? 'Sang lượt đối thủ' : phaseNames[phase], () => command({ type: 'request-phase', phase })); b.disabled = busy || !matchingActions({ type: 'request-phase', phase }).length; turns.append(b); }
   $('decision-panel').hidden = !view.decision;
-  const form = $('decision-form'); form.replaceChildren();
+  const form = $('decision-form'); form.replaceChildren(); form.onchange = null; form.onsubmit = null;
+  // A draft belongs to this exact projection, never a different seat/duel/decision or rotated handles.
+  const decisionKey = view.decision ? JSON.stringify([view.duelId, view.viewerId, view.stateVersion, view.decision]) : null;
+  if (!decisionKey) decisionDraft = null;
+  else if (decisionDraft?.key !== decisionKey) decisionDraft = { key: decisionKey, optionIds: [] };
   if (view.decision) {
     const d = view.decision; form.append(node('p', `Chọn ${d.min === d.max ? d.min : d.min + '–' + d.max} lá${d.kind === 'discard' ? ' để bỏ xuống Mộ' : ' để xử lý hiệu ứng'}.`));
     d.optionIds.forEach(h => {
       const row = node('div', undefined, 'decision-option'), l = node('label'), input = node('input');
-      input.type = d.max === 1 ? 'radio' : 'checkbox'; input.name = 'option'; input.value = h;
+      input.type = d.max === 1 ? 'radio' : 'checkbox'; input.name = 'option'; input.value = h; input.checked = decisionDraft.optionIds.includes(h);
       l.append(input, document.createTextNode(` ${optionLabel(h)}`));
       const read = button('Xem bài', () => {
         if (busy || !view.decision?.optionIds.includes(h)) return;
@@ -325,7 +332,8 @@ function render() {
     const submit = node('button', 'Xác nhận lựa chọn', 'primary'); submit.type = 'submit'; form.append(submit);
     const progress = node('p'); progress.id = 'decision-progress'; progress.setAttribute('aria-live', 'polite'); form.append(progress);
     const updateSelection = () => {
-      const count = form.querySelectorAll('input:checked').length;
+      decisionDraft.optionIds = [...form.querySelectorAll('input:checked')].map(input => input.value);
+      const count = decisionDraft.optionIds.length;
       progress.textContent = `Đã chọn ${count}/${d.min === d.max ? d.min : d.min + '–' + d.max} lá.`;
       submit.disabled = busy || count < d.min || count > d.max;
       for (const input of form.querySelectorAll('input, [data-inspect]')) input.disabled = busy;
@@ -334,7 +342,7 @@ function render() {
     form.onsubmit = e => { e.preventDefault(); if (busy) return; const optionIds = [...form.querySelectorAll('input:checked')].map(i => i.value); if (optionIds.length < d.min || optionIds.length > d.max) { message = 'Hãy chọn đúng số lá.'; $('status').textContent = message; return; } command({ type: 'answer-decision', decisionId: d.id, optionIds }); };
   }
 }
-function handoff() { document.body.classList.add('concealed'); selected = null; $('seat-dialog').showModal(); }
+function handoff() { decisionDraft = null; document.body.classList.add('concealed'); selected = null; $('seat-dialog').showModal(); }
 $('seat-dialog').addEventListener('cancel', e => e.preventDefault());
 for (const b of document.querySelectorAll('[data-seat]')) b.addEventListener('click', async () => {
   if (busy) return; busy = true;
