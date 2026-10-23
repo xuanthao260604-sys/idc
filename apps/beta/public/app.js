@@ -72,6 +72,17 @@ function cardButton(card, zone, player, slot, onSelect) {
   if (zone !== 'hand') b.append(node('span', card.position === 'face-down-defense' || card.position === 'face-down' ? 'ÚP' : card.position === 'face-up-defense' ? 'PHÒNG THỦ' : card.position === 'face-up-attack' ? 'TẤN CÔNG' : 'NGỬA', 'card-position'));
   return b;
 }
+function renderChain() {
+  const links = view.result ? [] : view.chain;
+  $('chain-panel').hidden = !links.length;
+  $('chain-title').textContent = links.length ? `Chain đang xử lý · ${links.length} liên kết` : '';
+  $('chain-links').replaceChildren(...links.map((link, index) => {
+    const item = node('li');
+    item.append(node('strong', `Liên kết ${index + 1} · ${names[link.controllerId]} · ${label(visibleCard(link.sourceHandle))}`));
+    item.append(node('p', `Tốc độ ${link.spellSpeed} · ${link.targetHandles.length ? 'Mục tiêu: ' + link.targetHandles.map(optionLabel).join('; ') : 'Không chọn mục tiêu khi kích hoạt.'}`));
+    return item;
+  }).reverse());
+}
 function renderBattleStatus() {
   const status = $('battle-status'), battle = !view.result && view.battle;
   status.hidden = !battle?.attackerHandle;
@@ -343,7 +354,7 @@ function render() {
     : 'Hiện chưa có lá nào có thao tác hợp lệ. Xem hướng dẫn lượt để tiếp tục.';
   $('score').replaceChildren(...[opponent, self].map(p => { const n = node('div', undefined, `score ${view.turn.activePlayer === p.playerId ? 'active' : ''}`); n.append(node('span', names[p.playerId]), node('div', undefined)); n.lastChild.append(node('small', 'LIFE POINTS'), node('strong', String(p.lifePoints))); return n; }));
   const phases = node('div', undefined, 'phases'); for (const [key, text] of Object.entries(phaseNames)) phases.append(node('span', text, `phase ${view.turn.phase === key ? 'current' : ''}`)); $('phases').replaceChildren(phases);
-  side(opponent, 'opponent', false); side(self, 'self', true); renderBattleStatus();
+  side(opponent, 'opponent', false); side(self, 'self', true); renderBattleStatus(); renderChain();
   $('hand').replaceChildren(...view.selfHand.map(c => cardButton(c, 'hand', view.viewerId, 0))); $('hand-count').textContent = `(${view.selfHand.length})`;
   $('timing').textContent = view.result ? `Kết thúc · ${view.result.winner ? names[view.result.winner] + ' thắng' : 'Hòa'}` : `Lượt ${view.turn.number} · ${names[view.turn.activePlayer]} · ${view.timing.priorityPlayer ? 'Quyền: ' + names[view.timing.priorityPlayer] : 'Đang chọn bài'}${view.chain.length ? ' · Chain ' + view.chain.length : ''}`;
   renderGuide(); detail(); $('status').textContent = message + (!view.result && view.timing.priorityPlayer && view.timing.priorityPlayer !== view.viewerId ? ' Đổi người chơi để ' + names[view.timing.priorityPlayer] + ' phản hồi.' : ''); $('pass').disabled = busy || !matchingActions({ type: 'pass' }).length;

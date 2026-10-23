@@ -33,6 +33,7 @@ const newGame = process.argv.includes('--new-game');
 const discard = process.argv.includes('--discard');
 const concede = process.argv.includes('--concede');
 const deckBuilder = process.argv.includes('--deck-builder');
+const chainView = process.argv.includes('--chain-view');
 const deckOutArg = process.argv.find(arg => /^--deck-out=[012]$/.test(arg));
 const deckOut = deckOutArg === undefined ? null : Number(deckOutArg.split('=')[1]);
 const s = structuredClone(createDuel(r, { duelId: fullDuel ? 'mixed-smoke' : 'browser-fixture', players: [{ id: 'a', deck }, { id: 'b', deck }], firstPlayerId: 'a', seedHex: fullDuel ? (expanded ? '32' : '08').padStart(64, '0') : '12'.repeat(32) }).state);
@@ -47,11 +48,17 @@ function move(name, owner, zone, slot = 0, down = false) {
   c.location = { kind: zone, playerId: owner, slot }; c.position = down ? zone === 'monster' ? 'face-down-defense' : 'face-down' : 'face-up-attack';
   if (down) c.markers.setOnTurn = 2;
 }
-if (!fullDuel && !newGame && !discard && !concede && !deckBuilder && !expanded && deckOut === null) {
+if (!fullDuel && !newGame && !discard && !concede && !deckBuilder && !chainView && !expanded && deckOut === null) {
 move('Pot of Greed', 'a', 'hand'); move('Fissure', 'a', 'hand'); move('Battle Ox', 'a', 'hand');
 move('La Jinn the Mystical Genie of the Lamp', 'a', 'monster', 0); move('Celtic Guardian', 'a', 'monster', 1);
 move('Mystical Elf', 'b', 'monster', 0); move('Hane-Hane', 'b', 'monster', 1, true); move('Man-Eater Bug', 'b', 'monster', 2, true); move('Trap Hole', 'b', 'spell-trap', 0, true); move('Fissure', 'b', 'spell-trap', 1, true);
 s.turn.number = 3; s.turn.phase = 'main1'; s.timing.window = 'open'; s.timing.priorityPlayer = 'a'; s.timing.consecutivePasses = 0;
+}
+if (chainView) {
+  move('Battle Ox','a','hand');move('Pot of Greed','a','hand');
+  move('Trap Hole','b','spell-trap',0,true);move('Trap Hole','b','spell-trap',1,true);
+  move('Man-Eater Bug','b','monster',0,true);
+  s.turn.number=3;s.turn.phase='main1';s.timing.window='open';s.timing.priorityPlayer='a';s.timing.consecutivePasses=0;
 }
 if (expanded && !fullDuel && lifePointsMode === null && !smashingGround && !hammerShot && !tributeDoomed && !blockAttack && !earthquake && !deckOverview && reincarnationMode === null) {
   move('Gaia The Fierce Knight', 'a', 'hand');
@@ -381,7 +388,48 @@ try {
   }
   await send('Runtime.enable'); await send('Page.enable'); await send('Page.navigate', { url: `http://127.0.0.1:${server.address().port}` });
   await wait(`document.getElementById('seat-dialog')?.open`); await seat('a');
-  if (earthquake) {
+  if (chainView) {
+    assert.equal(await evaluate(`document.getElementById('chain-panel').hidden`),true);
+    await hand('Battle Ox');await click(textButton('#actions button','Triệu hồi'));await confirm();await pass('a');await seat('b');
+    const trap=slot=>`document.querySelector('#self .zone-row:nth-child(3) .slot:nth-child(${slot+1}) .card')`;
+    await click(trap(0));await click(textButton('#actions button','Kích hoạt Bẫy'));await chooseTarget(0);
+    const before=await evaluate('JSON.stringify(view)');await click(`document.getElementById('cancel-action')`);
+    assert.equal(await evaluate('JSON.stringify(view)'),before);assert.equal(await evaluate(`document.getElementById('chain-panel').hidden`),true);
+    await click(trap(0));await click(textButton('#actions button','Kích hoạt Bẫy'));await chooseTarget(0);await confirm();
+    assert.equal(await evaluate(`document.querySelectorAll('#chain-links li').length`),1);
+    assert.match(await evaluate(`document.getElementById('chain-links').textContent`),/Liên kết 1.*Người chơi B.*Trap Hole/);
+    assert.match(await evaluate(`document.getElementById('chain-links').textContent`),/Mục tiêu:.*Battle Ox/);
+    await pass('a');await seat('b');
+    await click(trap(1));await click(textButton('#actions button','Kích hoạt Bẫy'));await chooseTarget(0);await confirm();
+    assert.equal(await evaluate('view.chain.length'),2);
+    const publicText=await evaluate(`document.getElementById('chain-links').textContent`),version=await evaluate('view.stateVersion');
+    assert.deepEqual(await evaluate(`[...document.querySelectorAll('#chain-links strong')].map(e=>e.textContent.match(/Liên kết (\\d+)/)[1])`),['2','1']);
+    assert.ok(!publicText.includes('Man-Eater Bug'));assert.ok(!publicText.includes('official:'));
+    await seat('a');assert.equal(await evaluate('view.stateVersion'),version);
+    assert.equal(await evaluate(`document.getElementById('chain-links').textContent`),publicText);
+    assert.equal(await evaluate(`document.getElementById('chain-panel').textContent.includes('Man-Eater Bug')`),false);
+    for(const [label,width,height]of [['desktop',1440,1000],['narrow',390,844]]){
+      await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
+      assert.equal(await evaluate(`(()=>{const e=document.getElementById('chain-panel'),r=e.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1&&e.scrollWidth<=e.clientWidth+1})()`),true);
+      if(process.argv.includes('--screenshots')){const folder=join(projectRoot,'artifacts','chain-view');await mkdir(folder,{recursive:true});await evaluate(`document.getElementById('chain-panel').scrollIntoView({block:'start'})`);const shot=await send('Page.captureScreenshot',{format:'png'});await writeFile(join(folder,label+'.png'),Buffer.from(shot.data,'base64'));}
+    }
+    await send('Emulation.clearDeviceMetricsOverride');await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
+    await pass('a');assert.equal(await evaluate('view.chain.length'),2);await pass('b');
+    assert.equal(await evaluate('view.chain.length'),0);assert.equal(await evaluate(`document.getElementById('chain-panel').hidden`),true);
+    assert.equal(await evaluate(`document.getElementById('chain-links').textContent`),'');
+    assert.equal(await evaluate(`view.players[0].graveyard.filter(c=>catalog.get(c.definition.id).name==='Battle Ox').length`),1);
+    assert.equal(await evaluate(`view.players[1].graveyard.filter(c=>catalog.get(c.definition.id).name==='Trap Hole').length`),2);
+    await pass('a');await pass('b');await seat('a');
+    const handCount=await evaluate('view.selfHand.length');await hand('Pot of Greed');await click(textButton('#actions button','Kích hoạt'));await confirm();
+    assert.match(await evaluate(`document.getElementById('chain-links').textContent`),/Liên kết 1.*Pot of Greed/);
+    assert.match(await evaluate(`document.getElementById('chain-links').textContent`),/Không chọn mục tiêu khi kích hoạt/);
+    await pass('b');await pass('a');
+    assert.equal(await evaluate('view.selfHand.length'),handCount+1);
+    assert.equal(await evaluate(`document.getElementById('chain-panel').hidden`),true);
+    assert.equal(await evaluate(`document.getElementById('chain-links').textContent`),'');
+    assert.deepEqual(await evaluate('view.players.map(p=>p.lifePoints)'),[8000,8000]);assert.equal(errors.length,0);
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'chain-view',twoTrapLinks:true,reverseResolutionOrder:true,publicTarget:true,hiddenMonsterPrivacy:true,samePublicChainAcrossSeats:true,singleNormalSpell:true,cancelPreservesState:true,clearedAfterResolution:true,responsiveWidths:[1440,390],fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
+  } else if (earthquake) {
     const before=await evaluate('JSON.stringify(view)');
     await hand('Earthquake');await click(textButton('#actions button','Kích hoạt'));
     assert.equal(await evaluate(`document.querySelectorAll('#action-fields select[name="target"], #action-fields select[name="discard"]').length`),0);
@@ -490,6 +538,14 @@ try {
     assert.equal(await evaluate('view.players[0].graveyard.length'),1); assert.equal(await evaluate('view.players[1].monsters[0].visibility'),'hidden');
     assert.equal(await evaluate('view.chain[0].targetHandles.length'),1);
     assert.match(await evaluate(`document.getElementById('status').textContent`),/Người chơi A bỏ 1 lá làm chi phí/);
+    assert.match(await evaluate(`document.getElementById('chain-links').textContent`),/Mục tiêu:.*Bài úp/);
+    assert.equal(await evaluate(`document.getElementById('chain-links').textContent.includes('Man-Eater Bug')`),false);
+    const chainVersion=await evaluate('view.stateVersion');await seat('b');
+    assert.match(await evaluate(`document.getElementById('chain-links').textContent`),/Man-Eater Bug/);
+    assert.equal(await evaluate('view.stateVersion'),chainVersion);await seat('a');
+    assert.equal(await evaluate(`document.getElementById('chain-links').textContent.includes('Man-Eater Bug')`),false);
+
+
     await pass('b'); assert.notEqual(await evaluate('view.players[1].monsters[0]'),null); await pass('a');
     assert.equal(await evaluate('view.players[1].monsters[0]'),null); assert.notEqual(await evaluate('view.players[0].monsters[0]'),null);
     assert.equal(await evaluate('view.chain.length'),0); assert.equal(await evaluate('view.decision'),null);
@@ -497,7 +553,7 @@ try {
     await inspectGraveyard('self',['Tribute to The Doomed','Battle Ox']); await inspectGraveyard('opponent',['Man-Eater Bug']);
     const facts = await evaluate('view.activity.flatMap(x=>x.resolution||[])');
     assert.deepEqual(facts,[{kind:'discard-cost',playerId:'a',count:1},{kind:'effect-destroyed',count:1}]); assert.equal(errors.length,0);
-    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'tribute-doomed',cancelPreservesCards:true,fromOwnSet:true,costPaidAtActivation:true,targetDestroyedAtResolution:true,hiddenTarget:true,choicePreviews:true,previewKeepsHiddenIdentity:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'tribute-doomed',cancelPreservesCards:true,fromOwnSet:true,costPaidAtActivation:true,targetDestroyedAtResolution:true,hiddenTarget:true,chainTargetPrivacy:true,choicePreviews:true,previewKeepsHiddenIdentity:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
   } else if (hammerShot) {
     await hand('Hammer Shot'); await click(textButton('#actions button','Kích hoạt'));
     assert.equal(await evaluate(`document.querySelectorAll('#action-fields select[name="target"]').length`),0);
