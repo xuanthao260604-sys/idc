@@ -32,5 +32,17 @@ Chromium 154.0.8037.57 trên Linux đã đạt các ca browser:
   bản chọn được xóa khi quyết định kết thúc.
 
 Chỉ mô phỏng lỗi kết nối/phản hồi ở lớp fetch; không chỉnh state trận sau fixture.
-Bộ validation Linux đầy đủ và Windows CI đang chờ kiểm chứng.
+Linux đầy đủ đạt typecheck, build, kiểm tra dữ liệu và 644/644 test trong 31 file;
+28/28 bước validation, 18 browser report, runtimeExceptions=0.
+Report: artifacts/platform-validation/2026-10-23T02-08-33-940Z-91847/report.json.
+Hai trận tự nhiên giữ 16 lượt/339 lệnh (pilot) và 17 lượt/336 lệnh (106).
+Các ca mới nằm trong browser regression hiện có, không tăng số unit test.
+Windows và Ubuntu CI đạt trên source commit 0571823dbfd93ec3974aba09f859788b54a15027:
+[run 39887932439](https://github.com/xuanthao260604-sys/idc/actions/runs/39887932439).
+Đã tải và đọc artifact windows-validation-39887932439-1: win32 x64,
+OS 10.0.26100, Node 24.19.0, npm 11.17.0, Edge 154.0.4258.62.
+Windows đạt 644/644 test trong 31 file, 28/28 bước, 18 browser report,
+tất cả runtimeExceptions=0. Report discard xác nhận networkFailurePreservesSelection,
+unchangedRefreshPreservesSelection, seatSwitchClearsDraft, lostResponseNoDuplicateDiscard
+đều true; report FLIP xác nhận radioSelectionSurvivesNetworkFailure=true.
 Windows 11 desktop chưa kiểm thử trực tiếp; chưa đóng gói hoặc bàn giao beta.

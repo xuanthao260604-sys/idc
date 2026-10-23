@@ -1,6 +1,10 @@
 # Kết quả Windows CI
 
-> Mốc hiện hành: [đọc bài trong lựa chọn bắt buộc](../beta/decision-previews.md), catalog 106; [run 39793189856](https://github.com/xuanthao260604-sys/idc/actions/runs/39793189856), commit ef9b807.
+> Mốc hiện hành: [giữ lựa chọn khi lỗi mạng](../beta/decision-retry.md), catalog 106; [run 39887932439](https://github.com/xuanthao260604-sys/idc/actions/runs/39887932439), commit 0571823.
+> Windows/Ubuntu đạt; Windows: 644/644 test, 28/28 bước, 18 browser report với Edge 154.0.4258.62, runtimeExceptions=0.
+> Checkbox/radio giữ nháp khi offline; đổi seat xóa nháp, mất phản hồi không bỏ bài lần hai. Windows 11 desktop chưa chạy.
+
+> Mốc trước: [đọc bài trong lựa chọn bắt buộc](../beta/decision-previews.md), catalog 106; [run 39793189856](https://github.com/xuanthao260604-sys/idc/actions/runs/39793189856), commit ef9b807.
 > Windows/Ubuntu đạt; Windows: 644/644 test, 28/28 bước, 18 browser report với Edge 154.0.4258.62, runtimeExceptions=0.
 > FLIP/Hammer Shot/discard đọc đúng bài, giữ ô chọn; Escape xóa preview. Windows 11 desktop chưa chạy.
 

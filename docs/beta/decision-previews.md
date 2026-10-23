@@ -39,3 +39,5 @@ escapeClearsPreview=true. Các assertion mới bổ sung trong browser regressio
 hiện có, không tăng số unit test.
 Catalog giữ 106 loại, chưa mở thêm hiệu ứng hoặc thay dữ liệu/deck đã lưu.
 Windows 11 desktop chưa kiểm thử trực tiếp; chưa đóng gói hoặc bàn giao beta.
+
+Bổ sung: [giữ bản chọn khi lỗi mạng](decision-retry.md) bảo toàn ô đã chọn nếu view chưa đổi, xóa nháp khi đổi người chơi/quyết định.

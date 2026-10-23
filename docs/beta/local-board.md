@@ -1,4 +1,4 @@
-> Mục hiện tại: [đọc bài trong lựa chọn bắt buộc](decision-previews.md), catalog 106; xem bài không tích/bỏ ô chọn hoặc gửi quyết định. Linux và Windows CI đạt 644 test, 28 bước, 18 browser report. Windows 11 desktop chưa chạy.
+> Mục hiện tại: [giữ lựa chọn khi lỗi mạng](decision-retry.md), catalog 106; giữ nháp đúng quyết định, chặn xử lý lại khi phản hồi bị mất. Linux và Windows CI đạt 644 test, 28 bước, 18 browser report. Windows 11 desktop chưa chạy.
 
 > Mốc trước: [Tribute to The Doomed](../engine/tribute-doomed.md), catalog 105; thêm chi phí bỏ bài và target khi kích hoạt. Đã đạt Linux và Windows CI: 579 test, 26 bước, 16 browser report. Snapshot lịch sử vẫn pending; Windows 11 desktop chưa chạy.
 
