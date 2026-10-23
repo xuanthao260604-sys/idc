@@ -1,6 +1,10 @@
 # Kiểm thử giao diện bằng trình duyệt trên Windows
 
-> Mốc hiện hành: [hiển thị giao chiến](../beta/battle-cues.md), catalog 108; [run 39965022546](https://github.com/xuanthao260604-sys/idc/actions/runs/39965022546), commit 82f8f92.
+> Mốc hiện hành: [bảng Chain đang xử lý](../beta/chain-view.md), catalog 108; [run 39966377745](https://github.com/xuanthao260604-sys/idc/actions/runs/39966377745), commit cc16ac8.
+> Windows/Ubuntu đạt; Windows: 726/726 test, 32/32 bước, 22 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Đã đọc artifact windows-validation-39966377745-1: hai Trap Hole trong Chain, thứ tự 2→1, Phép một link và giữ kín target úp đạt. Windows 11 desktop chưa chạy.
+
+> Mốc trước: [hiển thị giao chiến](../beta/battle-cues.md), catalog 108; [run 39965022546](https://github.com/xuanthao260604-sys/idc/actions/runs/39965022546), commit 82f8f92.
 > Windows/Ubuntu đạt; Windows: 726/726 test, 31/31 bước, 21 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Đã đọc artifact windows-validation-39965022546-1: attacker/target, tấn công trực tiếp, đổi góc nhìn và giữ kín bài úp đạt. Windows 11 desktop chưa chạy.
 

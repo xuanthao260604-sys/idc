@@ -31,6 +31,14 @@ B thấy Man-Eater Bug của mình; quay lại A không còn tên đó, version 
 Đã chụp và xem Chromium 1440×1000 và 390×844, bảng không tràn ngang.
 Thêm ca vào validate:platform, nâng thành 32 bước/22 browser run.
 
-Ca riêng Chromium đạt, runtimeExceptions=0. Đang xác nhận bộ tổng hợp Linux và
-Windows CI; kết quả sẽ ghi sau khi đọc report.
+Linux đạt typecheck, 726/726 test trong 33 file; 32/32 bước validation,
+22 browser report với Chromium 154.0.8037.57, tổng runtimeExceptions=0.
+Windows và Ubuntu CI [run 39966377745](https://github.com/xuanthao260604-sys/idc/actions/runs/39966377745)
+đạt trên source commit cc16ac8a1128ec5e5962be8eaf579a7666c99eda. Đã tải và đọc
+artifact windows-validation-39966377745-1: win32 x64, OS 10.0.26100,
+Node 24.19.0, npm 11.17.0, Edge 155.0.4283.62. Windows đạt 726/726 test
+trong 33 file, 32/32 bước, 22 browser report; tổng runtimeExceptions=0.
+Ca chain-view xác nhận hai Trap, thứ tự xử lý, nguồn/target công khai, Phép một
+link và dọn bảng; Tribute to The Doomed xác nhận chainTargetPrivacy=true.
+Report ghi windows11DesktopVerified=false.
 Windows 11 desktop chưa thử trực tiếp; chưa đóng gói hoặc bàn giao beta.

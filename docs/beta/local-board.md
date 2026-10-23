@@ -1,4 +1,6 @@
-> Mốc hiện tại: [hiển thị giao chiến](../beta/battle-cues.md), catalog 108 không đổi; đánh dấu attacker/target và mô tả theo góc nhìn, giữ kín bài úp. Linux và Windows CI đạt 726 test; Windows đạt 31 bước, 21 browser report. Dữ liệu/deck cũ giữ nguyên; Windows 11 desktop chưa chạy.
+> Mốc hiện tại: [bảng Chain đang xử lý](../beta/chain-view.md), catalog 108 không đổi; hiển thị liên kết/nguồn/tốc độ/target theo PlayerView. Linux và Windows CI đạt 726 test; Windows đạt 32 bước, 22 browser report. Không mở general mixed Chain; dữ liệu/deck cũ giữ nguyên. Windows 11 desktop chưa chạy.
+
+> Mốc trước: [hiển thị giao chiến](../beta/battle-cues.md), catalog 108 không đổi; đánh dấu attacker/target và mô tả theo góc nhìn, giữ kín bài úp. Linux và Windows CI đạt 726 test; Windows đạt 31 bước, 21 browser report. Dữ liệu/deck cũ giữ nguyên; Windows 11 desktop chưa chạy.
 
 > Mốc trước: [phím tắt sửa deck](../beta/deck-history-shortcuts.md), catalog 108 không đổi; Ctrl+Z/Ctrl+Y/Ctrl+Shift+Z trong màn xây deck, giữ thao tác văn bản gốc. Linux và Windows CI đạt 726 test; Windows đạt 31 bước, 21 browser report. Dữ liệu/deck cũ giữ nguyên; Windows 11 desktop chưa chạy.
 
