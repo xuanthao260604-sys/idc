@@ -30,5 +30,10 @@ huống, không phải bằng chứng bao phủ mọi tương tác Yu-Gi-Oh!.
 Linux: typecheck và toàn bộ 686/686 test trong 32 file đạt; riêng Block Attack có
 39 test (29 cũ + 10 mới). Không chạy lại browser Linux vì không thay logic sản phẩm
 hoặc giao diện; báo cáo browser mốc triển khai giữ ở tài liệu Block Attack.
-Windows/Ubuntu CI đang chờ kiểm chứng trên commit audit.
+Windows và Ubuntu CI đạt trên source commit 9c03e1b900a2e7a915bf9249131ac92637d8db40:
+[run 39929849389](https://github.com/xuanthao260604-sys/idc/actions/runs/39929849389).
+Đã tải và đọc artifact windows-validation-39929849389-1: win32 x64,
+OS 10.0.26100, Node 24.19.0, npm 11.17.0, Edge 154.0.4258.62.
+Windows đạt 686/686 test trong 32 file, 29/29 bước validation và 19 browser report,
+tất cả runtimeExceptions=0. Đây là kiểm chứng hồi quy trên CI, không phải desktop.
 Windows 11 desktop chưa thử trực tiếp; không đóng gói hoặc bàn giao beta.

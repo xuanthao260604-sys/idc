@@ -1,6 +1,10 @@
 # Kiểm thử giao diện bằng trình duyệt trên Windows
 
-> Mốc hiện hành: [Block Attack](../engine/block-attack.md), catalog 107; [run 39893924635](https://github.com/xuanthao260604-sys/idc/actions/runs/39893924635), commit 519693f.
+> Mốc hiện hành: [rà soát tương tác đổi tư thế](../engine/position-interaction-audit.md), catalog 107; [run 39929849389](https://github.com/xuanthao260604-sys/idc/actions/runs/39929849389), commit 9c03e1b.
+> Windows/Ubuntu đạt; Windows: 686/686 test, 29/29 bước, 19 browser report với Edge 154.0.4258.62, runtimeExceptions=0.
+> Thêm 10 test Block Attack với Hammer Shot/Fissure/Smashing Ground; không đổi engine hoặc dữ liệu. Windows 11 desktop chưa chạy.
+
+> Mốc trước: [Block Attack](../engine/block-attack.md), catalog 107; [run 39893924635](https://github.com/xuanthao260604-sys/idc/actions/runs/39893924635), commit 519693f.
 > Windows/Ubuntu đạt; Windows: 676/676 test, 29/29 bước, 19 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Hiệu ứng đổi tư thế và trận tự nhiên có lá mới đạt; dữ liệu/deck cũ bảo toàn. Windows 11 desktop chưa chạy.
 

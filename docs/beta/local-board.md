@@ -1,4 +1,4 @@
-> Mốc hiện tại: [Block Attack](../engine/block-attack.md), catalog 107 (95 verified data, 12 historical pending; runtime review tách riêng). Linux và Windows CI đạt 676 test, 29 bước, 19 browser report. Reimport lỗi giữ 14 bundle; Windows 11 desktop chưa chạy.
+> Mốc hiện tại: [rà soát tương tác đổi tư thế](../engine/position-interaction-audit.md), catalog 107; thêm 10 test, không đổi engine/dữ liệu. Linux và Windows CI đạt 686 test; Windows đạt 29 bước, 19 browser report. Windows 11 desktop chưa chạy.
 
 > Mốc trước: [Tribute to The Doomed](../engine/tribute-doomed.md), catalog 105; thêm chi phí bỏ bài và target khi kích hoạt. Đã đạt Linux và Windows CI: 579 test, 26 bước, 16 browser report. Snapshot lịch sử vẫn pending; Windows 11 desktop chưa chạy.
 

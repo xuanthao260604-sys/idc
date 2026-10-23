@@ -75,3 +75,5 @@ tất cả runtimeExceptions=0. Ca riêng xác nhận Set/target/no-discard/timi
 trận tự nhiên giống Linux (16 lượt/334 lệnh/17 attack/2 decision, B thắng LP 0/5100).
 Kiểm tra khởi động đã cập nhật kỳ vọng catalog 107; không bỏ qua assertion để làm CI đạt.
 Ảnh minh họa vẫn placeholder. Windows 11 desktop chưa chạy; chưa đóng gói/giao beta.
+
+Bổ sung sau mốc triển khai: [rà soát tương tác đổi tư thế](position-interaction-audit.md) thêm 10 ca với Hammer Shot/Fissure/Smashing Ground; kết quả mới được ghi riêng.
