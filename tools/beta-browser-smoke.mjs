@@ -16,13 +16,14 @@ const lifePointsArg = process.argv.find(arg => /^--life-points=(normal|lethal)$/
 const lifePointsMode = lifePointsArg?.split('=')[1] ?? null;
 const smashingGround = process.argv.includes('--smashing-ground');
 const hammerShot = process.argv.includes('--hammer-shot');
+const magicianFaith = process.argv.includes('--magician-faith');
 const earthquake = process.argv.includes('--earthquake');
 const blockAttack = process.argv.includes('--block-attack');
 const tributeDoomed = process.argv.includes('--tribute-doomed');
 const reincarnationArg = process.argv.find(arg => /^--reincarnation=(grave|cost)$/.test(arg));
 const reincarnationMode = reincarnationArg?.split('=')[1] ?? null;
 const deckOverview = process.argv.includes('--deck-overview');
-const expanded = deckOverview || earthquake || blockAttack || reincarnationMode !== null || tributeDoomed || hammerShot || smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
+const expanded = magicianFaith || deckOverview || earthquake || blockAttack || reincarnationMode !== null || tributeDoomed || hammerShot || smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
 const r = expanded ? loadRuntimeCatalog().registry : createRegistry((await read('data/generated/pilot.json')).cards, goat200508Format, {},
   await read('data/reviews/pilot.spell-effects.json'), await read('data/reviews/pilot.flip-effects.json'), await read('data/reviews/pilot.trap-effects.json'));
 const deck = Object.keys(r.cards);
@@ -36,7 +37,7 @@ const deckBuilder = process.argv.includes('--deck-builder');
 const chainView = process.argv.includes('--chain-view');
 const deckOutArg = process.argv.find(arg => /^--deck-out=[012]$/.test(arg));
 const deckOut = deckOutArg === undefined ? null : Number(deckOutArg.split('=')[1]);
-const s = structuredClone(createDuel(r, { duelId: fullDuel ? 'mixed-smoke' : 'browser-fixture', players: [{ id: 'a', deck }, { id: 'b', deck }], firstPlayerId: 'a', seedHex: fullDuel ? (expanded ? '32' : '08').padStart(64, '0') : '12'.repeat(32) }).state);
+const s = structuredClone(createDuel(r, { duelId: fullDuel ? 'mixed-smoke' : 'browser-fixture', players: [{ id: 'a', deck }, { id: 'b', deck }], firstPlayerId: 'a', seedHex: fullDuel ? (expanded ? '09' : '08').padStart(64, '0') : '12'.repeat(32) }).state);
 // Trusted fixture setup BEFORE starting the server. No state-edit endpoint, seed flag or test mode in beta CLI.
 function move(name, owner, zone, slot = 0, down = false) {
   const d = Object.values(r.cards).find(c => c.name === name), p = s.players.find(p => p.id === owner);
@@ -54,13 +55,19 @@ move('La Jinn the Mystical Genie of the Lamp', 'a', 'monster', 0); move('Celtic 
 move('Mystical Elf', 'b', 'monster', 0); move('Hane-Hane', 'b', 'monster', 1, true); move('Man-Eater Bug', 'b', 'monster', 2, true); move('Trap Hole', 'b', 'spell-trap', 0, true); move('Fissure', 'b', 'spell-trap', 1, true);
 s.turn.number = 3; s.turn.phase = 'main1'; s.timing.window = 'open'; s.timing.priorityPlayer = 'a'; s.timing.consecutivePasses = 0;
 }
+if (magicianFaith) {
+  move('Magician of Faith','a','monster',0,true);
+  move('Pot of Greed','a','graveyard');move('Fissure','a','graveyard');move('Trap Hole','a','graveyard');move('Battle Ox','a','graveyard');
+  move('Pot of Greed','b','graveyard');move('Celtic Guardian','b','monster',0);
+  s.turn.number=3;s.turn.phase='main1';s.timing.window='open';s.timing.priorityPlayer='a';s.timing.consecutivePasses=0;
+}
 if (chainView) {
   move('Battle Ox','a','hand');move('Pot of Greed','a','hand');
   move('Trap Hole','b','spell-trap',0,true);move('Trap Hole','b','spell-trap',1,true);
   move('Man-Eater Bug','b','monster',0,true);
   s.turn.number=3;s.turn.phase='main1';s.timing.window='open';s.timing.priorityPlayer='a';s.timing.consecutivePasses=0;
 }
-if (expanded && !fullDuel && lifePointsMode === null && !smashingGround && !hammerShot && !tributeDoomed && !blockAttack && !earthquake && !deckOverview && reincarnationMode === null) {
+if (expanded && !fullDuel && lifePointsMode === null && !smashingGround && !hammerShot && !tributeDoomed && !blockAttack && !earthquake && !magicianFaith && !deckOverview && reincarnationMode === null) {
   move('Gaia The Fierce Knight', 'a', 'hand');
   move('Battle Ox', 'a', 'monster', 0); move('Celtic Guardian', 'a', 'monster', 1, true);
   move('Curse of Dragon', 'a', 'hand');
@@ -297,7 +304,7 @@ try {
       let v = await snapshot();
       if (v.result) {
         assert.equal(v.result.reason, 'life-points'); assert.ok(attacks > 0); assert.ok(decisions > 0);
-        if (expanded) assert.ok(usedEffects.has('Earthquake'), 'Expanded duel must exercise the new reviewed Spell');
+        if (expanded) assert.ok(usedEffects.has('Magician of Faith'), 'Expanded duel must exercise the new reviewed FLIP');
         assert.equal(errors.length, 0); assert.equal(await evaluate(`document.getElementById('battle-status').hidden`),true); assert.equal(await evaluate(`document.getElementById('summon-quota').hidden`),true); assert.equal(v.chain.length, 0); assert.equal(v.decision, null);
         assert.match(await evaluate(`document.getElementById('timing').textContent`), /thắng/);
         assert.equal(v.stateVersion, actions);
@@ -410,7 +417,29 @@ try {
   }
   await send('Runtime.enable'); await send('Page.enable'); await send('Page.navigate', { url: `http://127.0.0.1:${server.address().port}` });
   await wait(`document.getElementById('seat-dialog')?.open`); await seat('a');
-  if (chainView) {
+  if (magicianFaith) {
+    const beforeHand=await evaluate('view.selfHand.length');
+    await click(`document.querySelector('#self .zone-row:nth-child(2) .card')`);await actionClick(textButton('#actions button','Flip Summon'));
+    assert.equal(await evaluate('view.decision.kind'),'target');assert.equal(await evaluate('view.decision.optionIds.length'),2);
+    const labels=await evaluate(`[...document.querySelectorAll('#decision-form label')].map(e=>e.textContent)`);
+    assert.ok(labels.every(t=>t.includes('Người chơi A')&&t.includes('Mộ')));assert.ok(labels.some(t=>t.includes('Pot of Greed')));assert.ok(labels.some(t=>t.includes('Fissure')));
+    const index=await evaluate(`[...document.querySelectorAll('#decision-form label')].findIndex(e=>e.textContent.includes('Pot of Greed'))`);
+    await inspectDecision(index);
+    await seat('b');assert.equal(await evaluate('view.decision'),null);assert.equal(await evaluate(`document.querySelectorAll('#decision-form input').length`),0);await seat('a');
+    await click(`[...document.querySelectorAll('#decision-form label')].find(e=>e.textContent.includes('Pot of Greed')).querySelector('input')`);await actionClick(`document.querySelector('#decision-form button[type="submit"]')`);
+    assert.equal(await evaluate('view.chain[0].targetHandles.length'),1);await inspectChain('source','Magician of Faith');await inspectChain('target','Pot of Greed');
+    assert.equal(await evaluate('view.selfHand.length'),beforeHand);
+    await pass('b');assert.equal(await evaluate('view.selfHand.length'),beforeHand);await pass('a');
+    assert.equal(await evaluate('view.selfHand.length'),beforeHand+1);
+    assert.equal(await evaluate(`view.selfHand.filter(c=>catalog.get(c.definition.id).name==='Pot of Greed').length`),1);
+    assert.ok(await evaluate(`view.players[0].graveyard.some(c=>catalog.get(c.definition.id).name==='Fissure')`));
+    assert.ok(await evaluate(`view.players[1].graveyard.some(c=>catalog.get(c.definition.id).name==='Pot of Greed')`));
+    assert.equal(await evaluate('view.normalSummonQuota.remaining'),1);
+    await pass('a');await pass('b');await seat('a');await hand('Pot of Greed');await click(textButton('#actions button','Kích hoạt'));await confirm();await pass('b');await pass('a');
+    assert.equal(await evaluate('view.selfHand.length'),beforeHand+2);assert.equal(await evaluate('view.players[0].monsters[0].position'),'face-up-attack');
+    assert.deepEqual(await evaluate('view.players.map(p=>p.lifePoints)'),[8000,8000]);assert.equal(errors.length,0);
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'magician-faith',catalog:109,ownGraveyardSpellsOnly:true,privateDecision:true,sourceAndTargetPreviews:true,targetCapturedAtActivation:true,returnOnlyAtResolution:true,recoveredSpellUsed:true,noNormalQuotaConsumed:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
+  } else if (chainView) {
     assert.equal(await evaluate(`document.getElementById('chain-panel').hidden`),true);
     assert.match(await evaluate(`document.getElementById('summon-quota').textContent`),/Người chơi A.*còn 1\/1 lượt/);
     await hand('Battle Ox');await click(textButton('#actions button','Triệu hồi'));await confirm();await pass('a');await seat('b');
@@ -670,8 +699,8 @@ try {
     assert.equal(errors.length,0);
     console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'life-points-'+lifePointsMode,gainFromOwnSet:lifePointsMode==='normal',lifePoints:await evaluate('view.players.map(p=>p.lifePoints)'),delayedUntilResolution:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
   } else if (expanded && !fullDuel && !deckOverview) {
-    assert.equal(await evaluate('catalog.size'), 108);
-    assert.match(await evaluate(`document.getElementById('catalog-count').textContent`), /108/);
+    assert.equal(await evaluate('catalog.size'), 109);
+    assert.match(await evaluate(`document.getElementById('catalog-count').textContent`), /109/);
     await click(`document.getElementById('deck-builder')`); await wait(`!busy && document.getElementById('deck-dialog').open`);
     const added = Object.values(r.cards);
     for (const card of added) {
@@ -749,7 +778,7 @@ try {
     assert.equal(await evaluate('view.players[1].lifePoints'), 7200);
     assert.equal(await evaluate(`view.players[1].graveyard.some(c=>catalog.get(c.definition.id).name==='Armored Lizard')`), true);
     assert.equal(errors.length, 0);
-    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'expanded-catalog', catalog: 108, reviewedCardPreviews: 108, dataDrivenLevels: true, tributePreviews: true, oneTributeSetCancelPreservesState: true, deselectionUpdatesPreview: true, ownSetPrivacy: true, tributeSummon: 'Gaia The Fierce Knight', battleTarget: 'Armored Lizard', battleDamage: 800, fixtureOnlyAtSetup: true, runtimeExceptions: errors.length }));
+    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'expanded-catalog', catalog: 109, reviewedCardPreviews: 109, dataDrivenLevels: true, tributePreviews: true, oneTributeSetCancelPreservesState: true, deselectionUpdatesPreview: true, ownSetPrivacy: true, tributeSummon: 'Gaia The Fierce Knight', battleTarget: 'Armored Lizard', battleDamage: 800, fixtureOnlyAtSetup: true, runtimeExceptions: errors.length }));
   } else if (deckOverview) {
     const openDeck=async()=>{await click(`document.getElementById('deck-builder')`);await wait(`!busy && document.getElementById('deck-dialog').open`);};
     const change=(id,direction)=>click(`document.querySelector('#deck-catalog [data-card-id="${id}"] [data-change="${direction}"]')`);
@@ -762,7 +791,7 @@ try {
     }
     const before=await evaluate('JSON.stringify(view)');await openDeck();
     const saved=await evaluate(`api('/api/deck')`),original=await evaluate('JSON.stringify(deckDraft.cards)');
-    assert.equal((await rows()).length,108);await verifyComposition();
+    assert.equal((await rows()).length,109);await verifyComposition();
     const key=async(key,code,windowsVirtualKeyCode,modifiers=0)=>{await send('Input.dispatchKeyEvent',{type:'keyDown',key,code,windowsVirtualKeyCode,modifiers,...(code==='Space'?{text:' '}:code==='Enter'?{text:'\r'}:{})});await send('Input.dispatchKeyEvent',{type:'keyUp',key,code,windowsVirtualKeyCode,modifiers});await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');};
     assert.equal(await evaluate(`document.getElementById('deck-undo').disabled`),true);
     assert.equal(await evaluate(`document.getElementById('deck-redo').disabled`),true);
@@ -904,7 +933,7 @@ try {
     // Seat handoff deliberately rotates private handles; compare public game state without handles.
     const withoutHandles=value=>JSON.stringify(value,(key,item)=>key==='handle'?undefined:item);
     assert.equal(withoutHandles(await evaluate('view')),withoutHandles(JSON.parse(before)));assert.equal(errors.length,0);
-    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'deck-overview',catalog:108,undoRedo:true,windowsHistoryShortcuts:true,nativeSearchUndoPreserved:true,historyLimit:50,defaultUndoable:true,historyResetOnReopen:true,compositionCountsCopies:true,sortModes:['catalog','name','level','attack','copies'],sortingPreservesDeckOrder:true,keyboardFocusRetained:true,copyLimitFocusFallback:true,removedRowFocusFallback:true,emptyListFocusSearch:true,combinedFilters:true,removedLastCopyDisappears:true,addRestoresRow:true,defaultRefreshesCounts:true,preview:true,filterPreservesDraft:true,cancelPreservesSaved:true,seatReset:true,responsiveWidths:[1440,390],runtimeExceptions:errors.length}));
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'deck-overview',catalog:109,undoRedo:true,windowsHistoryShortcuts:true,nativeSearchUndoPreserved:true,historyLimit:50,defaultUndoable:true,historyResetOnReopen:true,compositionCountsCopies:true,sortModes:['catalog','name','level','attack','copies'],sortingPreservesDeckOrder:true,keyboardFocusRetained:true,copyLimitFocusFallback:true,removedRowFocusFallback:true,emptyListFocusSearch:true,combinedFilters:true,removedLastCopyDisappears:true,addRestoresRow:true,defaultRefreshesCounts:true,preview:true,filterPreservesDraft:true,cancelPreservesSaved:true,seatReset:true,responsiveWidths:[1440,390],runtimeExceptions:errors.length}));
   } else if (deckBuilder) {
     const openDeck = async () => { await click(`document.getElementById('deck-builder')`); await wait(`!busy && document.getElementById('deck-dialog').open`); };
     const change = (id, direction) => click(`document.querySelector('#deck-catalog [data-card-id="${id}"] [data-change="${direction}"]')`);

@@ -149,6 +149,7 @@ export function assertDuelInvariants(state: DuelState, registry: Registry) {
       ? card.location.kind === 'spell-trap' && card.position === 'face-up' && link.effectId === trap && link.targetRefs.length === 1
       : flip
       ? card.location.kind === 'monster' && link.effectId === flip && link.targetRefs.length <= 1
+        && (flip !== 'return-own-graveyard-spell-to-hand' || !ref || (ref.locationAtSelection.kind === 'graveyard' && ref.locationAtSelection.playerId === link.controllerId && targetDefinition?.kind === 'spell' && target?.ownerId === link.controllerId))
       : registry.spellHandlers[card.definition.id] && card.location.kind === 'spell-trap' && card.position === 'face-up' && link.effectId === 'normal-spell'
         && (discardTarget ? link.targetRefs.length === 1 && validDiscardTarget : positionTarget
           ? link.targetRefs.length === 1 && ref?.locationAtSelection.kind === 'monster' && ref.locationAtSelection.playerId !== link.controllerId
@@ -351,7 +352,9 @@ function queueFlip(c: Context, id: string) {
   const occurrence = c.state.timing.lastRelevantEvents[0]!;
   c.state.pendingTriggers.push({ source: id, sourceAtTrigger: structuredClone(card), effectId: c.registry.flipHandlers[card.definition.id]!,
     controllerAtTrigger: card.controllerId, occurrence: structuredClone(occurrence), mandatory: true, timingPolicy: 'mandatory' });
-  const options = c.state.players.flatMap(p => p.monsters.filter((id): id is string => id !== null && !c.state.cards[id]!.markers.wasBattleDestroyed));
+  const options = c.registry.flipHandlers[card.definition.id] === 'return-own-graveyard-spell-to-hand'
+    ? mutablePlayer(c.state, card.controllerId).graveyard.filter(id => definition(c, id).kind === 'spell' && c.state.cards[id]!.ownerId === card.controllerId)
+    : c.state.players.flatMap(p => p.monsters.filter((id): id is string => id !== null && !c.state.cards[id]!.markers.wasBattleDestroyed));
   c.state.timing.window = 'trigger-order'; c.state.timing.priorityPlayer = null; c.state.timing.consecutivePasses = 0;
   if (!options.length) { activateFlip(c, null); return; }
   c.state.pendingDecision = { id: `${c.state.id}:flip-target:${c.state.eventSequence}`, playerId: card.controllerId, kind: 'target', optionIds: options, min: 1, max: 1 };
@@ -375,7 +378,10 @@ function finishDamageAfterFlip(c: Context) {
 function resolveFlip(c: Context) {
   const link = c.state.chain.pop()!;
   const ref = link.targetRefs[0], target = ref && c.state.cards[ref.instanceId];
-  if (target && target.location.kind === 'monster' && !target.markers.wasBattleDestroyed
+  if (link.effectId === 'return-own-graveyard-spell-to-hand') {
+    if (target && target.ownerId === link.controllerId && target.location.kind === 'graveyard' && target.location.playerId === link.controllerId
+      && definition(c, target.id).kind === 'spell' && JSON.stringify(target.location) === JSON.stringify(ref!.locationAtSelection)) returnToOwnerHand(c, target.id);
+  } else if (target && target.location.kind === 'monster' && !target.markers.wasBattleDestroyed
     && JSON.stringify(target.location) === JSON.stringify(ref!.locationAtSelection)) {
     if (link.effectId === 'destroy-target-monster') { sendToGraveyard(c, target.id); emit(c, 'effect-destroyed', [target.id]); }
     else returnToOwnerHand(c, target.id);

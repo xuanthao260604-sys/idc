@@ -1,0 +1,22 @@
+{
+  "passcode": "31560081",
+  "konamiId": 4434,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4434&request_locale=en",
+  "accessedOn": "2026-10-23",
+  "htmlSha256": "9a7f8d22e0c4b35ed715e75210da6e9f538e1d505e669b7b7ac7348acb787111",
+  "currentFacts": {
+    "name": "Magician of Faith",
+    "text": "FLIP: Target 1 Spell in your GY; add that target to your hand.",
+    "kind": "effect-monster",
+    "race": "Spellcaster",
+    "attribute": "LIGHT",
+    "level": 1,
+    "attack": 300,
+    "defense": 400
+  },
+  "printing": {
+    "date": "2002-06-26",
+    "setCode": "MRD-036",
+    "product": "METAL RAIDERS"
+  }
+}

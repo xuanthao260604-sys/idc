@@ -1,0 +1,38 @@
+[
+  {
+    "cardId": "official:31560081",
+    "definitionSha256": "ae5ea92ce1f90fdb1e2d562018dab2897f81a505f30d3f3995d2f01bcabe84d4",
+    "revision": 1,
+    "format": {
+      "id": "goat-2005-08-17",
+      "revision": 4
+    },
+    "status": "reviewed-for-supported-scope",
+    "scope": "flip-own-graveyard-spell-single-link-v1",
+    "handler": "return-own-graveyard-spell-to-hand",
+    "evidence": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4434&request_locale=en",
+        "accessedOn": "2026-10-23",
+        "sourceKind": "official-current",
+        "quotation": "FLIP: Target 1 Spell in your GY; add that target to your hand.",
+        "historicalApplicability": "Current reference; original MRD-036 release independently verified as 2002-06-26. Original printed wording pending."
+      },
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=4&cid=4434&request_locale=ja",
+        "accessedOn": "2026-10-23",
+        "sourceKind": "official-current",
+        "quotation": "■条件を満たした場合に必ず発動します。（対象にできるカードが存在しない状況でも発動します。）",
+        "historicalApplicability": "Current official OCG supplement, not claimed as original 2005 TCG ruling. Mandatory FLIP with no valid target and Damage Step reference only."
+      },
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=4&cid=4434&request_locale=ja",
+        "accessedOn": "2026-10-23",
+        "sourceKind": "official-current",
+        "quotation": "■ダメージステップでも発動します。",
+        "historicalApplicability": "Current official OCG supplement, not claimed as original 2005 TCG ruling. Mandatory FLIP with no valid target and Damage Step reference only."
+      }
+    ],
+    "notes": "Mandatory FLIP, including Damage Step; target one own Graveyard Spell at activation and return it at resolution. With no target still activate and resolve without return. Single-link/pass-only; no mixed Chain, negate, Necrovalley/immunity/replacement or SEGOC expansion. Battle-destroyed source resolves before Damage Step cleanup. Imported historical review stays pending."
+  }
+]

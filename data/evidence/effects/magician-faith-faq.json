@@ -1,0 +1,12 @@
+{
+  "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=4&cid=4434&request_locale=ja",
+  "accessedOn": "2026-10-23",
+  "sourceKind": "official-current",
+  "htmlSha256": "a25224572c47ab430af1a6be59dd9e88824e419c7fc4351969cf6a323184b114",
+  "displayedDate": "2021-07-10",
+  "quotations": [
+    "■条件を満たした場合に必ず発動します。（対象にできるカードが存在しない状況でも発動します。）",
+    "■ダメージステップでも発動します。"
+  ],
+  "historicalApplicability": "Current official OCG supplement, not claimed as original 2005 TCG ruling. Mandatory FLIP with no valid target and Damage Step reference only."
+}

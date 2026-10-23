@@ -17,7 +17,7 @@
     "build": "tsc -p tsconfig.build.json",
     "cards:fetch": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js fetch",
     "cards:import": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js import",
-    "cards:check": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js check && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10 && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10b && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10c && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10d && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10e && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10f && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-20 && node --use-env-proxy dist/tools/card-import/src/cli.js check lp-spells && node --use-env-proxy dist/tools/card-import/src/cli.js check defense-spell && node --use-env-proxy dist/tools/card-import/src/cli.js check hammer-shot && node --use-env-proxy dist/tools/card-import/src/cli.js check tribute-doomed && node --use-env-proxy dist/tools/card-import/src/cli.js check reincarnation && node --use-env-proxy dist/tools/card-import/src/cli.js check block-attack && node --use-env-proxy dist/tools/card-import/src/cli.js check earthquake",
+    "cards:check": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js check && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10 && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10b && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10c && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10d && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10e && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-10f && node --use-env-proxy dist/tools/card-import/src/cli.js check classic-20 && node --use-env-proxy dist/tools/card-import/src/cli.js check lp-spells && node --use-env-proxy dist/tools/card-import/src/cli.js check defense-spell && node --use-env-proxy dist/tools/card-import/src/cli.js check hammer-shot && node --use-env-proxy dist/tools/card-import/src/cli.js check tribute-doomed && node --use-env-proxy dist/tools/card-import/src/cli.js check reincarnation && node --use-env-proxy dist/tools/card-import/src/cli.js check block-attack && node --use-env-proxy dist/tools/card-import/src/cli.js check earthquake && node --use-env-proxy dist/tools/card-import/src/cli.js check magician-faith",
     "cards:classic-fetch": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js fetch classic-10",
     "cards:classic-import": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js import classic-10",
     "engine:smoke": "npm run build && node dist/tools/engine-smoke.js",
@@ -70,7 +70,10 @@
     "cards:earthquake-import": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js import earthquake",
     "beta:browser-earthquake": "npm run build && node tools/beta-browser-smoke.mjs --earthquake",
     "beta:browser-deck-overview": "npm run build && node tools/beta-browser-smoke.mjs --deck-overview",
-    "beta:browser-chain-view": "npm run build && node tools/beta-browser-smoke.mjs --chain-view"
+    "beta:browser-chain-view": "npm run build && node tools/beta-browser-smoke.mjs --chain-view",
+    "cards:faith-fetch": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js fetch magician-faith",
+    "cards:faith-import": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js import magician-faith",
+    "beta:browser-faith": "npm run build && node tools/beta-browser-smoke.mjs --magician-faith"
   },
   "devDependencies": {
     "@types/node": "24.19.2",

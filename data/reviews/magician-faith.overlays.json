@@ -1,0 +1,18 @@
+[
+  {
+    "id": "official:31560081",
+    "baseFingerprint": "b1e3f3778a85e1e85355b67cb430894c993271b029a05b948f643155eff232fc",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "pending",
+    "notes": "Current reference copied verbatim; original printed wording pending, runtime review separate.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4434&request_locale=en",
+        "accessedOn": "2026-10-23",
+        "scope": "text",
+        "notes": "Current reference, not claimed as original 2005 printed text."
+      }
+    ]
+  }
+]

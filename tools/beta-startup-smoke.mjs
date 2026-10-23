@@ -79,7 +79,7 @@ try {
     const saved = await (await request('/api/deck', { headers: { Cookie: cookie } })).json();
     if (!run) {
       const catalog = await (await request('/api/catalog')).json();
-      assert.equal(catalog.cards.length, 108);
+      assert.equal(catalog.cards.length, 109);
       assert.ok(catalog.cards.some(c=>c.name==='Gaia The Fierce Knight'));
       const add = catalog.cards.find(c => saved.cards.filter(id => id === c.id).length < c.maxCopies);
       assert.ok(add);
