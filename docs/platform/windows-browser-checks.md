@@ -1,6 +1,10 @@
 # Kiểm thử giao diện bằng trình duyệt trên Windows
 
-> Mốc hiện hành: [giữ vị trí bàn phím khi sửa deck](../beta/deck-keyboard-focus.md), catalog 108; [run 39958158114](https://github.com/xuanthao260604-sys/idc/actions/runs/39958158114), commit 2799108.
+> Mốc hiện hành: [Hoàn tác/Làm lại deck](../beta/deck-undo-redo.md), catalog 108; [run 39959852093](https://github.com/xuanthao260604-sys/idc/actions/runs/39959852093), commit 9a4e510.
+> Windows/Ubuntu đạt; Windows: 726/726 test, 31/31 bước, 21 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Đã đọc artifact windows-validation-39959852093-1: lịch sử 50 bước, default/import undo-redo, lỗi giữ lịch sử và mở lại reset đạt. Windows 11 desktop chưa chạy.
+
+> Mốc trước: [giữ vị trí bàn phím khi sửa deck](../beta/deck-keyboard-focus.md), catalog 108; [run 39958158114](https://github.com/xuanthao260604-sys/idc/actions/runs/39958158114), commit 2799108.
 > Windows/Ubuntu đạt; Windows: 726/726 test, 31/31 bước, 21 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Đã đọc artifact windows-validation-39958158114-1: Enter/Space/Tab giữ focus, đạt giới hạn/bỏ hàng/danh sách trống có vị trí tiếp tục phù hợp. Windows 11 desktop chưa chạy.
 

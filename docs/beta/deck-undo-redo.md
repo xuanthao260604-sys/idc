@@ -11,6 +11,7 @@ Chỉnh sửa mới sau hoàn tác xóa nhánh Làm lại. Thao tác không làm
 lọc/sắp xếp và preview không tạo bước hoặc xóa nhánh đó. Nhập lỗi/lưu lỗi giữ
 bản nháp và lịch sử. Nút khóa khi không có bước tương ứng hoặc đang gửi yêu cầu.
 Khi hoàn tác/làm lại hết bước, focus chuyển sang nút chiều ngược lại còn dùng được.
+Thanh nút tự xuống dòng trên mọi chiều rộng để chứa thêm hai thao tác mới.
 
 Mọi thay đổi chỉ áp dụng bản nháp; Lưu deck vẫn kiểm tra giới hạn rồi gửi seat,
 revision và cards theo API cũ. Lịch sử không nằm trong file xuất hoặc dữ liệu
@@ -29,5 +30,14 @@ Mở rộng browser --deck-builder với tải/nhập file thật: nhập hợp 
 file lỗi và lưu offline không sửa lịch sử; file xuất chỉ có cards/format/kind/
 schemaVersion như cũ. Giữ ca lưu deck A/B và áp dụng đúng ở trận mới.
 
-Đang xác nhận bộ tổng hợp Linux và Windows CI; kết quả sẽ ghi sau khi đọc report.
+Linux đạt typecheck, 726/726 test trong 33 file; 31/31 bước validation,
+21 browser report với Chromium 154.0.8037.57, tổng runtimeExceptions=0.
+Windows và Ubuntu CI [run 39959852093](https://github.com/xuanthao260604-sys/idc/actions/runs/39959852093)
+đạt trên source commit 9a4e51039b61ebfa54077b2db51e30b1fe831641. Đã tải và đọc
+artifact windows-validation-39959852093-1: win32 x64, OS 10.0.26100,
+Node 24.19.0, npm 11.17.0, Edge 155.0.4283.62. Windows đạt 726/726 test
+trong 33 file, 31/31 bước, 21 browser report; tổng runtimeExceptions=0.
+Ca deck-overview xác nhận undoRedo, historyLimit=50, defaultUndoable,
+historyResetOnReopen; deck-builder xác nhận importedDeckUndoRedo và
+invalidImportPreservesHistory. Report ghi windows11DesktopVerified=false.
 Windows 11 desktop chưa thử trực tiếp; chưa đóng gói hoặc bàn giao beta.

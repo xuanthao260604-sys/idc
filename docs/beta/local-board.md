@@ -1,4 +1,6 @@
-> Mốc hiện tại: [giữ vị trí bàn phím khi sửa deck](../beta/deck-keyboard-focus.md), catalog 108 không đổi; sửa focus khi thêm/bớt hoặc bỏ hàng đang lọc. Linux và Windows CI đạt 726 test; Windows đạt 31 bước, 21 browser report. Dữ liệu/deck cũ giữ nguyên; Windows 11 desktop chưa chạy.
+> Mốc hiện tại: [Hoàn tác/Làm lại deck](../beta/deck-undo-redo.md), catalog 108 không đổi; bản nháp có lịch sử tối đa 50 bước, gồm nhập file và deck mẫu. Linux và Windows CI đạt 726 test; Windows đạt 31 bước, 21 browser report. Dữ liệu/deck cũ giữ nguyên; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [giữ vị trí bàn phím khi sửa deck](../beta/deck-keyboard-focus.md), catalog 108 không đổi; sửa focus khi thêm/bớt hoặc bỏ hàng đang lọc. Linux và Windows CI đạt 726 test; Windows đạt 31 bước, 21 browser report. Dữ liệu/deck cũ giữ nguyên; Windows 11 desktop chưa chạy.
 
 > Mốc trước: [sắp xếp danh sách deck](../beta/deck-sorting.md), catalog 108 không đổi; xếp theo tên/cấp sao/ATK/số bản sao, chỉ đổi hiển thị. Linux và Windows CI đạt 726 test; Windows đạt 31 bước, 21 browser report. Dữ liệu/deck cũ giữ nguyên; Windows 11 desktop chưa chạy.
 
