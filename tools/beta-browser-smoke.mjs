@@ -673,10 +673,27 @@ try {
     const before=await evaluate('JSON.stringify(view)');await openDeck();
     const saved=await evaluate(`api('/api/deck')`),original=await evaluate('JSON.stringify(deckDraft.cards)');
     assert.equal((await rows()).length,108);await verifyComposition();
+    const key=async(key,code,windowsVirtualKeyCode,modifiers=0)=>{await send('Input.dispatchKeyEvent',{type:'keyDown',key,code,windowsVirtualKeyCode,modifiers,...(code==='Space'?{text:' '}:code==='Enter'?{text:'\r'}:{})});await send('Input.dispatchKeyEvent',{type:'keyUp',key,code,windowsVirtualKeyCode,modifiers});await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');};
     assert.equal(await evaluate(`document.getElementById('deck-undo').disabled`),true);
     assert.equal(await evaluate(`document.getElementById('deck-redo').disabled`),true);
     const historyCard=saved.cards.find(id=>r.cards[id].legality.maxCopies>saved.cards.filter(c=>c===id).length);
     await change(historyCard,'add');const changed=await evaluate('JSON.stringify(deckDraft.cards)');
+    await key('z','KeyZ',90,2);assert.equal(await evaluate('JSON.stringify(deckDraft.cards)'),original);
+    assert.equal(await evaluate('document.activeElement.id'),'deck-redo');
+    await key('y','KeyY',89,2);assert.equal(await evaluate('JSON.stringify(deckDraft.cards)'),changed);
+    await key('z','KeyZ',90,2);await key('Z','KeyZ',90,10);assert.equal(await evaluate('JSON.stringify(deckDraft.cards)'),changed);
+    // Editing text must retain the browser's native undo instead of touching the deck.
+    await click(`document.getElementById('deck-search')`);await send('Input.insertText',{text:'Blue'});
+    const nativeBefore=await evaluate('JSON.stringify(deckDraft.cards)');
+    await key('z','KeyZ',90,2);
+    assert.equal(await evaluate(`document.getElementById('deck-search').value`),'');
+    assert.equal(await evaluate('JSON.stringify(deckDraft.cards)'),nativeBefore);
+    await key('y','KeyY',89,2);
+    assert.equal(await evaluate(`document.getElementById('deck-search').value`),'Blue');
+    assert.equal(await evaluate('JSON.stringify(deckDraft.cards)'),nativeBefore);
+    await evaluate(`document.getElementById('deck-search').value='';document.getElementById('deck-search').dispatchEvent(new Event('input'))`);
+    await key('Tab','Tab',9);assert.equal(await evaluate('document.activeElement.id'),'deck-kind');await key('z','KeyZ',90,2);
+    assert.equal(await evaluate('JSON.stringify(deckDraft.cards)'),nativeBefore);
     await click(`document.getElementById('deck-undo')`);assert.equal(await evaluate('JSON.stringify(deckDraft.cards)'),original);
     assert.equal(await evaluate('document.activeElement.id'),'deck-redo');
     await click(`document.getElementById('deck-redo')`);assert.equal(await evaluate('JSON.stringify(deckDraft.cards)'),changed);
@@ -699,7 +716,6 @@ try {
     await click(`document.getElementById('deck-close')`);await openDeck();
     assert.deepEqual(await evaluate('[deckDraft.undo,deckDraft.redo]'),[[],[]]);
     assert.equal(await evaluate('JSON.stringify(deckDraft.cards)'),original);
-    const key=async(key,code,windowsVirtualKeyCode)=>{await send('Input.dispatchKeyEvent',{type:'keyDown',key,code,windowsVirtualKeyCode,...(code==='Space'?{text:' '}:code==='Enter'?{text:'\r'}:{})});await send('Input.dispatchKeyEvent',{type:'keyUp',key,code,windowsVirtualKeyCode});await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');};
     const focusState=()=>evaluate(`({id:document.activeElement.closest('.deck-row')?.dataset.cardId,change:document.activeElement.dataset.change,name:document.activeElement.classList.contains('deck-name'),control:document.activeElement.id})`);
     const keyboardCard=saved.cards.find(id=>r.cards[id].legality.maxCopies===3&&saved.cards.filter(c=>c===id).length===1);
     assert.ok(keyboardCard);
@@ -798,7 +814,7 @@ try {
     // Seat handoff deliberately rotates private handles; compare public game state without handles.
     const withoutHandles=value=>JSON.stringify(value,(key,item)=>key==='handle'?undefined:item);
     assert.equal(withoutHandles(await evaluate('view')),withoutHandles(JSON.parse(before)));assert.equal(errors.length,0);
-    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'deck-overview',catalog:108,undoRedo:true,historyLimit:50,defaultUndoable:true,historyResetOnReopen:true,compositionCountsCopies:true,sortModes:['catalog','name','level','attack','copies'],sortingPreservesDeckOrder:true,keyboardFocusRetained:true,copyLimitFocusFallback:true,removedRowFocusFallback:true,emptyListFocusSearch:true,combinedFilters:true,removedLastCopyDisappears:true,addRestoresRow:true,defaultRefreshesCounts:true,preview:true,filterPreservesDraft:true,cancelPreservesSaved:true,seatReset:true,responsiveWidths:[1440,390],runtimeExceptions:errors.length}));
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'deck-overview',catalog:108,undoRedo:true,windowsHistoryShortcuts:true,nativeSearchUndoPreserved:true,historyLimit:50,defaultUndoable:true,historyResetOnReopen:true,compositionCountsCopies:true,sortModes:['catalog','name','level','attack','copies'],sortingPreservesDeckOrder:true,keyboardFocusRetained:true,copyLimitFocusFallback:true,removedRowFocusFallback:true,emptyListFocusSearch:true,combinedFilters:true,removedLastCopyDisappears:true,addRestoresRow:true,defaultRefreshesCounts:true,preview:true,filterPreservesDraft:true,cancelPreservesSaved:true,seatReset:true,responsiveWidths:[1440,390],runtimeExceptions:errors.length}));
   } else if (deckBuilder) {
     const openDeck = async () => { await click(`document.getElementById('deck-builder')`); await wait(`!busy && document.getElementById('deck-dialog').open`); };
     const change = (id, direction) => click(`document.querySelector('#deck-catalog [data-card-id="${id}"] [data-change="${direction}"]')`);

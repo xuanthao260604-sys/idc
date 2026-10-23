@@ -502,6 +502,15 @@ $('deck-close').addEventListener('click', () => { if (!busy) { $('deck-dialog').
 $('deck-dialog').addEventListener('cancel', e => { if (busy) e.preventDefault(); else deckDraft = null; });
 $('deck-undo').addEventListener('click', () => navigateDeckHistory('undo'));
 $('deck-redo').addEventListener('click', () => navigateDeckHistory('redo'));
+$('deck-dialog').addEventListener('keydown', e => {
+  if (!$('deck-dialog').open || busy || !deckDraft || e.defaultPrevented || e.isComposing || !e.ctrlKey || e.altKey || e.metaKey) return;
+  if (e.target instanceof HTMLElement && (e.target.closest('input, textarea, select') || e.target.isContentEditable)) return;
+  const key = e.key.toLowerCase();
+  const direction = key === 'z' ? (e.shiftKey ? 'redo' : 'undo') : key === 'y' && !e.shiftKey ? 'redo' : null;
+  if (!direction || !deckDraft[direction].length) return;
+  e.preventDefault();
+  navigateDeckHistory(direction);
+});
 $('deck-default').addEventListener('click', () => { if (!busy && deckDraft) { editDeck(deckDraft.defaultCards); $('deck-error').textContent = ''; renderDeck(); } });
 $('deck-form').addEventListener('submit', async e => {
   e.preventDefault(); if (busy || !deckDraft || draftIssues().length) return;
