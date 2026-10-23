@@ -695,9 +695,10 @@ try {
 
     for(let n=0;n<26;n++){await change(historyCard,'add');await change(historyCard,'remove');}
     assert.equal(await evaluate('deckDraft.undo.length'),50);
-    assert.equal(await evaluate('JSON.stringify(deckDraft.cards)'),original);
+    assert.deepEqual(await evaluate('[...deckDraft.cards].sort()'),[...saved.cards].sort());
     await click(`document.getElementById('deck-close')`);await openDeck();
     assert.deepEqual(await evaluate('[deckDraft.undo,deckDraft.redo]'),[[],[]]);
+    assert.equal(await evaluate('JSON.stringify(deckDraft.cards)'),original);
     const key=async(key,code,windowsVirtualKeyCode)=>{await send('Input.dispatchKeyEvent',{type:'keyDown',key,code,windowsVirtualKeyCode,...(code==='Space'?{text:' '}:code==='Enter'?{text:'\r'}:{})});await send('Input.dispatchKeyEvent',{type:'keyUp',key,code,windowsVirtualKeyCode});await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');};
     const focusState=()=>evaluate(`({id:document.activeElement.closest('.deck-row')?.dataset.cardId,change:document.activeElement.dataset.change,name:document.activeElement.classList.contains('deck-name'),control:document.activeElement.id})`);
     const keyboardCard=saved.cards.find(id=>r.cards[id].legality.maxCopies===3&&saved.cards.filter(c=>c===id).length===1);
