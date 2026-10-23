@@ -1,6 +1,10 @@
 # Kiểm thử giao diện bằng trình duyệt trên Windows
 
-> Mốc hiện hành: [xem trước quái hiến tế](../beta/tribute-previews.md), catalog 106; [run 39889656197](https://github.com/xuanthao260604-sys/idc/actions/runs/39889656197), commit f000669.
+> Mốc hiện hành: [Block Attack](../engine/block-attack.md), catalog 107; [run 39893924635](https://github.com/xuanthao260604-sys/idc/actions/runs/39893924635), commit 519693f.
+> Windows/Ubuntu đạt; Windows: 676/676 test, 29/29 bước, 19 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Hiệu ứng đổi tư thế và trận tự nhiên có lá mới đạt; dữ liệu/deck cũ bảo toàn. Windows 11 desktop chưa chạy.
+
+> Mốc trước: [xem trước quái hiến tế](../beta/tribute-previews.md), catalog 106; [run 39889656197](https://github.com/xuanthao260604-sys/idc/actions/runs/39889656197), commit f000669.
 > Windows/Ubuntu đạt; Windows: 644/644 test, 28/28 bước, 18 browser report với Edge 154.0.4258.62, runtimeExceptions=0.
 > Set cần 1 hiến tế/hủy và Gaia cần 2 hiến tế đạt; bỏ tích cập nhật preview, quái úp giữ riêng theo viewer. Windows 11 desktop chưa chạy.
 

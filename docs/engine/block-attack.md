@@ -63,5 +63,15 @@ Trận tự nhiên 107 với seed hex 5e dùng Block Attack/Man-Eater Bug/Reinca
 Pilot 20 giữ nguyên hồi quy; seed expanded đổi riêng để bắt buộc dùng lá mới.
 
 Linux typecheck, 676/676 test trong 32 file, cards:check đủ 14 batch và ca browser
-riêng/trận tự nhiên đã đạt. Validation đầy đủ Linux và Windows CI đang chờ.
+riêng/trận tự nhiên đã đạt. Validation Linux đầy đủ đạt 29/29 bước, 19 browser
+report, runtimeExceptions=0.
+Report Linux: artifacts/platform-validation/2026-10-23T03-14-21-550Z-103993/report.json.
+Windows và Ubuntu CI đạt trên source commit 519693fa135a37c5cb05fddcceb4f1514486cba8:
+[run 39893924635](https://github.com/xuanthao260604-sys/idc/actions/runs/39893924635).
+Đã tải và đọc artifact windows-validation-39893924635-1: win32 x64,
+OS 10.0.26100, Node 24.19.0, npm 11.17.0, Edge 155.0.4283.62.
+Windows đạt 676/676 test trong 32 file, 29/29 bước và 19 browser report,
+tất cả runtimeExceptions=0. Ca riêng xác nhận Set/target/no-discard/timing/battle DEF;
+trận tự nhiên giống Linux (16 lượt/334 lệnh/17 attack/2 decision, B thắng LP 0/5100).
+Kiểm tra khởi động đã cập nhật kỳ vọng catalog 107; không bỏ qua assertion để làm CI đạt.
 Ảnh minh họa vẫn placeholder. Windows 11 desktop chưa chạy; chưa đóng gói/giao beta.
