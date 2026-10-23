@@ -1,6 +1,10 @@
 # Kết quả Windows CI
 
-> Mốc hiện hành: [đọc bài trong Chain](../beta/chain-card-previews.md), catalog 108; [run 39969387989](https://github.com/xuanthao260604-sys/idc/actions/runs/39969387989), commit 66304e0.
+> Mốc hiện hành: [hạn mức Normal Summon/Set](../beta/summon-quota.md), catalog 108; [run 39972739306](https://github.com/xuanthao260604-sys/idc/actions/runs/39972739306), commit 1369ce9.
+> Windows/Ubuntu đạt; Windows: 740/740 test, 32/32 bước, 22 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Đã đọc artifact windows-validation-39972739306-1: 14 test mới A/B, bộ đếm công khai, Trap Hole không hoàn lượt và reset theo lượt đạt. Windows 11 desktop chưa chạy.
+
+> Mốc trước: [đọc bài trong Chain](../beta/chain-card-previews.md), catalog 108; [run 39969387989](https://github.com/xuanthao260604-sys/idc/actions/runs/39969387989), commit 66304e0.
 > Windows/Ubuntu đạt; Windows: 726/726 test, 32/32 bước, 22 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Đã đọc artifact windows-validation-39969387989-1: cửa sổ nguồn/target chỉ đọc, đóng/Escape xóa nội dung, giữ state và che bài úp đạt. Windows 11 desktop chưa chạy.
 

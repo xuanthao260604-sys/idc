@@ -31,6 +31,13 @@ Browser --chain-view kiểm tra 1/1 → 0/1 sau triệu hồi và vẫn 0/1 sau 
 Hole. Ca trận mới kiểm tra lại 1/1 cho đúng người đi trước. Hai trận tự nhiên
 kiểm tra remaining=0 sau mỗi Normal/Set/Tribute và ẩn dòng khi kết thúc.
 
-Typecheck và 14 test riêng đã đạt. Đang xác nhận toàn bộ Linux và Windows CI;
-kết quả sẽ ghi sau khi đọc report.
+Linux đạt typecheck, 740/740 test trong 34 file; 32/32 bước validation,
+22 browser report với Chromium 154.0.8037.57, tổng runtimeExceptions=0.
+Windows và Ubuntu CI [run 39972739306](https://github.com/xuanthao260604-sys/idc/actions/runs/39972739306)
+đạt trên source commit 1369ce9820c913f9c386c523d85f59b767fd4744. Đã tải và đọc
+artifact windows-validation-39972739306-1: win32 x64, OS 10.0.26100,
+Node 24.19.0, npm 11.17.0, Edge 155.0.4283.62. Windows đạt 740/740 test
+trong 34 file, 32/32 bước, 22 browser report; tổng runtimeExceptions=0.
+Ca chain-view xác nhận normalQuotaSurvivesTrapDestruction=true; các ca trận mới
+và hai trận tự nhiên cũng đạt. Report ghi windows11DesktopVerified=false.
 Windows 11 desktop chưa thử trực tiếp; chưa đóng gói hoặc bàn giao beta.

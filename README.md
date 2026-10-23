@@ -14,14 +14,16 @@ Hinotama, Dian Keto the Cure Master, Smashing Ground, Hammer Shot, Tribute to Th
 Đã kiểm chứng [hai Phép thay đổi LP](docs/engine/life-point-spells.md) trên Linux và Windows CI; còn ca Windows 11 desktop chưa chạy.
 Không coi việc cấu hình CI Windows hoặc chạy Linux là đã kiểm chứng Windows.
 
-726/726 test đạt trên Linux và Windows CI cho catalog 108.
-32/32 bước validation và 22 browser run đạt bằng Edge trên Windows CI; chi tiết tại [đọc bài trong Chain](docs/beta/chain-card-previews.md).
+740/740 test đạt trên Linux và Windows CI cho catalog 108.
+32/32 bước validation và 22 browser run đạt bằng Edge trên Windows CI; chi tiết tại [hạn mức Normal Summon/Set](docs/beta/summon-quota.md).
 Browser regression tính riêng: xây/lưu deck, 5 hiệu ứng, xem Mộ, tạo trận A/B/ngẫu nhiên, bỏ bài,
 Pot với deck 0/1/2 lá, đầu hàng/hủy và tạo trận sau kết thúc, trận tự nhiên đầy đủ.
 Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không phải game hoàn tất mọi luật Yu-Gi-Oh!.
 
 Đã nhận bộ khung người dùng: [mặt sau chung](docs/beta/card-frames.md) được dùng cho bài úp của cả ba loại.
 Đã ghép [ba khung mặt trước](docs/beta/card-fronts.md), hàng sao và chỉ số lấy từ dữ liệu; ảnh minh họa từng lá sẽ bổ sung sau.
+
+Đã thêm [hạn mức Normal Summon/Set](docs/beta/summon-quota.md) trên bàn đấu: lấy từ engine, không hoàn lượt khi quái bị phá và phân biệt Flip Summon.
 
 Đã thêm [đọc lá nguồn/mục tiêu trong Chain](docs/beta/chain-card-previews.md): cửa sổ chỉ đọc, đóng/Escape xóa preview và giữ kín bài úp.
 

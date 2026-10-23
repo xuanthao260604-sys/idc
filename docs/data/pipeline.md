@@ -1,4 +1,6 @@
-> Mốc hiện tại: [đọc bài trong Chain](../beta/chain-card-previews.md), catalog 108 không đổi; cửa sổ nguồn/target chỉ đọc theo PlayerView, không lộ bài úp. Linux và Windows CI đạt 726 test; Windows đạt 32 bước, 22 browser report. Không đổi engine/dữ liệu/deck; Windows 11 desktop chưa chạy.
+> Mốc hiện tại: [hạn mức Normal Summon/Set](../beta/summon-quota.md), catalog 108 không đổi; hiển thị bộ đếm công khai từ engine, không hoàn lượt khi quái bị phá. Linux và Windows CI đạt 740 test; Windows đạt 32 bước, 22 browser report. Không đổi luật/dữ liệu/deck; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [đọc bài trong Chain](../beta/chain-card-previews.md), catalog 108 không đổi; cửa sổ nguồn/target chỉ đọc theo PlayerView, không lộ bài úp. Linux và Windows CI đạt 726 test; Windows đạt 32 bước, 22 browser report. Không đổi engine/dữ liệu/deck; Windows 11 desktop chưa chạy.
 
 > Mốc trước: [bảng Chain đang xử lý](../beta/chain-view.md), catalog 108 không đổi; hiển thị liên kết/nguồn/tốc độ/target theo PlayerView. Linux và Windows CI đạt 726 test; Windows đạt 32 bước, 22 browser report. Không mở general mixed Chain; dữ liệu/deck cũ giữ nguyên. Windows 11 desktop chưa chạy.
 
