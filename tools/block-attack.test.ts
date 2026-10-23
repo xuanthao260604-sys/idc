@@ -100,3 +100,68 @@ describe('Reviewed Block Attack targeted position change',()=>{
     expect(()=>assertDuelInvariants(s,registry)).toThrow('Invalid supported Chain');
   });
 });
+
+describe.each(['a','b'])('Block Attack interaction audit, controller %s',actor=>{
+  it('Hammer Shot excludes the converted opponent and may destroy the caster own attacker',()=>{
+    const f=setup(actor),hammer=f.move('Hammer Shot');
+    let s=settle(step(f.state,actor,activation(f)).state);
+    expect(s.cards[f.target]!.position).toBe('face-up-defense');
+    const activated=step(s,actor,{type:'activate-spell',instanceId:hammer,slot:0});
+    expect(activated.state.cards[f.own]!.location.kind).toBe('monster');
+    s=settle(activated.state);
+    expect(s.cards[f.own]!.location).toEqual({kind:'graveyard',playerId:actor});
+    expect(s.cards[f.target]!.location.kind).toBe('monster');
+    expect(s.cards[f.defense]!.location.kind).toBe('monster');
+    expect(s.cards[f.hidden]!.position).toBe('face-down-defense');
+    expect(s.players.map(p=>p.lifePoints)).toEqual([8000,8000]);
+  });
+  it('Fissure still compares ATK and destroys the converted lowest-ATK opponent',()=>{
+    const f=setup(actor),fissure=f.move('Fissure');
+    // Trusted setup: Mystical Elf starts in Attack; its DEF exceeds Battle Ox, its ATK does not.
+    f.state.cards[f.defense]!.position='face-up-attack';f.target=f.defense;
+    const sourceDefinition=registry.cards[f.state.cards[f.target]!.definition.id]!;
+    expect(sourceDefinition).toMatchObject({attack:800,defense:2000});
+    let s=settle(step(f.state,actor,activation(f)).state);
+    expect(s.cards[f.target]!.position).toBe('face-up-defense');
+    s=settle(step(s,actor,{type:'activate-spell',instanceId:fissure,slot:0}).state);
+    expect(s.cards[f.target]!.location).toEqual({kind:'graveyard',playerId:f.other});
+    expect(s.players.find(p=>p.id===f.other)!.monsters[0]).not.toBeNull();
+    expect(s.cards[f.own]!.location.kind).toBe('monster');
+    expect(s.cards[f.hidden]!.position).toBe('face-down-defense');
+  });
+  it('Smashing Ground includes the converted defender and compares DEF without swapping stats',()=>{
+    const f=setup(actor),smashing=f.move('Smashing Ground');
+    f.state.cards[f.defense]!.position='face-up-attack';f.target=f.defense;
+    let s=settle(step(f.state,actor,activation(f)).state);
+    s=settle(step(s,actor,{type:'activate-spell',instanceId:smashing,slot:0}).state);
+    expect(s.cards[f.target]!.location).toEqual({kind:'graveyard',playerId:f.other});
+    expect(s.players.find(p=>p.id===f.other)!.monsters[0]).not.toBeNull();
+    expect(s.cards[f.own]!.location.kind).toBe('monster');
+    expect(s.pendingDecision).toBeNull();expect(s.pendingTriggers).toEqual([]);
+  });
+  it('Hammer Shot with no Attack Position monster is rejected without moving its source',()=>{
+    const f=setup(actor),hammer=f.move('Hammer Shot');
+    f.state.cards[f.own]!.position='face-up-defense';
+    const s=settle(step(f.state,actor,activation(f)).state),before=structuredClone(s);
+    expect(act(s,actor,{type:'activate-spell',instanceId:hammer,slot:0})).toMatchObject({accepted:false,code:'invalid-target',state:s});
+    expect(s).toEqual(before);expect(s.cards[hammer]!.location.kind).toBe('hand');
+    expect(step(s,actor,{type:'set-spell',instanceId:hammer,slot:0}).state.cards[hammer]!.position).toBe('face-down');
+  });
+  it('Smashing Ground retains a DEF tie across positions and resolves only the selected monster',()=>{
+    const f=setup(actor),smashing=f.move('Smashing Ground'),giant=f.move('Giant Soldier of Stone',f.other,3);
+    f.target=giant;f.state.cards[f.defense]!.position='face-up-attack';
+    let s=settle(step(f.state,actor,activation(f)).state);
+    s=step(s,actor,{type:'activate-spell',instanceId:smashing,slot:0}).state;
+    s=step(s,f.other,{type:'pass'}).state;s=step(s,actor,{type:'pass'}).state;
+    const d=s.pendingDecision!;
+    expect(d.kind).toBe('effect-choice');expect(d.playerId).toBe(actor);
+    expect(new Set(d.optionIds)).toEqual(new Set([giant,f.defense]));
+    expect(s.cards[giant]!.location.kind).toBe('monster');
+    s=settle(step(s,actor,{type:'answer-decision',decisionId:d.id,optionIds:[giant]}).state);
+    expect(s.cards[giant]!.location).toEqual({kind:'graveyard',playerId:f.other});
+    expect(s.cards[f.defense]!.location.kind).toBe('monster');
+    expect(s.pendingDecision).toBeNull();expect(s.chain).toEqual([]);
+    expect(s.players.find(p=>p.id===actor)!.normalSummonsOrSetsUsed).toBe(0);
+    expect(s.players.map(p=>p.lifePoints)).toEqual([8000,8000]);
+  });
+});
