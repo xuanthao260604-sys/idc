@@ -168,6 +168,26 @@ function chooseAction(title, base, { slots = false, tributes = false, targets = 
   const showDiscard = previewCard(selectDiscard, 'discard', 'Lá bỏ làm chi phí');
   const showTarget = previewCard(selectTarget, 'target', 'Mục tiêu đang chọn');
   if (previews.children.length) fields.append(previews);
+  const requiredTributes = tributes ? plans[0].tributeHandles.length : 0;
+  let tributeProgress, tributeCards;
+  if (requiredTributes) {
+    const section = node('section'); section.dataset.preview = 'tributes';
+    tributeProgress = node('p'); tributeProgress.id = 'tribute-progress'; tributeProgress.setAttribute('aria-live', 'polite');
+    tributeCards = node('div', undefined, 'choice-previews');
+    section.append(node('h3', 'Quái hiến tế đang chọn'), tributeProgress, tributeCards); fields.append(section);
+  }
+  const showTributes = () => {
+    if (!tributeCards) return;
+    const chosen = checks.filter(input => input.checked);
+    tributeProgress.textContent = `Đã chọn ${chosen.length}/${requiredTributes} quái hiến tế. Chỉ đưa xuống Mộ khi xác nhận hợp lệ.`;
+    tributeCards.replaceChildren(...chosen.map(input => {
+      const panel = node('section', undefined, 'choice-preview');
+      const card = visibleCard(input.value);
+      if (card) cardInfo(panel, card); else panel.append(node('p', 'Không có thông tin lá trong góc nhìn hiện tại.'));
+      panel.prepend(node('p', optionLabel(input.value), 'choice-location')); return panel;
+    }));
+    if (!chosen.length) tributeCards.append(node('p', 'Chưa chọn quái hiến tế.'));
+  };
   const assemble = () => {
     const a = { ...base };
     if (selectSlot) a.slot = Number(selectSlot.value);
@@ -182,7 +202,7 @@ function chooseAction(title, base, { slots = false, tributes = false, targets = 
       for (const o of selectTarget.options) o.disabled = !compatible.some(p => p.targetHandle === o.value);
       if (selectTarget.selectedOptions[0]?.disabled) selectTarget.value = [...selectTarget.options].find(o => !o.disabled)?.value || '';
     }
-    showDiscard(); showTarget();
+    showDiscard(); showTarget(); showTributes();
     $('action-form').querySelector('button[type="submit"]').disabled = !plans.some(p => matchesPlan(p, assemble()));
   };
   fields.addEventListener('change', sync, { signal: dialogEvents.signal });

@@ -52,7 +52,8 @@ s.turn.number = 3; s.turn.phase = 'main1'; s.timing.window = 'open'; s.timing.pr
 }
 if (expanded && !fullDuel && lifePointsMode === null && !smashingGround && !hammerShot && !tributeDoomed && reincarnationMode === null) {
   move('Gaia The Fierce Knight', 'a', 'hand');
-  move('Battle Ox', 'a', 'monster', 0); move('Celtic Guardian', 'a', 'monster', 1);
+  move('Battle Ox', 'a', 'monster', 0); move('Celtic Guardian', 'a', 'monster', 1, true);
+  move('Curse of Dragon', 'a', 'hand');
   move('Armored Lizard', 'b', 'monster', 0);
   s.turn.number = 3; s.turn.phase = 'main1'; s.timing.window = 'open'; s.timing.priorityPlayer = 'a'; s.timing.consecutivePasses = 0;
 }
@@ -547,10 +548,47 @@ try {
       }
     }
     await click(`document.getElementById('deck-close')`);
+    await seat('b');
+    assert.equal(await evaluate(`document.getElementById('opponent').textContent.includes('Celtic Guardian')`),false);
+    await seat('a');
+    const beforeTribute = await evaluate('JSON.stringify(view)');
+    await hand('Curse of Dragon'); await click(textButton('#actions button','Úp quái'));
+    assert.match(await evaluate(`document.getElementById('tribute-progress').textContent`),/0\/1/);
+    await click(`document.querySelectorAll('#action-fields input[type="checkbox"]')[1]`);
+    assert.equal(await evaluate(`document.querySelector('[data-preview="tributes"] h2').textContent`),'Celtic Guardian');
+    assert.match(await evaluate(`document.getElementById('tribute-progress').textContent`),/1\/1/);
+    await evaluate(`(()=>{const s=document.querySelector('#action-fields select[name="slot"]');s.value='1';s.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+    assert.equal(await evaluate(`document.querySelector('#action-form button[type="submit"]').disabled`),false);
+    await click(`document.getElementById('cancel-action')`);
+    assert.equal(await evaluate('JSON.stringify(view)'),beforeTribute);
     await hand('Gaia The Fierce Knight'); await click(textButton('#actions button', 'Triệu hồi'));
+    assert.match(await evaluate(`document.getElementById('tribute-progress').textContent`),/0\/2/);
+    assert.equal(await evaluate(`document.querySelectorAll('[data-preview="tributes"] .card-preview').length`),0);
     assert.equal(await evaluate(`document.querySelectorAll('#action-fields input[type="checkbox"]').length`), 2);
     await click(`document.querySelectorAll('#action-fields input[type="checkbox"]')[0]`);
+    assert.match(await evaluate(`document.getElementById('tribute-progress').textContent`),/1\/2/);
+    assert.equal(await evaluate(`document.querySelector('#action-form button[type="submit"]').disabled`),true);
     await click(`document.querySelectorAll('#action-fields input[type="checkbox"]')[1]`);
+    assert.deepEqual(await evaluate(`[...document.querySelectorAll('[data-preview="tributes"] h2')].map(e=>e.textContent)`),['Battle Ox','Celtic Guardian']);
+    assert.equal(await evaluate(`document.querySelector('#action-form button[type="submit"]').disabled`),false);
+    await click(`document.querySelectorAll('#action-fields input[type="checkbox"]')[0]`);
+    assert.deepEqual(await evaluate(`[...document.querySelectorAll('[data-preview="tributes"] h2')].map(e=>e.textContent)`),['Celtic Guardian']);
+    await click(`document.querySelectorAll('#action-fields input[type="checkbox"]')[0]`);
+    for (const name of ['Battle Ox','Celtic Guardian']) {
+      const definition=Object.values(r.cards).find(c=>c.name===name);
+      assert.equal(await evaluate(`(()=>{const p=[...document.querySelectorAll('[data-preview="tributes"] .choice-preview')].find(p=>p.querySelector('h2')?.textContent===${JSON.stringify(name)});return [...p.querySelectorAll('p')].at(-1).textContent;})()`),definition.text);
+    }
+    assert.equal(await evaluate('JSON.stringify(view)'),beforeTribute);
+    if(process.argv.includes('--screenshots')) {
+      const directory=join(projectRoot,'artifacts','tribute-previews');await mkdir(directory,{recursive:true});
+      for(const [label,width,height] of [['desktop',1440,1000],['narrow',390,844]]) {
+        await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
+        await evaluate(`document.getElementById('action-dialog').scrollTop=0`);
+        assert.equal(await evaluate(`(()=>{const d=document.getElementById('action-dialog'),r=d.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1&&d.scrollWidth<=d.clientWidth+1&&r.height<=innerHeight})()`),true);
+        const shot=await send('Page.captureScreenshot',{format:'png'});await writeFile(join(directory,label+'.png'),Buffer.from(shot.data,'base64'));
+      }
+      await send('Emulation.clearDeviceMetricsOverride');
+    }
     await confirm(); await pass('a'); await pass('b'); await seat('a');
     assert.equal(await evaluate('view.players[0].graveyard.length'), 2);
     await actionClick(textButton('#turn-actions button', 'CHIẾN ĐẤU')); await pass('b'); await seat('a');
@@ -559,7 +597,7 @@ try {
     assert.equal(await evaluate('view.players[1].lifePoints'), 7200);
     assert.equal(await evaluate(`view.players[1].graveyard.some(c=>catalog.get(c.definition.id).name==='Armored Lizard')`), true);
     assert.equal(errors.length, 0);
-    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'expanded-catalog', catalog: 106, reviewedCardPreviews: 106, dataDrivenLevels: true, tributeSummon: 'Gaia The Fierce Knight', battleTarget: 'Armored Lizard', battleDamage: 800, fixtureOnlyAtSetup: true, runtimeExceptions: errors.length }));
+    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'expanded-catalog', catalog: 106, reviewedCardPreviews: 106, dataDrivenLevels: true, tributePreviews: true, oneTributeSetCancelPreservesState: true, deselectionUpdatesPreview: true, ownSetPrivacy: true, tributeSummon: 'Gaia The Fierce Knight', battleTarget: 'Armored Lizard', battleDamage: 800, fixtureOnlyAtSetup: true, runtimeExceptions: errors.length }));
   } else if (deckBuilder) {
     const openDeck = async () => { await click(`document.getElementById('deck-builder')`); await wait(`!busy && document.getElementById('deck-dialog').open`); };
     const change = (id, direction) => click(`document.querySelector('#deck-catalog [data-card-id="${id}"] [data-change="${direction}"]')`);
