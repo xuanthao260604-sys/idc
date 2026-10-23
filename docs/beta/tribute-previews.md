@@ -28,5 +28,16 @@ Browser Chromium 154.0.8037.57 trên Linux đã đạt:
 - Đã xem ảnh 1440px/390px; dialog không tràn ngang và cuộn trong chiều cao màn hình.
 
 Fixture điều chỉnh trước startup để có quái úp của mình và Curse of Dragon;
-không chỉnh state sau khi chơi. Validation Linux đầy đủ và Windows CI đang chờ.
+không chỉnh state sau khi chơi. Linux đầy đủ đạt typecheck, build, dữ liệu và
+644/644 test trong 31 file; 28/28 bước validation, 18 browser report, runtimeExceptions=0.
+Hai trận tự nhiên giữ 16 lượt/339 lệnh (pilot) và 17 lượt/336 lệnh (106).
+Report Linux: artifacts/platform-validation/2026-10-23T02-27-32-540Z-96075/report.json.
+Windows và Ubuntu CI đạt trên source commit f00066940107c2bb519811d8a302e5b1d72b1ee8:
+[run 39889656197](https://github.com/xuanthao260604-sys/idc/actions/runs/39889656197).
+Đã tải và đọc artifact windows-validation-39889656197-1: win32 x64,
+OS 10.0.26100, Node 24.19.0, npm 11.17.0, Edge 154.0.4258.62.
+Windows đạt 644/644 test trong 31 file, 28/28 bước, 18 browser report,
+tất cả runtimeExceptions=0. Report expanded-catalog xác nhận tributePreviews,
+oneTributeSetCancelPreservesState, deselectionUpdatesPreview, ownSetPrivacy đều true.
+Các assertion bổ sung trong browser regression hiện có; không tăng số unit test.
 Windows 11 desktop chưa kiểm thử trực tiếp; chưa đóng gói hoặc bàn giao beta.

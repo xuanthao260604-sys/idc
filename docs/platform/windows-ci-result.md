@@ -1,6 +1,10 @@
 # Kết quả Windows CI
 
-> Mốc hiện hành: [giữ lựa chọn khi lỗi mạng](../beta/decision-retry.md), catalog 106; [run 39887932439](https://github.com/xuanthao260604-sys/idc/actions/runs/39887932439), commit 0571823.
+> Mốc hiện hành: [xem trước quái hiến tế](../beta/tribute-previews.md), catalog 106; [run 39889656197](https://github.com/xuanthao260604-sys/idc/actions/runs/39889656197), commit f000669.
+> Windows/Ubuntu đạt; Windows: 644/644 test, 28/28 bước, 18 browser report với Edge 154.0.4258.62, runtimeExceptions=0.
+> Set cần 1 hiến tế/hủy và Gaia cần 2 hiến tế đạt; bỏ tích cập nhật preview, quái úp giữ riêng theo viewer. Windows 11 desktop chưa chạy.
+
+> Mốc trước: [giữ lựa chọn khi lỗi mạng](../beta/decision-retry.md), catalog 106; [run 39887932439](https://github.com/xuanthao260604-sys/idc/actions/runs/39887932439), commit 0571823.
 > Windows/Ubuntu đạt; Windows: 644/644 test, 28/28 bước, 18 browser report với Edge 154.0.4258.62, runtimeExceptions=0.
 > Checkbox/radio giữ nháp khi offline; đổi seat xóa nháp, mất phản hồi không bỏ bài lần hai. Windows 11 desktop chưa chạy.
 
