@@ -1,6 +1,10 @@
 # Kết quả Windows CI
 
-> Mốc hiện hành: [rà soát tương tác Earthquake](../engine/earthquake-interaction-audit.md), catalog 108; [run 39953358379](https://github.com/xuanthao260604-sys/idc/actions/runs/39953358379), commit 909c2bc.
+> Mốc hiện hành: [thống kê và lọc deck](../beta/deck-overview.md), catalog 108; [run 39954467903](https://github.com/xuanthao260604-sys/idc/actions/runs/39954467903), commit da4e3ed.
+> Windows/Ubuntu đạt; Windows: 726/726 test, 31/31 bước, 21 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Đã đọc artifact windows-validation-39954467903-1: bộ lọc có-trong-deck, thống kê bản sao, thêm/bớt/khôi phục và bố cục 1440/390 đạt; không đổi engine/dữ liệu. Windows 11 desktop chưa chạy.
+
+> Mốc trước: [rà soát tương tác Earthquake](../engine/earthquake-interaction-audit.md), catalog 108; [run 39953358379](https://github.com/xuanthao260604-sys/idc/actions/runs/39953358379), commit 909c2bc.
 > Windows/Ubuntu đạt; Windows: 726/726 test, 30/30 bước, 20 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Thêm 14 test tương tác phá quái/đổi tư thế/chiến đấu cho A/B; không đổi engine hoặc dữ liệu. Đã đọc artifact windows-validation-39953358379-1; Windows 11 desktop chưa chạy.
 

@@ -1,4 +1,6 @@
-> Mốc hiện tại: [rà soát tương tác Earthquake](../engine/earthquake-interaction-audit.md), catalog 108; thêm 14 test, không đổi engine/dữ liệu. Linux và Windows CI đạt 726 test; Windows đạt 30 bước, 20 browser report. Windows 11 desktop chưa chạy.
+> Mốc hiện tại: [thống kê và lọc deck](../beta/deck-overview.md), catalog 108 không đổi; thêm thống kê Quái/Phép/Bẫy theo bản sao và lọc bài đang dùng. Linux và Windows CI đạt 726 test; Windows đạt 31 bước, 21 browser report. Dữ liệu/deck cũ giữ nguyên; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [rà soát tương tác Earthquake](../engine/earthquake-interaction-audit.md), catalog 108; thêm 14 test, không đổi engine/dữ liệu. Linux và Windows CI đạt 726 test; Windows đạt 30 bước, 20 browser report. Windows 11 desktop chưa chạy.
 
 > Mốc trước: [Earthquake](../engine/earthquake.md), catalog 108 trong 15 bundle; 95 verified data và 13 pending lịch sử. Runtime mở riêng 95 quái thường và 13 hiệu ứng trong scope giới hạn. Linux/Windows CI đạt 712 test; Windows đạt 30 bước, 20 browser report. Reimport lỗi và deck cũ được kiểm tra bảo toàn; Windows 11 desktop chưa chạy.
 

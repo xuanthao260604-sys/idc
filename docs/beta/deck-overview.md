@@ -30,5 +30,14 @@ Thêm ca browser này vào validate:platform; giữ ca deck-builder cũ cho nh�
 file, lỗi mạng, lưu A/B và áp dụng deck ở trận mới. Không thêm unit test mô phỏng
 DOM; kiểm chứng UI bằng trình duyệt thật.
 
-Đang chạy bộ tổng hợp Linux và Windows CI; kết quả sẽ được ghi sau khi đọc report.
+Linux đạt 726/726 test trong 33 file; 31/31 bước validation, 21 browser report
+với Chromium 154.0.8037.57, tổng runtimeExceptions=0.
+
+Windows và Ubuntu CI [run 39954467903](https://github.com/xuanthao260604-sys/idc/actions/runs/39954467903)
+đạt trên source commit da4e3edfca0fe14a99b9add514999fc69aa275eb. Đã tải và đọc
+artifact windows-validation-39954467903-1: win32 x64, OS 10.0.26100,
+Node 24.19.0, npm 11.17.0, Edge 155.0.4283.62. Windows đạt 726/726 test
+trong 33 file, 31/31 bước, 21 browser report; tổng runtimeExceptions=0.
+Ca deck-overview xác nhận các bộ lọc, thống kê, thêm/bớt, preview, giữ deck/trận
+và hai chiều rộng 1440/390; report ghi windows11DesktopVerified=false.
 Windows 11 desktop chưa thử trực tiếp; chưa đóng gói hoặc bàn giao beta.
