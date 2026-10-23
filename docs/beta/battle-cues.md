@@ -29,6 +29,15 @@ tuyên bố tấn công, trực tiếp không có viền mục tiêu; trận k�
 Đã chụp và xem Chromium 1440×1000 và 390×844, banner không tràn ngang và viền
 hiển thị đúng cả trên mặt sau chung do người dùng cung cấp.
 
-Ca riêng Chromium đạt, runtimeExceptions=0. Đang xác nhận bộ tổng hợp Linux và
-Windows CI; kết quả sẽ ghi sau khi đọc report.
+Linux đạt typecheck, 726/726 test trong 33 file; 31/31 bước validation,
+21 browser report với Chromium 154.0.8037.57, tổng runtimeExceptions=0.
+Hai trận tự nhiên giữ nguyên kết quả: pilot 16 lượt/339 lệnh, expanded 15 lượt/309 lệnh.
+Windows và Ubuntu CI [run 39965022546](https://github.com/xuanthao260604-sys/idc/actions/runs/39965022546)
+đạt trên source commit 82f8f92c17364258fa4691b86913f36e7098600c. Đã tải và đọc
+artifact windows-validation-39965022546-1: win32 x64, OS 10.0.26100,
+Node 24.19.0, npm 11.17.0, Edge 155.0.4283.62. Windows đạt 726/726 test
+trong 33 file, 31/31 bước, 21 browser report; tổng runtimeExceptions=0.
+Ca effects xác nhận battleCues/hiddenTargetPrivacy/battleCuesClearedAfterResolution;
+hai trận tự nhiên xác nhận battleCues/directAttackCues. Report ghi
+windows11DesktopVerified=false.
 Windows 11 desktop chưa thử trực tiếp; chưa đóng gói hoặc bàn giao beta.

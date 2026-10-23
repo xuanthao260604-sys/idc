@@ -1,6 +1,10 @@
 # Kiểm thử giao diện bằng trình duyệt trên Windows
 
-> Mốc hiện hành: [phím tắt sửa deck](../beta/deck-history-shortcuts.md), catalog 108; [run 39962411614](https://github.com/xuanthao260604-sys/idc/actions/runs/39962411614), commit 1c17ecd.
+> Mốc hiện hành: [hiển thị giao chiến](../beta/battle-cues.md), catalog 108; [run 39965022546](https://github.com/xuanthao260604-sys/idc/actions/runs/39965022546), commit 82f8f92.
+> Windows/Ubuntu đạt; Windows: 726/726 test, 31/31 bước, 21 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Đã đọc artifact windows-validation-39965022546-1: attacker/target, tấn công trực tiếp, đổi góc nhìn và giữ kín bài úp đạt. Windows 11 desktop chưa chạy.
+
+> Mốc trước: [phím tắt sửa deck](../beta/deck-history-shortcuts.md), catalog 108; [run 39962411614](https://github.com/xuanthao260604-sys/idc/actions/runs/39962411614), commit 1c17ecd.
 > Windows/Ubuntu đạt; Windows: 726/726 test, 31/31 bước, 21 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Đã đọc artifact windows-validation-39962411614-1: Ctrl+Z/Ctrl+Y/Ctrl+Shift+Z đúng, ô tìm kiếm giữ undo/redo văn bản gốc. Windows 11 desktop chưa chạy.
 

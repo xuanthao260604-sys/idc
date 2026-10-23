@@ -1,4 +1,6 @@
-> Mốc hiện tại: [phím tắt sửa deck](../beta/deck-history-shortcuts.md), catalog 108 không đổi; Ctrl+Z/Ctrl+Y/Ctrl+Shift+Z trong màn xây deck, giữ thao tác văn bản gốc. Linux và Windows CI đạt 726 test; Windows đạt 31 bước, 21 browser report. Dữ liệu/deck cũ giữ nguyên; Windows 11 desktop chưa chạy.
+> Mốc hiện tại: [hiển thị giao chiến](../beta/battle-cues.md), catalog 108 không đổi; đánh dấu attacker/target và mô tả theo góc nhìn, giữ kín bài úp. Linux và Windows CI đạt 726 test; Windows đạt 31 bước, 21 browser report. Dữ liệu/deck cũ giữ nguyên; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [phím tắt sửa deck](../beta/deck-history-shortcuts.md), catalog 108 không đổi; Ctrl+Z/Ctrl+Y/Ctrl+Shift+Z trong màn xây deck, giữ thao tác văn bản gốc. Linux và Windows CI đạt 726 test; Windows đạt 31 bước, 21 browser report. Dữ liệu/deck cũ giữ nguyên; Windows 11 desktop chưa chạy.
 
 > Mốc trước: [Hoàn tác/Làm lại deck](../beta/deck-undo-redo.md), catalog 108 không đổi; bản nháp có lịch sử tối đa 50 bước, gồm nhập file và deck mẫu. Linux và Windows CI đạt 726 test; Windows đạt 31 bước, 21 browser report. Dữ liệu/deck cũ giữ nguyên; Windows 11 desktop chưa chạy.
 
