@@ -61,6 +61,13 @@ Trận tự nhiên catalog 109 seed hex 09 dùng Magician of Faith/Block Attack/
 13 lượt, 262 lệnh, 12 attack, 1 decision; A thắng LP 9000/0, không sửa state.
 Driver engine kiểm tra có một lần lấy Spell về tay. Pilot seed 08 giữ hồi quy cũ.
 
-Linux typecheck và 770/770 test trong 35 file, các ca browser riêng đạt,
-runtimeExceptions=0. Đang xác nhận bộ tổng hợp Linux và Windows CI.
+Linux đạt typecheck, 770/770 test trong 35 file; 33/33 bước validation,
+23 browser report với Chromium 154.0.8037.57, tổng runtimeExceptions=0.
+Windows và Ubuntu CI [run 39977194358](https://github.com/xuanthao260604-sys/idc/actions/runs/39977194358)
+đạt trên source commit 44f17be0b8b2f394da7a13b5904ca45d556401b1. Đã tải và đọc
+artifact windows-validation-39977194358-1: win32 x64, OS 10.0.26100,
+Node 24.19.0, npm 11.17.0, Edge 155.0.4283.62. Windows đạt 770/770 test
+trong 35 file, 33/33 bước, 23 browser report; tổng runtimeExceptions=0.
+Ca Magician of Faith và trận tự nhiên 109 cho kết quả khớp Linux; catalog preview
+đủ 109 loại, hồi quy pilot giữ nguyên. Report ghi windows11DesktopVerified=false.
 Windows 11 desktop chưa thử trực tiếp; chưa đóng gói hoặc bàn giao beta.

@@ -1,4 +1,6 @@
-> Mốc hiện tại: [hạn mức Normal Summon/Set](../beta/summon-quota.md), catalog 108 không đổi; hiển thị bộ đếm công khai từ engine, không hoàn lượt khi quái bị phá. Linux và Windows CI đạt 740 test; Windows đạt 32 bước, 22 browser report. Không đổi luật/dữ liệu/deck; Windows 11 desktop chưa chạy.
+> Mốc hiện tại: [Magician of Faith](../engine/magician-of-faith.md), catalog 109 trong 16 bundle; 95 verified data và 14 pending lịch sử. Runtime mở riêng 95 quái thường và 14 hiệu ứng trong scope giới hạn. Linux và Windows CI đạt 770 test; Windows đạt 33 bước, 23 browser report. Dữ liệu/deck cũ giữ nguyên; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [hạn mức Normal Summon/Set](../beta/summon-quota.md), catalog 108 không đổi; hiển thị bộ đếm công khai từ engine, không hoàn lượt khi quái bị phá. Linux và Windows CI đạt 740 test; Windows đạt 32 bước, 22 browser report. Không đổi luật/dữ liệu/deck; Windows 11 desktop chưa chạy.
 
 > Mốc trước: [đọc bài trong Chain](../beta/chain-card-previews.md), catalog 108 không đổi; cửa sổ nguồn/target chỉ đọc theo PlayerView, không lộ bài úp. Linux và Windows CI đạt 726 test; Windows đạt 32 bước, 22 browser report. Không đổi engine/dữ liệu/deck; Windows 11 desktop chưa chạy.
 

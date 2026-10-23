@@ -1,6 +1,10 @@
 # Kết quả Windows CI
 
-> Mốc hiện hành: [hạn mức Normal Summon/Set](../beta/summon-quota.md), catalog 108; [run 39972739306](https://github.com/xuanthao260604-sys/idc/actions/runs/39972739306), commit 1369ce9.
+> Mốc hiện hành: [Magician of Faith](../engine/magician-of-faith.md), catalog 109; [run 39977194358](https://github.com/xuanthao260604-sys/idc/actions/runs/39977194358), commit 44f17be.
+> Windows/Ubuntu đạt; Windows: 770/770 test, 33/33 bước, 23 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Đã đọc artifact windows-validation-39977194358-1: FLIP lấy Phép từ Mộ, dùng lại Pot, trận tự nhiên 109 và bảo toàn dữ liệu/deck cũ đạt. Snapshot lịch sử vẫn pending; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [hạn mức Normal Summon/Set](../beta/summon-quota.md), catalog 108; [run 39972739306](https://github.com/xuanthao260604-sys/idc/actions/runs/39972739306), commit 1369ce9.
 > Windows/Ubuntu đạt; Windows: 740/740 test, 32/32 bước, 22 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Đã đọc artifact windows-validation-39972739306-1: 14 test mới A/B, bộ đếm công khai, Trap Hole không hoàn lượt và reset theo lượt đạt. Windows 11 desktop chưa chạy.
 
