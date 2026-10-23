@@ -270,7 +270,7 @@ try {
       if (v.result) {
         assert.equal(v.result.reason, 'life-points'); assert.ok(attacks > 0); assert.ok(decisions > 0);
         if (expanded) assert.ok(usedEffects.has('Earthquake'), 'Expanded duel must exercise the new reviewed Spell');
-        assert.equal(errors.length, 0); assert.equal(v.chain.length, 0); assert.equal(v.decision, null);
+        assert.equal(errors.length, 0); assert.equal(await evaluate(`document.getElementById('battle-status').hidden`),true); assert.equal(v.chain.length, 0); assert.equal(v.decision, null);
         assert.match(await evaluate(`document.getElementById('timing').textContent`), /thắng/);
         assert.equal(v.stateVersion, actions);
         assert.match(await evaluate(`document.getElementById('guide-title').textContent`), /thắng/);
@@ -281,7 +281,7 @@ try {
         for(const entry of v.activity) assert.deepEqual(Object.keys(entry).filter(k=>k!=='resolution').sort(), ['action','actorId','phase','stateVersion','turn']);
         console.log(JSON.stringify({ browser: browser.brand, browserVersion: browserVersion.product, platform: process.platform, mode: expanded ? 'natural-expanded-duel' : 'natural-full-duel', catalogDefinitions: Object.keys(r.cards).length, openingHands: [6, 5],
           turns: v.turn.number, acceptedCommands: actions, attacks, decisions, effectsUsed: [...usedEffects].sort(),
-          result: v.result, lifePoints: v.players.map(p=>p.lifePoints), stateEditedDuringPlay: false, runtimeExceptions: errors.length }));
+          result: v.result, lifePoints: v.players.map(p=>p.lifePoints), stateEditedDuringPlay: false,battleCues:true,directAttackCues:true, runtimeExceptions: errors.length }));
         break;
       }
       if (actions > 2500 || v.turn.number > 100) throw new Error('Natural browser duel exceeded limit');
@@ -367,6 +367,11 @@ try {
           // Look only at presence of an opposing Set card; never inspect its identity/stats.
           // Hidden target identity is learned only after the engine publicly flips it.
           await click(boardCard(slot)); await click(textButton('#actions button','Tấn công')); await chooseTarget(0); await confirm();
+          assert.equal(await evaluate(`document.getElementById('battle-status').hidden`),false);
+          assert.equal(await evaluate(`document.querySelectorAll('.battle-attacker').length`),1);
+          assert.equal(await evaluate(`document.querySelectorAll('.battle-target').length`),target?1:0);
+          if(!target)assert.match(await evaluate(`document.getElementById('battle-status').textContent`),/Tấn công trực tiếp/);
+
           attacked.add(slot); attacks++; actions++; continue;
         }
         await advance('MAIN 2'); actions++; continue;
@@ -1112,8 +1117,33 @@ try {
   await seat('a'); await marked('#self','La Jinn the Mystical Genie of the Lamp',true);
   for (const [attacker, slot, flipped] of [['La Jinn the Mystical Genie of the Lamp', 0, 'Hane-Hane'], ['Celtic Guardian', 0, 'Man-Eater Bug']]) {
     await seat('a'); await click(`[...document.querySelectorAll('#self .card')].find(e=>e.querySelector('.card-name')?.textContent===${JSON.stringify(attacker)})`);
-    await click(textButton('#actions button', 'Tấn công')); await chooseTarget(slot); await confirm(); await pass('a'); await pass('b');
+    await click(textButton('#actions button', 'Tấn công')); await chooseTarget(slot); await confirm();
+    assert.equal(await evaluate(`document.querySelectorAll('.battle-attacker').length`),1);
+    assert.equal(await evaluate(`document.querySelectorAll('.battle-target').length`),1);
+    assert.match(await evaluate(`document.getElementById('battle-status').textContent`),new RegExp(attacker));
+    assert.match(await evaluate(`document.getElementById('battle-status').textContent`),/Bài úp/);
+    assert.equal(await evaluate(`document.getElementById('battle-status').textContent.includes(${JSON.stringify(flipped)})`),false);
+    assert.match(await evaluate(`document.querySelector('.battle-target').getAttribute('aria-label')`),/Bài úp.*Mục tiêu/);
+    assert.equal(await evaluate(`document.querySelector('.battle-target .card-name')`),null);
+    if(attacker==='La Jinn the Mystical Genie of the Lamp'){
+      const pendingView=await evaluate('JSON.stringify(view)');
+      for(const [label,width,height]of [['desktop',1440,1000],['narrow',390,844]]){
+        await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
+        assert.equal(await evaluate(`(()=>{const e=document.getElementById('battle-status'),r=e.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1&&e.scrollWidth<=e.clientWidth+1})()`),true);
+        if(process.argv.includes('--screenshots')){const folder=join(projectRoot,'artifacts','battle-cues');await mkdir(folder,{recursive:true});await evaluate(`document.getElementById('battle-status').scrollIntoView({block:'start'})`);const shot=await send('Page.captureScreenshot',{format:'png'});await writeFile(join(folder,label+'.png'),Buffer.from(shot.data,'base64'));}
+      }
+      await send('Emulation.clearDeviceMetricsOverride');
+      await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
+      assert.equal(await evaluate('JSON.stringify(view)'),pendingView);
+    }
+    const declaredVersion=await evaluate('view.stateVersion');await seat('b');
+    assert.equal(await evaluate('view.stateVersion'),declaredVersion);
+    assert.match(await evaluate(`document.getElementById('battle-status').textContent`),new RegExp(flipped));
+    assert.equal(await evaluate(`document.querySelector('.battle-target').classList.contains('back')`),false);
+    await pass('a'); await pass('b');
     await seat('b'); await decision(attacker); await pass('a'); await pass('b');
+    assert.equal(await evaluate(`document.getElementById('battle-status').hidden`),true);
+    assert.equal(await evaluate(`document.querySelectorAll('.battle-attacker,.battle-target').length`),0);
     assert.ok(await evaluate(`view.players[1].graveyard.some(c=>catalog.get(c.definition.id).name===${JSON.stringify(flipped)})`));
     assert.match(await evaluate(`document.getElementById('status').textContent`), flipped === 'Hane-Hane' ? /1 lá trở về tay Người chơi A/ : /1 quái bị phá bởi hiệu ứng/);
   }
@@ -1121,7 +1151,7 @@ try {
   assert.equal(await evaluate('view.players[0].monsters.filter(Boolean).length'), 0);
   assert.equal(await evaluate(`['Pot of Greed','Hane-Hane','Man-Eater Bug','Trap Hole','Fissure'].some(name=>document.getElementById('activity').textContent.includes(name))`), false);
   assert.equal(errors.length, 0);
-  console.log(JSON.stringify({ browser: browser.brand, browserVersion: browserVersion.product, platform: process.platform, fixtureOnlyAtSetup: true, flipDecisionPreviews: true, radioSelectionSurvivesNetworkFailure: true, legalActionCues: ['main-hand', 'pass-only-chain', 'trap-summon-response', 'battle', 'mandatory-choice', 'own-only'], sharedBack: ['monster', 'spell', 'trap'], effectFlows: ['Pot of Greed', 'Fissure', 'Trap Hole', 'Hane-Hane', 'Man-Eater Bug'], interaction: 'mouse controls and dialogs', graveyard: ['empty', 'inline card text', 'top-first order', 'read-only both players'], runtimeExceptions: errors.length }));
+  console.log(JSON.stringify({ browser: browser.brand, browserVersion: browserVersion.product, platform: process.platform, fixtureOnlyAtSetup: true,battleCues:true,hiddenTargetPrivacy:true,battleCuesClearedAfterResolution:true, flipDecisionPreviews: true, radioSelectionSurvivesNetworkFailure: true, legalActionCues: ['main-hand', 'pass-only-chain', 'trap-summon-response', 'battle', 'mandatory-choice', 'own-only'], sharedBack: ['monster', 'spell', 'trap'], effectFlows: ['Pot of Greed', 'Fissure', 'Trap Hole', 'Hane-Hane', 'Man-Eater Bug'], interaction: 'mouse controls and dialogs', graveyard: ['empty', 'inline card text', 'top-first order', 'read-only both players'], runtimeExceptions: errors.length }));
   }
 
 } finally {

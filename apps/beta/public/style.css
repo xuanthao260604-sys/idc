@@ -62,3 +62,5 @@
 #decision-card-detail p{white-space:pre-wrap}
 
 #deck-form .dialog-buttons{flex-wrap:wrap}
+
+#battle-status{padding:10px 12px;border-left:3px solid #e5a65b;background:#15271f;border-radius:4px;color:#eee8dc;overflow-wrap:anywhere}.card.battle-attacker{box-shadow:0 0 0 3px #e5a65b,0 3px 6px #0005}.card.battle-target{box-shadow:0 0 0 3px #83cbe5,0 3px 6px #0005}

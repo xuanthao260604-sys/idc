@@ -52,6 +52,13 @@ function cardPreview(d) {
 function cardButton(card, zone, player, slot, onSelect) {
   const d = def(card), b = button('', onSelect || (() => { selected = { card, zone, player, slot }; render(); }), `card ${d?.kind === 'spell' ? 'spell' : d?.kind === 'trap' ? 'trap' : ''} ${!d ? 'back' : ''} ${selected?.card.handle === card.handle ? 'selected' : ''}`);
   b.setAttribute('aria-label', `${label(card)}${zone === 'hand' ? ' trên tay' : zone === 'graveyard' ? ` trong Mộ, vị trí ${slot + 1} từ trên xuống` : ` tại ô ${slot + 1}`}`);
+  if (zone === 'monster' && !view.result && view.battle?.attackerHandle) {
+    const role = card.handle === view.battle.attackerHandle ? 'attacker' : card.handle === view.battle.targetHandle ? 'target' : null;
+    if (role) {
+      b.classList.add('battle-' + role);
+      b.setAttribute('aria-label', b.getAttribute('aria-label') + (role === 'attacker' ? ' · Quái đang tấn công' : ' · Mục tiêu đang bị tấn công'));
+    }
+  }
   if (!d) { const art = node('span', undefined, 'card-back-art'); art.setAttribute('aria-hidden', 'true'); b.append(art); return b; }
   frontContent(b, d);
   if (player === view.viewerId && ['hand', 'monster', 'spell-trap'].includes(zone)) {
@@ -64,6 +71,20 @@ function cardButton(card, zone, player, slot, onSelect) {
   }
   if (zone !== 'hand') b.append(node('span', card.position === 'face-down-defense' || card.position === 'face-down' ? 'ÚP' : card.position === 'face-up-defense' ? 'PHÒNG THỦ' : card.position === 'face-up-attack' ? 'TẤN CÔNG' : 'NGỬA', 'card-position'));
   return b;
+}
+function renderBattleStatus() {
+  const status = $('battle-status'), battle = !view.result && view.battle;
+  status.hidden = !battle?.attackerHandle;
+  status.textContent = '';
+  if (status.hidden) return;
+  const describe = handle => {
+    for (const p of view.players) {
+      const slot = p.monsters.findIndex(card => card?.handle === handle);
+      if (slot >= 0) return `${names[p.playerId]} · ${label(p.monsters[slot])} (ô ${slot + 1})`;
+    }
+    return 'Quái đã rời sân';
+  };
+  status.textContent = `Đang giao chiến: ${describe(battle.attackerHandle)} → ${battle.targetHandle === 'direct' ? 'Tấn công trực tiếp' : describe(battle.targetHandle)}.`;
 }
 function row(cards, zone, player) {
   const n = node('div', undefined, 'zone-row'); cards.forEach((c, i) => { const slot = node('div', undefined, 'slot'); slot.append(c ? cardButton(c, zone, player, i) : node('span', `${zone === 'monster' ? 'QUÁI' : 'PHÉP / BẪY'} ${i + 1}`)); n.append(slot); }); return n;
@@ -322,7 +343,7 @@ function render() {
     : 'Hiện chưa có lá nào có thao tác hợp lệ. Xem hướng dẫn lượt để tiếp tục.';
   $('score').replaceChildren(...[opponent, self].map(p => { const n = node('div', undefined, `score ${view.turn.activePlayer === p.playerId ? 'active' : ''}`); n.append(node('span', names[p.playerId]), node('div', undefined)); n.lastChild.append(node('small', 'LIFE POINTS'), node('strong', String(p.lifePoints))); return n; }));
   const phases = node('div', undefined, 'phases'); for (const [key, text] of Object.entries(phaseNames)) phases.append(node('span', text, `phase ${view.turn.phase === key ? 'current' : ''}`)); $('phases').replaceChildren(phases);
-  side(opponent, 'opponent', false); side(self, 'self', true);
+  side(opponent, 'opponent', false); side(self, 'self', true); renderBattleStatus();
   $('hand').replaceChildren(...view.selfHand.map(c => cardButton(c, 'hand', view.viewerId, 0))); $('hand-count').textContent = `(${view.selfHand.length})`;
   $('timing').textContent = view.result ? `Kết thúc · ${view.result.winner ? names[view.result.winner] + ' thắng' : 'Hòa'}` : `Lượt ${view.turn.number} · ${names[view.turn.activePlayer]} · ${view.timing.priorityPlayer ? 'Quyền: ' + names[view.timing.priorityPlayer] : 'Đang chọn bài'}${view.chain.length ? ' · Chain ' + view.chain.length : ''}`;
   renderGuide(); detail(); $('status').textContent = message + (!view.result && view.timing.priorityPlayer && view.timing.priorityPlayer !== view.viewerId ? ' Đổi người chơi để ' + names[view.timing.priorityPlayer] + ' phản hồi.' : ''); $('pass').disabled = busy || !matchingActions({ type: 'pass' }).length;
