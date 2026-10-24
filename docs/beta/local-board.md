@@ -1,4 +1,6 @@
-> Mốc hiện tại: [điều khiển tay bài bằng bàn phím](hand-keyboard.md), catalog 109 không đổi; di chuyển theo thứ tự hiển thị và giữ tiêu điểm khi chọn bài. Linux và Windows CI đạt 784 test, 39 bước, 29 browser report. Không đổi engine/dữ liệu/deck; Windows 11 desktop chưa chạy.
+> Mốc hiện tại: [bảo vệ bản nháp deck khi đóng](deck-draft-guard.md), catalog 109 không đổi; Đóng/Escape hỏi trước khi bỏ thay đổi, hủy giữ nguyên bài/lịch sử. Linux và Windows CI đạt 784 test, 40 bước, 30 browser report. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [điều khiển tay bài bằng bàn phím](hand-keyboard.md), catalog 109 không đổi; di chuyển theo thứ tự hiển thị và giữ tiêu điểm khi chọn bài. Linux và Windows CI đạt 784 test, 39 bước, 29 browser report. Không đổi engine/dữ liệu/deck; Windows 11 desktop chưa chạy.
 
 > Mốc trước: [sắp xếp tay bài](hand-sorting.md), catalog 109 không đổi; thứ tự nhận/tên/loại/cấp sao, giữ đúng bản sao và chỉ đổi hiển thị. Linux và Windows CI đạt 784 test, 38 bước, 28 browser report. Không đổi engine/dữ liệu/deck; Windows 11 desktop chưa chạy.
 

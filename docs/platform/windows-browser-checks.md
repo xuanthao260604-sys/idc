@@ -1,6 +1,10 @@
 # Kiểm thử giao diện bằng trình duyệt trên Windows
 
-> Mốc hiện hành: [điều khiển tay bài bằng bàn phím](../beta/hand-keyboard.md), catalog 109; [run 40065731877](https://github.com/xuanthao260604-sys/idc/actions/runs/40065731877), commit 9189ed1.
+> Mốc hiện hành: [bảo vệ bản nháp deck khi đóng](../beta/deck-draft-guard.md), catalog 109; [run 40071557099](https://github.com/xuanthao260604-sys/idc/actions/runs/40071557099), commit 3dc1912.
+> Windows/Ubuntu đạt; Windows: 784/784 test, 40/40 bước, 30 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Đã đọc artifact windows-validation-40071557099-1: hủy Đóng/Escape giữ bài/lịch sử, undo/redo, lưu lỗi/thành công và baseline A/B đạt. Không đổi engine/dữ liệu; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [điều khiển tay bài bằng bàn phím](../beta/hand-keyboard.md), catalog 109; [run 40065731877](https://github.com/xuanthao260604-sys/idc/actions/runs/40065731877), commit 9189ed1.
 > Windows/Ubuntu đạt; Windows: 784/784 test, 39/39 bước, 29 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Đã đọc artifact windows-validation-40065731877-1: phím điều hướng/chọn bài, focus qua render, đúng bản sao khi triệu hồi, bài úp và deck A/B đạt. Không đổi engine/dữ liệu; Windows 11 desktop chưa chạy.
 

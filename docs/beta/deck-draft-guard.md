@@ -44,8 +44,16 @@ deck-builder tiếp tục kiểm tra nhập/xuất file thật và lỗi lưu; d
 giữ thống kê, bộ lọc, bàn phím và lịch sử.
 
 Ca riêng đạt Linux/Chromium 154.0.8037.57. Bộ tổng hợp thêm một bước, từ 39
-lên 40 bước và từ 29 lên 30 browser report; Linux và Windows CI đầy đủ đang
-chờ xác nhận cho mốc này.
+lên 40 bước và từ 29 lên 30 browser report. Linux đạt typecheck, 784/784 test
+trong 35 file, 40/40 bước và 30 browser report, tổng runtimeExceptions=0.
+Report tại artifacts/platform-validation/2026-10-24T06-46-51-085Z-234081/report.json.
+Windows và Ubuntu CI [run 40071557099](https://github.com/xuanthao260604-sys/idc/actions/runs/40071557099)
+đạt trên source commit 3dc1912375466b1b3f0e4cedae78239a02a6e9ef. Đã tải và đọc
+artifact windows-validation-40071557099-1: win32 x64, OS 10.0.26100,
+Node 24.19.0, npm 11.17.0, Edge 155.0.4283.62. Windows đạt 784/784 test
+trong 35 file, 40/40 bước và 30 browser report, tổng runtimeExceptions=0.
+Ca bảo vệ bản nháp khớp Linux; các ca nhập/xuất, lịch sử và trận tự nhiên
+tiếp tục đạt. Report ghi windows11DesktopVerified=false.
 
 Không đổi engine, dữ liệu/review, catalog 109, artwork, starter hoặc deck cũ.
 Windows 11 desktop chưa thử trực tiếp; chưa đóng gói hoặc bàn giao beta.
