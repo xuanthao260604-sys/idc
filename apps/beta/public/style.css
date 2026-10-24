@@ -68,3 +68,5 @@
 .chain-panel{margin:12px 0;padding:12px;border:1px solid #75816a;border-radius:6px;background:#14271f;overflow-wrap:anywhere}.chain-panel h2{margin:0;font-size:14px;color:var(--gold)}.chain-panel p{margin:7px 0;font-size:12px}.chain-panel ol{list-style:none;padding:0;margin:0}.chain-panel li{border-top:1px solid var(--line);padding:9px 0 0;font-size:12px}
 
 .chain-card-controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}#chain-card-dialog{max-height:90vh;overflow:auto}#chain-card-detail,#chain-card-location{overflow-wrap:anywhere}#chain-card-detail p{white-space:pre-wrap}
+
+.hand-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.hand-heading label{font-size:11px;color:var(--muted);min-width:0}.hand-heading select{display:block;margin-top:4px;max-width:100%}

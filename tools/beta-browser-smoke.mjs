@@ -17,6 +17,7 @@ const lifePointsMode = lifePointsArg?.split('=')[1] ?? null;
 const smashingGround = process.argv.includes('--smashing-ground');
 const hammerShot = process.argv.includes('--hammer-shot');
 const magicianFaith = process.argv.includes('--magician-faith');
+const handSorting = process.argv.includes('--hand-sorting');
 const faithBattleArg = process.argv.find(arg => /^--faith-battle=[ab]:[02]$/.test(arg));
 const faithBattle = faithBattleArg ? { defender: faithBattleArg.split('=')[1].split(':')[0], spells: Number(faithBattleArg.split(':')[1]) } : null;
 const earthquake = process.argv.includes('--earthquake');
@@ -25,10 +26,11 @@ const tributeDoomed = process.argv.includes('--tribute-doomed');
 const reincarnationArg = process.argv.find(arg => /^--reincarnation=(grave|cost)$/.test(arg));
 const reincarnationMode = reincarnationArg?.split('=')[1] ?? null;
 const deckOverview = process.argv.includes('--deck-overview');
-const expanded = faithBattle !== null || magicianFaith || deckOverview || earthquake || blockAttack || reincarnationMode !== null || tributeDoomed || hammerShot || smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
+const expanded = handSorting || faithBattle !== null || magicianFaith || deckOverview || earthquake || blockAttack || reincarnationMode !== null || tributeDoomed || hammerShot || smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
 const r = expanded ? loadRuntimeCatalog().registry : createRegistry((await read('data/generated/pilot.json')).cards, goat200508Format, {},
   await read('data/reviews/pilot.spell-effects.json'), await read('data/reviews/pilot.flip-effects.json'), await read('data/reviews/pilot.trap-effects.json'));
 const deck = Object.keys(r.cards);
+if (handSorting) deck.push(Object.values(r.cards).find(c=>c.name==='Battle Ox').id);
 for (const c of Object.values(r.cards)) if (!expanded && c.legality.maxCopies >= 2) deck.push(c.id);
 for (const c of Object.values(r.cards)) if (!expanded && deck.length < 40 && c.legality.maxCopies >= 3) deck.push(c.id);
 const fullDuel = process.argv.includes('--full-duel') || process.argv.includes('--expanded-duel');
@@ -63,6 +65,15 @@ if (magicianFaith) {
   move('Pot of Greed','b','graveyard');move('Celtic Guardian','b','monster',0);
   s.turn.number=3;s.turn.phase='main1';s.timing.window='open';s.timing.priorityPlayer='a';s.timing.consecutivePasses=0;
 }
+if (handSorting) {
+  const p=s.players[0];
+  for(const id of p.hand.splice(0)) {p.deck.push(id);s.cards[id].location={kind:'deck',playerId:'a'};}
+  for(const name of ['Trap Hole','Battle Ox','Pot of Greed','Blue-Eyes White Dragon','Fissure','Magician of Faith','Battle Ox']) {
+    const index=p.deck.findIndex(id=>r.cards[s.cards[id].definition.id].name===name),id=p.deck.splice(index,1)[0];
+    assert.ok(id);p.hand.push(id);s.cards[id].location={kind:'hand',playerId:'a'};
+  }
+  s.turn.number=3;s.turn.phase='main1';s.timing.window='open';s.timing.priorityPlayer='a';s.timing.consecutivePasses=0;
+}
 if (faithBattle) {
   const defender = faithBattle.defender, attacker = defender === 'a' ? 'b' : 'a';
   move('Magician of Faith',defender,'monster',0,true);
@@ -78,7 +89,7 @@ if (chainView) {
   move('Man-Eater Bug','b','monster',0,true);
   s.turn.number=3;s.turn.phase='main1';s.timing.window='open';s.timing.priorityPlayer='a';s.timing.consecutivePasses=0;
 }
-if (expanded && !fullDuel && lifePointsMode === null && !smashingGround && !hammerShot && !tributeDoomed && !blockAttack && !earthquake && !magicianFaith && !faithBattle && !deckOverview && reincarnationMode === null) {
+if (expanded && !fullDuel && lifePointsMode === null && !smashingGround && !hammerShot && !tributeDoomed && !blockAttack && !earthquake && !magicianFaith && !faithBattle && !handSorting && !deckOverview && reincarnationMode === null) {
   move('Gaia The Fierce Knight', 'a', 'hand');
   move('Battle Ox', 'a', 'monster', 0); move('Celtic Guardian', 'a', 'monster', 1, true);
   move('Curse of Dragon', 'a', 'hand');
@@ -428,7 +439,90 @@ try {
   }
   await send('Runtime.enable'); await send('Page.enable'); await send('Page.navigate', { url: `http://127.0.0.1:${server.address().port}` });
   await wait(`document.getElementById('seat-dialog')?.open`); await seat('a');
-  if (faithBattle) {
+  if (handSorting) {
+    const commands=[],previousOnMessage=ws.onmessage;
+    ws.onmessage=event=>{
+      const m=JSON.parse(event.data);
+      if(m.method==='Network.requestWillBeSent'&&m.params.request.url.endsWith('/api/command'))commands.push(JSON.parse(m.params.request.postData));
+      previousOnMessage(event);
+    };
+    await send('Network.enable');
+    const received=['Trap Hole','Battle Ox','Pot of Greed','Blue-Eyes White Dragon','Fissure','Magician of Faith','Battle Ox'];
+    const alphabetical=['Battle Ox','Battle Ox','Blue-Eyes White Dragon','Fissure','Magician of Faith','Pot of Greed','Trap Hole'];
+    const byKind=['Battle Ox','Battle Ox','Blue-Eyes White Dragon','Magician of Faith','Fissure','Pot of Greed','Trap Hole'];
+    const byLevel=['Blue-Eyes White Dragon','Battle Ox','Battle Ox','Magician of Faith','Fissure','Pot of Greed','Trap Hole'];
+    const handNames=()=>evaluate(`[...document.querySelectorAll('#hand .card-name')].map(e=>e.textContent)`);
+    const shownHandles=()=>evaluate(`[...document.querySelectorAll('#hand .card')].map(e=>e.dataset.cardHandle)`);
+    const key=async(key,code,windowsVirtualKeyCode)=>{
+      await send('Input.dispatchKeyEvent',{type:'keyDown',key,code,windowsVirtualKeyCode});
+      await send('Input.dispatchKeyEvent',{type:'keyUp',key,code,windowsVirtualKeyCode});
+    };
+    async function sort(mode) {
+      const before=await evaluate('JSON.stringify(view)');
+      const position=await evaluate(`[...document.getElementById('hand-sort').options].findIndex(o=>o.value===${JSON.stringify(mode)})`);
+      assert.ok(position>=0);await evaluate(`document.getElementById('hand-sort').focus()`);
+      await key('Home','Home',36);for(let n=0;n<position;n++)await key('ArrowDown','ArrowDown',40);
+      await wait(`document.getElementById('hand-sort').value===${JSON.stringify(mode)}`);
+      assert.equal(await evaluate('document.activeElement.id'),'hand-sort');
+      assert.equal(await evaluate('JSON.stringify(view)'),before);
+    }
+    assert.deepEqual(await handNames(),received);
+    const originalHandles=await shownHandles(),duplicateHandles=[originalHandles[1],originalHandles[6]];
+    const savedDecks=await evaluate(`api('/api/deck').then(data=>JSON.stringify(data))`);
+    await click(`document.querySelectorAll('#hand .card')[6]`);
+    const selectedHandle=await evaluate('selected.card.handle');
+    for(const [mode,expected] of [['name',alphabetical],['kind',byKind],['level',byLevel],['received',received]]) {
+      await sort(mode);assert.deepEqual(await handNames(),expected);
+      assert.equal(await evaluate('selected.card.handle'),selectedHandle);
+      assert.equal(await evaluate(`document.querySelector('#hand .selected').dataset.cardHandle`),selectedHandle);
+      assert.equal(await evaluate(`document.querySelector('#detail h2').textContent`),'Battle Ox');
+      assert.deepEqual((await shownHandles()).filter(h=>duplicateHandles.includes(h)),duplicateHandles);
+    }
+    await sort('level');
+    for(const [label,width,height] of [['desktop',1440,1000],['narrow',390,844]]) {
+      await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
+      assert.equal(await evaluate(`(()=>{const r=document.getElementById('hand-sort').getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1&&document.documentElement.scrollWidth<=innerWidth+1})()`),true);
+      if(process.argv.includes('--screenshots')) {
+        const folder=join(projectRoot,'artifacts','hand-sorting');await mkdir(folder,{recursive:true});
+        await evaluate(`document.getElementById('hand-sort').scrollIntoView({block:'center'})`);
+        const shot=await send('Page.captureScreenshot',{format:'png'});await writeFile(join(folder,label+'.png'),Buffer.from(shot.data,'base64'));
+      }
+    }
+    await send('Emulation.clearDeviceMetricsOverride');await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
+    // The selected second copy still supplies the actual summon command after sorting.
+    assert.equal(commands.length,0);
+    await click(textButton('#actions button','Triệu hồi'));await confirm();
+    assert.equal(commands.at(-1).action.cardHandle,selectedHandle);
+    await pass('a');await pass('b');await seat('a');
+    assert.equal(await evaluate(`view.players[0].monsters.filter(c=>c&&catalog.get(c.definition.id).name==='Battle Ox').length`),1);
+    assert.equal(await evaluate(`view.selfHand.filter(c=>catalog.get(c.definition.id).name==='Battle Ox').length`),1);
+    assert.equal(await evaluate('view.normalSummonQuota.remaining'),0);
+    // Every handoff resets display order; it never carries the previous player's cards.
+    assert.equal(await evaluate(`document.getElementById('hand-sort').value`),'received');
+    await sort('kind');await seat('b');assert.equal(await evaluate(`document.getElementById('hand-sort').value`),'received');
+    assert.deepEqual(await shownHandles(),await evaluate('view.selfHand.map(c=>c.handle)'));
+    assert.equal(await evaluate(`document.querySelector('#hand .selected')`),null);
+    await seat('a');await sort('name');
+    const version=await evaluate('view.stateVersion');await click(`document.getElementById('refresh')`);
+    await wait(`!busy && view.stateVersion===${version} && document.getElementById('status').textContent.includes('Đã cập nhật')`);
+    assert.equal(await evaluate(`document.getElementById('hand-sort').value`),'name');
+    await click(`[...document.querySelectorAll('#hand .card')].find(e=>e.querySelector('.card-name')?.textContent==='Pot of Greed')`);
+    const beforePot=await evaluate('view.selfHand.length');
+    await click(textButton('#actions button','Kích hoạt'));await confirm();await pass('b');await pass('a');
+    assert.equal(await evaluate('view.selfHand.length'),beforePot+1);
+    await sort('level');const duelId=await evaluate('view.duelId');
+    await click(`document.getElementById('reset')`);await click(`document.querySelector('#new-game-form input[value="a"]')`);
+    await click(`document.querySelector('#new-game-form button[type="submit"]')`);
+    await wait(`!busy && view.duelId!==${JSON.stringify(duelId)} && !document.getElementById('new-game-dialog').open`);
+    assert.equal(await evaluate(`document.getElementById('hand-sort').value`),'received');
+    assert.deepEqual(await shownHandles(),await evaluate('view.selfHand.map(c=>c.handle)'));
+    assert.equal(await evaluate(`api('/api/deck').then(data=>JSON.stringify(data))`),savedDecks);
+    assert.equal(errors.length,0);
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'hand-sorting',catalog:109,
+      keyboardSort:true,stableDuplicateOrder:true,selectionPreserved:true,sortedCardActions:true,drawAfterSorting:true,
+      receivedOrderRestored:true,seatAndDuelReset:true,refreshPreservesMode:true,viewAndSavedDecksUnchanged:true,
+      responsive:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
+  } else if (faithBattle) {
     const {defender,spells}=faithBattle,attacker=defender==='a'?'b':'a';
     const owner=`view.players.find(p=>p.playerId===${JSON.stringify(defender)})`;
     const opponent=`view.players.find(p=>p.playerId===${JSON.stringify(attacker)})`;

@@ -4,6 +4,7 @@ const catalog = new Map();
 let deckRules, deckDraft = null;
 let actionHints = new Set();
 let decisionDraft = null;
+let handSort = 'received', handContext = null;
 let view = null, selected = null, busy = false, message = 'Chọn một lá bài để bắt đầu.';
 const names = { a: 'Người chơi A', b: 'Người chơi B' };
 const phaseNames = { draw: 'BỐC BÀI', standby: 'CHUẨN BỊ', main1: 'MAIN 1', battle: 'CHIẾN ĐẤU', main2: 'MAIN 2', end: 'KẾT THÚC' };
@@ -118,6 +119,22 @@ function renderBattleStatus() {
     return 'Quái đã rời sân';
   };
   status.textContent = `Đang giao chiến: ${describe(battle.attackerHandle)} → ${battle.targetHandle === 'direct' ? 'Tấn công trực tiếp' : describe(battle.targetHandle)}.`;
+}
+function renderHand() {
+  const context = JSON.stringify([view.duelId, view.viewerId]);
+  if (handContext !== context) { handContext = context; handSort = 'received'; }
+  const cards = view.selfHand.map((card, index) => ({ card, index }));
+  const byName = (a, b) => label(a.card).localeCompare(label(b.card), 'en');
+  const kindRank = card => ({ 'normal-monster': 0, 'effect-monster': 0, spell: 1, trap: 2 })[def(card)?.kind] ?? 3;
+  if (handSort !== 'received') cards.sort((a, b) => {
+    const primary = handSort === 'kind' ? kindRank(a.card) - kindRank(b.card)
+      : handSort === 'level' ? (def(b.card)?.level ?? -1) - (def(a.card)?.level ?? -1) : 0;
+    return primary || byName(a, b) || a.index - b.index;
+  });
+  $('hand-sort').value = handSort;
+  $('hand-sort').disabled = busy || cards.length < 2;
+  $('hand').replaceChildren(...cards.map(({ card }) => cardButton(card, 'hand', view.viewerId, 0)));
+  $('hand-count').textContent = `(${cards.length})`;
 }
 function row(cards, zone, player) {
   const n = node('div', undefined, 'zone-row'); cards.forEach((c, i) => { const slot = node('div', undefined, 'slot'); slot.append(c ? cardButton(c, zone, player, i) : node('span', `${zone === 'monster' ? 'QUÁI' : 'PHÉP / BẪY'} ${i + 1}`)); n.append(slot); }); return n;
@@ -381,7 +398,7 @@ function render() {
   $('summon-quota').hidden = !!view.result;
   $('summon-quota').textContent = view.result ? '' : `${names[quota.playerId]} · Normal Summon/Set còn ${quota.remaining}/${quota.limit} lượt.`;
   side(opponent, 'opponent', false); side(self, 'self', true); renderBattleStatus(); renderChain();
-  $('hand').replaceChildren(...view.selfHand.map(c => cardButton(c, 'hand', view.viewerId, 0))); $('hand-count').textContent = `(${view.selfHand.length})`;
+  renderHand();
   $('timing').textContent = view.result ? `Kết thúc · ${view.result.winner ? names[view.result.winner] + ' thắng' : 'Hòa'}` : `Lượt ${view.turn.number} · ${names[view.turn.activePlayer]} · ${view.timing.priorityPlayer ? 'Quyền: ' + names[view.timing.priorityPlayer] : 'Đang chọn bài'}${view.chain.length ? ' · Chain ' + view.chain.length : ''}`;
   renderGuide(); detail(); $('status').textContent = message + (!view.result && view.timing.priorityPlayer && view.timing.priorityPlayer !== view.viewerId ? ' Đổi người chơi để ' + names[view.timing.priorityPlayer] + ' phản hồi.' : ''); $('pass').disabled = busy || !matchingActions({ type: 'pass' }).length;
   const turns = $('turn-actions'); turns.replaceChildren();
@@ -422,7 +439,8 @@ function render() {
     form.onsubmit = e => { e.preventDefault(); if (busy) return; const optionIds = [...form.querySelectorAll('input:checked')].map(i => i.value); if (optionIds.length < d.min || optionIds.length > d.max) { message = 'Hãy chọn đúng số lá.'; $('status').textContent = message; return; } command({ type: 'answer-decision', decisionId: d.id, optionIds }); };
   }
 }
-function handoff() { clearChainCard(); decisionDraft = null; document.body.classList.add('concealed'); selected = null; $('seat-dialog').showModal(); }
+function handoff() { clearChainCard(); decisionDraft = null; handSort = 'received'; handContext = null; document.body.classList.add('concealed'); selected = null; $('seat-dialog').showModal(); }
+$('hand-sort').addEventListener('change', () => { if (busy || !view) return; handSort = $('hand-sort').value; renderHand(); });
 $('seat-dialog').addEventListener('cancel', e => e.preventDefault());
 for (const b of document.querySelectorAll('[data-seat]')) b.addEventListener('click', async () => {
   if (busy) return; busy = true;
