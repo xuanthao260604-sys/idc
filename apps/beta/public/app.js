@@ -511,6 +511,13 @@ function editDeck(cards) {
   deckDraft.redo = [];
   deckDraft.cards = [...cards];
 }
+function deckHasChanges() {
+  return !!deckDraft && JSON.stringify(deckDraft.cards) !== JSON.stringify(deckDraft.savedCards);
+}
+function closeDeckDraft() {
+  if (busy || (deckHasChanges() && !confirm('Bản sửa deck chưa được lưu. Đóng và bỏ thay đổi?'))) return;
+  $('deck-dialog').close(); deckDraft = null;
+}
 function navigateDeckHistory(direction) {
   if (busy || !deckDraft || !deckDraft[direction].length) return;
   const opposite = direction === 'undo' ? 'redo' : 'undo';
@@ -531,6 +538,7 @@ function renderDeck() {
   const scrollTop = list.scrollTop;
   $('deck-title').textContent = `Xây deck · ${names[deckDraft.seat]}`;
   $('deck-count').textContent = `${deckDraft.cards.length} lá · Tối thiểu ${deckRules.mainMin}${deckRules.mainMax === null ? ' · Không có trần 60 lá hiện đại' : ' · Tối đa ' + deckRules.mainMax}`;
+  $('deck-draft-status').textContent = deckHasChanges() ? 'Có thay đổi chưa lưu.' : 'Bản nháp chưa thay đổi so với lúc mở.';
   const counts = new Map();
   const composition = { monster: 0, spell: 0, trap: 0 };
   for (const id of deckDraft.cards) {
@@ -580,7 +588,7 @@ function renderDeck() {
 $('deck-builder').addEventListener('click', async () => {
   if (busy || !view) return; busy = true; render();
   try {
-    const saved = await api('/api/deck'); if (saved.seat !== view.viewerId) throw new Error('Người chơi đã thay đổi. Hãy chọn lại góc nhìn trước khi sửa deck.'); deckDraft = { ...saved, cards: [...saved.cards], undo: [], redo: [] };
+    const saved = await api('/api/deck'); if (saved.seat !== view.viewerId) throw new Error('Người chơi đã thay đổi. Hãy chọn lại góc nhìn trước khi sửa deck.'); deckDraft = { ...saved, cards: [...saved.cards], savedCards: [...saved.cards], undo: [], redo: [] };
     $('deck-search').value = ''; $('deck-kind').value = 'all'; $('deck-presence').value = 'all'; $('deck-sort').value = 'catalog'; $('deck-error').textContent = '';
     $('deck-preview').replaceChildren(node('p', 'Chọn tên lá bài để xem nội dung và chỉ số.'));
     $('deck-dialog').showModal();
@@ -589,8 +597,8 @@ $('deck-builder').addEventListener('click', async () => {
 });
 $('deck-search').addEventListener('keydown', e => { if (e.key === 'Enter') e.preventDefault(); });
 $('deck-search').addEventListener('input', renderDeck); $('deck-kind').addEventListener('change', renderDeck); $('deck-presence').addEventListener('change', renderDeck); $('deck-sort').addEventListener('change', renderDeck);
-$('deck-close').addEventListener('click', () => { if (!busy) { $('deck-dialog').close(); deckDraft = null; } });
-$('deck-dialog').addEventListener('cancel', e => { if (busy) e.preventDefault(); else deckDraft = null; });
+$('deck-close').addEventListener('click', closeDeckDraft);
+$('deck-dialog').addEventListener('cancel', e => { e.preventDefault(); closeDeckDraft(); });
 $('deck-undo').addEventListener('click', () => navigateDeckHistory('undo'));
 $('deck-redo').addEventListener('click', () => navigateDeckHistory('redo'));
 $('deck-dialog').addEventListener('keydown', e => {

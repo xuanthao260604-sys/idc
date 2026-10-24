@@ -26,7 +26,8 @@ const blockAttack = process.argv.includes('--block-attack');
 const tributeDoomed = process.argv.includes('--tribute-doomed');
 const reincarnationArg = process.argv.find(arg => /^--reincarnation=(grave|cost)$/.test(arg));
 const reincarnationMode = reincarnationArg?.split('=')[1] ?? null;
-const deckOverview = process.argv.includes('--deck-overview');
+const deckDraftGuard = process.argv.includes('--deck-draft-guard');
+const deckOverview = deckDraftGuard || process.argv.includes('--deck-overview');
 const expanded = handSorting || faithBattle !== null || magicianFaith || deckOverview || earthquake || blockAttack || reincarnationMode !== null || tributeDoomed || hammerShot || smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
 const r = expanded ? loadRuntimeCatalog().registry : createRegistry((await read('data/generated/pilot.json')).cards, goat200508Format, {},
   await read('data/reviews/pilot.spell-effects.json'), await read('data/reviews/pilot.flip-effects.json'), await read('data/reviews/pilot.trap-effects.json'));
@@ -194,6 +195,11 @@ try {
   async function pass(who) { await seat(who); await actionClick(`document.getElementById('pass')`); }
   async function hand(name) { await seat('a'); await click(`[...document.querySelectorAll('#hand .card')].find(e=>e.querySelector('.card-name')?.textContent===${JSON.stringify(name)})`); }
   async function confirm() { await actionClick(`document.querySelector('#action-form button[type="submit"]')`); }
+  async function closeDeck() {
+    const previousAnswer=dialogAnswer;dialogAnswer=true;
+    try { await click(`document.getElementById('deck-close')`);await wait(`!document.getElementById('deck-dialog').open`); }
+    finally { dialogAnswer=previousAnswer; }
+  }
   async function inspectChain(role, expectedName, escape = false, responsive = false) {
     const before=await evaluate('JSON.stringify(view)');
     await click(`document.querySelector('#chain-links [data-chain-card="${role}"]')`);
@@ -441,7 +447,75 @@ try {
   }
   await send('Runtime.enable'); await send('Page.enable'); await send('Page.navigate', { url: `http://127.0.0.1:${server.address().port}` });
   await wait(`document.getElementById('seat-dialog')?.open`); await seat('a');
-  if (handKeyboard) {
+  if (deckDraftGuard) {
+    const openDeck=async()=>{await click(`document.getElementById('deck-builder')`);await wait(`!busy&&document.getElementById('deck-dialog').open`);};
+    const change=(id,direction)=>click(`document.querySelector('#deck-catalog [data-card-id="${id}"] [data-change="${direction}"]')`);
+    const escape=async()=>{await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});};
+    const dirty=()=>evaluate(`document.getElementById('deck-draft-status').textContent.includes('Có thay đổi chưa lưu')`);
+    async function tryClose(accept,viaEscape=false,expectPrompt=true) {
+      const count=nativeDialogs.length;dialogAnswer=accept;
+      try {
+        if(viaEscape)await escape();else await click(`document.getElementById('deck-close')`);
+        await wait(`document.getElementById('deck-dialog').open===${expectPrompt?!accept:false}`);
+        assert.equal(nativeDialogs.length,count+(expectPrompt?1:0));
+        if(expectPrompt){assert.equal(nativeDialogs.at(-1).type,'confirm');assert.match(nativeDialogs.at(-1).message,/chưa được lưu.*bỏ thay đổi/);}
+      } finally {dialogAnswer=undefined;}
+    }
+    const before=await evaluate('JSON.stringify(view)');
+    const savedA=await evaluate(`api('/api/deck')`);
+    await openDeck();assert.equal(await dirty(),false);
+    // Search, sort and previews never make a draft dirty or require a prompt.
+    await evaluate(`document.getElementById('deck-search').value='Blue';document.getElementById('deck-search').dispatchEvent(new Event('input'))`);
+    await click(`document.querySelector('#deck-catalog .deck-name')`);
+    await tryClose(false,false,false);assert.equal(await evaluate('deckDraft'),null);
+    await openDeck();await tryClose(false,true,false);
+    await openDeck();
+    const extra=Object.values(r.cards).find(c=>savedA.cards.filter(id=>id===c.id).length<c.legality.maxCopies).id;
+    await change(extra,'add');assert.equal(await dirty(),true);
+    const edited=await evaluate('JSON.stringify(deckDraft)');
+    await tryClose(false);assert.equal(await evaluate('JSON.stringify(deckDraft)'),edited);
+    await tryClose(false,true);assert.equal(await evaluate('JSON.stringify(deckDraft)'),edited);
+    assert.deepEqual(await evaluate(`api('/api/deck')`),savedA);
+    await click(`document.getElementById('deck-undo')`);assert.equal(await dirty(),false);
+    // A non-empty redo stack still closes quietly when cards match the baseline.
+    await tryClose(false,false,false);await openDeck();assert.deepEqual(await evaluate('[deckDraft.undo,deckDraft.redo]'),[[],[]]);
+    await change(extra,'add');await click(`document.getElementById('deck-undo')`);await click(`document.getElementById('deck-redo')`);
+    assert.equal(await dirty(),true);await tryClose(true,true);assert.equal(await evaluate('deckDraft'),null);
+    await openDeck();assert.deepEqual(await evaluate('deckDraft.cards'),savedA.cards);
+    // Even an invalid 39-card draft is preserved when closing is cancelled.
+    await change(savedA.cards[0],'remove');assert.equal(await evaluate(`document.getElementById('deck-save').disabled`),true);
+    const invalid=await evaluate('JSON.stringify(deckDraft)');await tryClose(false);
+    assert.equal(await evaluate('JSON.stringify(deckDraft)'),invalid);await tryClose(true);
+    await openDeck();await change(extra,'add');
+    await send('Network.enable');await send('Network.emulateNetworkConditions',{offline:true,latency:0,downloadThroughput:0,uploadThroughput:0});
+    await click(`document.getElementById('deck-save')`);await wait(`!busy&&document.getElementById('deck-error').textContent.includes('Chưa xác nhận lưu deck')`);
+    assert.equal(await dirty(),true);const failedSave=await evaluate('JSON.stringify(deckDraft)');
+    await tryClose(false,true);assert.equal(await evaluate('JSON.stringify(deckDraft)'),failedSave);
+    await send('Network.emulateNetworkConditions',{offline:false,latency:0,downloadThroughput:-1,uploadThroughput:-1});
+    assert.deepEqual(await evaluate(`api('/api/deck')`),savedA);
+    const prompts=nativeDialogs.length;
+    await click(`document.getElementById('deck-save')`);await wait(`!busy&&!document.getElementById('deck-dialog').open`);
+    assert.equal(nativeDialogs.length,prompts);assert.equal(await evaluate('deckDraft'),null);
+    const savedAfter=await evaluate(`api('/api/deck')`);assert.equal(savedAfter.cards.length,savedA.cards.length+1);
+    await openDeck();assert.equal(await dirty(),false);
+    // Returning to the sample is a real edit after a different deck has been saved.
+    await click(`document.getElementById('deck-default')`);assert.equal(await dirty(),true);
+    await tryClose(false);await click(`document.getElementById('deck-undo')`);assert.equal(await dirty(),false);
+    await tryClose(false,true,false);assert.deepEqual(await evaluate(`api('/api/deck')`),savedAfter);
+    assert.equal(await evaluate('JSON.stringify(view)'),before);
+    await seat('b');const savedB=await evaluate(`api('/api/deck')`);await openDeck();
+    assert.equal(await dirty(),false);assert.deepEqual(await evaluate('deckDraft.savedCards'),savedB.cards);
+    await change(savedB.cards[0],'remove');const draftB=await evaluate('JSON.stringify(deckDraft)');
+    await tryClose(false,true);assert.equal(await evaluate('JSON.stringify(deckDraft)'),draftB);
+    await tryClose(true);assert.deepEqual(await evaluate(`api('/api/deck')`),savedB);
+    await seat('a');await openDeck();assert.deepEqual(await evaluate('deckDraft.cards'),savedAfter.cards);
+    assert.equal(await dirty(),false);await tryClose(false,false,false);
+    assert.equal(errors.length,0);
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'deck-draft-guard',catalog:109,
+      closeAndEscapeProtected:true,cancelPreservesDraftAndHistory:true,cleanCloseNoPrompt:true,undoClearsDirty:true,redoRestoresDirty:true,
+      invalidDraftProtected:true,saveFailureProtected:true,saveSuccessNoPrompt:true,sampleIsEdit:true,seatBaselineIndependent:true,
+      currentDuelUnchanged:true,runtimeExceptions:errors.length}));
+  } else if (handKeyboard) {
     const commands=[],previousOnMessage=ws.onmessage;
     ws.onmessage=event=>{
       const m=JSON.parse(event.data);
@@ -1005,7 +1079,7 @@ try {
         await send('Emulation.clearDeviceMetricsOverride');
       }
     }
-    await click(`document.getElementById('deck-close')`);
+    await closeDeck();
     await seat('b');
     assert.equal(await evaluate(`document.getElementById('opponent').textContent.includes('Celtic Guardian')`),false);
     await seat('a');
@@ -1109,7 +1183,7 @@ try {
     for(let n=0;n<26;n++){await change(historyCard,'add');await change(historyCard,'remove');}
     assert.equal(await evaluate('deckDraft.undo.length'),50);
     assert.deepEqual(await evaluate('[...deckDraft.cards].sort()'),[...saved.cards].sort());
-    await click(`document.getElementById('deck-close')`);await openDeck();
+    await closeDeck();await openDeck();
     assert.deepEqual(await evaluate('[deckDraft.undo,deckDraft.redo]'),[[],[]]);
     assert.equal(await evaluate('JSON.stringify(deckDraft.cards)'),original);
     const focusState=()=>evaluate(`({id:document.activeElement.closest('.deck-row')?.dataset.cardId,change:document.activeElement.dataset.change,name:document.activeElement.classList.contains('deck-name'),control:document.activeElement.id})`);
@@ -1197,16 +1271,16 @@ try {
     }
     await send('Emulation.clearDeviceMetricsOverride');
     await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
-    await click(`document.getElementById('deck-close')`);await wait(`!document.getElementById('deck-dialog').open`);assert.deepEqual(await evaluate(`api('/api/deck')`),saved);
+    await closeDeck();await wait(`!document.getElementById('deck-dialog').open`);assert.deepEqual(await evaluate(`api('/api/deck')`),saved);
     await openDeck();assert.equal(await evaluate(`document.getElementById('deck-presence').value`),'all');
     assert.equal(await evaluate(`document.getElementById('deck-sort').value`),'catalog');
     assert.equal(await evaluate('JSON.stringify(deckDraft.cards)'),original);
-    assert.deepEqual(await evaluate('[deckDraft.undo,deckDraft.redo]'),[[],[]]);await click(`document.getElementById('deck-close')`);
+    assert.deepEqual(await evaluate('[deckDraft.undo,deckDraft.redo]'),[[],[]]);await closeDeck();
     assert.equal(await evaluate('JSON.stringify(view)'),before);
     await seat('b');await openDeck();await verifyComposition();
     assert.equal(await evaluate(`document.getElementById('deck-presence').value`),'all');
     assert.equal(await evaluate(`document.getElementById('deck-sort').value`),'catalog');
-    await click(`document.getElementById('deck-close')`);await seat('a');
+    await closeDeck();await seat('a');
     // Seat handoff deliberately rotates private handles; compare public game state without handles.
     const withoutHandles=value=>JSON.stringify(value,(key,item)=>key==='handle'?undefined:item);
     assert.equal(withoutHandles(await evaluate('view')),withoutHandles(JSON.parse(before)));assert.equal(errors.length,0);
@@ -1261,7 +1335,7 @@ try {
     assert.match(await evaluate(`document.getElementById('deck-error').textContent`),/bản nháp/);
     assert.equal(await evaluate(`(async()=> (await api('/api/deck')).cards.length)()`),40);
     assert.equal(await evaluate('JSON.stringify(view)'),before);
-    await click(`document.getElementById('deck-close')`); await openDeck();
+    await closeDeck(); await openDeck();
     assert.equal(await evaluate('deckDraft.cards.length'),40);
     await upload(exportedPath); assert.equal(await evaluate('deckDraft.cards.length'),41);
 
@@ -1289,7 +1363,7 @@ try {
     await saveDeck(); assert.equal(await evaluate('JSON.stringify(view)'), before);
     await openDeck(); assert.equal(await evaluate('deckDraft.cards.length'), 41);
     await change('official:05053103', 'remove');
-    await click(`document.getElementById('deck-close')`);
+    await closeDeck();
     await openDeck(); assert.equal(await evaluate('deckDraft.cards.length'), 41);
     await evaluate(`document.getElementById('deck-search').value='not a real card name'; document.getElementById('deck-search').dispatchEvent(new Event('input'))`);
     assert.match(await evaluate(`document.getElementById('deck-catalog').textContent`), /Không có lá phù hợp/);
@@ -1300,11 +1374,11 @@ try {
 
     await evaluate(`document.getElementById('deck-search').value=''; document.getElementById('deck-kind').value='spell'; document.getElementById('deck-kind').dispatchEvent(new Event('change'))`);
     assert.equal(await evaluate(`document.querySelectorAll('#deck-catalog .deck-row').length`), 2);
-    await click(`document.getElementById('deck-close')`);
+    await closeDeck();
     await seat('b'); await openDeck(); assert.equal(await evaluate('deckDraft.cards.length'), 40);
     await upload(exportedPath); assert.equal(await evaluate('deckDraft.cards.length'),41);
     assert.equal(await evaluate(`(async()=> (await api('/api/deck')).cards.length)()`),40);
-    await click(`document.getElementById('deck-close')`); await openDeck();
+    await closeDeck(); await openDeck();
     assert.equal(await evaluate('deckDraft.cards.length'),40);
     await change('official:97590747', 'add'); await change('official:05053103', 'add'); await saveDeck();
     const oldId = await evaluate('view.duelId');
@@ -1314,7 +1388,7 @@ try {
     assert.equal(await evaluate('view.players[0].deckCount + view.opponentHandCount'), 41);
     assert.equal(await evaluate('view.players[1].deckCount + view.selfHand.length'), 42);
     await seat('a'); await openDeck(); assert.equal(await evaluate('deckDraft.cards.length'), 41);
-    await click(`document.getElementById('deck-close')`);
+    await closeDeck();
     assert.equal(errors.length, 0);
     console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'deck-builder', importedDeckUndoRedo:true,invalidImportPreservesHistory:true,portableFileRoundtrip: true, invalidImportPreservesDraft: true, importRequiresSave: true, decks: [41,42], invalidSizeBlocked: true, copyLimits: true, cancelPreservesSaved: true, networkErrorPreservesDraft: true, savePreservesDuel: true, appliedOnNewDuel: true, runtimeExceptions: errors.length }));
   } else if (concede) {
