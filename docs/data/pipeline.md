@@ -1,4 +1,6 @@
-> Mốc hiện tại: [sắp xếp tay bài](../beta/hand-sorting.md), catalog 109 không đổi; thứ tự nhận/tên/loại/cấp sao, giữ đúng bản sao và chỉ đổi hiển thị. Linux và Windows CI đạt 784 test, 38 bước, 28 browser report. Không đổi engine/dữ liệu/deck; Windows 11 desktop chưa chạy.
+> Mốc hiện tại: [điều khiển tay bài bằng bàn phím](../beta/hand-keyboard.md), catalog 109 không đổi; di chuyển theo thứ tự hiển thị và giữ tiêu điểm khi chọn bài. Linux và Windows CI đạt 784 test, 39 bước, 29 browser report. Không đổi engine/dữ liệu/deck; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [sắp xếp tay bài](../beta/hand-sorting.md), catalog 109 không đổi; thứ tự nhận/tên/loại/cấp sao, giữ đúng bản sao và chỉ đổi hiển thị. Linux và Windows CI đạt 784 test, 38 bước, 28 browser report. Không đổi engine/dữ liệu/deck; Windows 11 desktop chưa chạy.
 
 > Mốc trước: [Faith bị đánh lật qua hotseat](../beta/faith-battle-hotseat.md), catalog 109 không đổi; thêm bốn ca browser A/B có hoặc không có Phép trong Mộ. Linux và Windows CI đạt 784 test, 37 bước, 27 browser report. Không đổi engine/dữ liệu/deck; Windows 11 desktop chưa chạy.
 

@@ -1,6 +1,10 @@
 # Kết quả Windows CI
 
-> Mốc hiện hành: [sắp xếp tay bài](../beta/hand-sorting.md), catalog 109; [run 40064746587](https://github.com/xuanthao260604-sys/idc/actions/runs/40064746587), commit da55a7f.
+> Mốc hiện hành: [điều khiển tay bài bằng bàn phím](../beta/hand-keyboard.md), catalog 109; [run 40065731877](https://github.com/xuanthao260604-sys/idc/actions/runs/40065731877), commit 9189ed1.
+> Windows/Ubuntu đạt; Windows: 784/784 test, 39/39 bước, 29 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Đã đọc artifact windows-validation-40065731877-1: phím điều hướng/chọn bài, focus qua render, đúng bản sao khi triệu hồi, bài úp và deck A/B đạt. Không đổi engine/dữ liệu; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [sắp xếp tay bài](../beta/hand-sorting.md), catalog 109; [run 40064746587](https://github.com/xuanthao260604-sys/idc/actions/runs/40064746587), commit da55a7f.
 > Windows/Ubuntu đạt; Windows: 784/784 test, 38/38 bước, 28 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Đã đọc artifact windows-validation-40064746587-1: bàn phím, thứ tự bản sao, selection/command đúng lá, đổi ghế/trận và deck cũ đạt. Không đổi engine/dữ liệu; Windows 11 desktop chưa chạy.
 

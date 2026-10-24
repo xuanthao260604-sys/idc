@@ -39,7 +39,17 @@ Ca browser `--hand-keyboard`, chạy riêng bằng `npm run beta:browser-hand-ke
 
 Ca riêng đạt Linux với Chromium 154.0.8037.57, runtimeExceptions=0. Bộ tổng
 hợp thêm một bước, từ 38 lên 39 bước và từ 28 lên 29 browser report. Linux
-và Windows CI đầy đủ đang chờ xác nhận mốc này.
+đạt typecheck, 784/784 test trong 35 file, 39/39 bước và 29 browser report,
+tổng runtimeExceptions=0. Report tại
+artifacts/platform-validation/2026-10-24T05-18-19-951Z-226077/report.json.
+Windows và Ubuntu CI [run 40065731877](https://github.com/xuanthao260604-sys/idc/actions/runs/40065731877)
+đạt trên source commit 9189ed16fbba676f670bdf74384ec897a85ee121. Đã tải và đọc
+artifact windows-validation-40065731877-1: win32 x64, OS 10.0.26100,
+Node 24.19.0, npm 11.17.0, Edge 155.0.4283.62. Windows đạt 784/784 test
+trong 35 file, 39/39 bước và 29 browser report, tổng runtimeExceptions=0.
+Ca bàn phím khớp Linux, gồm focus sau render, đúng bản sao khi triệu hồi,
+preview bài úp, cuộn tay bài và deck A/B giữ nguyên. Report ghi
+windows11DesktopVerified=false.
 
 Không đổi engine, dữ liệu/review, catalog 109, artwork, starter hoặc deck cũ.
 Đây là hỗ trợ bàn phím trong phạm vi nêu trên, chưa xác nhận toàn bộ accessibility,
