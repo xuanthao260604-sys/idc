@@ -457,13 +457,53 @@ try {
     };
     await send('Network.enable');
     const openDeck=async()=>{await click(`document.getElementById('deck-builder')`);await wait(`!busy&&document.getElementById('deck-dialog').open`);};
-    const change=id=>click(`document.querySelector('#deck-catalog [data-card-id="${id}"] [data-change="add"]')`);
+    const change=(id,direction='add')=>click(`document.querySelector('#deck-catalog [data-card-id="${id}"] [data-change="${direction}"]')`);
+    const comparison=()=>evaluate(`[...document.querySelectorAll('#deck-changes-rows tr')].map(row=>({id:row.dataset.cardId,saved:Number(row.cells[1].textContent),draft:Number(row.cells[2].textContent)}))`);
     const check=async()=>{await click(`document.getElementById('deck-check-saved')`);await wait('!busy');};
     const extra=(cards,exclude)=>Object.values(r.cards).find(c=>c.id!==exclude&&cards.filter(id=>id===c.id).length<c.legality.maxCopies).id;
     const before=await evaluate('JSON.stringify(view)'),savedA=await evaluate(`api('/api/deck')`);
     await openDeck();await check();assert.match(await evaluate(`document.getElementById('deck-error').textContent`),/Đã xác nhận/);
     assert.equal(writes.length,0);
+    assert.equal(await evaluate(`document.getElementById('deck-changes').hidden`),true);
+    // Removing and re-adding the first card changes order only; 39 cards still show the missing copy.
+    const moved=savedA.cards[0],movedCount=savedA.cards.filter(id=>id===moved).length;
+    await change(moved,'remove');assert.deepEqual(await comparison(),[{id:moved,saved:movedCount,draft:movedCount-1}]);
+    assert.equal(await evaluate(`document.getElementById('deck-save').disabled`),true);
+    await change(moved);assert.deepEqual(await comparison(),[]);
+    assert.equal(await evaluate(`document.getElementById('deck-changes').hidden`),false);
+    assert.equal(await evaluate(`document.getElementById('deck-changes-table').hidden`),true);
+    assert.match(await evaluate(`document.getElementById('deck-changes-order').textContent`),/Chỉ thay đổi thứ tự/);
+    await click(`document.getElementById('deck-undo')`);await click(`document.getElementById('deck-undo')`);
+    assert.equal(await evaluate(`document.getElementById('deck-changes').hidden`),true);
     const added=extra(savedA.cards);await change(added);
+    const addedCount=savedA.cards.filter(id=>id===added).length,removed=savedA.cards.find(id=>id!==added),removedCount=savedA.cards.filter(id=>id===removed).length;
+    const oneChange=[{id:added,saved:addedCount,draft:addedCount+1}];
+    assert.deepEqual(await comparison(),oneChange);
+    await change(removed,'remove');
+    const twoChanges=[...oneChange,{id:removed,saved:removedCount,draft:removedCount-1}].sort((a,b)=>r.cards[a.id].name.localeCompare(r.cards[b.id].name,'en'));
+    assert.deepEqual(await comparison(),twoChanges);
+    const editing=await evaluate('JSON.stringify(deckDraft)');
+    await click(`document.getElementById('deck-changes-title')`);
+    assert.equal(await evaluate('JSON.stringify(deckDraft)'),editing);
+    assert.equal(await evaluate(`document.querySelectorAll('#deck-changes button,#deck-changes input,#deck-changes select').length`),0);
+    // Catalog filters must not hide a changed card from the independent review table.
+    await evaluate(`document.getElementById('deck-search').value=${JSON.stringify(r.cards[added].name)};document.getElementById('deck-search').dispatchEvent(new Event('input'))`);
+    assert.equal(await evaluate(`!!document.querySelector('#deck-catalog [data-card-id="${removed}"]')`),false);
+    assert.deepEqual(await comparison(),twoChanges);
+    for(const [label,width,height]of [['desktop',1440,1000],['narrow',390,844]]) {
+      await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
+      assert.equal(await evaluate(`(()=>{const d=document.getElementById('deck-dialog'),r=d.getBoundingClientRect(),t=document.getElementById('deck-changes-table'),b=t.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1&&d.scrollWidth<=d.clientWidth+1&&b.left>=r.left&&b.right<=r.right})()`),true);
+      if(process.argv.includes('--screenshots')) {
+        const folder=join(projectRoot,'artifacts','deck-changes');await mkdir(folder,{recursive:true});
+        await evaluate(`document.getElementById('deck-changes').scrollIntoView({block:'center'})`);
+        const shot=await send('Page.captureScreenshot',{format:'png'});await writeFile(join(folder,label+'.png'),Buffer.from(shot.data,'base64'));
+      }
+    }
+    await send('Emulation.clearDeviceMetricsOverride');await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
+    await evaluate(`document.getElementById('deck-search').value='';document.getElementById('deck-search').dispatchEvent(new Event('input'))`);
+    await click(`document.getElementById('deck-undo')`);assert.deepEqual(await comparison(),oneChange);
+    await click(`document.getElementById('deck-redo')`);assert.deepEqual(await comparison(),twoChanges);
+    await click(`document.getElementById('deck-undo')`);assert.deepEqual(await comparison(),oneChange);
     const draft=await evaluate('JSON.stringify(deckDraft)');await check();
     assert.equal(await evaluate('JSON.stringify(deckDraft)'),draft);
     assert.match(await evaluate(`document.getElementById('deck-error').textContent`),/khác bản đang sửa/);
@@ -478,6 +518,7 @@ try {
     assert.match(await evaluate(`document.getElementById('deck-error').textContent`),/Chưa xác nhận lưu deck/);
     const serverSaved=await evaluate(`api('/api/deck')`);assert.equal(serverSaved.revision,savedA.revision+1);
     assert.deepEqual(serverSaved.cards,await evaluate('deckDraft.cards'));assert.equal(writes.length,1);
+    assert.deepEqual(await comparison(),oneChange);
     await evaluate(`document.getElementById('deck-presence').value='included';document.getElementById('deck-presence').dispatchEvent(new Event('change'));document.getElementById('deck-sort').value='name';document.getElementById('deck-sort').dispatchEvent(new Event('change'))`);
     await click(`document.querySelector('#deck-catalog .deck-name')`);
     const history=await evaluate('JSON.stringify([deckDraft.undo,deckDraft.redo])'),preview=await evaluate(`document.getElementById('deck-preview').textContent`);
@@ -489,9 +530,11 @@ try {
     assert.equal(await evaluate(`document.getElementById('deck-presence').value`),'included');
     assert.equal(await evaluate(`document.getElementById('deck-sort').value`),'name');
     assert.equal(await evaluate(`document.getElementById('deck-draft-status').textContent.includes('Có thay đổi')`),false);
+    assert.equal(await evaluate(`document.getElementById('deck-changes').hidden`),true);
     assert.equal(writes.length,1);
     await click(`document.getElementById('deck-undo')`);
     assert.equal(await evaluate(`document.getElementById('deck-draft-status').textContent.includes('Có thay đổi')`),true);
+    assert.deepEqual(await comparison(),[{id:added,saved:addedCount+1,draft:addedCount}]);
     await click(`document.getElementById('deck-redo')`);
     assert.equal(await evaluate(`document.getElementById('deck-draft-status').textContent.includes('Có thay đổi')`),false);
     const prompts=nativeDialogs.length;await closeDeck();assert.equal(nativeDialogs.length,prompts);
@@ -499,6 +542,7 @@ try {
     // A second real session for A saves a different list; the checker must never rebase over it.
     const localExtra=extra(serverSaved.cards),remoteExtra=extra(serverSaved.cards,localExtra);await change(localExtra);
     const local=await evaluate('JSON.stringify(deckDraft)');
+    const localComparison=await comparison();
     const origin=`http://127.0.0.1:${server.address().port}`;
     const remoteSeat=await fetch(origin+'/api/seat',{method:'POST',headers:{'Content-Type':'application/json',Origin:origin},body:JSON.stringify({seat:'a'})});
     assert.equal(remoteSeat.status,200);const remoteCookie=remoteSeat.headers.get('set-cookie').split(';')[0];
@@ -509,21 +553,25 @@ try {
     assert.match(await evaluate(`document.getElementById('deck-error').textContent`),/cửa sổ khác/);
     assert.equal(await evaluate('JSON.stringify(deckDraft)'),local);const writesBeforeCheck=writes.length;
     await check();assert.equal(await evaluate('JSON.stringify(deckDraft)'),local);assert.equal(writes.length,writesBeforeCheck);
+    assert.deepEqual(await comparison(),localComparison);
     assert.deepEqual((await evaluate(`api('/api/deck')`)).cards,winner.cards);
     assert.match(await evaluate(`document.getElementById('deck-error').textContent`),/khác bản đang sửa/);
     // Changing the shared browser seat elsewhere cannot bind A's draft to B's revision.
     await evaluate(`api('/api/seat',{seat:'b'})`);await check();
     assert.equal(await evaluate('JSON.stringify(deckDraft)'),local);
+    assert.deepEqual(await comparison(),localComparison);
     assert.match(await evaluate(`document.getElementById('deck-error').textContent`),/Người chơi đã thay đổi/);
     await evaluate(`api('/api/seat',{seat:'a'})`);
     assert.equal(await evaluate('JSON.stringify(view)'),before);
     await closeDeck();await openDeck();assert.deepEqual(await evaluate('deckDraft.cards'),winner.cards);await closeDeck();
     await seat('b');const savedB=await evaluate(`api('/api/deck')`);await openDeck();await check();
+    assert.equal(await evaluate(`document.getElementById('deck-changes').hidden`),true);assert.deepEqual(await comparison(),[]);
     assert.deepEqual(await evaluate('deckDraft.savedCards'),savedB.cards);
     assert.equal(await evaluate('deckDraft.revision'),savedB.revision);
     assert.deepEqual(await evaluate(`api('/api/deck')`),savedB);await closeDeck();
     assert.equal(errors.length,0);
     console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'deck-save-check',catalog:109,
+      draftChangeTable:true,orderOnlyChanges:true,invalidDraftChanges:true,comparisonIgnoresCatalogFilters:true,comparisonResponsive:true,
       lostSaveResponseConfirmed:true,noDuplicateSave:true,historyAndFiltersPreserved:true,undoUsesConfirmedBaseline:true,
       offlinePreservesDraft:true,remoteConflictPreservesDraft:true,noSilentRebase:true,wrongSeatRejected:true,
       seatBIndependent:true,currentDuelUnchanged:true,runtimeExceptions:errors.length}));

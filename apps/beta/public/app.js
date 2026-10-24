@@ -514,6 +514,26 @@ function editDeck(cards) {
 function deckHasChanges() {
   return !!deckDraft && JSON.stringify(deckDraft.cards) !== JSON.stringify(deckDraft.savedCards);
 }
+function renderDeckChanges() {
+  const counts = cards => {
+    const result = new Map();
+    for (const id of cards) result.set(id, (result.get(id) || 0) + 1);
+    return result;
+  };
+  const saved = counts(deckDraft.savedCards), draft = counts(deckDraft.cards);
+  const changed = [...catalog.values()].filter(card => (saved.get(card.id) || 0) !== (draft.get(card.id) || 0))
+    .sort((a, b) => a.name.localeCompare(b.name, 'en') || a.id.localeCompare(b.id, 'en'));
+  $('deck-changes').hidden = !deckHasChanges();
+  $('deck-changes-title').textContent = `Thay đổi so với bản lưu đã xác nhận${changed.length ? ' · ' + changed.length + ' loại bài' : ''}`;
+  $('deck-changes-table').hidden = !changed.length;
+  $('deck-changes-rows').replaceChildren(...changed.map(card => {
+    const row = node('tr'); row.dataset.cardId = card.id;
+    const name = node('th', card.name); name.scope = 'row';
+    row.append(name, node('td', String(saved.get(card.id) || 0)), node('td', String(draft.get(card.id) || 0)));
+    return row;
+  }));
+  $('deck-changes-order').textContent = !changed.length && deckHasChanges() ? 'Chỉ thay đổi thứ tự bài; số bản sao mỗi lá giữ nguyên.' : '';
+}
 function closeDeckDraft() {
   if (busy || (deckHasChanges() && !confirm('Bản sửa deck chưa được lưu. Đóng và bỏ thay đổi?'))) return;
   $('deck-dialog').close(); deckDraft = null;
@@ -539,6 +559,7 @@ function renderDeck() {
   $('deck-title').textContent = `Xây deck · ${names[deckDraft.seat]}`;
   $('deck-count').textContent = `${deckDraft.cards.length} lá · Tối thiểu ${deckRules.mainMin}${deckRules.mainMax === null ? ' · Không có trần 60 lá hiện đại' : ' · Tối đa ' + deckRules.mainMax}`;
   $('deck-draft-status').textContent = deckHasChanges() ? 'Có thay đổi chưa lưu.' : 'Bản nháp khớp bản lưu đã xác nhận.';
+  renderDeckChanges();
   const counts = new Map();
   const composition = { monster: 0, spell: 0, trap: 0 };
   for (const id of deckDraft.cards) {
