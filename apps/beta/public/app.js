@@ -1,7 +1,7 @@
 'use strict';
 const $ = id => document.getElementById(id);
 const catalog = new Map();
-let deckRules, deckDraft = null;
+let deckRules, deckDraft = null, deckImportPreview = null;
 let actionHints = new Set();
 let decisionDraft = null;
 let handSort = 'received', handContext = null;
@@ -514,25 +514,49 @@ function editDeck(cards) {
 function deckHasChanges() {
   return !!deckDraft && JSON.stringify(deckDraft.cards) !== JSON.stringify(deckDraft.savedCards);
 }
-function renderDeckChanges() {
+function deckCopyChanges(before, after) {
   const counts = cards => {
     const result = new Map();
     for (const id of cards) result.set(id, (result.get(id) || 0) + 1);
     return result;
   };
-  const saved = counts(deckDraft.savedCards), draft = counts(deckDraft.cards);
-  const changed = [...catalog.values()].filter(card => (saved.get(card.id) || 0) !== (draft.get(card.id) || 0))
-    .sort((a, b) => a.name.localeCompare(b.name, 'en') || a.id.localeCompare(b.id, 'en'));
+  const saved = counts(before), draft = counts(after);
+  return [...catalog.values()].filter(card => (saved.get(card.id) || 0) !== (draft.get(card.id) || 0))
+    .sort((a, b) => a.name.localeCompare(b.name, 'en') || a.id.localeCompare(b.id, 'en'))
+    .map(card => ({ card, saved: saved.get(card.id) || 0, draft: draft.get(card.id) || 0 }));
+}
+function renderDeckChanges() {
+  const changed = deckCopyChanges(deckDraft.savedCards, deckDraft.cards);
   $('deck-changes').hidden = !deckHasChanges();
   $('deck-changes-title').textContent = `Thay đổi so với bản lưu đã xác nhận${changed.length ? ' · ' + changed.length + ' loại bài' : ''}`;
   $('deck-changes-table').hidden = !changed.length;
-  $('deck-changes-rows').replaceChildren(...changed.map(card => {
+  $('deck-changes-rows').replaceChildren(...changed.map(({ card, saved, draft }) => {
     const row = node('tr'); row.dataset.cardId = card.id;
     const name = node('th', card.name); name.scope = 'row';
-    row.append(name, node('td', String(saved.get(card.id) || 0)), node('td', String(draft.get(card.id) || 0)));
+    row.append(name, node('td', String(saved)), node('td', String(draft)));
     return row;
   }));
   $('deck-changes-order').textContent = !changed.length && deckHasChanges() ? 'Chỉ thay đổi thứ tự bài; số bản sao mỗi lá giữ nguyên.' : '';
+}
+function clearDeckImportPreview() {
+  deckImportPreview = null;
+  $('deck-import-dialog').close();
+  $('deck-import-file-name').textContent = ''; $('deck-import-summary').textContent = '';
+  $('deck-import-rows').replaceChildren();
+}
+function showDeckImportPreview(cards, fileName) {
+  deckImportPreview = { draft: deckDraft, seat: view.viewerId, before: JSON.stringify(deckDraft.cards), cards: [...cards] };
+  const changes = deckCopyChanges(deckDraft.cards, cards);
+  $('deck-import-file-name').textContent = fileName;
+  $('deck-import-summary').textContent = `${deckDraft.cards.length} lá trong bản nháp → ${cards.length} lá trong file. `
+    + (changes.length ? `${changes.length} loại bài thay đổi.` : JSON.stringify(cards) === deckImportPreview.before ? 'Danh sách và thứ tự giống bản nháp.' : 'Chỉ thay đổi thứ tự bài.');
+  $('deck-import-table').hidden = !changes.length;
+  $('deck-import-rows').replaceChildren(...changes.map(({ card, saved, draft }) => {
+    const row = node('tr'); row.dataset.cardId = card.id;
+    const name = node('th', card.name); name.scope = 'row';
+    row.append(name, node('td', String(saved)), node('td', String(draft))); return row;
+  }));
+  $('deck-import-dialog').showModal();
 }
 function closeDeckDraft() {
   if (busy || (deckHasChanges() && !confirm('Bản sửa deck chưa được lưu. Đóng và bỏ thay đổi?'))) return;
@@ -620,6 +644,20 @@ $('deck-search').addEventListener('keydown', e => { if (e.key === 'Enter') e.pre
 $('deck-search').addEventListener('input', renderDeck); $('deck-kind').addEventListener('change', renderDeck); $('deck-presence').addEventListener('change', renderDeck); $('deck-sort').addEventListener('change', renderDeck);
 $('deck-close').addEventListener('click', closeDeckDraft);
 $('deck-dialog').addEventListener('cancel', e => { e.preventDefault(); closeDeckDraft(); });
+$('deck-dialog').addEventListener('close', () => { if (!$('deck-dialog').open) clearDeckImportPreview(); });
+$('deck-import-cancel').addEventListener('click', clearDeckImportPreview);
+$('deck-import-dialog').addEventListener('cancel', e => { e.preventDefault(); clearDeckImportPreview(); });
+$('deck-import-dialog').addEventListener('close', () => { if (!$('deck-import-dialog').open) clearDeckImportPreview(); });
+$('deck-import-apply').addEventListener('click', () => {
+  if (busy || !deckImportPreview) return;
+  const pending = deckImportPreview;
+  if (!deckDraft || deckDraft !== pending.draft || view.viewerId !== pending.seat || JSON.stringify(deckDraft.cards) !== pending.before) {
+    clearDeckImportPreview(); $('deck-error').textContent = 'Bản nháp hoặc người chơi đã thay đổi. Hãy chọn file lại để xem trước.'; return;
+  }
+  editDeck(pending.cards); clearDeckImportPreview();
+  $('deck-error').textContent = 'Đã nhập vào bản nháp. Kiểm tra rồi bấm Lưu deck để áp dụng cho trận mới.';
+  renderDeck();
+});
 $('deck-undo').addEventListener('click', () => navigateDeckHistory('undo'));
 $('deck-redo').addEventListener('click', () => navigateDeckHistory('redo'));
 $('deck-dialog').addEventListener('keydown', e => {
@@ -687,12 +725,14 @@ $('deck-import').addEventListener('click', () => {
 });
 $('deck-file').addEventListener('change', async () => {
   const file = $('deck-file').files[0]; if (busy || !deckDraft || !file) return;
+  clearDeckImportPreview();
   busy = true; renderDeck();
   try {
     if (file.size > 12000) throw new Error('File deck vượt 12.000 byte.');
+    const draft = deckDraft;
     const data = await api('/api/deck/import', { seat: deckDraft.seat, text: await file.text() });
-    editDeck(data.cards);
-    $('deck-error').textContent = 'Đã nhập vào bản nháp. Kiểm tra rồi bấm Lưu deck để áp dụng cho trận mới.';
+    if (deckDraft !== draft || view.viewerId !== draft.seat) throw new Error('Người chơi hoặc bản nháp đã thay đổi; hãy chọn file lại.');
+    showDeckImportPreview(data.cards, file.name);
   } catch (error) { $('deck-error').textContent = 'Không nhập được; giữ nguyên bản nháp và deck đã lưu. ' + error.message; }
   finally { $('deck-file').value = ''; busy = false; renderDeck(); }
 });

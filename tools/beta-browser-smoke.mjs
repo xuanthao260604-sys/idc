@@ -1485,11 +1485,15 @@ try {
     }
     assert.ok(portable); assert.equal(portable.cards.length,41);
     assert.deepEqual(Object.keys(portable).sort(),['cards','format','kind','schemaVersion']);
-    const upload = async path => {
+    const upload = async (path,apply=true) => {
       const root = await send('DOM.getDocument');
       const input = await send('DOM.querySelector',{nodeId:root.root.nodeId,selector:'#deck-file'});
       await send('DOM.setFileInputFiles',{nodeId:input.nodeId,files:[path]});
       await wait(`!busy && document.getElementById('deck-file').value===''`);
+      if(apply&&await evaluate(`document.getElementById('deck-import-dialog').open`)) {
+        await click(`document.getElementById('deck-import-apply')`);
+        await wait(`!document.getElementById('deck-import-dialog').open`);
+      }
     };
     const invalidPath=join(downloads,'invalid.json');await writeFile(invalidPath,'{');
     const historyBeforeInvalid=await evaluate('JSON.stringify([deckDraft.undo,deckDraft.redo])');
@@ -1499,11 +1503,57 @@ try {
     assert.equal(await evaluate('deckDraft.cards.length'),41);
     await change('official:89631139','remove'); assert.equal(await evaluate('deckDraft.cards.length'),40);
     const beforeImport=await evaluate('JSON.stringify(deckDraft.cards)');
+    const untouched=await evaluate('JSON.stringify(deckDraft)'),savedBeforePreview=await evaluate(`api('/api/deck')`);
+    await upload(exportedPath,false);
+    assert.equal(await evaluate(`document.getElementById('deck-import-dialog').open`),true);
+    assert.equal(await evaluate('JSON.stringify(deckDraft)'),untouched);
+    assert.equal(await evaluate('JSON.stringify(view)'),before);
+    assert.deepEqual(await evaluate(`api('/api/deck')`),savedBeforePreview);
+    assert.match(await evaluate(`document.getElementById('deck-import-summary').textContent`),/40.*41.*1 loại bài/);
+    assert.equal(await evaluate(`document.getElementById('deck-import-file-name').textContent`),'classic-duel-deck-a.json');
+    assert.deepEqual(await evaluate(`[...document.querySelectorAll('#deck-import-rows tr')].map(row=>({id:row.dataset.cardId,old:Number(row.cells[1].textContent),next:Number(row.cells[2].textContent)}))`),[{id:'official:89631139',old:2,next:3}]);
+    assert.equal(await evaluate('document.activeElement.id'),'deck-import-cancel');
+    await click(`document.getElementById('deck-import-cancel')`);
+    assert.equal(await evaluate('JSON.stringify(deckDraft)'),untouched);
+    assert.equal(await evaluate('deckImportPreview'),null);
+    assert.equal(await evaluate(`document.querySelectorAll('#deck-import-rows tr').length`),0);
+    assert.equal(await evaluate(`document.getElementById('deck-import-file-name').textContent`),'');
+    await upload(exportedPath,false);
+    await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});
+    await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});
+    await wait(`!document.getElementById('deck-import-dialog').open`);
+    assert.equal(await evaluate(`document.getElementById('deck-dialog').open`),true);
+    assert.equal(await evaluate('JSON.stringify(deckDraft)'),untouched);assert.equal(await evaluate('deckImportPreview'),null);
+    await upload(exportedPath,false);
+    for(const [label,width,height]of [['desktop',1440,1000],['narrow',390,844]]) {
+      await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
+      assert.equal(await evaluate(`(()=>{const d=document.getElementById('deck-import-dialog'),r=d.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1&&d.scrollWidth<=d.clientWidth+1&&r.height<=innerHeight})()`),true);
+      if(process.argv.includes('--screenshots')) {
+        const folder=join(projectRoot,'artifacts','deck-import-preview');await mkdir(folder,{recursive:true});
+        const shot=await send('Page.captureScreenshot',{format:'png'});await writeFile(join(folder,label+'.png'),Buffer.from(shot.data,'base64'));
+      }
+    }
+    await send('Emulation.clearDeviceMetricsOverride');await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
+    await click(`document.getElementById('deck-import-apply')`);
+    assert.equal(await evaluate('deckDraft.cards.length'),41);
+    assert.equal(await evaluate('deckDraft.undo.length'),JSON.parse(untouched).undo.length+1);
+    assert.equal(await evaluate('deckImportPreview'),null);
+    await click(`document.getElementById('deck-undo')`);assert.equal(await evaluate('JSON.stringify(deckDraft.cards)'),beforeImport);
     await upload(exportedPath); assert.equal(await evaluate('deckDraft.cards.length'),41);
     const importedCards=await evaluate('JSON.stringify(deckDraft.cards)');
     await click(`document.getElementById('deck-undo')`);assert.equal(await evaluate('JSON.stringify(deckDraft.cards)'),beforeImport);
     await click(`document.getElementById('deck-redo')`);assert.equal(await evaluate('JSON.stringify(deckDraft.cards)'),importedCards);
-    await upload(exportedPath);
+    const sameHistory=await evaluate('JSON.stringify([deckDraft.undo,deckDraft.redo])');
+    await upload(exportedPath,false);
+    assert.match(await evaluate(`document.getElementById('deck-import-summary').textContent`),/Danh sách và thứ tự giống/);
+    assert.equal(await evaluate(`document.getElementById('deck-import-table').hidden`),true);
+    await click(`document.getElementById('deck-import-apply')`);
+    assert.equal(await evaluate('JSON.stringify([deckDraft.undo,deckDraft.redo])'),sameHistory);
+    const reversedPath=join(downloads,'reordered.json');await writeFile(reversedPath,JSON.stringify({...portable,cards:[...portable.cards].reverse()}));
+    const beforeReordered=await evaluate('JSON.stringify(deckDraft)');await upload(reversedPath,false);
+    assert.match(await evaluate(`document.getElementById('deck-import-summary').textContent`),/Chỉ thay đổi thứ tự/);
+    assert.equal(await evaluate(`document.getElementById('deck-import-table').hidden`),true);
+    await click(`document.getElementById('deck-import-cancel')`);assert.equal(await evaluate('JSON.stringify(deckDraft)'),beforeReordered);
     assert.match(await evaluate(`document.getElementById('deck-error').textContent`),/bản nháp/);
     assert.equal(await evaluate(`(async()=> (await api('/api/deck')).cards.length)()`),40);
     assert.equal(await evaluate('JSON.stringify(view)'),before);
@@ -1562,7 +1612,7 @@ try {
     await seat('a'); await openDeck(); assert.equal(await evaluate('deckDraft.cards.length'), 41);
     await closeDeck();
     assert.equal(errors.length, 0);
-    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'deck-builder', importedDeckUndoRedo:true,invalidImportPreservesHistory:true,portableFileRoundtrip: true, invalidImportPreservesDraft: true, importRequiresSave: true, decks: [41,42], invalidSizeBlocked: true, copyLimits: true, cancelPreservesSaved: true, networkErrorPreservesDraft: true, savePreservesDuel: true, appliedOnNewDuel: true, runtimeExceptions: errors.length }));
+    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'deck-builder',importPreview:true,importCancelAndEscapePreserveDraft:true,importApplyOneUndoStep:true,importSameFileNoHistoryChange:true,importPreviewResponsive:true, importedDeckUndoRedo:true,invalidImportPreservesHistory:true,portableFileRoundtrip: true, invalidImportPreservesDraft: true, importRequiresSave: true, decks: [41,42], invalidSizeBlocked: true, copyLimits: true, cancelPreservesSaved: true, networkErrorPreservesDraft: true, savePreservesDuel: true, appliedOnNewDuel: true, runtimeExceptions: errors.length }));
   } else if (concede) {
     const before = await evaluate('JSON.stringify(view)');
     dialogAnswer = false; await click(`document.getElementById('concede')`);
