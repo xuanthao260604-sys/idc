@@ -29,7 +29,7 @@ function setup(actor='a',count=2){
  }
  const source=move('Magician of Faith',actor,'monster',0,true),pot=count>0?move('Pot of Greed'):null,fissure=count>1?move('Fissure'):null;
  const trap=move('Trap Hole'),monster=move('Mystical Elf'),foreign=move('Pot of Greed',other),hand=move('Hinotama',actor,'hand'),attacker=move('Battle Ox',other,'monster');
- assertDuelInvariants(s,registry);return{s,actor,other,source,pot,fissure,trap,monster,foreign,hand,attacker};
+ assertDuelInvariants(s,registry);return{s,actor,other,source,pot,fissure,trap,monster,foreign,hand,attacker,move};
 }
 function step(s:DuelState,actorId:string,action:EngineAction){const before=structuredClone(s),r=applyAction(registry,s,{actorId,expectedStateVersion:s.stateVersion,action});expect(s).toEqual(before);if(!r.accepted)throw Error(r.message);assertDuelInvariants(r.state,registry);return r;}
 function settle(s:DuelState){for(let n=0;s.timing.window!=='open';n++){if(n>16||s.pendingDecision)throw Error('Unresolved');s=step(s,s.timing.priorityPlayer!,{type:'pass'}).state;}return s;}
@@ -85,5 +85,72 @@ describe('Reviewed Magician of Faith own Graveyard Spell recovery',()=>{
    const old=createRegistry(cards.filter(c=>c.id!==faith),goat200508Format,{},spellReviews,load('data/reviews/pilot.flip-effects.json'),load('data/reviews/pilot.trap-effects.json')),store=createDeckStore(old,d);
    const saved=['official:82828051','official:74848038',...store.defaults].slice(0,40);expect((await store.save('a',0,saved)).ok).toBe(true);const bytes=await readFile(join(d,'a.json'),'utf8'),next=createDeckStore(registry,d);expect(next.defaults).toEqual(store.defaults);expect(next.get('a')).toEqual(store.get('a'));expect(await readFile(join(d,'a.json'),'utf8')).toBe(bytes);
   }finally{await rm(d,{recursive:true,force:true});}
+ });
+});
+
+function pickTarget(s:DuelState,actor:string,id:string){
+ expect(s.pendingDecision?.playerId).toBe(actor);
+ return step(s,actor,{type:'answer-decision',decisionId:s.pendingDecision!.id,optionIds:[id]}).state;
+}
+function recover(f:ReturnType<typeof setup>,id:string){return settle(pickTarget(flip(f),f.actor,id));}
+describe.each(['a','b'])('Magician of Faith interaction audit, controller %s',actor=>{
+ it('recovers Tribute to The Doomed, pays its discard at activation and destroys its target only at resolution',()=>{
+  const f=setup(actor,0),spell=f.move('Tribute to The Doomed');
+  let s=recover(f,spell);
+  s=step(s,actor,{type:'activate-spell',instanceId:spell,slot:0,discardId:f.hand,targetId:f.attacker}).state;
+  expect(s.cards[f.hand]!.location).toEqual({kind:'graveyard',playerId:actor});expect(s.cards[f.attacker]!.location.kind).toBe('monster');
+  expect(s.chain[0]!.targetRefs[0]!.instanceId).toBe(f.attacker);expect(s.chain[0]!.costEvents).toHaveLength(1);
+  s=settle(s);expect(s.cards[f.attacker]!.location).toEqual({kind:'graveyard',playerId:f.other});expect(s.cards[spell]!.location.kind).toBe('graveyard');
+  expect(s.cards[f.source]!.location.kind).toBe('monster');expect(s.players.every(p=>p.normalSummonsOrSetsUsed===0)).toBe(true);expect(s.players.map(p=>p.lifePoints)).toEqual([8000,8000]);
+ });
+ it('recovers Monster Reincarnation and then recovers a monster without confusing the two Graveyard target kinds',()=>{
+  const f=setup(actor,0),spell=f.move('Monster Reincarnation');let s=recover(f,spell);
+  s=step(s,actor,{type:'activate-spell',instanceId:spell,slot:0,discardId:f.hand,targetId:f.monster}).state;
+  expect(s.cards[f.hand]!.location.kind).toBe('graveyard');expect(s.cards[f.monster]!.location.kind).toBe('graveyard');
+  expect(s.chain[0]!.targetRefs).toEqual([{instanceId:f.monster,locationAtSelection:{kind:'graveyard',playerId:actor}}]);
+  s=settle(s);expect(s.cards[f.monster]!.location).toEqual({kind:'hand',playerId:actor});expect(s.cards[spell]!.location.kind).toBe('graveyard');expect(s.cards[f.trap]!.location.kind).toBe('graveyard');
+  expect(s.cards[f.foreign]!.location).toEqual({kind:'graveyard',playerId:f.other});expect(s.pendingDecision).toBeNull();expect(s.pendingTriggers).toEqual([]);
+ });
+ it('Earthquake changes the already flipped source without creating another FLIP or resetting its manual restriction',()=>{
+  const f=setup(actor,0),spell=f.move('Earthquake');let s=recover(f,spell);const markers=structuredClone(s.cards[f.source]!.markers);
+  expect(markers.manuallyChangedOnTurn).toBe(s.turn.number);
+  s=settle(step(s,actor,{type:'activate-spell',instanceId:spell,slot:0}).state);
+  expect(s.cards[f.source]!.position).toBe('face-up-defense');expect(s.cards[f.attacker]!.position).toBe('face-up-defense');expect(s.cards[f.source]!.markers).toEqual(markers);
+  expect(s.pendingTriggers).toEqual([]);expect(s.pendingDecision).toBeNull();expect(s.chain).toEqual([]);
+  const before=structuredClone(s);expect(applyAction(registry,s,{actorId:actor,expectedStateVersion:s.stateVersion,action:{type:'change-position',instanceId:f.source}})).toMatchObject({accepted:false,code:'invalid-position',state:s});expect(s).toEqual(before);
+ });
+ it('Hane-Hane can return the source, Set it with the Normal quota and reuse its FLIP on a later real turn',()=>{
+  const f=setup(actor,1),hane=f.move('Hane-Hane',actor,'monster',1,true);let s=recover(f,f.pot!);
+  s=settle(step(s,actor,{type:'activate-spell',instanceId:f.pot!,slot:0}).state);expect(s.cards[f.pot!]!.location.kind).toBe('graveyard');
+  s=step(s,actor,{type:'flip-summon',instanceId:hane}).state;s=settle(pickTarget(s,actor,f.source));
+  expect(s.cards[f.source]!.location).toEqual({kind:'hand',playerId:actor});expect(s.cards[f.source]!.markers.manuallyChangedOnTurn).toBeNull();
+  s=settle(step(s,actor,{type:'set-monster',instanceId:f.source,slot:0,tributeIds:[]}).state);
+  expect(s.players.find(p=>p.id===actor)!.normalSummonsOrSetsUsed).toBe(1);
+  const before=structuredClone(s);expect(applyAction(registry,s,{actorId:actor,expectedStateVersion:s.stateVersion,action:{type:'flip-summon',instanceId:f.source}})).toMatchObject({accepted:false,code:'invalid-position',state:s});expect(s).toEqual(before);
+  s=phase(phase(s,'end'),'draw');s=phase(phase(s,'standby'),'main1');expect(s.turn.activePlayer).toBe(f.other);
+  s=phase(phase(s,'end'),'draw');s=phase(phase(s,'standby'),'main1');expect(s.turn.activePlayer).toBe(actor);
+  s=step(s,actor,{type:'flip-summon',instanceId:f.source}).state;s=settle(pickTarget(s,actor,f.pot!));
+  expect(s.cards[f.pot!]!.location).toEqual({kind:'hand',playerId:actor});expect(s.cards[f.source]!.position).toBe('face-up-attack');expect(s.players.find(p=>p.id===actor)!.normalSummonsOrSetsUsed).toBe(0);
+ });
+ it('a Spell recovered in the opponent Battle Phase cannot be used until its controller reaches an open Main',()=>{
+  const f=setup(actor,0),spell=f.move('Fissure');f.s.turn.activePlayer=f.other;f.s.timing.priorityPlayer=f.other;
+  let s=phase(f.s,'battle');s=step(s,f.other,{type:'declare-attack',attackerId:f.attacker,targetId:f.source}).state;s=step(s,f.other,{type:'pass'}).state;s=step(s,actor,{type:'pass'}).state;
+  s=settle(pickTarget(s,actor,spell));expect(s.cards[f.source]!.location.kind).toBe('graveyard');expect(s.cards[spell]!.location.kind).toBe('hand');
+  const before=structuredClone(s);expect(applyAction(registry,s,{actorId:actor,expectedStateVersion:s.stateVersion,action:{type:'activate-spell',instanceId:spell,slot:0}})).toMatchObject({accepted:false,state:s});expect(s).toEqual(before);
+  s=phase(phase(s,'main2'),'end');s=phase(s,'draw');s=phase(phase(s,'standby'),'main1');expect(s.turn.activePlayer).toBe(actor);
+  s=settle(step(s,actor,{type:'activate-spell',instanceId:spell,slot:0}).state);expect(s.cards[f.attacker]!.location).toEqual({kind:'graveyard',playerId:f.other});expect(s.cards[spell]!.location.kind).toBe('graveyard');
+ });
+ it('a recovered Spell can be discarded as another Spell cost without retriggering the resolved FLIP',()=>{
+  const f=setup(actor,1),doomed=f.move('Tribute to The Doomed',actor,'hand');let s=recover(f,f.pot!);
+  const activated=step(s,actor,{type:'activate-spell',instanceId:doomed,slot:0,discardId:f.pot!,targetId:f.attacker});s=activated.state;
+  expect(s.cards[f.pot!]!.location).toEqual({kind:'graveyard',playerId:actor});expect(s.pendingTriggers).toEqual([]);expect(s.pendingDecision).toBeNull();
+  expect(publicResolution(activated.events,s)).toEqual([{kind:'discard-cost',playerId:actor,count:1}]);
+  s=settle(s);expect(s.players.find(p=>p.id===actor)!.hand).not.toContain(f.pot);expect(s.cards[f.source]!.location.kind).toBe('monster');expect(s.cards[doomed]!.location.kind).toBe('graveyard');expect(s.pendingTriggers).toEqual([]);
+ });
+ it('Fissure recovered by the 300-ATK source ignores that source and an opposing face-down monster',()=>{
+  const f=setup(actor,0),spell=f.move('Fissure'),hidden=f.move('Man-Eater Bug',f.other,'monster',1,true);let s=recover(f,spell);
+  s=settle(step(s,actor,{type:'activate-spell',instanceId:spell,slot:0}).state);
+  expect(s.cards[f.source]!.location.kind).toBe('monster');expect(s.cards[f.source]!.position).toBe('face-up-attack');expect(s.cards[f.attacker]!.location.kind).toBe('graveyard');expect(s.cards[hidden]!.position).toBe('face-down-defense');
+  expect(s.pendingTriggers).toEqual([]);expect(s.pendingDecision).toBeNull();expect(s.players.map(p=>p.lifePoints)).toEqual([8000,8000]);
  });
 });
