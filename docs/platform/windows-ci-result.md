@@ -1,6 +1,10 @@
 # Kết quả Windows CI
 
-> Mốc hiện hành: [tìm và lọc bài trong Mộ](../beta/graveyard-filters.md), catalog 109; [run 40103017434](https://github.com/xuanthao260604-sys/idc/actions/runs/40103017434), commit 361fc08.
+> Mốc hiện hành: [lọc lịch sử thao tác công khai](../beta/activity-filters.md), catalog 109; [run 40104493247](https://github.com/xuanthao260604-sys/idc/actions/runs/40104493247), commit ff80fbf.
+> Windows/Ubuntu đạt; Windows: 784/784 test, 43/43 bước, 33 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Đã đọc artifact windows-validation-40104493247-1: lọc theo lượt/Pass, giữ kết quả xử lý, cập nhật/reset và lịch sử 60 dòng của hai trận tự nhiên đạt. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [tìm và lọc bài trong Mộ](../beta/graveyard-filters.md), catalog 109; [run 40103017434](https://github.com/xuanthao260604-sys/idc/actions/runs/40103017434), commit 361fc08.
 > Windows/Ubuntu đạt; Windows: 784/784 test, 42/42 bước, 32 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Đã đọc artifact windows-validation-40103017434-1: lọc tên/text/loại, giữ vị trí và bản sao, reset preview, hai ghế và Mộ trống đạt. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
 

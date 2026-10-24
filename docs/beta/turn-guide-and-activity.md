@@ -1,5 +1,7 @@
 # Hướng dẫn lượt và lịch sử công khai
 
+> Cập nhật: đã có [lọc lịch sử công khai](activity-filters.md), giữ Pass có kết quả và kiểm chứng trên Windows CI. Các số kiểm thử bên dưới ghi mốc hướng dẫn/activity ban đầu.
+
 Bàn đấu beta có bảng hướng dẫn ngay trên sân, cập nhật từ PlayerView:
 
 - Ai đang có priority, khi nào dùng Pass và vì sao Pass không tự kết thúc lượt.
