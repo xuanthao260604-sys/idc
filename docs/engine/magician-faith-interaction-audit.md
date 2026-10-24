@@ -28,6 +28,12 @@ ruling lịch sử hoặc mở general mixed Chain/negate/immunity/replacement.
 ## Kiểm chứng
 
 Linux đạt typecheck, 784/784 test trong 35 file; riêng Magician of Faith đạt
-42/42 test. Đang xác nhận Windows CI. Không chạy lại browser Linux vì không đổi
+42/42 test. Không chạy lại browser Linux vì không đổi
 logic sản phẩm/UI; bằng chứng triển khai giữ ở tài liệu mốc Magician of Faith.
+Windows và Ubuntu CI [run 40056955363](https://github.com/xuanthao260604-sys/idc/actions/runs/40056955363)
+đạt trên source commit a4d168d344d6c87fa317c61f35ea5db797094c00. Đã tải và đọc
+artifact windows-validation-40056955363-1: win32 x64, OS 10.0.26100,
+Node 24.19.0, npm 11.17.0, Edge 155.0.4283.62. Windows đạt 784/784 test
+trong 35 file, 33/33 bước validation, 23 browser report; tổng runtimeExceptions=0.
+Đây là hồi quy CI; report ghi windows11DesktopVerified=false.
 Windows 11 desktop chưa thử trực tiếp; chưa đóng gói hoặc bàn giao beta.

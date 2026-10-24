@@ -1,4 +1,6 @@
-> Mốc hiện tại: [Magician of Faith](../engine/magician-of-faith.md), catalog 109 trong 16 bundle; 95 verified data và 14 pending lịch sử. Runtime mở riêng 95 quái thường và 14 hiệu ứng trong scope giới hạn. Linux và Windows CI đạt 770 test; Windows đạt 33 bước, 23 browser report. Dữ liệu/deck cũ giữ nguyên; Windows 11 desktop chưa chạy.
+> Mốc hiện tại: [rà soát tương tác Magician of Faith](../engine/magician-faith-interaction-audit.md), catalog 109 không đổi; thêm 14 test về phục hồi/chi phí/timing và úp lại Faith. Linux và Windows CI đạt 784 test; Windows đạt 33 bước, 23 browser report. Không đổi engine/dữ liệu/deck; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [Magician of Faith](../engine/magician-of-faith.md), catalog 109 trong 16 bundle; 95 verified data và 14 pending lịch sử. Runtime mở riêng 95 quái thường và 14 hiệu ứng trong scope giới hạn. Linux và Windows CI đạt 770 test; Windows đạt 33 bước, 23 browser report. Dữ liệu/deck cũ giữ nguyên; Windows 11 desktop chưa chạy.
 
 > Mốc trước: [hạn mức Normal Summon/Set](../beta/summon-quota.md), catalog 108 không đổi; hiển thị bộ đếm công khai từ engine, không hoàn lượt khi quái bị phá. Linux và Windows CI đạt 740 test; Windows đạt 32 bước, 22 browser report. Không đổi luật/dữ liệu/deck; Windows 11 desktop chưa chạy.
 

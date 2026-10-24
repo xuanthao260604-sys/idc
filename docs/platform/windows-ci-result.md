@@ -1,6 +1,10 @@
 # Kết quả Windows CI
 
-> Mốc hiện hành: [Magician of Faith](../engine/magician-of-faith.md), catalog 109; [run 39977194358](https://github.com/xuanthao260604-sys/idc/actions/runs/39977194358), commit 44f17be.
+> Mốc hiện hành: [rà soát tương tác Magician of Faith](../engine/magician-faith-interaction-audit.md), catalog 109; [run 40056955363](https://github.com/xuanthao260604-sys/idc/actions/runs/40056955363), commit a4d168d.
+> Windows/Ubuntu đạt; Windows: 784/784 test, 33/33 bước, 23 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Đã đọc artifact windows-validation-40056955363-1: thêm 14 test tương tác A/B, không đổi engine/dữ liệu/deck. Windows 11 desktop chưa chạy.
+
+> Mốc trước: [Magician of Faith](../engine/magician-of-faith.md), catalog 109; [run 39977194358](https://github.com/xuanthao260604-sys/idc/actions/runs/39977194358), commit 44f17be.
 > Windows/Ubuntu đạt; Windows: 770/770 test, 33/33 bước, 23 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Đã đọc artifact windows-validation-39977194358-1: FLIP lấy Phép từ Mộ, dùng lại Pot, trận tự nhiên 109 và bảo toàn dữ liệu/deck cũ đạt. Snapshot lịch sử vẫn pending; Windows 11 desktop chưa chạy.
 
