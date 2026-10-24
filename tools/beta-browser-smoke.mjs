@@ -17,13 +17,15 @@ const lifePointsMode = lifePointsArg?.split('=')[1] ?? null;
 const smashingGround = process.argv.includes('--smashing-ground');
 const hammerShot = process.argv.includes('--hammer-shot');
 const magicianFaith = process.argv.includes('--magician-faith');
+const faithBattleArg = process.argv.find(arg => /^--faith-battle=[ab]:[02]$/.test(arg));
+const faithBattle = faithBattleArg ? { defender: faithBattleArg.split('=')[1].split(':')[0], spells: Number(faithBattleArg.split(':')[1]) } : null;
 const earthquake = process.argv.includes('--earthquake');
 const blockAttack = process.argv.includes('--block-attack');
 const tributeDoomed = process.argv.includes('--tribute-doomed');
 const reincarnationArg = process.argv.find(arg => /^--reincarnation=(grave|cost)$/.test(arg));
 const reincarnationMode = reincarnationArg?.split('=')[1] ?? null;
 const deckOverview = process.argv.includes('--deck-overview');
-const expanded = magicianFaith || deckOverview || earthquake || blockAttack || reincarnationMode !== null || tributeDoomed || hammerShot || smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
+const expanded = faithBattle !== null || magicianFaith || deckOverview || earthquake || blockAttack || reincarnationMode !== null || tributeDoomed || hammerShot || smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
 const r = expanded ? loadRuntimeCatalog().registry : createRegistry((await read('data/generated/pilot.json')).cards, goat200508Format, {},
   await read('data/reviews/pilot.spell-effects.json'), await read('data/reviews/pilot.flip-effects.json'), await read('data/reviews/pilot.trap-effects.json'));
 const deck = Object.keys(r.cards);
@@ -61,13 +63,22 @@ if (magicianFaith) {
   move('Pot of Greed','b','graveyard');move('Celtic Guardian','b','monster',0);
   s.turn.number=3;s.turn.phase='main1';s.timing.window='open';s.timing.priorityPlayer='a';s.timing.consecutivePasses=0;
 }
+if (faithBattle) {
+  const defender = faithBattle.defender, attacker = defender === 'a' ? 'b' : 'a';
+  move('Magician of Faith',defender,'monster',0,true);
+  move('Trap Hole',defender,'graveyard');move('Battle Ox',defender,'graveyard');
+  if (faithBattle.spells) { move('Pot of Greed',defender,'graveyard');move('Fissure',defender,'graveyard'); }
+  move('Pot of Greed',attacker,'graveyard');move('Celtic Guardian',attacker,'monster',0);
+  s.turn.number=attacker==='a'?3:4;s.turn.activePlayer=attacker;s.turn.phase='main1';
+  s.timing.window='open';s.timing.priorityPlayer=attacker;s.timing.consecutivePasses=0;
+}
 if (chainView) {
   move('Battle Ox','a','hand');move('Pot of Greed','a','hand');
   move('Trap Hole','b','spell-trap',0,true);move('Trap Hole','b','spell-trap',1,true);
   move('Man-Eater Bug','b','monster',0,true);
   s.turn.number=3;s.turn.phase='main1';s.timing.window='open';s.timing.priorityPlayer='a';s.timing.consecutivePasses=0;
 }
-if (expanded && !fullDuel && lifePointsMode === null && !smashingGround && !hammerShot && !tributeDoomed && !blockAttack && !earthquake && !magicianFaith && !deckOverview && reincarnationMode === null) {
+if (expanded && !fullDuel && lifePointsMode === null && !smashingGround && !hammerShot && !tributeDoomed && !blockAttack && !earthquake && !magicianFaith && !faithBattle && !deckOverview && reincarnationMode === null) {
   move('Gaia The Fierce Knight', 'a', 'hand');
   move('Battle Ox', 'a', 'monster', 0); move('Celtic Guardian', 'a', 'monster', 1, true);
   move('Curse of Dragon', 'a', 'hand');
@@ -417,7 +428,90 @@ try {
   }
   await send('Runtime.enable'); await send('Page.enable'); await send('Page.navigate', { url: `http://127.0.0.1:${server.address().port}` });
   await wait(`document.getElementById('seat-dialog')?.open`); await seat('a');
-  if (magicianFaith) {
+  if (faithBattle) {
+    const {defender,spells}=faithBattle,attacker=defender==='a'?'b':'a';
+    const owner=`view.players.find(p=>p.playerId===${JSON.stringify(defender)})`;
+    const opponent=`view.players.find(p=>p.playerId===${JSON.stringify(attacker)})`;
+    const ownHandCard=name=>`[...document.querySelectorAll('#hand .card')].find(e=>e.querySelector('.card-name')?.textContent===${JSON.stringify(name)})`;
+    async function advance(text) {
+      await seat(await evaluate('view.turn.activePlayer'));await actionClick(textButton('#turn-actions button',text));
+      for(let n=0;await evaluate("view.timing.window!=='open'");n++) {
+        assert.ok(n<4,'Phase transition must finish');await pass(await evaluate('view.timing.priorityPlayer'));
+      }
+    }
+    await seat(defender);const beforeHand=await evaluate('view.selfHand.length');
+    const graveBefore=await evaluate(`${owner}.graveyard.map(c=>catalog.get(c.definition.id).name)`);
+    await seat(attacker);await advance('CHIẾN ĐẤU');await seat(attacker);
+    assert.equal(await evaluate(`${owner}.monsters[0].visibility`),'hidden');
+    assert.equal(await evaluate(`${owner}.monsters[0].definition`),undefined);
+    await click(`document.querySelector('#self .zone-row:nth-child(2) .card')`);
+    await click(textButton('#actions button','Tấn công'));await chooseTarget(0);await confirm();
+    assert.match(await evaluate(`document.getElementById('battle-status').textContent`),/Bài úp/);
+    assert.equal(await evaluate(`document.getElementById('battle-status').textContent.includes('Magician of Faith')`),false);
+    await pass(attacker);await pass(defender);
+    assert.equal(await evaluate('view.battle.damageTiming'),'after-calculation');
+    assert.equal(await evaluate(`${owner}.monsters[0].position`),'face-up-defense');
+    assert.equal(await evaluate(`${owner}.graveyard.length`),graveBefore.length);
+    assert.equal(await evaluate('view.selfHand.length'),beforeHand);
+    if(spells) {
+      assert.equal(await evaluate('view.decision.kind'),'target');
+      assert.equal(await evaluate('view.decision.optionIds.length'),2);
+      const labels=await evaluate(`[...document.querySelectorAll('#decision-form label')].map(e=>e.textContent)`);
+      assert.ok(labels.every(t=>t.includes(`Người chơi ${defender.toUpperCase()}`)&&t.includes('Mộ')));
+      assert.ok(labels.some(t=>t.includes('Pot of Greed')));assert.ok(labels.some(t=>t.includes('Fissure')));
+      const version=await evaluate('view.stateVersion');
+      await seat(attacker);assert.equal(await evaluate('view.decision'),null);
+      assert.equal(await evaluate(`document.getElementById('decision-panel').hidden`),true);
+      assert.equal(await evaluate(`document.querySelectorAll('#decision-form input').length`),0);
+      await seat(defender);assert.equal(await evaluate('view.stateVersion'),version);
+      await inspectDecision(0);await inspectDecision(1,true);
+      await click(`[...document.querySelectorAll('#decision-form label')].find(e=>e.textContent.includes('Pot of Greed')).querySelector('input')`);
+      await actionClick(`document.querySelector('#decision-form button[type="submit"]')`);
+    } else {
+      assert.equal(await evaluate('view.decision'),null);
+      assert.equal(await evaluate(`document.getElementById('decision-panel').hidden`),true);
+    }
+    assert.equal(await evaluate('view.chain.length'),1);
+    assert.equal(await evaluate('view.chain[0].controllerId'),defender);
+    assert.equal(await evaluate('view.chain[0].targetHandles.length'),spells?1:0);
+    await inspectChain('source','Magician of Faith');
+    if(spells) await inspectChain('target','Pot of Greed');
+    else assert.equal(await evaluate(`document.querySelectorAll('#chain-links [data-chain-card="target"]').length`),0);
+    await pass(attacker);await seat(defender);
+    assert.equal(await evaluate('view.selfHand.length'),beforeHand);
+    assert.ok(await evaluate(`${owner}.monsters[0]!==null`));
+    await pass(defender);
+    assert.equal(await evaluate('view.chain.length'),0);assert.equal(await evaluate('view.decision'),null);
+    assert.equal(await evaluate(`${owner}.monsters[0]`),null);
+    assert.deepEqual(await evaluate(`${owner}.graveyard.map(c=>catalog.get(c.definition.id).name)`),
+      [...graveBefore.filter(n=>!spells||n!=='Pot of Greed'),'Magician of Faith']);
+    assert.deepEqual(await evaluate(`${opponent}.graveyard.map(c=>catalog.get(c.definition.id).name)`),['Pot of Greed']);
+    assert.equal(await evaluate('view.selfHand.length'),beforeHand+(spells?1:0));
+    assert.deepEqual(await evaluate('view.players.map(p=>p.lifePoints)'),[8000,8000]);
+    assert.equal(await evaluate('view.normalSummonQuota.remaining'),1);
+    assert.equal(await evaluate('view.timing.window'),'open');assert.equal(await evaluate('view.turn.activePlayer'),attacker);
+    assert.equal(await evaluate(`document.getElementById('battle-status').hidden`),true);
+    assert.equal(await evaluate(`document.querySelectorAll('.battle-attacker,.battle-target').length`),0);
+    if(spells) {
+      await click(ownHandCard('Pot of Greed'));
+      assert.equal(await evaluate(`${textButton('#actions button','Kích hoạt')}.disabled`),true);
+      assert.equal(await evaluate(`view.availableActions.some(a=>a.type==='activate-spell')`),false);
+      await seat(attacker);assert.equal(await evaluate('view.opponentHandCount'),beforeHand+1);
+      assert.equal(await evaluate(`view.selfHand.some(c=>catalog.get(c.definition.id).name==='Pot of Greed')`),false);
+      await advance('MAIN 2');await advance('KẾT THÚC');await advance('Sang lượt đối thủ');await advance('CHUẨN BỊ');await advance('MAIN 1');
+      await seat(defender);assert.equal(await evaluate('view.turn.activePlayer'),defender);
+      const beforePot=await evaluate('view.selfHand.length');
+      await click(ownHandCard('Pot of Greed'));await click(textButton('#actions button','Kích hoạt'));await confirm();
+      await pass(attacker);await pass(defender);
+      assert.equal(await evaluate('view.selfHand.length'),beforePot+1);
+      assert.equal(await evaluate(`${owner}.graveyard.at(-1).definition.id`),Object.values(r.cards).find(c=>c.name==='Pot of Greed').id);
+      assert.equal(await evaluate('view.normalSummonQuota.remaining'),1);
+    }
+    assert.equal(errors.length,0);
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'faith-battle',defender,ownGraveyardSpells:spells,
+      hiddenBeforeReveal:true,privateDecision:true,mandatoryZeroTarget:spells===0,returnOnlyAtResolution:true,sourceCleanupAfterFlip:true,
+      battleCuesCleared:true,spellWaitsForOwnMain:spells>0,recoveredSpellUsed:spells>0,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
+  } else if (magicianFaith) {
     const beforeHand=await evaluate('view.selfHand.length');
     await click(`document.querySelector('#self .zone-row:nth-child(2) .card')`);await actionClick(textButton('#actions button','Flip Summon'));
     assert.equal(await evaluate('view.decision.kind'),'target');assert.equal(await evaluate('view.decision.optionIds.length'),2);
