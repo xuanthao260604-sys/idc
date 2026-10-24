@@ -1,6 +1,10 @@
 # Kết quả Windows CI
 
-> Mốc hiện hành: [rà soát tương tác Magician of Faith](../engine/magician-faith-interaction-audit.md), catalog 109; [run 40056955363](https://github.com/xuanthao260604-sys/idc/actions/runs/40056955363), commit a4d168d.
+> Mốc hiện hành: [Faith bị đánh lật qua hotseat](../beta/faith-battle-hotseat.md), catalog 109; [run 40063069066](https://github.com/xuanthao260604-sys/idc/actions/runs/40063069066), commit be61a76.
+> Windows/Ubuntu đạt; Windows: 784/784 test, 37/37 bước, 27 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Đã đọc artifact windows-validation-40063069066-1: bốn ca A/B × 0/2 Phép trong Mộ, lựa chọn riêng, source cleanup và dùng Phép lượt sau đạt. Không đổi engine/dữ liệu/deck; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [rà soát tương tác Magician of Faith](../engine/magician-faith-interaction-audit.md), catalog 109; [run 40056955363](https://github.com/xuanthao260604-sys/idc/actions/runs/40056955363), commit a4d168d.
 > Windows/Ubuntu đạt; Windows: 784/784 test, 33/33 bước, 23 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Đã đọc artifact windows-validation-40056955363-1: thêm 14 test tương tác A/B, không đổi engine/dữ liệu/deck. Windows 11 desktop chưa chạy.
 

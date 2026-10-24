@@ -30,6 +30,16 @@ integration test Vitest vẫn là 784 trong 35 file; không cộng browser vào 
 
 ## Kiểm chứng
 
-Bốn ca riêng đã đạt trên Linux với Chromium 154.0.8037.57, runtimeExceptions=0.
-Bộ tổng hợp Linux và Windows CI đang chờ kiểm chứng cho mốc này.
+Linux đạt typecheck, 784/784 test trong 35 file, 37/37 bước validation và
+27 browser report với Chromium 154.0.8037.57, tổng runtimeExceptions=0.
+Report: artifacts/platform-validation/2026-10-24T04-36-32-106Z-214447/report.json.
+Cả bốn ca mới đạt; các ca Faith cũ, trận tự nhiên, dữ liệu/deck và UI khác
+tiếp tục đạt.
+
+Windows và Ubuntu CI [run 40063069066](https://github.com/xuanthao260604-sys/idc/actions/runs/40063069066)
+đạt trên source commit be61a760b3de4d8833601c32f9db99d21f351e15. Đã tải và đọc
+artifact windows-validation-40063069066-1: win32 x64, OS 10.0.26100,
+Node 24.19.0, npm 11.17.0, Edge 155.0.4283.62. Windows đạt 784/784 test
+trong 35 file, 37/37 bước validation và 27 browser report, tổng runtimeExceptions=0.
+Cả bốn ca Faith bị đánh lật khớp Linux; report ghi windows11DesktopVerified=false.
 Windows 11 desktop chưa thử trực tiếp; chưa đóng gói hoặc bàn giao beta.
