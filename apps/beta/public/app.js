@@ -51,7 +51,11 @@ function cardPreview(d) {
   frontContent(preview, d); return preview;
 }
 function cardButton(card, zone, player, slot, onSelect) {
-  const d = def(card), b = button('', onSelect || (() => { selected = { card, zone, player, slot }; render(); }), `card ${d?.kind === 'spell' ? 'spell' : d?.kind === 'trap' ? 'trap' : ''} ${!d ? 'back' : ''} ${selected?.card.handle === card.handle ? 'selected' : ''}`);
+  const d = def(card), b = button('', onSelect || (() => {
+    const hadFocus = document.activeElement === b;
+    selected = { card, zone, player, slot }; render();
+    if (hadFocus) document.querySelector('main button.card.selected')?.focus({ preventScroll: true });
+  }), `card ${d?.kind === 'spell' ? 'spell' : d?.kind === 'trap' ? 'trap' : ''} ${!d ? 'back' : ''} ${selected?.card.handle === card.handle ? 'selected' : ''}`);
   b.setAttribute('aria-label', `${label(card)}${zone === 'hand' ? ' trên tay' : zone === 'graveyard' ? ` trong Mộ, vị trí ${slot + 1} từ trên xuống` : ` tại ô ${slot + 1}`}`);
   if (zone === 'monster' && !view.result && view.battle?.attackerHandle) {
     const role = card.handle === view.battle.attackerHandle ? 'attacker' : card.handle === view.battle.targetHandle ? 'target' : null;
@@ -441,6 +445,15 @@ function render() {
 }
 function handoff() { clearChainCard(); decisionDraft = null; handSort = 'received'; handContext = null; document.body.classList.add('concealed'); selected = null; $('seat-dialog').showModal(); }
 $('hand-sort').addEventListener('change', () => { if (busy || !view) return; handSort = $('hand-sort').value; renderHand(); });
+$('hand').addEventListener('keydown', event => {
+  if (busy || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+  const cards = [...$('hand').querySelectorAll('button.card')], index = cards.indexOf(event.target);
+  if (index < 0 || !['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+  const next = event.key === 'Home' ? 0 : event.key === 'End' ? cards.length - 1
+    : Math.max(0, Math.min(cards.length - 1, index + (event.key === 'ArrowLeft' ? -1 : 1)));
+  event.preventDefault(); cards[next].focus({ preventScroll: true });
+  cards[next].scrollIntoView({ block: 'nearest', inline: 'nearest' });
+});
 $('seat-dialog').addEventListener('cancel', e => e.preventDefault());
 for (const b of document.querySelectorAll('[data-seat]')) b.addEventListener('click', async () => {
   if (busy) return; busy = true;

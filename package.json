@@ -75,7 +75,8 @@
     "cards:faith-import": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js import magician-faith",
     "beta:browser-faith": "npm run build && node tools/beta-browser-smoke.mjs --magician-faith",
     "beta:browser-faith-battle": "npm run build && node tools/beta-browser-smoke.mjs --faith-battle=a:0 && node tools/beta-browser-smoke.mjs --faith-battle=a:2 && node tools/beta-browser-smoke.mjs --faith-battle=b:0 && node tools/beta-browser-smoke.mjs --faith-battle=b:2",
-    "beta:browser-hand-sorting": "npm run build && node tools/beta-browser-smoke.mjs --hand-sorting"
+    "beta:browser-hand-sorting": "npm run build && node tools/beta-browser-smoke.mjs --hand-sorting",
+    "beta:browser-hand-keyboard": "npm run build && node tools/beta-browser-smoke.mjs --hand-keyboard"
   },
   "devDependencies": {
     "@types/node": "24.19.2",

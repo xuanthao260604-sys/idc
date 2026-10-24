@@ -17,7 +17,8 @@ const lifePointsMode = lifePointsArg?.split('=')[1] ?? null;
 const smashingGround = process.argv.includes('--smashing-ground');
 const hammerShot = process.argv.includes('--hammer-shot');
 const magicianFaith = process.argv.includes('--magician-faith');
-const handSorting = process.argv.includes('--hand-sorting');
+const handKeyboard = process.argv.includes('--hand-keyboard');
+const handSorting = handKeyboard || process.argv.includes('--hand-sorting');
 const faithBattleArg = process.argv.find(arg => /^--faith-battle=[ab]:[02]$/.test(arg));
 const faithBattle = faithBattleArg ? { defender: faithBattleArg.split('=')[1].split(':')[0], spells: Number(faithBattleArg.split(':')[1]) } : null;
 const earthquake = process.argv.includes('--earthquake');
@@ -73,6 +74,7 @@ if (handSorting) {
     assert.ok(id);p.hand.push(id);s.cards[id].location={kind:'hand',playerId:'a'};
   }
   s.turn.number=3;s.turn.phase='main1';s.timing.window='open';s.timing.priorityPlayer='a';s.timing.consecutivePasses=0;
+  if(handKeyboard) move('Hane-Hane','b','monster',0,true);
 }
 if (faithBattle) {
   const defender = faithBattle.defender, attacker = defender === 'a' ? 'b' : 'a';
@@ -439,7 +441,94 @@ try {
   }
   await send('Runtime.enable'); await send('Page.enable'); await send('Page.navigate', { url: `http://127.0.0.1:${server.address().port}` });
   await wait(`document.getElementById('seat-dialog')?.open`); await seat('a');
-  if (handSorting) {
+  if (handKeyboard) {
+    const commands=[],previousOnMessage=ws.onmessage;
+    ws.onmessage=event=>{
+      const m=JSON.parse(event.data);
+      if(m.method==='Network.requestWillBeSent'&&m.params.request.url.endsWith('/api/command'))commands.push(JSON.parse(m.params.request.postData));
+      previousOnMessage(event);
+    };
+    await send('Network.enable');
+    const key=async(key,code,windowsVirtualKeyCode,modifiers=0)=>{
+      await send('Input.dispatchKeyEvent',{type:'keyDown',key,code,windowsVirtualKeyCode,modifiers,...(code==='Space'?{text:' '}:code==='Enter'?{text:'\r'}:{})});
+      await send('Input.dispatchKeyEvent',{type:'keyUp',key,code,windowsVirtualKeyCode,modifiers});
+      await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
+    };
+    await seat('b');const savedDeckB=await evaluate(`api('/api/deck').then(data=>JSON.stringify(data))`);await seat('a');
+    const focusHandle=()=>evaluate('document.activeElement.dataset.cardHandle');
+    const original=await evaluate('view.selfHand.map(c=>c.handle)'),before=await evaluate('JSON.stringify(view)');
+    const savedDecks=await evaluate(`api('/api/deck').then(data=>JSON.stringify(data))`);
+    await evaluate(`document.getElementById('hand-sort').focus()`);await key('Tab','Tab',9);
+    assert.equal(await focusHandle(),original[0]);
+    await key('ArrowLeft','ArrowLeft',37);assert.equal(await focusHandle(),original[0]);
+    await key('ArrowRight','ArrowRight',39);assert.equal(await focusHandle(),original[1]);
+    await key('End','End',35);assert.equal(await focusHandle(),original[6]);
+    await key('ArrowRight','ArrowRight',39);assert.equal(await focusHandle(),original[6]);
+    assert.equal(await evaluate('selected'),null);
+    await key('Enter','Enter',13);
+    assert.equal(await focusHandle(),original[6]);assert.equal(await evaluate('selected.card.handle'),original[6]);
+    await key(' ','Space',32);assert.equal(await focusHandle(),original[6]);
+    await key('ArrowLeft','ArrowLeft',37);assert.equal(await focusHandle(),original[5]);
+    assert.equal(await evaluate('selected.card.handle'),original[6]);
+    await key(' ','Space',32);assert.equal(await evaluate('selected.card.handle'),original[5]);
+    assert.equal(await focusHandle(),original[5]);
+    assert.equal(await evaluate(`document.querySelector('#detail h2').textContent`),'Magician of Faith');
+    await key('Tab','Tab',9);assert.equal(await focusHandle(),original[6]);
+    await key('Tab','Tab',9,8);assert.equal(await focusHandle(),original[5]);
+    await key('Home','Home',36);assert.equal(await focusHandle(),original[0]);
+    await key('ArrowRight','ArrowRight',39,8);assert.equal(await focusHandle(),original[0]);
+    // Native select keys remain native; navigation follows the resulting displayed order.
+    await evaluate(`document.getElementById('hand-sort').focus()`);await key('Home','Home',36);await key('ArrowDown','ArrowDown',40);
+    assert.equal(await evaluate('document.activeElement.id'),'hand-sort');
+    assert.equal(await evaluate(`document.getElementById('hand-sort').value`),'name');
+    await key('Tab','Tab',9);assert.equal(await focusHandle(),original[1]);
+    await key('ArrowRight','ArrowRight',39);assert.equal(await focusHandle(),original[6]);
+    await key('End','End',35);assert.equal(await focusHandle(),original[0]);
+    await key('Enter','Enter',13);assert.equal(await focusHandle(),original[0]);
+    assert.equal(await evaluate('JSON.stringify(view)'),before);assert.equal(commands.length,0);
+    await send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:false});
+    await key('Home','Home',36);await key('End','End',35);
+    assert.equal(await evaluate(`(()=>{const h=document.getElementById('hand'),r=document.activeElement.getBoundingClientRect(),b=h.getBoundingClientRect();return h.scrollLeft>0&&r.left>=b.left-1&&r.right<=b.right+1&&document.documentElement.scrollWidth<=innerWidth+1})()`),true);
+    if(process.argv.includes('--screenshots')) {
+      const folder=join(projectRoot,'artifacts','hand-keyboard');await mkdir(folder,{recursive:true});
+      const shot=await send('Page.captureScreenshot',{format:'png'});await writeFile(join(folder,'narrow.png'),Buffer.from(shot.data,'base64'));
+    }
+    await send('Emulation.clearDeviceMetricsOverride');await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
+    await key('Home','Home',36);await key('ArrowRight','ArrowRight',39);await key('Enter','Enter',13);
+    assert.equal(await focusHandle(),original[6]);
+    // Opening/cancelling an action by keyboard must not submit the summon.
+    await evaluate(`${textButton('#actions button','Triệu hồi')}.focus()`);await key('Enter','Enter',13);
+    assert.equal(await evaluate(`document.getElementById('action-dialog').open`),true);
+    await key('Escape','Escape',27);assert.equal(await evaluate(`document.getElementById('action-dialog').open`),false);
+    assert.equal(commands.length,0);
+    await evaluate(`${textButton('#actions button','Triệu hồi')}.focus()`);await key('Enter','Enter',13);
+    const version=await evaluate('view.stateVersion');
+    await evaluate(`document.querySelector('#action-form button[type="submit"]').focus()`);await key('Enter','Enter',13);
+    await wait(`!busy&&view.stateVersion>${version}`);assert.equal(commands[0].action.cardHandle,original[6]);
+    await pass('a');await pass('b');await seat('a');
+    assert.equal(await evaluate('view.normalSummonQuota.remaining'),0);
+    assert.equal(await evaluate(`view.selfHand.filter(c=>catalog.get(c.definition.id).name==='Battle Ox').length`),1);
+    const afterSummon=await evaluate('JSON.stringify(view)'),commandCount=commands.length;
+    await evaluate(`document.querySelector('#self .zone-row:nth-child(2) .card').focus()`);await key('Enter','Enter',13);
+    assert.equal(await evaluate(`document.activeElement===document.querySelector('#self .card.selected')`),true);
+    await evaluate(`document.querySelector('#opponent .card').focus()`);await key(' ','Space',32);
+    assert.equal(await evaluate(`document.activeElement===document.querySelector('#opponent .card.selected')`),true);
+    assert.equal(await evaluate(`document.querySelector('#detail h2').textContent`),'Bài úp');
+    assert.equal(await evaluate(`document.getElementById('detail').textContent.includes('Hane-Hane')`),false);
+    assert.equal(await evaluate('JSON.stringify(view)'),afterSummon);assert.equal(commands.length,commandCount);
+    await seat('b');assert.equal(await evaluate('selected'),null);
+    assert.equal(await evaluate(`document.querySelector('main .card.selected')`),null);
+    assert.equal(await evaluate(`document.activeElement?.closest('#hand')`),null);
+    assert.deepEqual(await evaluate(`[...document.querySelectorAll('#hand .card')].map(c=>c.dataset.cardHandle)`),await evaluate('view.selfHand.map(c=>c.handle)'));
+    assert.equal(await evaluate(`api('/api/deck').then(data=>JSON.stringify(data))`),savedDeckB);
+    await seat('a');
+    assert.equal(await evaluate(`api('/api/deck').then(data=>JSON.stringify(data))`),savedDecks);
+    assert.equal(errors.length,0);
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'hand-keyboard',catalog:109,
+      arrowsHomeEnd:true,boundedNavigation:true,nativeEnterSpace:true,focusAfterRender:true,nativeTabAndSelect:true,
+      sortedDuplicateIdentity:true,readOnlyNavigation:true,keyboardSummon:true,hiddenOpponentPreview:true,
+      narrowHandScroll:true,seatClearsSelection:true,savedDecksUnchanged:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
+  } else if (handSorting) {
     const commands=[],previousOnMessage=ws.onmessage;
     ws.onmessage=event=>{
       const m=JSON.parse(event.data);

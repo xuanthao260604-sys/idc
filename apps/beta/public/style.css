@@ -70,3 +70,4 @@
 .chain-card-controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}#chain-card-dialog{max-height:90vh;overflow:auto}#chain-card-detail,#chain-card-location{overflow-wrap:anywhere}#chain-card-detail p{white-space:pre-wrap}
 
 .hand-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.hand-heading label{font-size:11px;color:var(--muted);min-width:0}.hand-heading select{display:block;margin-top:4px;max-width:100%}
+.hand-keyboard-help{font-size:11px;margin:6px 0 10px}.card:focus-visible{outline:3px solid #d9efff;outline-offset:3px}
