@@ -1,6 +1,10 @@
 # Kết quả Windows CI
 
-> Mốc hiện hành: [bảo vệ bản nháp deck khi đóng](../beta/deck-draft-guard.md), catalog 109; [run 40071557099](https://github.com/xuanthao260604-sys/idc/actions/runs/40071557099), commit 3dc1912.
+> Mốc hiện hành: [kiểm tra kết quả lưu deck](../beta/deck-save-check.md), catalog 109; [run 40099228529](https://github.com/xuanthao260604-sys/idc/actions/runs/40099228529), commit 6202db1.
+> Windows/Ubuntu đạt; Windows: 784/784 test, 41/41 bước, 31 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Đã đọc artifact windows-validation-40099228529-1: xác nhận lần lưu mất phản hồi, không lưu lặp, giữ bản nháp khi xung đột/đổi ghế và deck B độc lập đạt. Không đổi engine/dữ liệu; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [bảo vệ bản nháp deck khi đóng](../beta/deck-draft-guard.md), catalog 109; [run 40071557099](https://github.com/xuanthao260604-sys/idc/actions/runs/40071557099), commit 3dc1912.
 > Windows/Ubuntu đạt; Windows: 784/784 test, 40/40 bước, 30 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Đã đọc artifact windows-validation-40071557099-1: hủy Đóng/Escape giữ bài/lịch sử, undo/redo, lưu lỗi/thành công và baseline A/B đạt. Không đổi engine/dữ liệu; Windows 11 desktop chưa chạy.
 
