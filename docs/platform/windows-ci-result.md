@@ -1,6 +1,10 @@
 # Kết quả Windows CI
 
-> Mốc hiện hành: [Faith bị đánh lật qua hotseat](../beta/faith-battle-hotseat.md), catalog 109; [run 40063069066](https://github.com/xuanthao260604-sys/idc/actions/runs/40063069066), commit be61a76.
+> Mốc hiện hành: [sắp xếp tay bài](../beta/hand-sorting.md), catalog 109; [run 40064746587](https://github.com/xuanthao260604-sys/idc/actions/runs/40064746587), commit da55a7f.
+> Windows/Ubuntu đạt; Windows: 784/784 test, 38/38 bước, 28 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Đã đọc artifact windows-validation-40064746587-1: bàn phím, thứ tự bản sao, selection/command đúng lá, đổi ghế/trận và deck cũ đạt. Không đổi engine/dữ liệu; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [Faith bị đánh lật qua hotseat](../beta/faith-battle-hotseat.md), catalog 109; [run 40063069066](https://github.com/xuanthao260604-sys/idc/actions/runs/40063069066), commit be61a76.
 > Windows/Ubuntu đạt; Windows: 784/784 test, 37/37 bước, 27 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Đã đọc artifact windows-validation-40063069066-1: bốn ca A/B × 0/2 Phép trong Mộ, lựa chọn riêng, source cleanup và dùng Phép lượt sau đạt. Không đổi engine/dữ liệu/deck; Windows 11 desktop chưa chạy.
 

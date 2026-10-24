@@ -36,7 +36,16 @@ Browser `--hand-sorting`, chạy riêng bằng `npm run beta:browser-hand-sortin
 
 Ca riêng đạt Linux/Chromium 154.0.8037.57, runtimeExceptions=0. Đã thêm ca
 vào `validate:platform`, nâng từ 37 lên 38 bước và 27 lên 28 browser report.
-Bộ tổng hợp Linux và Windows CI đang chờ xác nhận cho mốc này.
+Linux đạt typecheck, 784/784 test trong 35 file, 38/38 bước và 28 browser
+report, tổng runtimeExceptions=0. Report tại
+artifacts/platform-validation/2026-10-24T05-02-07-829Z-220437/report.json.
+Windows và Ubuntu CI [run 40064746587](https://github.com/xuanthao260604-sys/idc/actions/runs/40064746587)
+đạt trên source commit da55a7f46bad891e5d2eebef6936e3c1ce507b0c. Đã tải và đọc
+artifact windows-validation-40064746587-1: win32 x64, OS 10.0.26100,
+Node 24.19.0, npm 11.17.0, Edge 155.0.4283.62. Windows đạt 784/784 test
+trong 35 file, 38/38 bước và 28 browser report, tổng runtimeExceptions=0.
+Ca sắp xếp tay bài khớp Linux, gồm bàn phím, handle đúng bản sao, reset ghế/trận
+và bảo toàn deck. Report ghi windows11DesktopVerified=false.
 
 Catalog vẫn 109 loại, 95 quái thường và 14 hiệu ứng đã review trong scope giới
 hạn. Không đổi engine, dữ liệu nhập/review, artwork, starter 40 hoặc deck cũ.
