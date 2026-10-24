@@ -47,7 +47,18 @@ Giữ toàn bộ kiểm tra preview chỉ đọc trước đó.
 
 Hai ca riêng đạt Linux/Chromium 154.0.8037.57, runtimeExceptions=0. Thêm
 một step/browser mode, từ 43 lên 44 bước và từ 33 lên 34 browser report.
-Linux và Windows CI đầy đủ đang chờ xác nhận cho mốc này.
+Linux đạt typecheck, 784/784 test trong 35 file, 44/44 bước và 34 browser
+report, tổng runtimeExceptions=0. Report tại
+artifacts/platform-validation/2026-10-24T15-11-37-690Z-40405/report.json.
+Windows và Ubuntu CI [run 40105969342](https://github.com/xuanthao260604-sys/idc/actions/runs/40105969342)
+đạt trên source commit ca517718e2a13d939e9bd283d5c18256aef13b94.
+Đã tải và đọc artifact windows-validation-40105969342-1:
+win32 x64, OS 10.0.26100, Node 24.19.0, npm 11.17.0, Edge 155.0.4283.62.
+Windows đạt 784/784 test trong 35 file, 44/44 bước và 34 browser report,
+tổng runtimeExceptions=0. Ca decision-cards xác nhận lựa chọn riêng, đồng bộ
+radio/sân, giữ kín target úp, không tự gửi, xác nhận riêng và xóa cue sau
+decision đều đạt. Ca discard giữ các kiểm tra mất mạng/mất phản hồi, không
+bỏ bài hai lần. Report ghi windows11DesktopVerified=false.
 
 Không đổi engine, dữ liệu/review, catalog 109, artwork, starter hoặc deck cũ.
 Windows 11 desktop chưa thử trực tiếp; chưa đóng gói hoặc bàn giao beta.

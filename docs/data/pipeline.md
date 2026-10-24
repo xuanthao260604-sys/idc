@@ -1,4 +1,6 @@
-> Mốc hiện tại: [lọc lịch sử thao tác công khai](../beta/activity-filters.md), catalog 109 không đổi; theo lượt, ẩn Pass không có kết quả và giữ Pass xử lý hiệu ứng. Linux và Windows CI đạt 784 test, 43 bước, 33 browser report. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
+> Mốc hiện tại: [chọn lá trực tiếp trong quyết định bắt buộc](../beta/decision-cards.md), catalog 109 không đổi; chọn nháp trên tay/sân, đồng bộ bảng, giữ kín bài úp và vẫn cần xác nhận. Linux và Windows CI đạt 784 test, 44 bước, 34 browser report. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [lọc lịch sử thao tác công khai](../beta/activity-filters.md), catalog 109 không đổi; theo lượt, ẩn Pass không có kết quả và giữ Pass xử lý hiệu ứng. Linux và Windows CI đạt 784 test, 43 bước, 33 browser report. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
 
 > Mốc trước: [tìm và lọc bài trong Mộ](../beta/graveyard-filters.md), catalog 109 không đổi; tìm tên/nội dung, kết hợp Quái/Phép/Bẫy, giữ thứ tự gốc và chỉ đọc thông tin công khai. Linux và Windows CI đạt 784 test, 42 bước, 32 browser report. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
 
