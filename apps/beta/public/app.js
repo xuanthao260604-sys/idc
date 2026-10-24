@@ -574,7 +574,7 @@ function renderDeck() {
   $('deck-export').disabled = busy || !!issues.length;
   $('deck-undo').disabled = busy || !deckDraft.undo.length;
   $('deck-redo').disabled = busy || !deckDraft.redo.length;
-  for (const id of ['deck-check-saved', 'deck-default', 'deck-close', 'deck-search', 'deck-kind', 'deck-presence', 'deck-sort', 'deck-import', 'deck-file']) $(id).disabled = busy;
+  for (const id of ['deck-load-saved', 'deck-check-saved', 'deck-default', 'deck-close', 'deck-search', 'deck-kind', 'deck-presence', 'deck-sort', 'deck-import', 'deck-file']) $(id).disabled = busy;
   const query = $('deck-search').value.trim().toLocaleLowerCase(), kind = $('deck-kind').value, included = $('deck-presence').value === 'included';
   const sort = $('deck-sort').value;
   const compareName = (a, b) => a.name.localeCompare(b.name, 'en') || a.id.localeCompare(b.id, 'en');
@@ -645,6 +645,18 @@ $('deck-check-saved').addEventListener('click', async () => {
       $('deck-error').textContent = 'Deck đã lưu khác bản đang sửa. Bản nháp và lịch sử được giữ nguyên.';
     }
   } catch (error) { $('deck-error').textContent = 'Chưa kiểm tra được deck đã lưu. Bản nháp và lịch sử được giữ nguyên. ' + error.message; }
+  finally { busy = false; renderDeck(); }
+});
+$('deck-load-saved').addEventListener('click', async () => {
+  if (busy || !deckDraft) return;
+  busy = true; renderDeck();
+  try {
+    const saved = await api('/api/deck');
+    if (saved.seat !== deckDraft.seat || saved.seat !== view.viewerId) throw new Error('Người chơi đã thay đổi. Hãy chọn lại góc nhìn trước khi tải deck.');
+    editDeck(saved.cards);
+    deckDraft.revision = saved.revision; deckDraft.savedCards = [...saved.cards];
+    $('deck-error').textContent = 'Đã tải bản lưu vào bản nháp. Nếu danh sách đã thay đổi, bạn có thể Hoàn tác để lấy lại bản đang sửa. Deck đã lưu không thay đổi.';
+  } catch (error) { $('deck-error').textContent = 'Chưa tải được deck đã lưu. Bản nháp và lịch sử được giữ nguyên. ' + error.message; }
   finally { busy = false; renderDeck(); }
 });
 $('deck-form').addEventListener('submit', async e => {

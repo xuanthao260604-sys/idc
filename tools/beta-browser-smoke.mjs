@@ -460,6 +460,7 @@ try {
     const change=(id,direction='add')=>click(`document.querySelector('#deck-catalog [data-card-id="${id}"] [data-change="${direction}"]')`);
     const comparison=()=>evaluate(`[...document.querySelectorAll('#deck-changes-rows tr')].map(row=>({id:row.dataset.cardId,saved:Number(row.cells[1].textContent),draft:Number(row.cells[2].textContent)}))`);
     const check=async()=>{await click(`document.getElementById('deck-check-saved')`);await wait('!busy');};
+    const loadSaved=async()=>{await click(`document.getElementById('deck-load-saved')`);await wait('!busy');};
     const extra=(cards,exclude)=>Object.values(r.cards).find(c=>c.id!==exclude&&cards.filter(id=>id===c.id).length<c.legality.maxCopies).id;
     const before=await evaluate('JSON.stringify(view)'),savedA=await evaluate(`api('/api/deck')`);
     await openDeck();await check();assert.match(await evaluate(`document.getElementById('deck-error').textContent`),/Đã xác nhận/);
@@ -469,6 +470,12 @@ try {
     const moved=savedA.cards[0],movedCount=savedA.cards.filter(id=>id===moved).length;
     await change(moved,'remove');assert.deepEqual(await comparison(),[{id:moved,saved:movedCount,draft:movedCount-1}]);
     assert.equal(await evaluate(`document.getElementById('deck-save').disabled`),true);
+    const shortDraft=await evaluate('JSON.stringify(deckDraft.cards)');
+    await loadSaved();assert.deepEqual(await evaluate('deckDraft.cards'),savedA.cards);
+    await click(`document.getElementById('deck-undo')`);assert.equal(await evaluate('JSON.stringify(deckDraft.cards)'),shortDraft);
+    assert.equal(await evaluate(`document.getElementById('deck-save').disabled`),true);
+    await click(`document.getElementById('deck-redo')`);assert.deepEqual(await evaluate('deckDraft.cards'),savedA.cards);
+    await click(`document.getElementById('deck-undo')`);
     await change(moved);assert.deepEqual(await comparison(),[]);
     assert.equal(await evaluate(`document.getElementById('deck-changes').hidden`),false);
     assert.equal(await evaluate(`document.getElementById('deck-changes-table').hidden`),true);
@@ -510,6 +517,8 @@ try {
     await send('Network.emulateNetworkConditions',{offline:true,latency:0,downloadThroughput:0,uploadThroughput:0});
     await check();assert.equal(await evaluate('JSON.stringify(deckDraft)'),draft);
     assert.match(await evaluate(`document.getElementById('deck-error').textContent`),/Chưa kiểm tra được/);
+    await loadSaved();assert.equal(await evaluate('JSON.stringify(deckDraft)'),draft);
+    assert.match(await evaluate(`document.getElementById('deck-error').textContent`),/Chưa tải được/);
     await send('Network.emulateNetworkConditions',{offline:false,latency:0,downloadThroughput:-1,uploadThroughput:-1});
     // A real successful POST whose response never reaches the application.
     await evaluate(`(()=>{const original=window.fetch;window.fetch=async(...args)=>{if(args[0]==='/api/deck'&&args[1]?.method==='POST'){window.fetch=original;await original(...args);throw new Error('Mất phản hồi sau khi server lưu');}return original(...args);};})()`);
@@ -561,17 +570,52 @@ try {
     assert.equal(await evaluate('JSON.stringify(deckDraft)'),local);
     assert.deepEqual(await comparison(),localComparison);
     assert.match(await evaluate(`document.getElementById('deck-error').textContent`),/Người chơi đã thay đổi/);
+    await loadSaved();assert.equal(await evaluate('JSON.stringify(deckDraft)'),local);
+    assert.deepEqual(await comparison(),localComparison);
+    assert.match(await evaluate(`document.getElementById('deck-error').textContent`),/Người chơi đã thay đổi/);
     await evaluate(`api('/api/seat',{seat:'a'})`);
     assert.equal(await evaluate('JSON.stringify(view)'),before);
-    await closeDeck();await openDeck();assert.deepEqual(await evaluate('deckDraft.cards'),winner.cards);await closeDeck();
+    // Explicitly loading the winning save is reversible and does not write over either list.
+    await evaluate(`document.getElementById('deck-presence').value='included';document.getElementById('deck-presence').dispatchEvent(new Event('change'));document.getElementById('deck-sort').value='name';document.getElementById('deck-sort').dispatchEvent(new Event('change'))`);
+    await click(`document.querySelector('#deck-catalog .deck-name')`);
+    const priorCards=await evaluate('deckDraft.cards'),priorHistory=await evaluate('deckDraft.undo');
+    const loadPreview=await evaluate(`document.getElementById('deck-preview').textContent`);
+    await loadSaved();
+    assert.deepEqual(await evaluate('deckDraft.cards'),winner.cards);
+    assert.deepEqual(await evaluate('deckDraft.savedCards'),winner.cards);
+    assert.equal(await evaluate('deckDraft.revision'),winner.revision);
+    assert.deepEqual(await evaluate('deckDraft.undo'),[...priorHistory,priorCards]);
+    assert.equal(await evaluate(`document.getElementById('deck-changes').hidden`),true);
+    assert.equal(await evaluate(`document.getElementById('deck-preview').textContent`),loadPreview);
+    assert.equal(await evaluate(`document.getElementById('deck-presence').value`),'included');
+    assert.equal(await evaluate(`document.getElementById('deck-sort').value`),'name');
+    assert.equal(writes.length,writesBeforeCheck);
+    assert.deepEqual((await evaluate(`api('/api/deck')`)).cards,winner.cards);
+    await click(`document.getElementById('deck-undo')`);assert.deepEqual(await evaluate('deckDraft.cards'),priorCards);
+    assert.equal(await evaluate('deckDraft.revision'),winner.revision);
+    assert.equal(await evaluate(`document.getElementById('deck-changes').hidden`),false);
+    await click(`document.getElementById('deck-redo')`);assert.deepEqual(await evaluate('deckDraft.cards'),winner.cards);
+    await change(extra(winner.cards));await click(`document.getElementById('deck-undo')`);
+    const noOp=await evaluate('JSON.stringify(deckDraft)');await loadSaved();
+    assert.equal(await evaluate('JSON.stringify(deckDraft)'),noOp);
+    // Choosing Undo then Save is a new explicit edit based on the acknowledged revision.
+    await click(`document.getElementById('deck-undo')`);assert.deepEqual(await evaluate('deckDraft.cards'),priorCards);
+    await click(`document.getElementById('deck-save')`);await wait(`!busy&&!document.getElementById('deck-dialog').open`);
+    const explicitSave=await evaluate(`api('/api/deck')`);
+    assert.equal(explicitSave.revision,winner.revision+1);assert.deepEqual(explicitSave.cards,priorCards);
+    assert.equal(writes.length,writesBeforeCheck+1);
+    assert.equal(await evaluate('JSON.stringify(view)'),before);
+    await openDeck();assert.deepEqual(await evaluate('deckDraft.cards'),priorCards);await closeDeck();
     await seat('b');const savedB=await evaluate(`api('/api/deck')`);await openDeck();await check();
     assert.equal(await evaluate(`document.getElementById('deck-changes').hidden`),true);assert.deepEqual(await comparison(),[]);
     assert.deepEqual(await evaluate('deckDraft.savedCards'),savedB.cards);
     assert.equal(await evaluate('deckDraft.revision'),savedB.revision);
+    const bNoOp=await evaluate('JSON.stringify(deckDraft)');await loadSaved();assert.equal(await evaluate('JSON.stringify(deckDraft)'),bNoOp);
     assert.deepEqual(await evaluate(`api('/api/deck')`),savedB);await closeDeck();
     assert.equal(errors.length,0);
     console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'deck-save-check',catalog:109,
       draftChangeTable:true,orderOnlyChanges:true,invalidDraftChanges:true,comparisonIgnoresCatalogFilters:true,comparisonResponsive:true,
+      loadSavedUndoable:true,loadInvalidDraftUndoable:true,loadNoopPreservesHistory:true,loadFailurePreservesDraft:true,explicitSaveAfterLoad:true,
       lostSaveResponseConfirmed:true,noDuplicateSave:true,historyAndFiltersPreserved:true,undoUsesConfirmedBaseline:true,
       offlinePreservesDraft:true,remoteConflictPreservesDraft:true,noSilentRebase:true,wrongSeatRejected:true,
       seatBIndependent:true,currentDuelUnchanged:true,runtimeExceptions:errors.length}));
