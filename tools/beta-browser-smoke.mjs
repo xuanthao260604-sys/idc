@@ -27,7 +27,8 @@ const tributeDoomed = process.argv.includes('--tribute-doomed');
 const reincarnationArg = process.argv.find(arg => /^--reincarnation=(grave|cost)$/.test(arg));
 const reincarnationMode = reincarnationArg?.split('=')[1] ?? null;
 const deckDraftGuard = process.argv.includes('--deck-draft-guard');
-const deckOverview = deckDraftGuard || process.argv.includes('--deck-overview');
+const deckSaveCheck = process.argv.includes('--deck-save-check');
+const deckOverview = deckSaveCheck || deckDraftGuard || process.argv.includes('--deck-overview');
 const expanded = handSorting || faithBattle !== null || magicianFaith || deckOverview || earthquake || blockAttack || reincarnationMode !== null || tributeDoomed || hammerShot || smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
 const r = expanded ? loadRuntimeCatalog().registry : createRegistry((await read('data/generated/pilot.json')).cards, goat200508Format, {},
   await read('data/reviews/pilot.spell-effects.json'), await read('data/reviews/pilot.flip-effects.json'), await read('data/reviews/pilot.trap-effects.json'));
@@ -447,7 +448,86 @@ try {
   }
   await send('Runtime.enable'); await send('Page.enable'); await send('Page.navigate', { url: `http://127.0.0.1:${server.address().port}` });
   await wait(`document.getElementById('seat-dialog')?.open`); await seat('a');
-  if (deckDraftGuard) {
+  if (deckSaveCheck) {
+    const writes=[],previousOnMessage=ws.onmessage;
+    ws.onmessage=event=>{
+      const m=JSON.parse(event.data);
+      if(m.method==='Network.requestWillBeSent'&&m.params.request.url.endsWith('/api/deck')&&m.params.request.method==='POST')writes.push(JSON.parse(m.params.request.postData));
+      previousOnMessage(event);
+    };
+    await send('Network.enable');
+    const openDeck=async()=>{await click(`document.getElementById('deck-builder')`);await wait(`!busy&&document.getElementById('deck-dialog').open`);};
+    const change=id=>click(`document.querySelector('#deck-catalog [data-card-id="${id}"] [data-change="add"]')`);
+    const check=async()=>{await click(`document.getElementById('deck-check-saved')`);await wait('!busy');};
+    const extra=(cards,exclude)=>Object.values(r.cards).find(c=>c.id!==exclude&&cards.filter(id=>id===c.id).length<c.legality.maxCopies).id;
+    const before=await evaluate('JSON.stringify(view)'),savedA=await evaluate(`api('/api/deck')`);
+    await openDeck();await check();assert.match(await evaluate(`document.getElementById('deck-error').textContent`),/Đã xác nhận/);
+    assert.equal(writes.length,0);
+    const added=extra(savedA.cards);await change(added);
+    const draft=await evaluate('JSON.stringify(deckDraft)');await check();
+    assert.equal(await evaluate('JSON.stringify(deckDraft)'),draft);
+    assert.match(await evaluate(`document.getElementById('deck-error').textContent`),/khác bản đang sửa/);
+    await send('Network.emulateNetworkConditions',{offline:true,latency:0,downloadThroughput:0,uploadThroughput:0});
+    await check();assert.equal(await evaluate('JSON.stringify(deckDraft)'),draft);
+    assert.match(await evaluate(`document.getElementById('deck-error').textContent`),/Chưa kiểm tra được/);
+    await send('Network.emulateNetworkConditions',{offline:false,latency:0,downloadThroughput:-1,uploadThroughput:-1});
+    // A real successful POST whose response never reaches the application.
+    await evaluate(`(()=>{const original=window.fetch;window.fetch=async(...args)=>{if(args[0]==='/api/deck'&&args[1]?.method==='POST'){window.fetch=original;await original(...args);throw new Error('Mất phản hồi sau khi server lưu');}return original(...args);};})()`);
+    await click(`document.getElementById('deck-save')`);await wait('!busy');
+    assert.equal(await evaluate('JSON.stringify(deckDraft)'),draft);
+    assert.match(await evaluate(`document.getElementById('deck-error').textContent`),/Chưa xác nhận lưu deck/);
+    const serverSaved=await evaluate(`api('/api/deck')`);assert.equal(serverSaved.revision,savedA.revision+1);
+    assert.deepEqual(serverSaved.cards,await evaluate('deckDraft.cards'));assert.equal(writes.length,1);
+    await evaluate(`document.getElementById('deck-presence').value='included';document.getElementById('deck-presence').dispatchEvent(new Event('change'));document.getElementById('deck-sort').value='name';document.getElementById('deck-sort').dispatchEvent(new Event('change'))`);
+    await click(`document.querySelector('#deck-catalog .deck-name')`);
+    const history=await evaluate('JSON.stringify([deckDraft.undo,deckDraft.redo])'),preview=await evaluate(`document.getElementById('deck-preview').textContent`);
+    await check();
+    assert.equal(await evaluate('deckDraft.revision'),serverSaved.revision);
+    assert.deepEqual(await evaluate('deckDraft.savedCards'),serverSaved.cards);
+    assert.equal(await evaluate('JSON.stringify([deckDraft.undo,deckDraft.redo])'),history);
+    assert.equal(await evaluate(`document.getElementById('deck-preview').textContent`),preview);
+    assert.equal(await evaluate(`document.getElementById('deck-presence').value`),'included');
+    assert.equal(await evaluate(`document.getElementById('deck-sort').value`),'name');
+    assert.equal(await evaluate(`document.getElementById('deck-draft-status').textContent.includes('Có thay đổi')`),false);
+    assert.equal(writes.length,1);
+    await click(`document.getElementById('deck-undo')`);
+    assert.equal(await evaluate(`document.getElementById('deck-draft-status').textContent.includes('Có thay đổi')`),true);
+    await click(`document.getElementById('deck-redo')`);
+    assert.equal(await evaluate(`document.getElementById('deck-draft-status').textContent.includes('Có thay đổi')`),false);
+    const prompts=nativeDialogs.length;await closeDeck();assert.equal(nativeDialogs.length,prompts);
+    await openDeck();assert.deepEqual(await evaluate('deckDraft.cards'),serverSaved.cards);
+    // A second real session for A saves a different list; the checker must never rebase over it.
+    const localExtra=extra(serverSaved.cards),remoteExtra=extra(serverSaved.cards,localExtra);await change(localExtra);
+    const local=await evaluate('JSON.stringify(deckDraft)');
+    const origin=`http://127.0.0.1:${server.address().port}`;
+    const remoteSeat=await fetch(origin+'/api/seat',{method:'POST',headers:{'Content-Type':'application/json',Origin:origin},body:JSON.stringify({seat:'a'})});
+    assert.equal(remoteSeat.status,200);const remoteCookie=remoteSeat.headers.get('set-cookie').split(';')[0];
+    const remoteCards=[...serverSaved.cards,remoteExtra];
+    const remoteSave=await fetch(origin+'/api/deck',{method:'POST',headers:{'Content-Type':'application/json',Origin:origin,Cookie:remoteCookie},body:JSON.stringify({seat:'a',revision:serverSaved.revision,cards:remoteCards})});
+    assert.equal(remoteSave.status,200);const winner=await remoteSave.json();
+    await click(`document.getElementById('deck-save')`);await wait('!busy');
+    assert.match(await evaluate(`document.getElementById('deck-error').textContent`),/cửa sổ khác/);
+    assert.equal(await evaluate('JSON.stringify(deckDraft)'),local);const writesBeforeCheck=writes.length;
+    await check();assert.equal(await evaluate('JSON.stringify(deckDraft)'),local);assert.equal(writes.length,writesBeforeCheck);
+    assert.deepEqual((await evaluate(`api('/api/deck')`)).cards,winner.cards);
+    assert.match(await evaluate(`document.getElementById('deck-error').textContent`),/khác bản đang sửa/);
+    // Changing the shared browser seat elsewhere cannot bind A's draft to B's revision.
+    await evaluate(`api('/api/seat',{seat:'b'})`);await check();
+    assert.equal(await evaluate('JSON.stringify(deckDraft)'),local);
+    assert.match(await evaluate(`document.getElementById('deck-error').textContent`),/Người chơi đã thay đổi/);
+    await evaluate(`api('/api/seat',{seat:'a'})`);
+    assert.equal(await evaluate('JSON.stringify(view)'),before);
+    await closeDeck();await openDeck();assert.deepEqual(await evaluate('deckDraft.cards'),winner.cards);await closeDeck();
+    await seat('b');const savedB=await evaluate(`api('/api/deck')`);await openDeck();await check();
+    assert.deepEqual(await evaluate('deckDraft.savedCards'),savedB.cards);
+    assert.equal(await evaluate('deckDraft.revision'),savedB.revision);
+    assert.deepEqual(await evaluate(`api('/api/deck')`),savedB);await closeDeck();
+    assert.equal(errors.length,0);
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'deck-save-check',catalog:109,
+      lostSaveResponseConfirmed:true,noDuplicateSave:true,historyAndFiltersPreserved:true,undoUsesConfirmedBaseline:true,
+      offlinePreservesDraft:true,remoteConflictPreservesDraft:true,noSilentRebase:true,wrongSeatRejected:true,
+      seatBIndependent:true,currentDuelUnchanged:true,runtimeExceptions:errors.length}));
+  } else if (deckDraftGuard) {
     const openDeck=async()=>{await click(`document.getElementById('deck-builder')`);await wait(`!busy&&document.getElementById('deck-dialog').open`);};
     const change=(id,direction)=>click(`document.querySelector('#deck-catalog [data-card-id="${id}"] [data-change="${direction}"]')`);
     const escape=async()=>{await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});};
