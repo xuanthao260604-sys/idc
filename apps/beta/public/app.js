@@ -5,6 +5,7 @@ let deckRules, deckDraft = null, deckImportPreview = null;
 let actionHints = new Set();
 let decisionDraft = null;
 let handSort = 'received', handContext = null;
+let graveyardContext = null;
 let view = null, selected = null, busy = false, message = 'Chọn một lá bài để bắt đầu.';
 const names = { a: 'Người chơi A', b: 'Người chơi B' };
 const phaseNames = { draw: 'BỐC BÀI', standby: 'CHUẨN BỊ', main1: 'MAIN 1', battle: 'CHIẾN ĐẤU', main2: 'MAIN 2', end: 'KẾT THÚC' };
@@ -146,17 +147,44 @@ function row(cards, zone, player) {
 function side(p, element, own) {
   const info = node('div', undefined, 'zone-info'); info.append(node('span', `${names[p.playerId]} ${own ? '· BẠN' : ''}`), node('span', `Deck ${p.deckCount} · Tay ${own ? view.selfHand.length : view.opponentHandCount} · Mộ ${p.graveyard.length}`));
   info.append(button('Xem Mộ', () => {
+    graveyardContext = { playerId: p.playerId, cards: [...p.graveyard].reverse(), selected: null };
+    $('graveyard-search').value = ''; $('graveyard-kind').value = 'all';
     $('graveyard-title').textContent = `Mộ · ${names[p.playerId]} · ${p.graveyard.length} lá`;
-    const preview = $('graveyard-detail'), cards = $('graveyard-cards');
-    preview.replaceChildren(node('p', p.graveyard.length ? 'Chọn một lá trong Mộ để đọc nội dung.' : 'Mộ đang trống.'));
-    cards.replaceChildren(...[...p.graveyard].reverse().map((c, i) => cardButton(c, 'graveyard', p.playerId, i, () => {
-      cardInfo(preview, c);
-      for (const b of cards.children) b.classList.remove('selected');
-      cards.children[i].classList.add('selected');
-    })));
+    renderGraveyard();
     $('graveyard-dialog').showModal();
   }));
   $(element).replaceChildren(info, ...(own ? [row(p.monsters, 'monster', p.playerId), row(p.spellsTraps, 'spell-trap', p.playerId)] : [row(p.spellsTraps, 'spell-trap', p.playerId), row(p.monsters, 'monster', p.playerId)]));
+}
+function clearGraveyard() {
+  graveyardContext = null; $('graveyard-dialog').close();
+  $('graveyard-title').textContent = ''; $('graveyard-detail').replaceChildren();
+  $('graveyard-cards').replaceChildren(); $('graveyard-results').textContent = '';
+  $('graveyard-search').value = ''; $('graveyard-kind').value = 'all';
+}
+function renderGraveyard() {
+  if (!graveyardContext) return;
+  const context = graveyardContext, query = $('graveyard-search').value.trim().toLocaleLowerCase(), kind = $('graveyard-kind').value;
+  const filtered = context.cards.map((card, slot) => ({ card, slot })).filter(({ card }) => {
+    const d = def(card);
+    return d && (!query || (d.name + ' ' + d.text).toLocaleLowerCase().includes(query))
+      && (kind === 'all' || (kind === 'monster' ? d.kind.includes('monster') : d.kind === kind));
+  });
+  const preview = $('graveyard-detail'), list = $('graveyard-cards');
+  if (!filtered.some(({ card }) => card.handle === context.selected)) {
+    context.selected = null;
+    preview.replaceChildren(node('p', !context.cards.length ? 'Mộ đang trống.' : filtered.length ? 'Chọn một lá trong Mộ để đọc nội dung.' : 'Đổi bộ lọc để tìm lá trong Mộ.'));
+  }
+  list.replaceChildren(...filtered.map(({ card, slot }) => {
+    const b = cardButton(card, 'graveyard', context.playerId, slot, () => {
+      context.selected = card.handle; cardInfo(preview, card);
+      for (const button of list.querySelectorAll('button.card')) button.classList.toggle('selected', button.dataset.graveyardHandle === card.handle);
+    });
+    b.dataset.graveyardHandle = card.handle; b.dataset.graveyardSlot = String(slot);
+    b.classList.toggle('selected', context.selected === card.handle); return b;
+  }));
+  if (!filtered.length && context.cards.length) list.append(node('p', 'Không có lá phù hợp.'));
+  $('graveyard-results').textContent = `Hiển thị ${filtered.length}/${context.cards.length} lá.`;
+  $('graveyard-search').disabled = $('graveyard-kind').disabled = !context.cards.length;
 }
 async function command(action) {
   if (busy || !view) return;
@@ -385,6 +413,7 @@ function renderGuide() {
   $('concede').disabled = busy || !!view.result;
 }
 function render() {
+  clearGraveyard();
   clearChainCard();
   $('decision-card-dialog').close(); $('decision-card-detail').replaceChildren(); $('decision-card-location').textContent = '';
   if (!view) return;
@@ -464,7 +493,11 @@ $('switch').addEventListener('click', handoff);
 $('handoff-next').addEventListener('click', handoff);
 $('close-chain-card').addEventListener('click', clearChainCard);
 $('chain-card-dialog').addEventListener('close', () => { if (!$('chain-card-dialog').open) { $('chain-card-detail').replaceChildren(); $('chain-card-location').textContent = ''; } });
-$('close-graveyard').addEventListener('click', () => $('graveyard-dialog').close());
+$('close-graveyard').addEventListener('click', clearGraveyard);
+$('graveyard-dialog').addEventListener('cancel', e => { e.preventDefault(); clearGraveyard(); });
+$('graveyard-dialog').addEventListener('close', () => { if (!$('graveyard-dialog').open) clearGraveyard(); });
+$('graveyard-search').addEventListener('input', renderGraveyard);
+$('graveyard-kind').addEventListener('change', renderGraveyard);
 $('close-decision-card').addEventListener('click', () => $('decision-card-dialog').close());
 $('decision-card-dialog').addEventListener('close', () => { $('decision-card-detail').replaceChildren(); $('decision-card-location').textContent = ''; });
 $('cancel-action').addEventListener('click', () => $('action-dialog').close());

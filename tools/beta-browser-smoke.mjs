@@ -18,6 +18,7 @@ const smashingGround = process.argv.includes('--smashing-ground');
 const hammerShot = process.argv.includes('--hammer-shot');
 const magicianFaith = process.argv.includes('--magician-faith');
 const handKeyboard = process.argv.includes('--hand-keyboard');
+const graveyardFilters = process.argv.includes('--graveyard-filters');
 const handSorting = handKeyboard || process.argv.includes('--hand-sorting');
 const faithBattleArg = process.argv.find(arg => /^--faith-battle=[ab]:[02]$/.test(arg));
 const faithBattle = faithBattleArg ? { defender: faithBattleArg.split('=')[1].split(':')[0], spells: Number(faithBattleArg.split(':')[1]) } : null;
@@ -29,11 +30,11 @@ const reincarnationMode = reincarnationArg?.split('=')[1] ?? null;
 const deckDraftGuard = process.argv.includes('--deck-draft-guard');
 const deckSaveCheck = process.argv.includes('--deck-save-check');
 const deckOverview = deckSaveCheck || deckDraftGuard || process.argv.includes('--deck-overview');
-const expanded = handSorting || faithBattle !== null || magicianFaith || deckOverview || earthquake || blockAttack || reincarnationMode !== null || tributeDoomed || hammerShot || smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
+const expanded = graveyardFilters || handSorting || faithBattle !== null || magicianFaith || deckOverview || earthquake || blockAttack || reincarnationMode !== null || tributeDoomed || hammerShot || smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
 const r = expanded ? loadRuntimeCatalog().registry : createRegistry((await read('data/generated/pilot.json')).cards, goat200508Format, {},
   await read('data/reviews/pilot.spell-effects.json'), await read('data/reviews/pilot.flip-effects.json'), await read('data/reviews/pilot.trap-effects.json'));
 const deck = Object.keys(r.cards);
-if (handSorting) deck.push(Object.values(r.cards).find(c=>c.name==='Battle Ox').id);
+if (handSorting || graveyardFilters) deck.push(Object.values(r.cards).find(c=>c.name==='Battle Ox').id);
 for (const c of Object.values(r.cards)) if (!expanded && c.legality.maxCopies >= 2) deck.push(c.id);
 for (const c of Object.values(r.cards)) if (!expanded && deck.length < 40 && c.legality.maxCopies >= 3) deck.push(c.id);
 const fullDuel = process.argv.includes('--full-duel') || process.argv.includes('--expanded-duel');
@@ -68,6 +69,12 @@ if (magicianFaith) {
   move('Pot of Greed','b','graveyard');move('Celtic Guardian','b','monster',0);
   s.turn.number=3;s.turn.phase='main1';s.timing.window='open';s.timing.priorityPlayer='a';s.timing.consecutivePasses=0;
 }
+if (graveyardFilters) {
+  for(const name of ['Pot of Greed','Trap Hole','Battle Ox','Magician of Faith','Battle Ox','Fissure'])move(name,'a','graveyard');
+  for(const name of ['Pot of Greed','Man-Eater Bug','Hinotama'])move(name,'b','graveyard');
+  move('Mystical Elf','a','monster',0);move('Hane-Hane','b','monster',0,true);
+  s.turn.number=3;s.turn.phase='main1';s.timing.window='open';s.timing.priorityPlayer='a';s.timing.consecutivePasses=0;
+}
 if (handSorting) {
   const p=s.players[0];
   for(const id of p.hand.splice(0)) {p.deck.push(id);s.cards[id].location={kind:'deck',playerId:'a'};}
@@ -93,7 +100,7 @@ if (chainView) {
   move('Man-Eater Bug','b','monster',0,true);
   s.turn.number=3;s.turn.phase='main1';s.timing.window='open';s.timing.priorityPlayer='a';s.timing.consecutivePasses=0;
 }
-if (expanded && !fullDuel && lifePointsMode === null && !smashingGround && !hammerShot && !tributeDoomed && !blockAttack && !earthquake && !magicianFaith && !faithBattle && !handSorting && !deckOverview && reincarnationMode === null) {
+if (expanded && !fullDuel && lifePointsMode === null && !smashingGround && !hammerShot && !tributeDoomed && !blockAttack && !earthquake && !magicianFaith && !faithBattle && !handSorting && !graveyardFilters && !deckOverview && reincarnationMode === null) {
   move('Gaia The Fierce Knight', 'a', 'hand');
   move('Battle Ox', 'a', 'monster', 0); move('Celtic Guardian', 'a', 'monster', 1, true);
   move('Curse of Dragon', 'a', 'hand');
@@ -448,7 +455,83 @@ try {
   }
   await send('Runtime.enable'); await send('Page.enable'); await send('Page.navigate', { url: `http://127.0.0.1:${server.address().port}` });
   await wait(`document.getElementById('seat-dialog')?.open`); await seat('a');
-  if (deckSaveCheck) {
+  if (graveyardFilters) {
+    let commands=0;const previousOnMessage=ws.onmessage;
+    ws.onmessage=event=>{const m=JSON.parse(event.data);if(m.method==='Network.requestWillBeSent'&&m.params.request.url.endsWith('/api/command'))commands++;previousOnMessage(event);};
+    await send('Network.enable');
+    const open=async(side)=>{await click(`document.querySelector('#${side} .zone-info button')`);await wait(`document.getElementById('graveyard-dialog').open`);};
+    const rows=()=>evaluate(`[...document.querySelectorAll('#graveyard-cards button.card')].map(c=>({name:c.querySelector('.card-name').textContent,slot:Number(c.dataset.graveyardSlot),handle:c.dataset.graveyardHandle}))`);
+    const kind=async(value)=>evaluate(`document.getElementById('graveyard-kind').value=${JSON.stringify(value)};document.getElementById('graveyard-kind').dispatchEvent(new Event('change'))`);
+    const search=async(text)=>{await evaluate(`document.getElementById('graveyard-search').value='';document.getElementById('graveyard-search').dispatchEvent(new Event('input'))`);await click(`document.getElementById('graveyard-search')`);await send('Input.insertText',{text});};
+    const read=async(index)=>click(`document.querySelectorAll('#graveyard-cards button.card')[${index}]`);
+    await click(`document.querySelector('#self .zone-row:nth-child(2) .card')`);
+    const before=await evaluate('JSON.stringify(view)'),selectedBefore=await evaluate('selected.card.handle');
+    await open('self');
+    const all=await rows();
+    assert.deepEqual(all.map(c=>c.name),['Fissure','Battle Ox','Magician of Faith','Battle Ox','Trap Hole','Pot of Greed']);
+    assert.deepEqual(all.map(c=>c.slot),[0,1,2,3,4,5]);
+    assert.equal(new Set(all.filter(c=>c.name==='Battle Ox').map(c=>c.handle)).size,2);
+    await search('  bAtTlE  ');assert.deepEqual((await rows()).map(c=>c.slot),[1,3]);
+    assert.equal(await evaluate(`document.getElementById('graveyard-results').textContent`),'Hiển thị 2/6 lá.');
+    await read(1);assert.equal(await evaluate(`document.querySelector('#graveyard-detail h2').textContent`),'Battle Ox');
+    assert.equal(await evaluate(`document.querySelector('#graveyard-cards .selected').dataset.graveyardHandle`),all[3].handle);
+    assert.match(await evaluate(`document.querySelector('#graveyard-cards .selected').getAttribute('aria-label')`),/vị trí 4 từ trên xuống/);
+    await kind('monster');assert.deepEqual((await rows()).map(c=>c.slot),[1,3]);
+    assert.equal(await evaluate(`document.querySelector('#graveyard-detail h2').textContent`),'Battle Ox');
+    await search('');assert.deepEqual((await rows()).map(c=>c.slot),[1,2,3]);
+    await kind('spell');assert.deepEqual((await rows()).map(c=>c.name),['Fissure','Pot of Greed']);
+    assert.equal(await evaluate(`document.querySelector('#graveyard-detail h2')`),null);
+    await search('draw 2');assert.deepEqual((await rows()).map(c=>c.slot),[5]);
+    await read(0);assert.equal(await evaluate(`document.querySelector('#graveyard-detail h2').textContent`),'Pot of Greed');
+    assert.equal(await evaluate(`document.querySelector('#graveyard-detail p').textContent`),Object.values(r.cards).find(c=>c.name==='Pot of Greed').text);
+    await kind('all');assert.equal(await evaluate(`document.querySelector('#graveyard-detail h2').textContent`),'Pot of Greed');
+    await kind('trap');assert.equal((await rows()).length,0);
+    assert.match(await evaluate(`document.getElementById('graveyard-cards').textContent`),/Không có lá phù hợp/);
+    assert.equal(await evaluate(`document.querySelector('#graveyard-detail h2')`),null);
+    await search('');assert.deepEqual((await rows()).map(c=>c.name),['Trap Hole']);
+    await kind('all');
+    for(const [label,width,height]of [['desktop',1440,1000],['narrow',390,844]]) {
+      await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
+      assert.equal(await evaluate(`(()=>{const d=document.getElementById('graveyard-dialog'),r=d.getBoundingClientRect(),s=document.getElementById('graveyard-search').getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1&&d.scrollWidth<=d.clientWidth+1&&s.right<=r.right&&r.height<=innerHeight})()`),true);
+      if(process.argv.includes('--screenshots')) {
+        const folder=join(projectRoot,'artifacts','graveyard-filters');await mkdir(folder,{recursive:true});
+        const shot=await send('Page.captureScreenshot',{format:'png'});await writeFile(join(folder,label+'.png'),Buffer.from(shot.data,'base64'));
+      }
+    }
+    await send('Emulation.clearDeviceMetricsOverride');await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
+    await search('Battle');await evaluate(`document.getElementById('close-graveyard').focus()`);
+    await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});
+    await wait(`!document.getElementById('graveyard-dialog').open`);
+    assert.equal(await evaluate('graveyardContext'),null);assert.equal(await evaluate(`document.getElementById('graveyard-detail').textContent`),'');
+    assert.equal(await evaluate(`document.querySelectorAll('#graveyard-cards button').length`),0);
+    assert.equal(await evaluate('selected.card.handle'),selectedBefore);
+    await open('opponent');assert.equal(await evaluate(`document.getElementById('graveyard-search').value`),'');
+    assert.equal(await evaluate(`document.getElementById('graveyard-kind').value`),'all');
+    assert.deepEqual((await rows()).map(c=>c.name),['Hinotama','Man-Eater Bug','Pot of Greed']);
+    await search('Hane-Hane');assert.equal((await rows()).length,0);
+    await search('');await kind('spell');assert.deepEqual((await rows()).map(c=>c.name),['Hinotama','Pot of Greed']);
+    await read(1);await click(`document.getElementById('close-graveyard')`);
+    assert.equal(await evaluate('graveyardContext'),null);await open('self');
+    assert.deepEqual(await rows(),all);await click(`document.getElementById('close-graveyard')`);
+    assert.equal(await evaluate('JSON.stringify(view)'),before);assert.equal(commands,0);
+    await seat('b');const bBefore=await evaluate('JSON.stringify(view)');await open('self');
+    assert.deepEqual((await rows()).map(c=>c.name),['Hinotama','Man-Eater Bug','Pot of Greed']);
+    await kind('monster');assert.deepEqual((await rows()).map(c=>c.name),['Man-Eater Bug']);
+    await read(0);await click(`document.getElementById('close-graveyard')`);assert.equal(await evaluate('JSON.stringify(view)'),bBefore);
+    const duelId=await evaluate('view.duelId');await click(`document.getElementById('reset')`);
+    await click(`document.querySelector('#new-game-form input[value="a"]')`);await click(`document.querySelector('#new-game-form button[type="submit"]')`);
+    await wait(`!busy&&view.duelId!==${JSON.stringify(duelId)}&&!document.getElementById('new-game-dialog').open`);
+    const empty=await evaluate('JSON.stringify(view)');await open('self');
+    assert.equal((await rows()).length,0);assert.match(await evaluate(`document.getElementById('graveyard-detail').textContent`),/Mộ đang trống/);
+    assert.equal(await evaluate(`document.getElementById('graveyard-search').disabled&&document.getElementById('graveyard-kind').disabled`),true);
+    assert.equal(await evaluate(`document.getElementById('graveyard-results').textContent`),'Hiển thị 0/0 lá.');
+    await click(`document.getElementById('close-graveyard')`);assert.equal(await evaluate('JSON.stringify(view)'),empty);assert.equal(commands,0);
+    assert.equal(errors.length,0);
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'graveyard-filters',catalog:109,
+      nameAndTextSearch:true,combinedKindFilters:true,duplicatesPreserved:true,originalPositionsPreserved:true,
+      previewClearedWhenHidden:true,filtersResetOnReopen:true,seatIndependent:true,emptyGraveyard:true,
+      readOnlyViews:true,noDuelCommands:true,hiddenCardsExcluded:true,responsive:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
+  } else if (deckSaveCheck) {
     const writes=[],previousOnMessage=ws.onmessage;
     ws.onmessage=event=>{
       const m=JSON.parse(event.data);

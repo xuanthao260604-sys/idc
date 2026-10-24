@@ -78,7 +78,8 @@
     "beta:browser-hand-sorting": "npm run build && node tools/beta-browser-smoke.mjs --hand-sorting",
     "beta:browser-hand-keyboard": "npm run build && node tools/beta-browser-smoke.mjs --hand-keyboard",
     "beta:browser-deck-draft-guard": "npm run build && node tools/beta-browser-smoke.mjs --deck-draft-guard",
-    "beta:browser-deck-save-check": "npm run build && node tools/beta-browser-smoke.mjs --deck-save-check"
+    "beta:browser-deck-save-check": "npm run build && node tools/beta-browser-smoke.mjs --deck-save-check",
+    "beta:browser-graveyard-filters": "npm run build && node tools/beta-browser-smoke.mjs --graveyard-filters"
   },
   "devDependencies": {
     "@types/node": "24.19.2",
