@@ -1,6 +1,10 @@
 # Kiểm thử giao diện bằng trình duyệt trên Windows
 
-> Mốc hiện hành: [kiểm tra kết quả lưu deck](../beta/deck-save-check.md), catalog 109; [run 40099228529](https://github.com/xuanthao260604-sys/idc/actions/runs/40099228529), commit 6202db1.
+> Mốc hiện hành: [xem thay đổi của bản nháp deck](../beta/deck-changes.md), catalog 109; [run 40100096853](https://github.com/xuanthao260604-sys/idc/actions/runs/40100096853), commit 7f11dfa.
+> Windows/Ubuntu đạt; Windows: 784/784 test, 41/41 bước, 31 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Đã đọc artifact windows-validation-40100096853-1: bảng số bản sao, chỉ đổi thứ tự, độc lập bộ lọc, undo/redo và baseline xác nhận mới đạt. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [kiểm tra kết quả lưu deck](../beta/deck-save-check.md), catalog 109; [run 40099228529](https://github.com/xuanthao260604-sys/idc/actions/runs/40099228529), commit 6202db1.
 > Windows/Ubuntu đạt; Windows: 784/784 test, 41/41 bước, 31 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Đã đọc artifact windows-validation-40099228529-1: xác nhận lần lưu mất phản hồi, không lưu lặp, giữ bản nháp khi xung đột/đổi ghế và deck B độc lập đạt. Không đổi engine/dữ liệu; Windows 11 desktop chưa chạy.
 

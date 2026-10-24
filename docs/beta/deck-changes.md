@@ -40,8 +40,18 @@ Mở rộng ca `--deck-save-check`, chạy bằng `npm run beta:browser-deck-sav
   ngang. Trên màn hình hẹp dialog vẫn cuộn để xem bảng và các nút.
 
 Ca riêng đạt Linux/Chromium 154.0.8037.57, runtimeExceptions=0. Không thêm
-step hoặc browser mode mới: bộ tổng hợp vẫn 41 bước và 31 browser report;
-Linux và Windows CI đầy đủ đang chờ xác nhận cho mốc này.
+step hoặc browser mode mới: bộ tổng hợp vẫn 41 bước và 31 browser report.
+Linux đạt typecheck, 784/784 test trong 35 file, 41/41 bước và 31 browser
+report, tổng runtimeExceptions=0. Report tại
+artifacts/platform-validation/2026-10-24T13-52-55-966Z-9075/report.json.
+Windows và Ubuntu CI [run 40100096853](https://github.com/xuanthao260604-sys/idc/actions/runs/40100096853)
+đạt trên source commit 7f11dfa4e9ef6ad5da6e3954dbb34c5b3cda59d0. Đã tải và đọc
+artifact windows-validation-40100096853-1: win32 x64, OS 10.0.26100,
+Node 24.19.0, npm 11.17.0, Edge 155.0.4283.62. Windows đạt 784/784 test
+trong 35 file, 41/41 bước và 31 browser report, tổng runtimeExceptions=0.
+Ca deck-save-check có draftChangeTable, orderOnlyChanges, invalidDraftChanges,
+comparisonIgnoresCatalogFilters và comparisonResponsive đều đạt; hồi quy
+lưu deck và các ca còn lại tiếp tục đạt. Report ghi windows11DesktopVerified=false.
 
 Không đổi engine, dữ liệu/review, catalog 109, artwork, starter hoặc deck cũ.
 Windows 11 desktop chưa thử trực tiếp; chưa đóng gói hoặc bàn giao beta.

@@ -1,4 +1,6 @@
-> Mốc hiện tại: [kiểm tra kết quả lưu deck](deck-save-check.md), catalog 109 không đổi; xác nhận khi mất phản hồi, giữ bản sửa khi khác và không tự lưu lại. Linux và Windows CI đạt 784 test, 41 bước, 31 browser report. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
+> Mốc hiện tại: [xem thay đổi của bản nháp deck](deck-changes.md), catalog 109 không đổi; bảng số bản sao trước/sau, không bị bộ lọc che mất và theo baseline đã xác nhận. Linux và Windows CI đạt 784 test, 41 bước, 31 browser report. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [kiểm tra kết quả lưu deck](deck-save-check.md), catalog 109 không đổi; xác nhận khi mất phản hồi, giữ bản sửa khi khác và không tự lưu lại. Linux và Windows CI đạt 784 test, 41 bước, 31 browser report. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
 
 > Mốc trước: [bảo vệ bản nháp deck khi đóng](deck-draft-guard.md), catalog 109 không đổi; Đóng/Escape hỏi trước khi bỏ thay đổi, hủy giữ nguyên bài/lịch sử. Linux và Windows CI đạt 784 test, 40 bước, 30 browser report. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
 
