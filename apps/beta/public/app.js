@@ -6,6 +6,7 @@ let actionHints = new Set();
 let decisionDraft = null;
 let handSort = 'received', handContext = null;
 let graveyardContext = null;
+let activityContext = null;
 let view = null, selected = null, busy = false, message = 'Chọn một lá bài để bắt đầu.';
 const names = { a: 'Người chơi A', b: 'Người chơi B' };
 const phaseNames = { draw: 'BỐC BÀI', standby: 'CHUẨN BỊ', main1: 'MAIN 1', battle: 'CHIẾN ĐẤU', main2: 'MAIN 2', end: 'KẾT THÚC' };
@@ -407,10 +408,26 @@ function renderGuide() {
   $('guide-text').textContent = text;
   $('handoff-next').hidden = !transfer || busy;
   $('handoff-next').textContent = transfer ? `Chuyển cho ${names[transfer]}` : 'Chuyển máy';
-  const actionNames = { 'normal-summon': 'Triệu hồi quái', 'set-monster': 'Úp quái', 'set-spell-trap': 'Úp Phép / Bẫy', 'change-position': 'Đổi tư thế', 'flip-summon': 'Flip Summon', 'declare-attack': 'Tuyên bố tấn công', 'activate-spell': 'Kích hoạt Phép', 'activate-trap': 'Kích hoạt Bẫy', 'answer-decision': 'Xác nhận lựa chọn', pass: 'Nhường quyền', 'request-phase': 'Đề nghị chuyển phase', concede: 'Đầu hàng' };
-  const entries = (view.activity || []).slice().reverse();
-  $('activity').replaceChildren(...(entries.length ? entries.map(e => { const item = node('li', `#${e.stateVersion} · Lượt ${e.turn} · ${names[e.actorId]}: ${actionNames[e.action] || 'Thao tác'}`); if (e.resolution?.length) item.append(node('p', e.resolution.map(resolutionText).filter(Boolean).join(' · '), 'resolution')); return item; }) : [node('li', 'Chưa có thao tác.')]));
+  renderActivity();
   $('concede').disabled = busy || !!view.result;
+}
+function renderActivity() {
+  if (!view) return;
+  const context = JSON.stringify([view.duelId, view.viewerId]);
+  if (activityContext !== context) {
+    activityContext = context; $('activity-scope').value = 'all'; $('activity-hide-pass').checked = false;
+  }
+  const actionNames = { 'normal-summon': 'Triệu hồi quái', 'set-monster': 'Úp quái', 'set-spell-trap': 'Úp Phép / Bẫy', 'change-position': 'Đổi tư thế', 'flip-summon': 'Flip Summon', 'declare-attack': 'Tuyên bố tấn công', 'activate-spell': 'Kích hoạt Phép', 'activate-trap': 'Kích hoạt Bẫy', 'answer-decision': 'Xác nhận lựa chọn', pass: 'Nhường quyền', 'request-phase': 'Đề nghị chuyển phase', concede: 'Đầu hàng' };
+  const all = view.activity || [];
+  const entries = all.filter(e => ($('activity-scope').value !== 'turn' || e.turn === view.turn.number)
+    && (!$('activity-hide-pass').checked || e.action !== 'pass' || e.resolution?.length)).slice().reverse();
+  $('activity-results').textContent = `Hiển thị ${entries.length}/${all.length} thao tác đang lưu.`;
+  $('activity').replaceChildren(...(entries.length ? entries.map(e => {
+    const item = node('li', `#${e.stateVersion} · Lượt ${e.turn} · ${phaseNames[e.phase]} · ${names[e.actorId]}: ${actionNames[e.action] || 'Thao tác'}`);
+    item.dataset.stateVersion = String(e.stateVersion);
+    if (e.resolution?.length) item.append(node('p', e.resolution.map(resolutionText).filter(Boolean).join(' · '), 'resolution'));
+    return item;
+  }) : [node('li', all.length ? 'Không có thao tác phù hợp với bộ lọc.' : 'Chưa có thao tác.')]));
 }
 function render() {
   clearGraveyard();
@@ -498,6 +515,8 @@ $('graveyard-dialog').addEventListener('cancel', e => { e.preventDefault(); clea
 $('graveyard-dialog').addEventListener('close', () => { if (!$('graveyard-dialog').open) clearGraveyard(); });
 $('graveyard-search').addEventListener('input', renderGraveyard);
 $('graveyard-kind').addEventListener('change', renderGraveyard);
+$('activity-scope').addEventListener('change', renderActivity);
+$('activity-hide-pass').addEventListener('change', renderActivity);
 $('close-decision-card').addEventListener('click', () => $('decision-card-dialog').close());
 $('decision-card-dialog').addEventListener('close', () => { $('decision-card-detail').replaceChildren(); $('decision-card-location').textContent = ''; });
 $('cancel-action').addEventListener('click', () => $('action-dialog').close());

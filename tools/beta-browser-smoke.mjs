@@ -19,6 +19,7 @@ const hammerShot = process.argv.includes('--hammer-shot');
 const magicianFaith = process.argv.includes('--magician-faith');
 const handKeyboard = process.argv.includes('--hand-keyboard');
 const graveyardFilters = process.argv.includes('--graveyard-filters');
+const activityFilters = process.argv.includes('--activity-filters');
 const handSorting = handKeyboard || process.argv.includes('--hand-sorting');
 const faithBattleArg = process.argv.find(arg => /^--faith-battle=[ab]:[02]$/.test(arg));
 const faithBattle = faithBattleArg ? { defender: faithBattleArg.split('=')[1].split(':')[0], spells: Number(faithBattleArg.split(':')[1]) } : null;
@@ -320,6 +321,17 @@ try {
     assert.equal(await evaluate(`document.getElementById('graveyard-dialog').open`), false);
     assert.equal(await evaluate('JSON.stringify(view)'), before);
   }
+  async function verifyActivityFilters(scope,hidePass) {
+    const before=await evaluate('JSON.stringify(view)'),selection=await evaluate('JSON.stringify(selected)');
+    if(!await evaluate(`document.querySelector('.activity-panel details').open`))await click(`document.querySelector('.activity-panel summary')`);
+    await evaluate(`document.getElementById('activity-scope').value=${JSON.stringify(scope)};document.getElementById('activity-scope').dispatchEvent(new Event('change'))`);
+    if(await evaluate(`document.getElementById('activity-hide-pass').checked`)!==hidePass)await click(`document.getElementById('activity-hide-pass')`);
+    const v=await evaluate('view'),expected=v.activity.filter(e=>(scope!=='turn'||e.turn===v.turn.number)&&(!hidePass||e.action!=='pass'||e.resolution?.length)).map(e=>e.stateVersion).reverse();
+    assert.deepEqual(await evaluate(`[...document.querySelectorAll('#activity li[data-state-version]')].map(e=>Number(e.dataset.stateVersion))`),expected);
+    assert.equal(await evaluate(`document.getElementById('activity-results').textContent`),`Hiển thị ${expected.length}/${v.activity.length} thao tác đang lưu.`);
+    assert.equal(await evaluate('JSON.stringify(view)'),before);assert.equal(await evaluate('JSON.stringify(selected)'),selection);
+    return expected;
+  }
   async function playNaturalDuel() {
     // Policy reads only the active PlayerView/catalog, never the server state or deck order.
     let currentTurn = 0, normalUsed = false, attacked = new Set();
@@ -352,9 +364,12 @@ try {
         assert.ok(v.activity.some(e=>e.resolution?.some(f=>f.kind==='battle-damage')));
         assert.match(await evaluate(`document.getElementById('activity').textContent`), /sát thương chiến đấu/);
         for(const entry of v.activity) assert.deepEqual(Object.keys(entry).filter(k=>k!=='resolution').sort(), ['action','actorId','phase','stateVersion','turn']);
+        for(const scope of ['all','turn'])for(const hidePass of [false,true])await verifyActivityFilters(scope,hidePass);
+        await verifyActivityFilters('all',false);
+        assert.equal(errors.length,0);
         console.log(JSON.stringify({ browser: browser.brand, browserVersion: browserVersion.product, platform: process.platform, mode: expanded ? 'natural-expanded-duel' : 'natural-full-duel', catalogDefinitions: Object.keys(r.cards).length, openingHands: [6, 5],
           turns: v.turn.number, acceptedCommands: actions, attacks, decisions, effectsUsed: [...usedEffects].sort(),
-          result: v.result, lifePoints: v.players.map(p=>p.lifePoints), stateEditedDuringPlay: false,battleCues:true,directAttackCues:true, runtimeExceptions: errors.length }));
+          result: v.result, lifePoints: v.players.map(p=>p.lifePoints), stateEditedDuringPlay: false,activityFilteringAtHistoryLimit:true,battleCues:true,directAttackCues:true, runtimeExceptions: errors.length }));
         break;
       }
       if (actions > 2500 || v.turn.number > 100) throw new Error('Natural browser duel exceeded limit');
@@ -455,7 +470,64 @@ try {
   }
   await send('Runtime.enable'); await send('Page.enable'); await send('Page.navigate', { url: `http://127.0.0.1:${server.address().port}` });
   await wait(`document.getElementById('seat-dialog')?.open`); await seat('a');
-  if (graveyardFilters) {
+  if (activityFilters) {
+    let commands=0;const previousOnMessage=ws.onmessage;
+    ws.onmessage=event=>{const m=JSON.parse(event.data);if(m.method==='Network.requestWillBeSent'&&m.params.request.url.endsWith('/api/command'))commands++;previousOnMessage(event);};
+    await send('Network.enable');await verifyActivityFilters('turn',true);
+    assert.match(await evaluate(`document.getElementById('activity').textContent`),/Chưa có thao tác/);
+    await hand('Fissure');await click(textButton('#actions button','Úp bài'));await confirm();
+    const setVersion=await evaluate('view.stateVersion');await pass('a');await pass('b');await seat('a');
+    let count=commands;assert.deepEqual(await verifyActivityFilters('all',true),[setVersion]);assert.equal(commands,count);
+    assert.equal(await evaluate(`document.getElementById('activity').textContent.includes('Fissure')`),false);
+    assert.match(await evaluate(`document.getElementById('activity').textContent`),/MAIN 1/);
+    await hand('Pot of Greed');await click(textButton('#actions button','Kích hoạt'));await confirm();
+    const activation=await evaluate('view.stateVersion');await pass('b');const emptyPass=await evaluate('view.stateVersion');await pass('a');
+    const resolution=await evaluate('view.stateVersion');count=commands;
+    const visible=await verifyActivityFilters('turn',true);
+    assert.ok(visible.includes(resolution));assert.ok(visible.includes(activation));assert.ok(!visible.includes(emptyPass));
+    assert.match(await evaluate(`document.getElementById('activity').textContent`),/bốc 2 lá/);
+    assert.equal(await evaluate(`['Fissure','Pot of Greed','Trap Hole','Hane-Hane'].some(name=>document.getElementById('activity').textContent.includes(name))`),false);
+    assert.equal(commands,count);
+    await pass('a');await pass('b');await seat('a');
+    await actionClick(textButton('#turn-actions button','KẾT THÚC'));await pass('b');await seat('a');
+    if(await evaluate('!!view.decision')) {
+      const needed=await evaluate('view.decision.min');
+      for(let i=0;i<needed;i++)await click(`document.querySelectorAll('#decision-form input')[${i}]`);
+      await actionClick(`document.querySelector('#decision-form button[type="submit"]')`);await pass('a');await pass('b');await seat('a');
+    }
+    await actionClick(textButton('#turn-actions button','Sang lượt đối thủ'));await seat('b');
+    await verifyActivityFilters('turn',true);const oldTurn=await evaluate('view.turn.number');await pass('b');
+    assert.equal(await evaluate('view.turn.number'),oldTurn+1);
+    assert.equal(await evaluate(`document.getElementById('activity-scope').value`),'turn');
+    assert.equal(await evaluate(`document.getElementById('activity-hide-pass').checked`),true);
+    assert.deepEqual(await verifyActivityFilters('turn',true),[]);
+    assert.match(await evaluate(`document.getElementById('activity').textContent`),/Không có thao tác phù hợp/);
+    await verifyActivityFilters('turn',false);await pass('b');
+    assert.equal((await verifyActivityFilters('turn',false)).length,1);
+    await seat('a');assert.equal(await evaluate(`document.getElementById('activity-scope').value`),'all');
+    assert.equal(await evaluate(`document.getElementById('activity-hide-pass').checked`),false);
+    count=commands;await verifyActivityFilters('all',true);await verifyActivityFilters('turn',false);assert.equal(commands,count);
+    const refreshVersion=await evaluate('view.stateVersion');await click(`document.getElementById('refresh')`);
+    await wait(`!busy&&document.getElementById('status').textContent.includes('Đã cập nhật')`);
+    assert.equal(await evaluate('view.stateVersion'),refreshVersion);
+    assert.equal(await evaluate(`document.getElementById('activity-scope').value`),'turn');assert.equal(await evaluate(`document.getElementById('activity-hide-pass').checked`),false);
+    for(const [label,width,height]of [['desktop',1440,1000],['narrow',390,844]]) {
+      await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
+      assert.equal(await evaluate(`(()=>{const e=document.querySelector('.activity-panel'),r=e.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1&&e.scrollWidth<=e.clientWidth+1})()`),true);
+      if(process.argv.includes('--screenshots')) {
+        const folder=join(projectRoot,'artifacts','activity-filters');await mkdir(folder,{recursive:true});await evaluate(`document.querySelector('.activity-panel').scrollIntoView({block:'center'})`);
+        const shot=await send('Page.captureScreenshot',{format:'png'});await writeFile(join(folder,label+'.png'),Buffer.from(shot.data,'base64'));
+      }
+    }
+    await send('Emulation.clearDeviceMetricsOverride');await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
+    const id=await evaluate('view.duelId');await click(`document.getElementById('reset')`);await click(`document.querySelector('#new-game-form input[value="a"]')`);
+    await click(`document.querySelector('#new-game-form button[type="submit"]')`);await wait(`!busy&&view.duelId!==${JSON.stringify(id)}&&!document.getElementById('new-game-dialog').open`);
+    assert.equal(await evaluate('view.activity.length'),0);assert.equal(await evaluate(`document.getElementById('activity-scope').value`),'all');
+    assert.equal(await evaluate(`document.getElementById('activity-hide-pass').checked`),false);assert.equal(errors.length,0);
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'activity-filters',catalog:20,
+      currentTurnAndAll:true,emptyPassHidden:true,resolvingPassKept:true,setIdentityHidden:true,phaseContext:true,
+      liveTurnUpdate:true,refreshPreservesFilters:true,seatAndDuelReset:true,readOnlyFilters:true,responsive:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
+  } else if (graveyardFilters) {
     let commands=0;const previousOnMessage=ws.onmessage;
     ws.onmessage=event=>{const m=JSON.parse(event.data);if(m.method==='Network.requestWillBeSent'&&m.params.request.url.endsWith('/api/command'))commands++;previousOnMessage(event);};
     await send('Network.enable');
