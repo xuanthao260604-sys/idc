@@ -55,10 +55,19 @@ function cardPreview(d) {
 function cardButton(card, zone, player, slot, onSelect) {
   const d = def(card), b = button('', onSelect || (() => {
     const hadFocus = document.activeElement === b;
+    if (!busy && view.decision?.optionIds.includes(card.handle)) {
+      const input = [...$('decision-form').querySelectorAll('input[name="option"]')].find(input => input.value === card.handle);
+      if (input && !input.disabled) { input.checked = input.type === 'radio' || !input.checked; input.dispatchEvent(new Event('change', { bubbles: true })); }
+    }
     selected = { card, zone, player, slot }; render();
     if (hadFocus) document.querySelector('main button.card.selected')?.focus({ preventScroll: true });
   }), `card ${d?.kind === 'spell' ? 'spell' : d?.kind === 'trap' ? 'trap' : ''} ${!d ? 'back' : ''} ${selected?.card.handle === card.handle ? 'selected' : ''}`);
   b.setAttribute('aria-label', `${label(card)}${zone === 'hand' ? ' trên tay' : zone === 'graveyard' ? ` trong Mộ, vị trí ${slot + 1} từ trên xuống` : ` tại ô ${slot + 1}`}`);
+  if (['hand', 'monster', 'spell-trap'].includes(zone) && view.decision?.optionIds.includes(card.handle)) {
+    b.dataset.decisionHandle = card.handle; b.dataset.decisionLabel = b.getAttribute('aria-label');
+    b.classList.add('decision-choice');
+    const hint = node('span', 'Chọn cho quyết định', 'decision-card-hint'); hint.setAttribute('aria-hidden', 'true'); b.append(hint);
+  }
   if (zone === 'monster' && !view.result && view.battle?.attackerHandle) {
     const role = card.handle === view.battle.attackerHandle ? 'attacker' : card.handle === view.battle.targetHandle ? 'target' : null;
     if (role) {
@@ -66,6 +75,7 @@ function cardButton(card, zone, player, slot, onSelect) {
       b.setAttribute('aria-label', b.getAttribute('aria-label') + (role === 'attacker' ? ' · Quái đang tấn công' : ' · Mục tiêu đang bị tấn công'));
     }
   }
+  if (b.dataset.decisionHandle) b.dataset.decisionLabel = b.getAttribute('aria-label');
   if (!d) { const art = node('span', undefined, 'card-back-art'); art.setAttribute('aria-hidden', 'true'); b.append(art); return b; }
   frontContent(b, d);
   if (player === view.viewerId && ['hand', 'monster', 'spell-trap'].includes(zone)) {
@@ -462,6 +472,7 @@ function render() {
   else if (decisionDraft?.key !== decisionKey) decisionDraft = { key: decisionKey, optionIds: [] };
   if (view.decision) {
     const d = view.decision; form.append(node('p', `Chọn ${d.min === d.max ? d.min : d.min + '–' + d.max} lá${d.kind === 'discard' ? ' để bỏ xuống Mộ' : ' để xử lý hiệu ứng'}.`));
+    if (document.querySelector('main button[data-decision-handle]')) form.append(node('p', 'Có thể nhấn lá được đánh dấu trên tay/sân để chọn. Chỉ gửi lựa chọn khi xác nhận.'));
     d.optionIds.forEach(h => {
       const row = node('div', undefined, 'decision-option'), l = node('label'), input = node('input');
       input.type = d.max === 1 ? 'radio' : 'checkbox'; input.name = 'option'; input.value = h; input.checked = decisionDraft.optionIds.includes(h);
@@ -484,13 +495,24 @@ function render() {
       progress.textContent = `Đã chọn ${count}/${d.min === d.max ? d.min : d.min + '–' + d.max} lá.`;
       submit.disabled = busy || count < d.min || count > d.max;
       for (const input of form.querySelectorAll('input, [data-inspect]')) input.disabled = busy;
+      syncDecisionCards();
     };
     form.onchange = updateSelection; updateSelection();
     form.onsubmit = e => { e.preventDefault(); if (busy) return; const optionIds = [...form.querySelectorAll('input:checked')].map(i => i.value); if (optionIds.length < d.min || optionIds.length > d.max) { message = 'Hãy chọn đúng số lá.'; $('status').textContent = message; return; } command({ type: 'answer-decision', decisionId: d.id, optionIds }); };
   }
 }
+function syncDecisionCards() {
+  const chosen = new Set(decisionDraft?.optionIds || []);
+  for (const card of document.querySelectorAll('main button[data-decision-handle]')) {
+    const selected = chosen.has(card.dataset.decisionHandle);
+    card.classList.toggle('decision-chosen', selected); card.disabled = busy;
+    card.setAttribute('aria-pressed', String(selected));
+    card.setAttribute('aria-label', card.dataset.decisionLabel + (selected ? ' · Đã chọn cho quyết định' : ' · Có thể chọn cho quyết định'));
+    card.querySelector('.decision-card-hint').textContent = selected ? '✓ Đã chọn' : 'Chọn cho quyết định';
+  }
+}
 function handoff() { clearChainCard(); decisionDraft = null; handSort = 'received'; handContext = null; document.body.classList.add('concealed'); selected = null; $('seat-dialog').showModal(); }
-$('hand-sort').addEventListener('change', () => { if (busy || !view) return; handSort = $('hand-sort').value; renderHand(); });
+$('hand-sort').addEventListener('change', () => { if (busy || !view) return; handSort = $('hand-sort').value; renderHand(); syncDecisionCards(); });
 $('hand').addEventListener('keydown', event => {
   if (busy || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
   const cards = [...$('hand').querySelectorAll('button.card')], index = cards.indexOf(event.target);

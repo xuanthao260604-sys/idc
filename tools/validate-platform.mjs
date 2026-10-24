@@ -46,7 +46,7 @@ async function main() {
     node('beta-startup', 'tools/beta-startup-smoke.mjs'),
     node('vanilla', 'dist/tools/engine-smoke.js'), node('capabilities', 'dist/tools/engine-capabilities.js'),
     node('mixed', 'dist/tools/engine-mixed-smoke.js'),
-    ...[['effects'], ['activity-filters', '--activity-filters'], ['graveyard-filters', '--graveyard-filters'], ['deck-save-check', '--deck-save-check'], ['deck-draft-guard', '--deck-draft-guard'], ['hand-keyboard', '--hand-keyboard'], ['hand-sorting', '--hand-sorting'], ['magician-faith', '--magician-faith'],
+    ...[['effects'], ['decision-cards', '--decision-cards'], ['activity-filters', '--activity-filters'], ['graveyard-filters', '--graveyard-filters'], ['deck-save-check', '--deck-save-check'], ['deck-draft-guard', '--deck-draft-guard'], ['hand-keyboard', '--hand-keyboard'], ['hand-sorting', '--hand-sorting'], ['magician-faith', '--magician-faith'],
       ...['a:0','a:2','b:0','b:2'].map(mode=>['faith-battle-'+mode.replace(':','-'),'--faith-battle='+mode]),
       ['chain-view', '--chain-view'], ['deck-overview', '--deck-overview'], ['earthquake', '--earthquake'], ['block-attack', '--block-attack'], ['reincarnation-grave', '--reincarnation=grave'], ['reincarnation-cost', '--reincarnation=cost'], ['tribute-doomed', '--tribute-doomed'], ['hammer-shot', '--hammer-shot'], ['smashing-ground', '--smashing-ground'], ['life-points-normal', '--life-points=normal'], ['life-points-lethal', '--life-points=lethal'], ['expanded-catalog', '--expanded-catalog'], ['deck-builder', '--deck-builder'], ['setup', '--new-game'], ['discard', '--discard'],
       ['deck-out-0', '--deck-out=0'], ['deck-out-1', '--deck-out=1'], ['deck-out-2', '--deck-out=2'],

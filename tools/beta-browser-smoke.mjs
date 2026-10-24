@@ -20,6 +20,7 @@ const magicianFaith = process.argv.includes('--magician-faith');
 const handKeyboard = process.argv.includes('--hand-keyboard');
 const graveyardFilters = process.argv.includes('--graveyard-filters');
 const activityFilters = process.argv.includes('--activity-filters');
+const decisionCards = process.argv.includes('--decision-cards');
 const handSorting = handKeyboard || process.argv.includes('--hand-sorting');
 const faithBattleArg = process.argv.find(arg => /^--faith-battle=[ab]:[02]$/.test(arg));
 const faithBattle = faithBattleArg ? { defender: faithBattleArg.split('=')[1].split(':')[0], spells: Number(faithBattleArg.split(':')[1]) } : null;
@@ -58,11 +59,16 @@ function move(name, owner, zone, slot = 0, down = false) {
   c.location = { kind: zone, playerId: owner, slot }; c.position = down ? zone === 'monster' ? 'face-down-defense' : 'face-down' : 'face-up-attack';
   if (down) c.markers.setOnTurn = 2;
 }
-if (!fullDuel && !newGame && !discard && !concede && !deckBuilder && !chainView && !expanded && deckOut === null) {
+if (!fullDuel && !newGame && !discard && !concede && !deckBuilder && !chainView && !decisionCards && !expanded && deckOut === null) {
 move('Pot of Greed', 'a', 'hand'); move('Fissure', 'a', 'hand'); move('Battle Ox', 'a', 'hand');
 move('La Jinn the Mystical Genie of the Lamp', 'a', 'monster', 0); move('Celtic Guardian', 'a', 'monster', 1);
 move('Mystical Elf', 'b', 'monster', 0); move('Hane-Hane', 'b', 'monster', 1, true); move('Man-Eater Bug', 'b', 'monster', 2, true); move('Trap Hole', 'b', 'spell-trap', 0, true); move('Fissure', 'b', 'spell-trap', 1, true);
 s.turn.number = 3; s.turn.phase = 'main1'; s.timing.window = 'open'; s.timing.priorityPlayer = 'a'; s.timing.consecutivePasses = 0;
+}
+if (decisionCards) {
+  move('Man-Eater Bug','b','monster',0,true);move('Battle Ox','b','monster',1);
+  move('Celtic Guardian','a','monster',0);move('Mystical Elf','a','monster',1,true);
+  s.turn.number=4;s.turn.activePlayer='b';s.turn.phase='main1';s.timing.window='open';s.timing.priorityPlayer='b';s.timing.consecutivePasses=0;
 }
 if (magicianFaith) {
   move('Magician of Faith','a','monster',0,true);
@@ -470,7 +476,51 @@ try {
   }
   await send('Runtime.enable'); await send('Page.enable'); await send('Page.navigate', { url: `http://127.0.0.1:${server.address().port}` });
   await wait(`document.getElementById('seat-dialog')?.open`); await seat('a');
-  if (activityFilters) {
+  if (decisionCards) {
+    await seat('b');await click(`document.querySelector('#self .zone-row:nth-child(2) .slot:nth-child(1) .card')`);
+    await actionClick(textButton('#actions button','Flip Summon'));
+    assert.equal(await evaluate('view.decision.kind'),'target');assert.equal(await evaluate('view.decision.optionIds.length'),4);
+    const before=await evaluate('JSON.stringify(view)');
+    assert.equal(await evaluate(`document.querySelectorAll('main .decision-choice').length`),4);
+    assert.equal(await evaluate(`document.querySelectorAll('main .decision-chosen').length`),0);
+    const hidden=`document.querySelector('#opponent .zone-row:nth-child(3) .slot:nth-child(2) .card')`;
+    await click(hidden);
+    const handle=await evaluate(`${hidden}.dataset.decisionHandle`);
+    assert.equal(await evaluate(`${hidden}.getAttribute('aria-pressed')`),'true');
+    assert.equal(await evaluate(`document.querySelector('#decision-form input:checked').value`),handle);
+    assert.equal(await evaluate(`document.querySelector('#detail h2').textContent`),'Bài úp');
+    assert.equal(await evaluate(`document.querySelector('#detail .card-preview')`),null);
+    assert.equal(await evaluate(`${hidden}.querySelector('.card-name')`),null);
+    assert.equal(await evaluate('JSON.stringify(view)'),before);
+    // The radio list and board must stay in sync in both directions.
+    await click(`document.querySelectorAll('#decision-form input')[0]`);
+    assert.equal(await evaluate(`document.querySelector('main .decision-chosen').dataset.decisionHandle`),await evaluate(`document.querySelector('#decision-form input:checked').value`));
+    assert.equal(await evaluate(`document.querySelectorAll('main .decision-chosen').length`),1);
+    await click(hidden);assert.equal(await evaluate(`document.querySelectorAll('main .decision-chosen').length`),1);
+    for(const [label,width,height]of [['desktop',1440,1000],['narrow',390,844]]) {
+      await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
+      assert.equal(await evaluate(`(()=>{const e=document.querySelector('main .decision-chosen'),r=e.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1&&document.documentElement.scrollWidth<=innerWidth+1})()`),true);
+      if(process.argv.includes('--screenshots')) {
+        const folder=join(projectRoot,'artifacts','decision-cards');await mkdir(folder,{recursive:true});await evaluate(`${hidden}.scrollIntoView({block:'center'})`);
+        const shot=await send('Page.captureScreenshot',{format:'png'});await writeFile(join(folder,label+'.png'),Buffer.from(shot.data,'base64'));
+      }
+    }
+    await send('Emulation.clearDeviceMetricsOverride');await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
+    await seat('a');assert.equal(await evaluate('view.decision'),null);assert.equal(await evaluate(`document.querySelectorAll('main .decision-choice').length`),0);
+    await seat('b');assert.equal(await evaluate(`document.querySelectorAll('main .decision-chosen').length`),0);
+    await click(hidden);const version=await evaluate('view.stateVersion');
+    assert.equal(await evaluate('view.chain.length'),0);
+    await actionClick(`document.querySelector('#decision-form button[type="submit"]')`);
+    assert.equal(await evaluate('view.stateVersion'),version+1);assert.equal(await evaluate(`document.querySelectorAll('main .decision-choice').length`),0);
+    await inspectChain('target',null);await pass('a');await pass('b');
+    assert.equal(await evaluate('view.players[0].monsters[1]'),null);
+    assert.equal(await evaluate(`view.players[0].graveyard.filter(c=>catalog.get(c.definition.id).name==='Mystical Elf').length`),1);
+    assert.equal(await evaluate(`document.querySelectorAll('main .decision-choice').length`),0);
+    assert.deepEqual(await evaluate('view.players.map(p=>p.lifePoints)'),[8000,8000]);assert.equal(errors.length,0);
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'decision-cards',catalog:20,
+      privateCandidatesOnly:true,boardAndRadioSync:true,hiddenTargetKeptHidden:true,selectionDoesNotSubmit:true,
+      explicitConfirm:true,seatClearsDraft:true,cuesClearedAfterDecision:true,responsive:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
+  } else if (activityFilters) {
     let commands=0;const previousOnMessage=ws.onmessage;
     ws.onmessage=event=>{const m=JSON.parse(event.data);if(m.method==='Network.requestWillBeSent'&&m.params.request.url.endsWith('/api/command'))commands++;previousOnMessage(event);};
     await send('Network.enable');await verifyActivityFilters('turn',true);
@@ -1838,6 +1888,8 @@ try {
     assert.match(await evaluate(`document.getElementById('decision-progress').textContent`), /2\/2/);
     await inspectDecision(1,true); assert.equal(await disabled(),false);
     const checkedBeforeFailure = await evaluate(`[...document.querySelectorAll('#decision-form input:checked')].map(e=>e.value)`);
+    await evaluate(`document.getElementById('hand-sort').value='name';document.getElementById('hand-sort').dispatchEvent(new Event('change'))`);
+    assert.deepEqual(await evaluate(`[...document.querySelectorAll('#hand .decision-chosen')].map(c=>c.dataset.decisionHandle).sort()`),[...checkedBeforeFailure].sort());
     const beforeFailure = await evaluate('JSON.stringify(view)');
     await send('Network.enable');
     await send('Network.emulateNetworkConditions',{offline:true,latency:0,downloadThroughput:0,uploadThroughput:0});
@@ -1846,8 +1898,16 @@ try {
     assert.deepEqual(await evaluate(`[...document.querySelectorAll('#decision-form input:checked')].map(e=>e.value)`),checkedBeforeFailure);
     assert.match(await evaluate(`document.getElementById('status').textContent`),/Chưa xác nhận lựa chọn/);
     await send('Network.emulateNetworkConditions',{offline:false,latency:0,downloadThroughput:-1,uploadThroughput:-1});
-    // Reading a card and refreshing an unchanged view must also preserve a local choice.
-    await click(`document.querySelector('#hand .card')`);
+    // Selecting a hand card toggles the same private checkbox; a second click restores it.
+    assert.equal(await evaluate(`document.querySelectorAll('#hand .decision-choice').length`),8);
+    assert.equal(await evaluate(`document.querySelectorAll('#hand .decision-chosen').length`),2);
+    const third=await evaluate(`document.querySelectorAll('#decision-form input')[2].value`);
+    await evaluate(`[...document.querySelectorAll('#hand .card')].find(c=>c.dataset.decisionHandle===${JSON.stringify(third)}).focus()`);
+    await send('Input.dispatchKeyEvent',{type:'keyDown',key:' ',code:'Space',windowsVirtualKeyCode:32,text:' '});
+    await send('Input.dispatchKeyEvent',{type:'keyUp',key:' ',code:'Space',windowsVirtualKeyCode:32});
+    assert.equal(await evaluate('document.activeElement.dataset.decisionHandle'),third);
+    assert.equal(await disabled(),true);assert.equal(await evaluate(`document.querySelectorAll('#hand .decision-chosen').length`),3);
+    await click(`[...document.querySelectorAll('#hand .card')].find(c=>c.dataset.decisionHandle===${JSON.stringify(third)})`);
     assert.deepEqual(await evaluate(`[...document.querySelectorAll('#decision-form input:checked')].map(e=>e.value)`),checkedBeforeFailure);
     await click(`document.getElementById('refresh')`); await wait('!busy');
     assert.deepEqual(await evaluate(`[...document.querySelectorAll('#decision-form input:checked')].map(e=>e.value)`),checkedBeforeFailure);
@@ -1869,6 +1929,7 @@ try {
     await actionClick(`document.querySelector('#decision-form button[type="submit"]')`);
     assert.equal(await evaluate('view.stateVersion'),serverAfterLoss.stateVersion);
     assert.equal(await evaluate('decisionDraft'),null);
+    assert.equal(await evaluate(`document.querySelectorAll('main .decision-choice').length`),0);
     assert.equal(await evaluate(`view.activity.filter(e=>e.action==='answer-decision').length`),1);
     assert.match(await evaluate(`document.getElementById('status').textContent`),/Bàn đấu đã thay đổi/);
     assert.equal(await evaluate('view.selfHand.length'), 6);
