@@ -1,4 +1,6 @@
-> Mốc hiện tại: [tải bản lưu vào bản nháp deck](../beta/deck-load-saved.md), catalog 109 không đổi; chủ động đọc bản mới nhất, có undo để lấy lại bản sửa, lỗi giữ nguyên và không tự lưu. Linux và Windows CI đạt 784 test, 41 bước, 31 browser report. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
+> Mốc hiện tại: [xem trước khi nhập file deck](../beta/deck-import-preview.md), catalog 109 không đổi; xem bảng tăng/giảm trước Áp dụng, Hủy/Escape giữ bản nháp và lịch sử. Linux và Windows CI đạt 784 test, 41 bước, 31 browser report. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [tải bản lưu vào bản nháp deck](../beta/deck-load-saved.md), catalog 109 không đổi; chủ động đọc bản mới nhất, có undo để lấy lại bản sửa, lỗi giữ nguyên và không tự lưu. Linux và Windows CI đạt 784 test, 41 bước, 31 browser report. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
 
 > Mốc trước: [xem thay đổi của bản nháp deck](../beta/deck-changes.md), catalog 109 không đổi; bảng số bản sao trước/sau, không bị bộ lọc che mất và theo baseline đã xác nhận. Linux và Windows CI đạt 784 test, 41 bước, 31 browser report. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
 

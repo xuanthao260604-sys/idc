@@ -1,4 +1,4 @@
-# Xem trước trước khi nhập file deck — 24/10/2026
+# Xem trước khi nhập file deck — 24/10/2026
 
 Chọn file hợp lệ mở cửa sổ xem trước, chưa thay bản nháp. Hiển thị tên file,
 số lá hiện tại/trong file và bảng số bản sao thay đổi, kể cả lá về 0. So
@@ -40,8 +40,18 @@ Mở rộng ca `--deck-builder`, chạy bằng `npm run beta:browser-deck-builde
   cao quá viewport, nút xuống dòng khi cần. Text tên file dùng textContent.
 
 Ca riêng đạt Linux/Chromium 154.0.8037.57, runtimeExceptions=0. Giữ bộ tổng
-hợp 41 bước và 31 browser report, không thêm step hoặc mode mới. Linux và
-Windows CI đầy đủ đang chờ xác nhận cho mốc này.
+hợp 41 bước và 31 browser report, không thêm step hoặc mode mới. Linux đạt
+typecheck, 784/784 test trong 35 file, 41/41 bước và 31 browser report,
+tổng runtimeExceptions=0. Report tại
+artifacts/platform-validation/2026-10-24T14-20-20-226Z-21172/report.json.
+Windows và Ubuntu CI [run 40102049702](https://github.com/xuanthao260604-sys/idc/actions/runs/40102049702)
+đạt trên source commit 3833fe204c168c741291ff64b7fa950bb7ff5594. Đã tải và đọc
+artifact windows-validation-40102049702-1: win32 x64, OS 10.0.26100,
+Node 24.19.0, npm 11.17.0, Edge 155.0.4283.62. Windows đạt 784/784 test
+trong 35 file, 41/41 bước và 31 browser report, tổng runtimeExceptions=0.
+Ca deck-builder xác nhận importPreview, importCancelAndEscapePreserveDraft,
+importApplyOneUndoStep, importSameFileNoHistoryChange và importPreviewResponsive
+đều đạt. Report ghi windows11DesktopVerified=false.
 
 Không đổi engine, dữ liệu/review, catalog 109, artwork, starter hoặc deck cũ.
 Windows 11 desktop chưa thử trực tiếp; chưa đóng gói hoặc bàn giao beta.

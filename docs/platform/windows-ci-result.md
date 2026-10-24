@@ -1,6 +1,10 @@
 # Kết quả Windows CI
 
-> Mốc hiện hành: [tải bản lưu vào bản nháp deck](../beta/deck-load-saved.md), catalog 109; [run 40100927033](https://github.com/xuanthao260604-sys/idc/actions/runs/40100927033), commit 3bee50f.
+> Mốc hiện hành: [xem trước khi nhập file deck](../beta/deck-import-preview.md), catalog 109; [run 40102049702](https://github.com/xuanthao260604-sys/idc/actions/runs/40102049702), commit 3833fe2.
+> Windows/Ubuntu đạt; Windows: 784/784 test, 41/41 bước, 31 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Đã đọc artifact windows-validation-40102049702-1: preview file, Hủy/Escape giữ nháp, Áp dụng một bước undo, file trùng không đổi lịch sử và hai viewport đạt. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [tải bản lưu vào bản nháp deck](../beta/deck-load-saved.md), catalog 109; [run 40100927033](https://github.com/xuanthao260604-sys/idc/actions/runs/40100927033), commit 3bee50f.
 > Windows/Ubuntu đạt; Windows: 784/784 test, 41/41 bước, 31 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Đã đọc artifact windows-validation-40100927033-1: tải có undo, bản nháp thiếu lá, tải trùng giữ redo, lỗi giữ nháp và lưu chủ động sau xung đột đạt. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
 
