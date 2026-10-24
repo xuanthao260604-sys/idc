@@ -1,5 +1,7 @@
 # Xem Mộ và đọc lá bài
 
+> Cập nhật: đã có [tìm và lọc bài trong Mộ](graveyard-filters.md), giữ vị trí gốc và kiểm chứng trên Windows CI. Các kết quả bên dưới ghi mốc viewer ban đầu.
+
 Cửa sổ Xem Mộ riêng cho từng người chơi, không dùng chung form gửi hành động.
 Danh sách đi từ trên xuống: lá mới vào Mộ nằm đầu danh sách. Chọn lá để đọc tên,
 loại/chỉ số và nguyên văn text nguồn ngay trong cửa sổ. Mộ trống có thông báo riêng.

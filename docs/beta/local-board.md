@@ -1,4 +1,6 @@
-> Mốc hiện tại: [xem trước khi nhập file deck](deck-import-preview.md), catalog 109 không đổi; xem bảng tăng/giảm trước Áp dụng, Hủy/Escape giữ bản nháp và lịch sử. Linux và Windows CI đạt 784 test, 41 bước, 31 browser report. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
+> Mốc hiện tại: [tìm và lọc bài trong Mộ](graveyard-filters.md), catalog 109 không đổi; tìm tên/nội dung, kết hợp Quái/Phép/Bẫy, giữ thứ tự gốc và chỉ đọc thông tin công khai. Linux và Windows CI đạt 784 test, 42 bước, 32 browser report. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [xem trước khi nhập file deck](deck-import-preview.md), catalog 109 không đổi; xem bảng tăng/giảm trước Áp dụng, Hủy/Escape giữ bản nháp và lịch sử. Linux và Windows CI đạt 784 test, 41 bước, 31 browser report. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
 
 > Mốc trước: [tải bản lưu vào bản nháp deck](deck-load-saved.md), catalog 109 không đổi; chủ động đọc bản mới nhất, có undo để lấy lại bản sửa, lỗi giữ nguyên và không tự lưu. Linux và Windows CI đạt 784 test, 41 bước, 31 browser report. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
 

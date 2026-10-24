@@ -1,6 +1,10 @@
 # Kiểm thử giao diện bằng trình duyệt trên Windows
 
-> Mốc hiện hành: [xem trước khi nhập file deck](../beta/deck-import-preview.md), catalog 109; [run 40102049702](https://github.com/xuanthao260604-sys/idc/actions/runs/40102049702), commit 3833fe2.
+> Mốc hiện hành: [tìm và lọc bài trong Mộ](../beta/graveyard-filters.md), catalog 109; [run 40103017434](https://github.com/xuanthao260604-sys/idc/actions/runs/40103017434), commit 361fc08.
+> Windows/Ubuntu đạt; Windows: 784/784 test, 42/42 bước, 32 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Đã đọc artifact windows-validation-40103017434-1: lọc tên/text/loại, giữ vị trí và bản sao, reset preview, hai ghế và Mộ trống đạt. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [xem trước khi nhập file deck](../beta/deck-import-preview.md), catalog 109; [run 40102049702](https://github.com/xuanthao260604-sys/idc/actions/runs/40102049702), commit 3833fe2.
 > Windows/Ubuntu đạt; Windows: 784/784 test, 41/41 bước, 31 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Đã đọc artifact windows-validation-40102049702-1: preview file, Hủy/Escape giữ nháp, Áp dụng một bước undo, file trùng không đổi lịch sử và hai viewport đạt. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
 

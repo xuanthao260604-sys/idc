@@ -44,7 +44,17 @@ Ca `--graveyard-filters`, chạy bằng `npm run beta:browser-graveyard-filters`
 
 Ca riêng đạt Linux/Chromium 154.0.8037.57, runtimeExceptions=0. Thêm một
 step/browser mode, từ 41 lên 42 bước và từ 31 lên 32 browser report. Linux
-và Windows CI đầy đủ đang chờ xác nhận cho mốc này.
+đạt typecheck, 784/784 test trong 35 file, 42/42 bước và 32 browser report,
+tổng runtimeExceptions=0. Report tại
+artifacts/platform-validation/2026-10-24T14-33-12-693Z-27178/report.json.
+Windows và Ubuntu CI [run 40103017434](https://github.com/xuanthao260604-sys/idc/actions/runs/40103017434)
+đạt trên source commit 361fc082fa466d60b8683c3b9685d7ac75773329. Đã tải và đọc
+artifact windows-validation-40103017434-1: win32 x64, OS 10.0.26100,
+Node 24.19.0, npm 11.17.0, Edge 155.0.4283.62. Windows đạt 784/784 test
+trong 35 file, 42/42 bước và 32 browser report, tổng runtimeExceptions=0.
+Ca graveyard-filters khớp Linux: tìm tên/text, kết hợp loại, giữ bản sao/vị
+trí gốc, xóa preview bị ẩn, reset khi mở lại, hai ghế và Mộ trống đều đạt.
+Report ghi windows11DesktopVerified=false.
 
 Không đổi engine, dữ liệu/review, catalog 109, artwork, starter hoặc deck cũ.
 Windows 11 desktop chưa thử trực tiếp; chưa đóng gói hoặc bàn giao beta.
