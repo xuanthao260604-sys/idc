@@ -41,9 +41,22 @@ dựng fixture catalog 109 trước server, không chỉnh state khi chơi:
 - Đã chụp/xem dialog 1440/390; nhãn dài không làm tràn ngang, preview có thể
   đọc đầy đủ khi cuộn. Deck A/B đọc trước/sau giống nhau.
 
-Ca riêng đạt Linux/Chromium 154.0.8037.57, runtimeExceptions=0.
-Đang chạy bộ tổng hợp Linux; Windows CI chưa xác minh cho source mới.
-Thêm một bước và một browser report, dự kiến 46 bước và 36 report.
+Ca riêng và bộ tổng hợp đạt Linux/Chromium 154.0.8037.57:
+784/784 test trong 35 file, 46/46 bước và 36 browser report, tổng
+runtimeExceptions=0. Report tại
+artifacts/platform-validation/2026-10-25T11-26-41-467Z-90127/report.json.
+Windows và Ubuntu CI [run 40188941251](https://github.com/xuanthao260604-sys/idc/actions/runs/40188941251)
+đạt trên source commit 49b5b42386fa8481861f5b71b0a94fa27123cf54.
+Đã tải và đọc artifact windows-validation-40188941251-1:
+win32 x64, OS 10.0.26100, Node 24.19.0, npm 11.17.0, Edge 155.0.4283.62.
+Windows đạt 784/784 test trong 35 file, 46/46 bước và 36 browser report,
+tổng runtimeExceptions=0. Ca choice-identities xác nhận nhãn từng bản sao,
+vị trí gốc sau sắp xếp, request đúng handle và kết quả trên đúng bản sao;
+Hủy/preview không đổi state và deck A/B giữ nguyên. Hồi quy hiệu ứng, các
+ca bàn phím, discard/retry và hai trận tự nhiên đều đạt.
+Report ghi windows11DesktopVerified=false. Report đã đọc tại
+artifacts/ci-choice-identities/2026-10-25T11-28-01-227Z-2008/report.json.
+
 Các ca reincarnation/tribute-doomed cũ chọn bằng handle/định nghĩa hiện
 trong view thay vì phụ thuộc nhãn cũ chỉ có tên; giữ assertion hành vi cũ.
 
