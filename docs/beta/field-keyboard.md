@@ -38,9 +38,22 @@ dùng fixture pilot 20 dựng trước server, không chỉnh state khi đang ch
 - Viewport 1440/390 giữ lá có focus trong vùng nhìn, không tràn ngang. Đã
   chụp/xem ảnh hai viewport. Deck A/B đọc trước/sau giống nhau.
 
-Ca riêng đạt Linux/Chromium 154.0.8037.57, runtimeExceptions=0. Thêm một
-step/browser report: bộ tổng hợp dự kiến 45 bước và 35 browser report.
-Đang chờ kết quả tổng hợp Linux và Windows CI cho source mới.
+Ca riêng và bộ tổng hợp đạt Linux/Chromium 154.0.8037.57:
+784/784 test trong 35 file, 45/45 bước, 35 browser report và tổng
+runtimeExceptions=0. Giữ các ca bàn phím/sắp xếp tay, discard/retry, deck
+và hai trận tự nhiên. Report tại
+artifacts/platform-validation/2026-10-25T11-00-40-267Z-83092/report.json.
+Windows và Ubuntu CI [run 40187155138](https://github.com/xuanthao260604-sys/idc/actions/runs/40187155138)
+đạt trên source commit 6760c9ed5fe4a53147bd22c77d28d47906a249a1.
+Đã tải và đọc artifact windows-validation-40187155138-1:
+win32 x64, OS 10.0.26100, Node 24.19.0, npm 11.17.0, Edge 155.0.4283.62.
+Windows đạt 784/784 test trong 35 file, 45/45 bước và 35 browser report,
+tổng runtimeExceptions=0. Ca field-keyboard đạt cả góc nhìn A/B và hai loại
+hàng, bỏ qua ô trống, giữ focus/nhãn ô, che danh tính bài úp và chỉ gửi
+quyết định khi xác nhận. Hồi quy hand-keyboard, decision-cards, discard,
+deck và hai trận tự nhiên đều đạt. Report ghi windows11DesktopVerified=false.
+Report đã đọc tại
+artifacts/ci-field-keyboard/2026-10-25T11-01-59-798Z-8460/report.json.
 
 Không đổi dữ liệu/review, catalog 109, effect handler, artwork hoặc deck cũ.
 Windows 11 desktop chưa thử trực tiếp. Đây là phạm vi bàn phím nêu trên,

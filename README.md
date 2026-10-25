@@ -15,13 +15,15 @@ Hinotama, Dian Keto the Cure Master, Smashing Ground, Hammer Shot, Tribute to Th
 Không coi việc cấu hình CI Windows hoặc chạy Linux là đã kiểm chứng Windows.
 
 784/784 test đạt trên Linux và Windows CI cho catalog 109.
-44/44 bước validation và 34 browser run đạt bằng Edge trên Windows CI; chi tiết tại [chọn lá trực tiếp trong quyết định bắt buộc](docs/beta/decision-cards.md).
+45/45 bước validation và 35 browser run đạt bằng Edge trên Windows CI; chi tiết tại [điều khiển các hàng sân bằng bàn phím](docs/beta/field-keyboard.md).
 Browser regression tính riêng: xây/lưu deck, 5 hiệu ứng, xem Mộ, tạo trận A/B/ngẫu nhiên, bỏ bài,
 Pot với deck 0/1/2 lá, đầu hàng/hủy và tạo trận sau kết thúc, trận tự nhiên đầy đủ.
 Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không phải game hoàn tất mọi luật Yu-Gi-Oh!.
 
 Đã nhận bộ khung người dùng: [mặt sau chung](docs/beta/card-frames.md) được dùng cho bài úp của cả ba loại.
 Đã ghép [ba khung mặt trước](docs/beta/card-fronts.md), hàng sao và chỉ số lấy từ dữ liệu; ảnh minh họa từng lá sẽ bổ sung sau.
+
+Đã thêm [điều khiển các hàng sân bằng bàn phím](docs/beta/field-keyboard.md): ←/→ và Home/End bỏ qua ô trống, Enter/Space chọn bài, giữ kín bài úp và xác nhận riêng cho quyết định.
 
 Đã thêm [chọn lá trực tiếp trong quyết định bắt buộc](docs/beta/decision-cards.md): nhấn lá hợp lệ trên tay/sân để chọn nháp, đồng bộ radio/checkbox, giữ kín bài úp và vẫn cần xác nhận.
 
@@ -129,7 +131,7 @@ hoặc mọi tương tác bài. Bài tự tạo giữ ở [kế hoạch mở r�
 
 `npm run validate:platform` chạy bộ kiểm chứng tổng hợp, ghi report JSON và log từng bước
 vào artifacts/platform-validation/ (Git bỏ qua). Lỗi dừng ngay, phần còn lại ghi chưa chạy.
-Windows CI đã chạy cùng lệnh, đạt 44/44 bước và giữ artifact; report Linux vẫn chỉ xác nhận Linux.
+Windows CI đã chạy cùng lệnh, đạt 45/45 bước và giữ artifact; report Linux vẫn chỉ xác nhận Linux.
 
 ## Kiểm thử giao diện
 

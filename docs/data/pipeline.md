@@ -1,4 +1,6 @@
-> Mốc hiện tại: [chọn lá trực tiếp trong quyết định bắt buộc](../beta/decision-cards.md), catalog 109 không đổi; chọn nháp trên tay/sân, đồng bộ bảng, giữ kín bài úp và vẫn cần xác nhận. Linux và Windows CI đạt 784 test, 44 bước, 34 browser report. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
+> Mốc hiện tại: [điều khiển các hàng sân bằng bàn phím](../beta/field-keyboard.md), catalog 109 không đổi; ←/→ và Home/End trong từng hàng, bỏ qua ô trống, giữ focus và xác nhận riêng. Linux và Windows CI đạt 784 test, 45 bước, 35 browser report. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [chọn lá trực tiếp trong quyết định bắt buộc](../beta/decision-cards.md), catalog 109 không đổi; chọn nháp trên tay/sân, đồng bộ bảng, giữ kín bài úp và vẫn cần xác nhận. Linux và Windows CI đạt 784 test, 44 bước, 34 browser report. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
 
 > Mốc trước: [lọc lịch sử thao tác công khai](../beta/activity-filters.md), catalog 109 không đổi; theo lượt, ẩn Pass không có kết quả và giữ Pass xử lý hiệu ứng. Linux và Windows CI đạt 784 test, 43 bước, 33 browser report. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
 

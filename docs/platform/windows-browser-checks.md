@@ -1,6 +1,10 @@
 # Kiểm thử giao diện bằng trình duyệt trên Windows
 
-> Mốc hiện hành: [chọn lá trực tiếp trong quyết định bắt buộc](../beta/decision-cards.md), catalog 109; [run 40105969342](https://github.com/xuanthao260604-sys/idc/actions/runs/40105969342), commit ca51771.
+> Mốc hiện hành: [điều khiển các hàng sân bằng bàn phím](../beta/field-keyboard.md), catalog 109; [run 40187155138](https://github.com/xuanthao260604-sys/idc/actions/runs/40187155138), commit 6760c9e.
+> Windows/Ubuntu đạt; Windows: 784/784 test, 45/45 bước, 35 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Đã đọc artifact windows-validation-40187155138-1: điều hướng hai hàng của cả A/B, bỏ qua ô trống, giữ focus, che bài úp và xác nhận mục tiêu riêng đạt. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [chọn lá trực tiếp trong quyết định bắt buộc](../beta/decision-cards.md), catalog 109; [run 40105969342](https://github.com/xuanthao260604-sys/idc/actions/runs/40105969342), commit ca51771.
 > Windows/Ubuntu đạt; Windows: 784/784 test, 44/44 bước, 34 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Đã đọc artifact windows-validation-40105969342-1 sau khi cloud kết nối lại: đồng bộ sân/radio và tay/checkbox, giữ kín target úp, chỉ gửi khi xác nhận, giữ nháp khi lỗi và xóa cue sau decision đạt. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
 
