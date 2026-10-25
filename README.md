@@ -14,14 +14,16 @@ Hinotama, Dian Keto the Cure Master, Smashing Ground, Hammer Shot, Tribute to Th
 Đã kiểm chứng [hai Phép thay đổi LP](docs/engine/life-point-spells.md) trên Linux và Windows CI; còn ca Windows 11 desktop chưa chạy.
 Không coi việc cấu hình CI Windows hoặc chạy Linux là đã kiểm chứng Windows.
 
-791/791 test đạt trên Linux và Windows CI cho catalog 109.
-46/46 bước validation và 36 browser run đạt bằng Edge trên Windows CI; chi tiết tại [bảo vệ tạo trận mới khi mất phản hồi](docs/beta/new-game-recovery.md).
+799/799 test đạt trên Linux và Windows CI cho catalog 109.
+47/47 bước validation và 37 browser run đạt bằng Edge trên Windows CI; chi tiết tại [kiểm tra ghế khi gửi lệnh/đọc bàn đấu](docs/beta/seat-guard.md).
 Browser regression tính riêng: xây/lưu deck, 5 hiệu ứng, xem Mộ, tạo trận A/B/ngẫu nhiên, bỏ bài,
 Pot với deck 0/1/2 lá, đầu hàng/hủy và tạo trận sau kết thúc, trận tự nhiên đầy đủ.
 Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không phải game hoàn tất mọi luật Yu-Gi-Oh!.
 
 Đã nhận bộ khung người dùng: [mặt sau chung](docs/beta/card-frames.md) được dùng cho bài úp của cả ba loại.
 Đã ghép [ba khung mặt trước](docs/beta/card-fronts.md), hàng sao và chỉ số lấy từ dữ liệu; ảnh minh họa từng lá sẽ bổ sung sau.
+
+Đã thêm [kiểm tra ghế khi gửi lệnh/đọc bàn đấu](docs/beta/seat-guard.md): cookie đổi ở cửa sổ khác không làm đầu hàng nhầm hoặc nhận tay bài ghế kia; chọn lại ghế để tiếp tục.
 
 Đã thêm [bảo vệ tạo trận mới khi mất phản hồi](docs/beta/new-game-recovery.md): từ chối xác nhận từ trận/phiên bản/ghế cũ; kiểm tra chỉ đọc để tải lại bàn đấu hiện tại.
 
@@ -137,7 +139,7 @@ hoặc mọi tương tác bài. Bài tự tạo giữ ở [kế hoạch mở r�
 
 `npm run validate:platform` chạy bộ kiểm chứng tổng hợp, ghi report JSON và log từng bước
 vào artifacts/platform-validation/ (Git bỏ qua). Lỗi dừng ngay, phần còn lại ghi chưa chạy.
-Windows CI đã chạy cùng lệnh, đạt 46/46 bước và giữ artifact; report Linux vẫn chỉ xác nhận Linux.
+Windows CI đã chạy cùng lệnh, đạt 47/47 bước và giữ artifact; report Linux vẫn chỉ xác nhận Linux.
 
 ## Kiểm thử giao diện
 

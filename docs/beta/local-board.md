@@ -1,4 +1,6 @@
-> Mốc hiện tại: [bảo vệ tạo trận mới khi mất phản hồi](new-game-recovery.md), catalog 109 không đổi; UI gửi guard trận/phiên bản/ghế, retry không thay trận đã tạo, kiểm tra chỉ đọc. Linux và Windows CI đạt 791 test, 46 bước, 36 browser report. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
+> Mốc hiện tại: [kiểm tra ghế khi gửi lệnh/đọc bàn đấu](seat-guard.md), catalog 109 không đổi; lệnh/GET có guard ghế, cookie đổi không làm đầu hàng nhầm hoặc nhận tay bài ghế khác. Linux và Windows CI đạt 799 test, 47 bước, 37 browser report. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [bảo vệ tạo trận mới khi mất phản hồi](new-game-recovery.md), catalog 109 không đổi; UI gửi guard trận/phiên bản/ghế, retry không thay trận đã tạo, kiểm tra chỉ đọc. Linux và Windows CI đạt 791 test, 46 bước, 36 browser report. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
 
 > Mốc trước: [bảng tổng kết trận](result-summary.md), catalog 109 không đổi; kết quả, lý do, lượt cuối và số liệu công khai A/B, mở trận mới có xác nhận. Linux và Windows CI đạt 784 test, 46 bước, 36 browser report. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
 

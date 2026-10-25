@@ -76,3 +76,7 @@ Không thêm browser mode/step: giữ 46 bước và 36 report.
 
 Không đổi engine, catalog 109, dữ liệu/review, artwork, starter hoặc deck cũ.
 Windows 11 desktop chưa thử trực tiếp; chưa đóng gói hoặc bàn giao beta.
+
+Bổ sung: [kiểm tra ghế khi gửi lệnh/đọc bàn đấu](seat-guard.md) mở rộng guard
+sang lệnh đấu và GET kiểm tra, bao gồm nút kiểm tra trong hộp Trận mới; đã
+đạt Linux/Windows CI. Giữ nguyên scope legacy và giới hạn hotseat.

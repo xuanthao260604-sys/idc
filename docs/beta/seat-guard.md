@@ -49,9 +49,23 @@ bình thường, không chỉnh state trong lúc chơi:
 - Đã chụp/xem thông báo ở 390px, không tràn ngang. Thêm một step/browser
   invocation, từ 46 lên 47 bước và từ 36 lên 37 browser report.
 
-HTTP riêng, typecheck và ca trình duyệt đạt Linux/Chromium 154.0.8037.57,
-runtimeExceptions=0. Đang chạy bộ tổng hợp Linux; Windows CI chưa xác minh
-source mới. Các ca tạo trận, mất phản hồi, bỏ bài và deck cũ được giữ hồi quy.
+HTTP riêng, typecheck và bộ tổng hợp đạt Linux/Chromium 154.0.8037.57:
+799/799 test trong 35 file, 47/47 bước và 37 browser report, tổng
+runtimeExceptions=0. Report tại
+artifacts/platform-validation/2026-10-25T13-54-22-742Z-114017/report.json.
+Các ca tạo trận, mất phản hồi, bỏ bài, deck cũ và hai trận tự nhiên đều đạt.
+Windows và Ubuntu CI [run 40199836126](https://github.com/xuanthao260604-sys/idc/actions/runs/40199836126)
+đạt trên source commit 58a22285f97e34bcf1b16e39c9bdc449a59cd29d.
+Đã tải và đọc artifact windows-validation-40199836126-1:
+win32 x64, OS 10.0.26100, Node 24.19.0, npm 11.17.0, Edge 155.0.4283.62.
+Windows đạt 799/799 test trong 35 file, gồm 28 test beta-server; 47/47 bước
+và 37 browser report, tổng runtimeExceptions=0. Ca seat-guard xác nhận
+đầu hàng/Pass sai ghế bị từ chối, refresh giữ tay/selection ban đầu, đổi ghế
+chủ động khôi phục thao tác, đầu hàng đúng actor và deck A/B giữ nguyên.
+Ca new-game vẫn đạt các kiểm tra mất phản hồi, version cũ, cookie đổi ghế
+và đọc kiểm tra; các ca discard/deck/hai trận tự nhiên đều đạt.
+Report ghi windows11DesktopVerified=false. Report đã đọc tại
+artifacts/ci-seat-guard/2026-10-25T13-55-49-217Z-7844/report.json.
 
 Không đổi engine, catalog 109, facts/effect/review, artwork, starter hoặc deck cũ.
 Windows 11 desktop chưa thử trực tiếp; chưa đóng gói hoặc bàn giao beta.

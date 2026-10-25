@@ -1,6 +1,10 @@
 # Kết quả Windows CI
 
-> Mốc hiện hành: [bảo vệ tạo trận mới khi mất phản hồi](../beta/new-game-recovery.md), catalog 109; [run 40193216185](https://github.com/xuanthao260604-sys/idc/actions/runs/40193216185), commit bced07d.
+> Mốc hiện hành: [kiểm tra ghế khi gửi lệnh/đọc bàn đấu](../beta/seat-guard.md), catalog 109; [run 40199836126](https://github.com/xuanthao260604-sys/idc/actions/runs/40199836126), commit 58a2228.
+> Windows/Ubuntu đạt; Windows: 799/799 test, 47/47 bước, 37 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Đã đọc artifact windows-validation-40199836126-1: đổi cookie không làm đầu hàng nhầm, refresh giữ tay/selection đang xem; chọn lại ghế thao tác được, receipt và deck A/B giữ nguyên. Không đổi engine/dữ liệu; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [bảo vệ tạo trận mới khi mất phản hồi](../beta/new-game-recovery.md), catalog 109; [run 40193216185](https://github.com/xuanthao260604-sys/idc/actions/runs/40193216185), commit bced07d.
 > Windows/Ubuntu đạt; Windows: 791/791 test, 46/46 bước, 36 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Đã đọc artifact windows-validation-40193216185-1: retry sau mất phản hồi giữ trận đã tạo, kiểm tra chỉ đọc, guard version/ghế và ba reset đồng thời đạt; deck A/B giữ nguyên. Không đổi engine/dữ liệu; Windows 11 desktop chưa chạy.
 
