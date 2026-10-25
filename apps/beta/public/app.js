@@ -23,11 +23,11 @@ function visibleCard(handle) {
   return [...view.selfHand, ...view.players.flatMap(p => [...p.monsters, ...p.spellsTraps, ...p.graveyard])].find(c => c?.handle === handle);
 }
 function optionLabel(handle) {
-  const hand = view.selfHand.find(c => c.handle === handle);
-  if (hand) return `Tay của bạn — ${label(hand)}`;
+  const handIndex = view.selfHand.findIndex(c => c.handle === handle);
+  if (handIndex >= 0) return `Tay của bạn · vị trí ${handIndex + 1} theo thứ tự nhận — ${label(view.selfHand[handIndex])}`;
   for (const p of view.players) for (const [zone, cards] of [['Quái', p.monsters], ['Phép / Bẫy', p.spellsTraps], ['Mộ', p.graveyard]]) {
     const slot = cards.findIndex(c => c?.handle === handle);
-    if (slot >= 0 && zone === 'Mộ') return `${names[p.playerId]} · Mộ — ${label(cards[slot])}`;
+    if (slot >= 0 && zone === 'Mộ') return `${names[p.playerId]} · Mộ, vị trí ${cards.length - slot} từ trên xuống — ${label(cards[slot])}`;
     if (slot >= 0) return `${names[p.playerId]} · ${zone} ô ${slot + 1} — ${label(cards[slot])}`;
   }
   return 'Lựa chọn';
@@ -63,6 +63,7 @@ function cardButton(card, zone, player, slot, onSelect) {
     if (hadFocus) document.querySelector('main button.card.selected')?.focus({ preventScroll: true });
   }), `card ${d?.kind === 'spell' ? 'spell' : d?.kind === 'trap' ? 'trap' : ''} ${!d ? 'back' : ''} ${selected?.card.handle === card.handle ? 'selected' : ''}`);
   b.setAttribute('aria-label', `${label(card)}${zone === 'hand' ? ' trên tay' : zone === 'graveyard' ? ` trong Mộ, vị trí ${slot + 1} từ trên xuống` : ` · ${names[player]} · ${zone === 'monster' ? 'Quái' : 'Phép / Bẫy'} ô ${slot + 1}`}`);
+  if (zone === 'hand') { b.title = optionLabel(card.handle); b.setAttribute('aria-label', b.title); }
   if (['hand', 'monster', 'spell-trap'].includes(zone) && view.decision?.optionIds.includes(card.handle)) {
     b.dataset.decisionHandle = card.handle; b.dataset.decisionLabel = b.getAttribute('aria-label');
     b.classList.add('decision-choice');
@@ -253,12 +254,12 @@ function chooseAction(title, base, { slots = false, tributes = false, targets = 
   }
   if (tributes) {
     fields.append(node('p', plans[0].tributeHandles.length ? `Chọn đúng ${plans[0].tributeHandles.length} lá hiến tế. Ô đang có bài chỉ dùng được nếu lá tại ô đó được hiến tế.` : 'Không cần hiến tế.'));
-    (plans[0].tributeHandles.length ? view.players.find(p => p.playerId === view.viewerId).monsters.filter(Boolean) : []).forEach(c => { const l = node('label'), input = node('input'); input.type = 'checkbox'; input.value = c.handle; input.disabled = !plans.some(a => a.tributeHandles.includes(c.handle)); checks.push(input); l.append(input, document.createTextNode(` ${label(c)}`)); fields.append(l); });
+    (plans[0].tributeHandles.length ? view.players.find(p => p.playerId === view.viewerId).monsters.filter(Boolean) : []).forEach(c => { const l = node('label'), input = node('input'); input.type = 'checkbox'; input.value = c.handle; input.disabled = !plans.some(a => a.tributeHandles.includes(c.handle)); checks.push(input); l.append(input, document.createTextNode(` ${optionLabel(c.handle)}`)); fields.append(l); });
   }
   if (discards) {
     const l = node('label', 'Chọn 1 lá trên tay để bỏ làm chi phí'); selectDiscard = node('select'); selectDiscard.name = 'discard';
     view.selfHand.filter(c => plans.some(p => p.discardHandle === c.handle)).forEach(c => {
-      const o = node('option', label(c)); o.value = c.handle; selectDiscard.append(o);
+      const o = node('option', optionLabel(c.handle)); o.value = c.handle; selectDiscard.append(o);
     });
     l.append(selectDiscard); fields.append(l);
   }
@@ -343,6 +344,7 @@ function detail() {
   const { card, zone, player, slot } = selected, d = def(card);
   if (!d) { panel.replaceChildren(node('h2', 'Bài úp'), node('div', '◇', 'large-symbol'), node('p', 'Danh tính lá bài được giữ kín.')); return; }
   panel.replaceChildren(node('h2', d.name), cardPreview(d), node('span', d.level ? `Cấp ${d.level} · ${d.attribute} · ATK ${d.attack} / DEF ${d.defense}` : d.kind === 'spell' ? 'Bài Phép' : 'Bài Bẫy', 'tag'), node('p', d.text));
+  if (zone === 'hand') panel.prepend(node('p', optionLabel(card.handle), 'choice-location'));
   if (player !== view.viewerId || view.result) return;
   const canMain = view.turn.activePlayer === view.viewerId && ['main1', 'main2'].includes(view.turn.phase) && view.timing.window === 'open' && !view.decision;
   const canBattle = view.turn.activePlayer === view.viewerId && view.turn.phase === 'battle' && view.timing.window === 'open' && !view.decision;
@@ -384,7 +386,7 @@ function activateSpell(handle, slot) {
   const recovery = cost && plans.some(a => graveyard.some(c => c.handle === a.targetHandle));
   const targets = targeted ? [...new Set(plans.map(a => a.targetHandle))].map(h => {
     const fromHand = recovery && view.selfHand.find(c => c.handle === h);
-    return { handle: h, label: fromHand ? `Lá sẽ bỏ làm chi phí — ${label(fromHand)}` : optionLabel(h) };
+    return { handle: h, label: fromHand ? `Lá sẽ bỏ làm chi phí — ${optionLabel(h)}` : optionLabel(h) };
   }) : null;
   chooseAction(recovery ? 'Bỏ 1 lá làm chi phí và chọn quái về tay' : cost ? 'Bỏ 1 lá làm chi phí và chọn quái để phá' : 'Kích hoạt Phép', base,
     { slots: slot === undefined, discards: cost, targets, note: recovery ? 'Mộ phải có quái trước khi kích hoạt. Bạn có thể chọn lại quái vừa bỏ làm chi phí.' : null });

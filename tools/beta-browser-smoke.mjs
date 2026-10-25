@@ -22,6 +22,7 @@ const graveyardFilters = process.argv.includes('--graveyard-filters');
 const activityFilters = process.argv.includes('--activity-filters');
 const decisionCards = process.argv.includes('--decision-cards');
 const fieldKeyboard = process.argv.includes('--field-keyboard');
+const choiceIdentities = process.argv.includes('--choice-identities');
 const handSorting = handKeyboard || process.argv.includes('--hand-sorting');
 const faithBattleArg = process.argv.find(arg => /^--faith-battle=[ab]:[02]$/.test(arg));
 const faithBattle = faithBattleArg ? { defender: faithBattleArg.split('=')[1].split(':')[0], spells: Number(faithBattleArg.split(':')[1]) } : null;
@@ -33,11 +34,12 @@ const reincarnationMode = reincarnationArg?.split('=')[1] ?? null;
 const deckDraftGuard = process.argv.includes('--deck-draft-guard');
 const deckSaveCheck = process.argv.includes('--deck-save-check');
 const deckOverview = deckSaveCheck || deckDraftGuard || process.argv.includes('--deck-overview');
-const expanded = graveyardFilters || handSorting || faithBattle !== null || magicianFaith || deckOverview || earthquake || blockAttack || reincarnationMode !== null || tributeDoomed || hammerShot || smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
+const expanded = choiceIdentities || graveyardFilters || handSorting || faithBattle !== null || magicianFaith || deckOverview || earthquake || blockAttack || reincarnationMode !== null || tributeDoomed || hammerShot || smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
 const r = expanded ? loadRuntimeCatalog().registry : createRegistry((await read('data/generated/pilot.json')).cards, goat200508Format, {},
   await read('data/reviews/pilot.spell-effects.json'), await read('data/reviews/pilot.flip-effects.json'), await read('data/reviews/pilot.trap-effects.json'));
 const deck = Object.keys(r.cards);
 if (handSorting || graveyardFilters) deck.push(Object.values(r.cards).find(c=>c.name==='Battle Ox').id);
+if (choiceIdentities) for(const name of ['Battle Ox','Celtic Guardian','Hane-Hane','Fissure'])deck.push(Object.values(r.cards).find(c=>c.name===name).id);
 for (const c of Object.values(r.cards)) if (!expanded && c.legality.maxCopies >= 2) deck.push(c.id);
 for (const c of Object.values(r.cards)) if (!expanded && deck.length < 40 && c.legality.maxCopies >= 3) deck.push(c.id);
 const fullDuel = process.argv.includes('--full-duel') || process.argv.includes('--expanded-duel');
@@ -100,6 +102,18 @@ if (handSorting) {
   s.turn.number=3;s.turn.phase='main1';s.timing.window='open';s.timing.priorityPlayer='a';s.timing.consecutivePasses=0;
   if(handKeyboard) move('Hane-Hane','b','monster',0,true);
 }
+if (choiceIdentities) {
+  const p=s.players[0];
+  for(const id of p.hand.splice(0)){p.deck.push(id);s.cards[id].location={kind:'deck',playerId:'a'};}
+  for(const name of ['Battle Ox','Gaia The Fierce Knight','Battle Ox','Monster Reincarnation','Tribute to The Doomed']) {
+    const index=p.deck.findIndex(id=>r.cards[s.cards[id].definition.id].name===name),id=p.deck.splice(index,1)[0];
+    assert.ok(id);p.hand.push(id);s.cards[id].location={kind:'hand',playerId:'a'};
+  }
+  for(const name of ['Fissure','Hane-Hane','Fissure','Hane-Hane'])move(name,'a','graveyard');
+  move('Celtic Guardian','a','monster',0);move('Celtic Guardian','a','monster',2,true);move('Magician of Faith','a','monster',4,true);
+  move('Man-Eater Bug','b','monster',1,true);
+  s.turn.number=3;s.turn.phase='main1';s.timing.window='open';s.timing.priorityPlayer='a';s.timing.consecutivePasses=0;
+}
 if (faithBattle) {
   const defender = faithBattle.defender, attacker = defender === 'a' ? 'b' : 'a';
   move('Magician of Faith',defender,'monster',0,true);
@@ -115,7 +129,7 @@ if (chainView) {
   move('Man-Eater Bug','b','monster',0,true);
   s.turn.number=3;s.turn.phase='main1';s.timing.window='open';s.timing.priorityPlayer='a';s.timing.consecutivePasses=0;
 }
-if (expanded && !fullDuel && lifePointsMode === null && !smashingGround && !hammerShot && !tributeDoomed && !blockAttack && !earthquake && !magicianFaith && !faithBattle && !handSorting && !graveyardFilters && !deckOverview && reincarnationMode === null) {
+if (expanded && !fullDuel && lifePointsMode === null && !smashingGround && !hammerShot && !tributeDoomed && !blockAttack && !earthquake && !magicianFaith && !faithBattle && !handSorting && !graveyardFilters && !choiceIdentities && !deckOverview && reincarnationMode === null) {
   move('Gaia The Fierce Knight', 'a', 'hand');
   move('Battle Ox', 'a', 'monster', 0); move('Celtic Guardian', 'a', 'monster', 1, true);
   move('Curse of Dragon', 'a', 'hand');
@@ -484,7 +498,85 @@ try {
   }
   await send('Runtime.enable'); await send('Page.enable'); await send('Page.navigate', { url: `http://127.0.0.1:${server.address().port}` });
   await wait(`document.getElementById('seat-dialog')?.open`); await seat('a');
-  if (fieldKeyboard) {
+  if (choiceIdentities) {
+    const commands=[],previousOnMessage=ws.onmessage;
+    ws.onmessage=event=>{
+      const m=JSON.parse(event.data);
+      if(m.method==='Network.requestWillBeSent'&&m.params.request.url.endsWith('/api/command'))commands.push(JSON.parse(m.params.request.postData));
+      previousOnMessage(event);
+    };
+    await send('Network.enable');
+    await seat('b');const savedB=await evaluate(`api('/api/deck').then(data=>JSON.stringify(data))`);
+    assert.equal(await evaluate(`document.querySelector('#opponent .slot:nth-child(3) .card').getAttribute('aria-label').includes('Celtic Guardian')`),false);
+    await seat('a');const savedA=await evaluate(`api('/api/deck').then(data=>JSON.stringify(data))`);
+    const before=await evaluate('JSON.stringify(view)'),originalHand=await evaluate('view.selfHand.map(c=>c.handle)');
+    const ox=originalHand[2],recoveryTarget=await evaluate('view.players[0].graveyard[3].handle');
+    await click(`document.getElementById('hand-sort')`);
+    await evaluate(`document.getElementById('hand-sort').value='name';document.getElementById('hand-sort').dispatchEvent(new Event('change'))`);
+    const oxLabels=await evaluate(`[...document.querySelectorAll('#hand .card')].filter(c=>c.querySelector('.card-name').textContent==='Battle Ox').map(c=>c.getAttribute('aria-label'))`);
+    assert.equal(new Set(oxLabels).size,2);assert.match(oxLabels[0],/vị trí 1 theo thứ tự nhận/);assert.match(oxLabels[1],/vị trí 3 theo thứ tự nhận/);
+    await click(`[...document.querySelectorAll('#hand .card')].find(c=>c.dataset.cardHandle===${JSON.stringify(ox)})`);
+    assert.match(await evaluate(`document.querySelector('#detail .choice-location').textContent`),/vị trí 3 theo thứ tự nhận/);
+    await hand('Gaia The Fierce Knight');await click(textButton('#actions button','Triệu hồi'));
+    const tributeLabels=await evaluate(`[...document.querySelectorAll('#action-fields input[type="checkbox"]')].map(e=>e.parentElement.textContent)`);
+    assert.match(tributeLabels[0],/Quái ô 1 — Celtic Guardian/);assert.match(tributeLabels[1],/Quái ô 3 — Celtic Guardian/);
+    await click(`document.querySelectorAll('#action-fields input[type="checkbox"]')[0]`);await click(`document.querySelectorAll('#action-fields input[type="checkbox"]')[1]`);
+    assert.match(await evaluate(`document.querySelector('[data-preview="tributes"]').textContent`),/Quái ô 1/);
+    assert.match(await evaluate(`document.querySelector('[data-preview="tributes"]').textContent`),/Quái ô 3/);
+    await click(`document.getElementById('cancel-action')`);assert.equal(await evaluate('JSON.stringify(view)'),before);assert.equal(commands.length,0);
+    await hand('Monster Reincarnation');await click(textButton('#actions button','Kích hoạt'));
+    const costs=await evaluate(`[...document.querySelector('#action-fields select[name="discard"]').options].filter(o=>o.textContent.includes('Battle Ox')).map(o=>({text:o.textContent,value:o.value}))`);
+    assert.equal(costs.length,2);assert.equal(new Set(costs.map(o=>o.text)).size,2);assert.deepEqual(costs.map(o=>o.value),[originalHand[0],ox]);
+    const targets=await evaluate(`[...document.querySelector('#action-fields select[name="target"]').options].filter(o=>o.textContent.includes('Mộ')&&o.textContent.includes('Hane-Hane')).map(o=>o.textContent)`);
+    assert.equal(targets.length,2);assert.match(targets[0],/vị trí 3 từ trên xuống/);assert.match(targets[1],/vị trí 1 từ trên xuống/);
+    await evaluate(`(()=>{const d=document.querySelector('#action-fields select[name="discard"]');d.value=${JSON.stringify(ox)};d.dispatchEvent(new Event('change',{bubbles:true}));const t=document.querySelector('#action-fields select[name="target"]');t.value=${JSON.stringify(recoveryTarget)};t.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+    await preview('discard','Battle Ox');await preview('target','Hane-Hane');
+    assert.match(await evaluate(`document.querySelector('[data-preview="discard"] .choice-location').textContent`),/vị trí 3 theo thứ tự nhận/);
+    assert.match(await evaluate(`document.querySelector('[data-preview="target"] .choice-location').textContent`),/vị trí 1 từ trên xuống/);
+    assert.equal(await evaluate('JSON.stringify(view)'),before);assert.equal(commands.length,0);
+    for(const [label,width,height]of [['desktop',1440,1000],['narrow',390,844]]) {
+      await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
+      assert.equal(await evaluate(`(()=>{const d=document.getElementById('action-dialog'),r=d.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1&&d.scrollWidth<=d.clientWidth+1&&r.height<=innerHeight})()`),true);
+      if(process.argv.includes('--screenshots')) {
+        const folder=join(projectRoot,'artifacts','choice-identities');await mkdir(folder,{recursive:true});
+        const shot=await send('Page.captureScreenshot',{format:'png'});await writeFile(join(folder,label+'.png'),Buffer.from(shot.data,'base64'));
+      }
+    }
+    await send('Emulation.clearDeviceMetricsOverride');await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
+    // Cancel/reopen must neither send a command nor keep a discarded dialog selection.
+    await click(`document.getElementById('cancel-action')`);assert.equal(await evaluate('JSON.stringify(view)'),before);
+    await click(textButton('#actions button','Kích hoạt'));
+    await evaluate(`(()=>{const f=document.getElementById('action-fields');f.querySelector('select[name="discard"]').value=${JSON.stringify(ox)};f.querySelector('select[name="target"]').value=${JSON.stringify(recoveryTarget)};f.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+    await confirm();assert.equal(commands[0].action.discardHandle,ox);assert.equal(commands[0].action.targetHandle,recoveryTarget);
+    // Distinct cards between the copies prove which instance left each ordered zone, despite rotated handles.
+    assert.deepEqual(await evaluate('view.selfHand.map(c=>label(c))'),['Battle Ox','Gaia The Fierce Knight','Tribute to The Doomed']);
+    assert.equal(await evaluate('view.chain[0].targetHandles[0]===view.players[0].graveyard[3].handle'),true);
+    await pass('b');await pass('a');
+    assert.deepEqual(await evaluate('view.selfHand.map(c=>label(c))'),['Battle Ox','Gaia The Fierce Knight','Tribute to The Doomed','Hane-Hane']);
+    assert.deepEqual(await evaluate('view.players[0].graveyard.map(c=>label(c))'),['Fissure','Hane-Hane','Fissure','Battle Ox','Monster Reincarnation']);
+    await pass('a');await pass('b');await seat('a');
+    await click(`document.querySelector('#self .zone-row:nth-child(2) .slot:nth-child(5) button')`);await actionClick(textButton('#actions button','Flip Summon'));
+    const decisions=await evaluate(`[...document.querySelectorAll('#decision-form label')].map(e=>e.textContent)`);
+    const fissureLabels=decisions.filter(t=>t.includes('Fissure'));
+    assert.equal(fissureLabels.length,2);assert.match(fissureLabels[0],/vị trí 5 từ trên xuống/);assert.match(fissureLabels[1],/vị trí 3 từ trên xuống/);
+    const target=await evaluate('view.players[0].graveyard[2].handle');
+    const index=await evaluate(`[...document.querySelectorAll('#decision-form input')].findIndex(e=>e.value===${JSON.stringify(target)})`);
+    const pendingView=await evaluate('JSON.stringify(view)');await inspectDecision(index);
+    assert.equal(await evaluate('JSON.stringify(view)'),pendingView);
+    await click(`[...document.querySelectorAll('#decision-form input')].find(e=>e.value===${JSON.stringify(target)})`);
+    await actionClick(`document.querySelector('#decision-form button[type="submit"]')`);
+    assert.equal(commands.find(c=>c.action.type==='answer-decision').action.optionIds[0],target);
+    await pass('b');await pass('a');
+    assert.deepEqual(await evaluate('view.players[0].graveyard.map(c=>label(c))'),['Fissure','Hane-Hane','Battle Ox','Monster Reincarnation']);
+    assert.deepEqual(await evaluate('view.selfHand.map(c=>label(c))'),['Battle Ox','Gaia The Fierce Knight','Tribute to The Doomed','Hane-Hane','Fissure']);
+    assert.deepEqual(await evaluate('view.players.map(p=>p.lifePoints)'),[8000,8000]);assert.equal(await evaluate('view.normalSummonQuota.remaining'),1);
+    assert.equal(await evaluate(`api('/api/deck').then(data=>JSON.stringify(data))`),savedA);await seat('b');
+    assert.equal(await evaluate(`api('/api/deck').then(data=>JSON.stringify(data))`),savedB);assert.equal(errors.length,0);
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'choice-identities',catalog:109,
+      handOriginalPositionsAfterSort:true,duplicateTributesDistinct:true,duplicateCostsDistinct:true,graveyardTopFirstPositions:true,
+      cancelledChoicePreservesState:true,exactDiscardAndRecoveryCopies:true,duplicateFaithTargetsDistinct:true,exactFaithRecoveryCopy:true,
+      previewsReadOnly:true,hiddenOpponentPrivacy:true,responsive:true,savedDecksUnchanged:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
+  } else if (fieldKeyboard) {
     const commands=[],previousOnMessage=ws.onmessage;
     ws.onmessage=event=>{
       const m=JSON.parse(event.data);
@@ -1376,12 +1468,12 @@ try {
     await openRecovery(); await click(`document.getElementById('cancel-action')`); assert.equal(await evaluate('JSON.stringify(view)'),before); await openRecovery();
     assert.match(await evaluate(`document.getElementById('action-title').textContent`),/chọn quái về tay/);
     assert.match(await evaluate(`document.getElementById('action-fields').textContent`),/Mộ phải có quái/);
-    await evaluate(`(()=>{const f=document.getElementById('action-fields'),d=f.querySelector('select[name="discard"]'),t=f.querySelector('select[name="target"]');d.value=[...d.options].find(o=>o.textContent==='Battle Ox').value;t.value=[...t.options].find(o=>o.textContent.includes('Lá sẽ bỏ làm chi phí')&&o.textContent.includes('Battle Ox')).value;f.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+    await evaluate(`(()=>{const f=document.getElementById('action-fields'),d=f.querySelector('select[name="discard"]'),t=f.querySelector('select[name="target"]');d.value=[...d.options].find(o=>label(visibleCard(o.value))==='Battle Ox').value;t.value=[...t.options].find(o=>o.textContent.includes('Lá sẽ bỏ làm chi phí')&&o.textContent.includes('Battle Ox')).value;f.dispatchEvent(new Event('change',{bubbles:true}));})()`);
     await preview('discard','Battle Ox'); await preview('target','Battle Ox');
-    await evaluate(`(()=>{const f=document.getElementById('action-fields'),d=f.querySelector('select[name="discard"]');d.value=[...d.options].find(o=>o.textContent!=='Battle Ox').value;f.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+    await evaluate(`(()=>{const f=document.getElementById('action-fields'),d=f.querySelector('select[name="discard"]');d.value=[...d.options].find(o=>label(visibleCard(o.value))!=='Battle Ox').value;f.dispatchEvent(new Event('change',{bubbles:true}));})()`);
     await preview('target','Hane-Hane');
     assert.equal(await evaluate(`[...document.querySelector('#action-fields select[name="target"]').options].find(o=>o.textContent.includes('Lá sẽ bỏ làm chi phí')&&o.textContent.includes('Battle Ox')).disabled`),true);
-    await evaluate(`(()=>{const f=document.getElementById('action-fields'),d=f.querySelector('select[name="discard"]');d.value=[...d.options].find(o=>o.textContent==='Battle Ox').value;f.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+    await evaluate(`(()=>{const f=document.getElementById('action-fields'),d=f.querySelector('select[name="discard"]');d.value=[...d.options].find(o=>label(visibleCard(o.value))==='Battle Ox').value;f.dispatchEvent(new Event('change',{bubbles:true}));})()`);
     assert.equal(await evaluate(`[...document.querySelector('#action-fields select[name="target"]').options].find(o=>o.textContent.includes('Lá sẽ bỏ làm chi phí')&&o.textContent.includes('Battle Ox')).disabled`),false);
     await evaluate(`(()=>{const f=document.getElementById('action-fields'),t=f.querySelector('select[name="target"]');t.value=[...t.options].find(o=>${selfCost ? "o.textContent.includes('Lá sẽ bỏ làm chi phí')&&o.textContent.includes('Battle Ox')" : "o.textContent.includes('Mộ')&&o.textContent.includes('Hane-Hane')"}).value;f.dispatchEvent(new Event('change',{bubbles:true}));})()`);
     await preview('discard','Battle Ox'); await preview('target',selfCost?'Battle Ox':'Hane-Hane');
@@ -1421,7 +1513,7 @@ try {
     assert.equal(await evaluate(`document.querySelectorAll('#action-fields select[name="slot"]').length`),0);
     await evaluate(`(()=>{const t=document.querySelector('#action-fields select[name="target"]');t.value=[...t.options].find(o=>o.textContent.includes('Celtic Guardian')).value;t.dispatchEvent(new Event('change',{bubbles:true}));})()`);
     await preview('target','Celtic Guardian');
-    await evaluate(`(()=>{const f=document.getElementById('action-fields'),d=f.querySelector('select[name="discard"]'),t=f.querySelector('select[name="target"]');d.value=[...d.options].find(o=>o.textContent==='Battle Ox').value;t.value=[...t.options].find(o=>o.textContent.includes('Người chơi B')).value;f.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+    await evaluate(`(()=>{const f=document.getElementById('action-fields'),d=f.querySelector('select[name="discard"]'),t=f.querySelector('select[name="target"]');d.value=[...d.options].find(o=>label(visibleCard(o.value))==='Battle Ox').value;t.value=[...t.options].find(o=>o.textContent.includes('Người chơi B')).value;f.dispatchEvent(new Event('change',{bubbles:true}));})()`);
     assert.match(await evaluate(`document.querySelector('#action-fields select[name="target"]').selectedOptions[0].textContent`),/Bài úp/);
     await preview('discard','Battle Ox'); await preview('target',null);
     assert.equal(await evaluate(`document.querySelector('[data-preview="target"]').textContent.includes('Man-Eater Bug')`),false);
