@@ -21,6 +21,7 @@ const handKeyboard = process.argv.includes('--hand-keyboard');
 const graveyardFilters = process.argv.includes('--graveyard-filters');
 const activityFilters = process.argv.includes('--activity-filters');
 const decisionCards = process.argv.includes('--decision-cards');
+const fieldKeyboard = process.argv.includes('--field-keyboard');
 const handSorting = handKeyboard || process.argv.includes('--hand-sorting');
 const faithBattleArg = process.argv.find(arg => /^--faith-battle=[ab]:[02]$/.test(arg));
 const faithBattle = faithBattleArg ? { defender: faithBattleArg.split('=')[1].split(':')[0], spells: Number(faithBattleArg.split(':')[1]) } : null;
@@ -59,7 +60,7 @@ function move(name, owner, zone, slot = 0, down = false) {
   c.location = { kind: zone, playerId: owner, slot }; c.position = down ? zone === 'monster' ? 'face-down-defense' : 'face-down' : 'face-up-attack';
   if (down) c.markers.setOnTurn = 2;
 }
-if (!fullDuel && !newGame && !discard && !concede && !deckBuilder && !chainView && !decisionCards && !expanded && deckOut === null) {
+if (!fullDuel && !newGame && !discard && !concede && !deckBuilder && !chainView && !decisionCards && !fieldKeyboard && !expanded && deckOut === null) {
 move('Pot of Greed', 'a', 'hand'); move('Fissure', 'a', 'hand'); move('Battle Ox', 'a', 'hand');
 move('La Jinn the Mystical Genie of the Lamp', 'a', 'monster', 0); move('Celtic Guardian', 'a', 'monster', 1);
 move('Mystical Elf', 'b', 'monster', 0); move('Hane-Hane', 'b', 'monster', 1, true); move('Man-Eater Bug', 'b', 'monster', 2, true); move('Trap Hole', 'b', 'spell-trap', 0, true); move('Fissure', 'b', 'spell-trap', 1, true);
@@ -68,6 +69,13 @@ s.turn.number = 3; s.turn.phase = 'main1'; s.timing.window = 'open'; s.timing.pr
 if (decisionCards) {
   move('Man-Eater Bug','b','monster',0,true);move('Battle Ox','b','monster',1);
   move('Celtic Guardian','a','monster',0);move('Mystical Elf','a','monster',1,true);
+  s.turn.number=4;s.turn.activePlayer='b';s.turn.phase='main1';s.timing.window='open';s.timing.priorityPlayer='b';s.timing.consecutivePasses=0;
+}
+if (fieldKeyboard) {
+  move('Battle Ox','a','monster',0);move('Mystical Elf','a','monster',2);move('Celtic Guardian','a','monster',4,true);
+  move('Trap Hole','a','spell-trap',0,true);move('Fissure','a','spell-trap',2,true);move('Pot of Greed','a','spell-trap',4,true);
+  move('La Jinn the Mystical Genie of the Lamp','b','monster',0);move('Hane-Hane','b','monster',2,true);move('Man-Eater Bug','b','monster',4,true);
+  move('Trap Hole','b','spell-trap',2,true);
   s.turn.number=4;s.turn.activePlayer='b';s.turn.phase='main1';s.timing.window='open';s.timing.priorityPlayer='b';s.timing.consecutivePasses=0;
 }
 if (magicianFaith) {
@@ -476,7 +484,107 @@ try {
   }
   await send('Runtime.enable'); await send('Page.enable'); await send('Page.navigate', { url: `http://127.0.0.1:${server.address().port}` });
   await wait(`document.getElementById('seat-dialog')?.open`); await seat('a');
-  if (decisionCards) {
+  if (fieldKeyboard) {
+    const commands=[],previousOnMessage=ws.onmessage;
+    ws.onmessage=event=>{
+      const m=JSON.parse(event.data);
+      if(m.method==='Network.requestWillBeSent'&&m.params.request.url.endsWith('/api/command'))commands.push(JSON.parse(m.params.request.postData));
+      previousOnMessage(event);
+    };
+    await send('Network.enable');
+    const key=async(key,code,windowsVirtualKeyCode,modifiers=0)=>{
+      await send('Input.dispatchKeyEvent',{type:'keyDown',key,code,windowsVirtualKeyCode,modifiers,...(code==='Space'?{text:' '}:code==='Enter'?{text:'\r'}:{})});
+      await send('Input.dispatchKeyEvent',{type:'keyUp',key,code,windowsVirtualKeyCode,modifiers});
+      await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
+    };
+    const savedDecks={};
+    for(const who of ['a','b']) {
+      await seat(who);savedDecks[who]=await evaluate(`api('/api/deck').then(data=>JSON.stringify(data))`);
+      const before=await evaluate('JSON.stringify(view)');
+      for(const side of ['self','opponent'])for(const rowIndex of [2,3]) {
+        const row=`document.querySelector('#${side} .zone-row:nth-child(${rowIndex})')`;
+        const owner=side==='self'?who:who==='a'?'b':'a';
+        const slots=await evaluate(`[...${row}.querySelectorAll('.slot')].flatMap((s,i)=>s.querySelector('button')?[i]:[])`);
+        const card=slot=>`${row}.querySelector('.slot:nth-child(${slot+1}) button')`;
+        const focused=()=>evaluate(`[...${row}.children].indexOf(document.activeElement.parentElement)`);
+        assert.ok(slots.length);assert.equal(await evaluate(`${row}.getAttribute('role')`),'group');
+        assert.match(await evaluate(`${row}.getAttribute('aria-label')`),new RegExp('Người chơi '+owner.toUpperCase()));
+        await evaluate(`${card(slots[0])}.focus()`);
+        await key('Home','Home',36);await key('ArrowLeft','ArrowLeft',37);assert.equal(await focused(),slots[0]);
+        await key('ArrowRight','ArrowRight',39);assert.equal(await focused(),slots[1]??slots[0]);
+        await key('End','End',35);await key('ArrowRight','ArrowRight',39);assert.equal(await focused(),slots.at(-1));
+        await key('Home','Home',36);await key('End','End',35,8);await key('End','End',35,2);
+        assert.equal(await focused(),slots[0]);
+        if(slots.length>1) {
+          await key('Tab','Tab',9);assert.equal(await focused(),slots[1]);
+          await key('Tab','Tab',9,8);assert.equal(await focused(),slots[0]);
+        }
+        await key('Enter','Enter',13);
+        const first=await evaluate('selected.card.handle');assert.equal(await focused(),slots[0]);
+        await key('End','End',35);assert.equal(await evaluate('selected.card.handle'),first);
+        await key(' ','Space',32);assert.equal(await focused(),slots.at(-1));
+        assert.equal(await evaluate('selected.player'),owner);assert.equal(await evaluate('selected.slot'),slots.at(-1));
+        const aria=await evaluate('document.activeElement.getAttribute("aria-label")');
+        assert.match(aria,new RegExp('Người chơi '+owner.toUpperCase()));assert.match(aria,new RegExp('ô '+(slots.at(-1)+1)));
+        const visible=await evaluate('selected.card');
+        if(visible.visibility==='known')assert.equal(await evaluate(`document.querySelector('#detail h2').textContent`),r.cards[visible.definition.id].name);
+        else {
+          assert.match(aria,/Bài úp/);assert.equal(await evaluate(`document.querySelector('#detail h2').textContent`),'Bài úp');
+          assert.equal(await evaluate(`document.querySelector('#detail .card-preview')`),null);
+          assert.equal(await evaluate(`document.activeElement.querySelector('.card-name')`),null);
+          assert.equal(visible.definition,undefined);
+        }
+        // Tab leaves the row naturally, including a one-card row, rather than trapping focus.
+        await key('Tab','Tab',9);assert.equal(await evaluate(`document.activeElement.closest('.zone-row')===${row}`),false);
+        assert.equal(await evaluate('JSON.stringify(view)'),before);assert.equal(commands.length,0);
+      }
+    }
+    const hiddenRow=`document.querySelector('#opponent .zone-row:nth-child(3)')`;
+    for(const [label,width,height]of [['desktop',1440,1000],['narrow',390,844]]) {
+      await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
+      await evaluate(`${hiddenRow}.querySelector('button').focus()`);await key('End','End',35);
+      assert.equal(await evaluate(`(()=>{const r=document.activeElement.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1&&r.top>=-1&&r.bottom<=innerHeight+1&&document.documentElement.scrollWidth<=innerWidth+1})()`),true);
+      if(process.argv.includes('--screenshots')) {
+        const folder=join(projectRoot,'artifacts','field-keyboard');await mkdir(folder,{recursive:true});
+        const shot=await send('Page.captureScreenshot',{format:'png'});await writeFile(join(folder,label+'.png'),Buffer.from(shot.data,'base64'));
+      }
+    }
+    await send('Emulation.clearDeviceMetricsOverride');await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
+    // Flip via keyboard, then move focus among real decision targets without selecting or submitting.
+    await evaluate(`document.querySelector('#self .zone-row:nth-child(2) .slot:nth-child(5) button').focus()`);await key('Enter','Enter',13);
+    await evaluate(`${textButton('#actions button','Flip Summon')}.focus()`);let version=await evaluate('view.stateVersion');
+    await key('Enter','Enter',13);await wait(`!busy&&view.stateVersion>${version}`);
+    assert.equal(await evaluate('view.decision.optionIds.length'),6);assert.equal(commands.length,1);
+    const beforeDecision=await evaluate('JSON.stringify(view)');
+    await evaluate(`${hiddenRow}.querySelector('button').focus()`);await key('End','End',35);
+    assert.deepEqual(await evaluate('decisionDraft.optionIds'),[]);
+    await key(' ','Space',32);
+    const chosen=await evaluate('selected.card.handle');
+    assert.equal(await evaluate('document.activeElement.dataset.decisionHandle'),chosen);
+    assert.equal(await evaluate(`document.querySelector('#decision-form input:checked').value`),chosen);
+    assert.equal(await evaluate(`document.querySelector('#detail h2').textContent`),'Bài úp');
+    await key('Home','Home',36);await key('ArrowRight','ArrowRight',39);
+    assert.deepEqual(await evaluate('decisionDraft.optionIds'),[chosen]);
+    await key('Enter','Enter',13);
+    assert.notEqual(await evaluate('selected.card.handle'),chosen);assert.equal(await evaluate(`document.querySelectorAll('main .decision-chosen').length`),1);
+    await key('End','End',35);await key(' ','Space',32);
+    assert.deepEqual(await evaluate('decisionDraft.optionIds'),[chosen]);
+    assert.equal(await evaluate('JSON.stringify(view)'),beforeDecision);assert.equal(commands.length,1);
+    version=await evaluate('view.stateVersion');
+    await evaluate(`document.querySelector('#decision-form button[type="submit"]').focus()`);await key('Enter','Enter',13);
+    await wait(`!busy&&view.stateVersion>${version}`);assert.equal(commands[1].action.optionIds[0],chosen);
+    assert.equal(await evaluate(`document.querySelectorAll('main .decision-choice').length`),0);
+    await pass('a');await pass('b');
+    assert.equal(await evaluate('view.players[0].monsters[4]'),null);
+    assert.equal(await evaluate(`view.players[0].graveyard.filter(c=>catalog.get(c.definition.id).name==='Celtic Guardian').length`),1);
+    assert.deepEqual(await evaluate('view.players.map(p=>p.lifePoints)'),[8000,8000]);
+    for(const who of ['a','b']) {await seat(who);assert.equal(await evaluate(`api('/api/deck').then(data=>JSON.stringify(data))`),savedDecks[who]);}
+    assert.equal(errors.length,0);
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'field-keyboard',catalog:20,
+      bothSeatsAndRows:true,emptySlotsSkipped:true,singleCardRow:true,boundedNavigation:true,modifierKeysIgnored:true,nativeTab:true,
+      nativeEnterSpace:true,focusAfterRender:true,ownerAndSlotLabels:true,hiddenOpponentPrivacy:true,readOnlyNavigation:true,
+      decisionFocusDoesNotChoose:true,keyboardDecisionExplicitConfirm:true,responsive:true,savedDecksUnchanged:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
+  } else if (decisionCards) {
     await seat('b');await click(`document.querySelector('#self .zone-row:nth-child(2) .slot:nth-child(1) .card')`);
     await actionClick(textButton('#actions button','Flip Summon'));
     assert.equal(await evaluate('view.decision.kind'),'target');assert.equal(await evaluate('view.decision.optionIds.length'),4);

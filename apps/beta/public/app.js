@@ -62,7 +62,7 @@ function cardButton(card, zone, player, slot, onSelect) {
     selected = { card, zone, player, slot }; render();
     if (hadFocus) document.querySelector('main button.card.selected')?.focus({ preventScroll: true });
   }), `card ${d?.kind === 'spell' ? 'spell' : d?.kind === 'trap' ? 'trap' : ''} ${!d ? 'back' : ''} ${selected?.card.handle === card.handle ? 'selected' : ''}`);
-  b.setAttribute('aria-label', `${label(card)}${zone === 'hand' ? ' trên tay' : zone === 'graveyard' ? ` trong Mộ, vị trí ${slot + 1} từ trên xuống` : ` tại ô ${slot + 1}`}`);
+  b.setAttribute('aria-label', `${label(card)}${zone === 'hand' ? ' trên tay' : zone === 'graveyard' ? ` trong Mộ, vị trí ${slot + 1} từ trên xuống` : ` · ${names[player]} · ${zone === 'monster' ? 'Quái' : 'Phép / Bẫy'} ô ${slot + 1}`}`);
   if (['hand', 'monster', 'spell-trap'].includes(zone) && view.decision?.optionIds.includes(card.handle)) {
     b.dataset.decisionHandle = card.handle; b.dataset.decisionLabel = b.getAttribute('aria-label');
     b.classList.add('decision-choice');
@@ -153,7 +153,10 @@ function renderHand() {
   $('hand-count').textContent = `(${cards.length})`;
 }
 function row(cards, zone, player) {
-  const n = node('div', undefined, 'zone-row'); cards.forEach((c, i) => { const slot = node('div', undefined, 'slot'); slot.append(c ? cardButton(c, zone, player, i) : node('span', `${zone === 'monster' ? 'QUÁI' : 'PHÉP / BẪY'} ${i + 1}`)); n.append(slot); }); return n;
+  const n = node('div', undefined, 'zone-row');
+  n.setAttribute('role', 'group'); n.setAttribute('aria-label', `${names[player]} · Hàng ${zone === 'monster' ? 'Quái' : 'Phép / Bẫy'}`);
+  n.setAttribute('aria-describedby', 'hand-keyboard-help');
+  cards.forEach((c, i) => { const slot = node('div', undefined, 'slot'); slot.append(c ? cardButton(c, zone, player, i) : node('span', `${zone === 'monster' ? 'QUÁI' : 'PHÉP / BẪY'} ${i + 1}`)); n.append(slot); }); return n;
 }
 function side(p, element, own) {
   const info = node('div', undefined, 'zone-info'); info.append(node('span', `${names[p.playerId]} ${own ? '· BẠN' : ''}`), node('span', `Deck ${p.deckCount} · Tay ${own ? view.selfHand.length : view.opponentHandCount} · Mộ ${p.graveyard.length}`));
@@ -513,14 +516,19 @@ function syncDecisionCards() {
 }
 function handoff() { clearChainCard(); decisionDraft = null; handSort = 'received'; handContext = null; document.body.classList.add('concealed'); selected = null; $('seat-dialog').showModal(); }
 $('hand-sort').addEventListener('change', () => { if (busy || !view) return; handSort = $('hand-sort').value; renderHand(); syncDecisionCards(); });
-$('hand').addEventListener('keydown', event => {
+function navigateCardRow(event, container) {
   if (busy || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
-  const cards = [...$('hand').querySelectorAll('button.card')], index = cards.indexOf(event.target);
+  const cards = [...container.querySelectorAll('button.card:not(:disabled)')], index = cards.indexOf(event.target);
   if (index < 0 || !['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
   const next = event.key === 'Home' ? 0 : event.key === 'End' ? cards.length - 1
     : Math.max(0, Math.min(cards.length - 1, index + (event.key === 'ArrowLeft' ? -1 : 1)));
   event.preventDefault(); cards[next].focus({ preventScroll: true });
   cards[next].scrollIntoView({ block: 'nearest', inline: 'nearest' });
+}
+$('hand').addEventListener('keydown', event => navigateCardRow(event, $('hand')));
+for (const id of ['self', 'opponent']) $(id).addEventListener('keydown', event => {
+  const row = event.target.closest('.zone-row');
+  if (row) navigateCardRow(event, row);
 });
 $('seat-dialog').addEventListener('cancel', e => e.preventDefault());
 for (const b of document.querySelectorAll('[data-seat]')) b.addEventListener('click', async () => {
