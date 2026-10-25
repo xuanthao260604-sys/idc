@@ -172,4 +172,58 @@ describe('Loopback beta HTTP boundary', () => {
     expect(await get('/api/deck')).toEqual(before); expect(await get('/api/view')).toEqual(duel);
   });
 
+  let guardCookie = '';
+  const guardSeat = async (seat: 'a' | 'b') => {
+    const response = await post('/api/seat', { seat }, guardCookie);
+    guardCookie = response.headers.get('set-cookie')!.split(';')[0]!;
+    return response.json();
+  };
+  it.each(['a', 'b'] as const)('accepts a guarded concession only for its cookie seat %s and preserves its receipt', async actor => {
+    await guardSeat(actor);
+    const view = await (await post('/api/reset', { firstPlayer: 'a' }, guardCookie)).json();
+    const command = { seat: actor, commandId: 'guarded-concession-' + actor, duelId: view.duelId, expectedStateVersion: view.stateVersion, action: { type: 'concede' } };
+    const response = await post('/api/command', command, guardCookie); expect(response.status).toBe(200);
+    const first = await response.json(); expect(first.outcome.accepted).toBe(true);
+    expect(first.view.result).toEqual({ winner: actor === 'a' ? 'b' : 'a', reason: 'concession' });
+    expect(first.view.activity.at(-1).actorId).toBe(actor);
+    expect(await (await post('/api/command', command, guardCookie)).json()).toEqual(first);
+  });
+  it.each(['a', 'b'] as const)('rejects stale UI seat %s before a command can concede for the other player', async expectedSeat => {
+    await guardSeat(expectedSeat);
+    const view = await (await post('/api/reset', { firstPlayer: 'a' }, guardCookie)).json();
+    const other = await guardSeat(expectedSeat === 'a' ? 'b' : 'a');
+    for (const action of [{ type: 'concede' }, { type: 'pass' }]) {
+      const response = await post('/api/command', { seat: expectedSeat, commandId: 'wrong-seat-' + action.type, duelId: view.duelId, expectedStateVersion: view.stateVersion, action }, guardCookie);
+      expect(response.status).toBe(409); expect(Object.keys(await response.json())).toEqual(['error']);
+    }
+    expect(await (await fetch(base + '/api/view', { headers: { Cookie: guardCookie } })).json()).toEqual(other);
+  });
+  it('strips only the beta seat guard while preserving adapter replay handling and the legacy command API', async () => {
+    await guardSeat('a');
+    const view = await (await post('/api/reset', { firstPlayer: 'a' }, guardCookie)).json();
+    const command = { commandId: 'guarded-pass', duelId: view.duelId, expectedStateVersion: view.stateVersion, action: { type: 'pass' } };
+    const first = await (await post('/api/command', { ...command, seat: 'a' }, guardCookie)).json();
+    expect(first.outcome.accepted).toBe(true);
+    expect(await (await post('/api/command', command, guardCookie)).json()).toEqual(first);
+    expect(await (await post('/api/command', { ...command, seat: 'a' }, guardCookie)).json()).toEqual(first);
+  });
+  it('rejects malformed guarded commands and actor/state injection without returning a private view', async () => {
+    const before = await guardSeat('a');
+    const command = { commandId: 'invalid-guard', duelId: before.duelId, expectedStateVersion: before.stateVersion, action: { type: 'concede' }, seat: 'a' };
+    for (const body of [{ ...command, seat: 'spectator' }, { ...command, seat: null }, { ...command, actorId: 'b' }, { ...command, winner: 'a' }, { ...command, action: { type: 'concede', state: {} } }]) {
+      const response = await post('/api/command', body, guardCookie);
+      expect(response.status).toBe(400); expect(Object.keys(await response.json())).toEqual(['error']);
+    }
+    expect(await (await fetch(base + '/api/view', { headers: { Cookie: guardCookie } })).json()).toEqual(before);
+  });
+  it.each(['a', 'b'] as const)('returns guarded views only for cookie seat %s while keeping the legacy read API', async actor => {
+    const before = await guardSeat(actor);
+    expect(await (await fetch(base + '/api/view?seat=' + actor, { headers: { Cookie: guardCookie } })).json()).toEqual(before);
+    const wrong = await fetch(base + '/api/view?seat=' + (actor === 'a' ? 'b' : 'a'), { headers: { Cookie: guardCookie } });
+    expect(wrong.status).toBe(409); expect(Object.keys(await wrong.json())).toEqual(['error']);
+    const malformed = await fetch(base + '/api/view?seat=spectator', { headers: { Cookie: guardCookie } });
+    expect(malformed.status).toBe(400); expect(Object.keys(await malformed.json())).toEqual(['error']);
+    expect(await (await fetch(base + '/api/view', { headers: { Cookie: guardCookie } })).json()).toEqual(before);
+  });
+
 });

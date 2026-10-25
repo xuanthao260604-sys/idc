@@ -205,9 +205,11 @@ function renderGraveyard() {
 }
 async function command(action) {
   if (busy || !view) return;
+  const context = { seat: view.viewerId, duelId: view.duelId, expectedStateVersion: view.stateVersion };
   busy = true; render();
   try {
-    const data = await api('/api/command', { commandId: crypto.randomUUID(), duelId: view.duelId, expectedStateVersion: view.stateVersion, action });
+    const data = await api('/api/command', { ...context, commandId: crypto.randomUUID(), action });
+    if (data.view.viewerId !== context.seat) throw new Error('Người chơi đã thay đổi. Hãy chọn lại người chơi trước khi thao tác.');
     view = data.view; selected = null; const entry = view.activity?.find(e => e.stateVersion === data.outcome.stateVersion);
     const feedback = entry?.resolution?.map(resolutionText).filter(Boolean).join(' · ');
     message = data.outcome.accepted ? (feedback || 'Đã thực hiện.') : (reasonNames[data.outcome.reason] || 'Thao tác không hợp lệ.');
@@ -572,7 +574,16 @@ $('close-decision-card').addEventListener('click', () => $('decision-card-dialog
 $('decision-card-dialog').addEventListener('close', () => { $('decision-card-detail').replaceChildren(); $('decision-card-location').textContent = ''; });
 $('cancel-action').addEventListener('click', () => $('action-dialog').close());
 $('pass').addEventListener('click', () => command({ type: 'pass' }));
-$('refresh').addEventListener('click', async () => { if (busy) return; busy = true; try { view = await api('/api/view'); selected = null; message = 'Đã cập nhật.'; render(); } catch (e) { message = e.message; $('status').textContent = message; } finally { busy = false; render(); } });
+$('refresh').addEventListener('click', async () => {
+  if (busy || !view) return;
+  const seat = view.viewerId; busy = true;
+  try {
+    const next = await api('/api/view?seat=' + seat);
+    if (next.viewerId !== seat) throw new Error('Người chơi đã thay đổi. Hãy chọn lại người chơi trước khi thao tác.');
+    view = next; selected = null; message = 'Đã cập nhật.';
+  } catch (e) { message = e.message; }
+  finally { busy = false; render(); }
+});
 $('concede').addEventListener('click', () => { if (confirm('Đầu hàng trận này?')) command({ type: 'concede' }); });
 $('result-new-game').addEventListener('click', () => $('reset').click());
 $('reset').addEventListener('click', () => {
@@ -591,7 +602,7 @@ $('new-game-check').addEventListener('click', async () => {
   busy = true; $('new-game-error').textContent = '';
   for (const c of $('new-game-form').elements) c.disabled = true;
   try {
-    const next = await api('/api/view');
+    const next = await api('/api/view?seat=' + context.seat);
     if (next.viewerId !== context.seat) throw new Error('Người chơi đã thay đổi. Hãy đóng hộp và chọn lại người chơi.');
     view = next; selected = null; message = 'Đã tải bàn đấu hiện tại. Chọn Trận mới nếu muốn bắt đầu lại.';
     $('new-game-dialog').close();

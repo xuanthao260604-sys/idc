@@ -23,6 +23,7 @@ const activityFilters = process.argv.includes('--activity-filters');
 const decisionCards = process.argv.includes('--decision-cards');
 const fieldKeyboard = process.argv.includes('--field-keyboard');
 const choiceIdentities = process.argv.includes('--choice-identities');
+const seatGuard = process.argv.includes('--seat-guard');
 const handSorting = handKeyboard || process.argv.includes('--hand-sorting');
 const faithBattleArg = process.argv.find(arg => /^--faith-battle=[ab]:[02]$/.test(arg));
 const faithBattle = faithBattleArg ? { defender: faithBattleArg.split('=')[1].split(':')[0], spells: Number(faithBattleArg.split(':')[1]) } : null;
@@ -62,7 +63,7 @@ function move(name, owner, zone, slot = 0, down = false) {
   c.location = { kind: zone, playerId: owner, slot }; c.position = down ? zone === 'monster' ? 'face-down-defense' : 'face-down' : 'face-up-attack';
   if (down) c.markers.setOnTurn = 2;
 }
-if (!fullDuel && !newGame && !discard && !concede && !deckBuilder && !chainView && !decisionCards && !fieldKeyboard && !expanded && deckOut === null) {
+if (!fullDuel && !newGame && !discard && !concede && !seatGuard && !deckBuilder && !chainView && !decisionCards && !fieldKeyboard && !expanded && deckOut === null) {
 move('Pot of Greed', 'a', 'hand'); move('Fissure', 'a', 'hand'); move('Battle Ox', 'a', 'hand');
 move('La Jinn the Mystical Genie of the Lamp', 'a', 'monster', 0); move('Celtic Guardian', 'a', 'monster', 1);
 move('Mystical Elf', 'b', 'monster', 0); move('Hane-Hane', 'b', 'monster', 1, true); move('Man-Eater Bug', 'b', 'monster', 2, true); move('Trap Hole', 'b', 'spell-trap', 0, true); move('Fissure', 'b', 'spell-trap', 1, true);
@@ -193,7 +194,7 @@ if (deckOut !== null) {
   s.turn.phase = 'main1'; s.timing.window = 'open'; s.timing.consecutivePasses = 0;
 }
 assertDuelInvariants(s, r);
-const server = createBetaServer(r, undefined, newGame || concede || deckBuilder || deckOverview ? undefined : s), directory = await mkdtemp(join(tmpdir(), 'ygo-browser-'));
+const server = createBetaServer(r, undefined, newGame || concede || seatGuard || deckBuilder || deckOverview ? undefined : s), directory = await mkdtemp(join(tmpdir(), 'ygo-browser-'));
 let chrome, ws, closeBrowser, browser, dialogAnswer; const nativeDialogs = []; const pending = new Map(), errors = []; let nextId = 0;
 const timeout = setTimeout(() => { console.error('Browser regression timed out'); chrome?.kill(); server.closeAllConnections(); process.exit(1); }, fullDuel ? 240000 : 90000);
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -527,7 +528,61 @@ try {
   await send('Runtime.enable'); await send('Page.enable'); await send('Page.navigate', { url: `http://127.0.0.1:${server.address().port}` });
   await wait(`document.getElementById('seat-dialog')?.open`); await seat('a');
   await verifyResultSummary();
-  if (choiceIdentities) {
+  if (seatGuard) {
+    const commands=[],previousOnMessage=ws.onmessage;
+    ws.onmessage=event=>{
+      const m=JSON.parse(event.data);
+      if(m.method==='Network.requestWillBeSent'&&m.params.request.url.endsWith('/api/command'))commands.push(JSON.parse(m.params.request.postData));
+      previousOnMessage(event);
+    };
+    await send('Network.enable');
+    const savedA=await evaluate(`api('/api/deck').then(data=>JSON.stringify(data))`);await seat('b');
+    const savedB=await evaluate(`api('/api/deck').then(data=>JSON.stringify(data))`);await seat('a');
+    const handContents=()=>evaluate(`[...document.querySelectorAll('#hand .card')].map(c=>({handle:c.dataset.cardHandle,label:c.getAttribute('aria-label')}))`);
+    await click(`document.querySelector('#hand .card')`);
+    const before=await evaluate('JSON.stringify(view)'),handA=await handContents(),chosen=await evaluate('selected.card.handle');
+    const serverB=await evaluate(`api('/api/seat',{seat:'b'})`);
+    dialogAnswer=true;await click(`document.getElementById('concede')`);
+    await wait(`!busy&&document.getElementById('status').textContent.includes('Người chơi đã thay đổi')`);
+    assert.equal(commands.at(-1).seat,'a');assert.equal(await evaluate('JSON.stringify(view)'),before);
+    assert.deepEqual(await handContents(),handA);assert.equal(await evaluate('selected.card.handle'),chosen);
+    assert.deepEqual(await evaluate(`api('/api/view')`),serverB);assert.equal(serverB.result,null);
+    await click(`document.getElementById('refresh')`);await wait(`!busy&&document.getElementById('status').textContent.includes('Người chơi đã thay đổi')`);
+    assert.equal(await evaluate('JSON.stringify(view)'),before);assert.deepEqual(await handContents(),handA);
+    assert.equal(await evaluate('selected.card.handle'),chosen);
+    await click(`document.getElementById('pass')`);await wait(`!busy&&document.getElementById('status').textContent.includes('Người chơi đã thay đổi')`);
+    assert.equal(commands.at(-1).seat,'a');assert.equal(await evaluate('JSON.stringify(view)'),before);
+    assert.deepEqual(await evaluate(`api('/api/view')`),serverB);
+    if(process.argv.includes('--screenshots')) {
+      const folder=join(projectRoot,'artifacts','seat-guard');await mkdir(folder,{recursive:true});
+      await send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:false});
+      await evaluate(`document.getElementById('status').scrollIntoView({block:'center'})`);
+      assert.equal(await evaluate('document.documentElement.scrollWidth<=innerWidth+1'),true);
+      const shot=await send('Page.captureScreenshot',{format:'png'});await writeFile(join(folder,'narrow.png'),Buffer.from(shot.data,'base64'));
+      await send('Emulation.clearDeviceMetricsOverride');await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
+    }
+    // Explicitly selecting B is allowed; a later shared-cookie change must protect B in the same way.
+    await seat('b');await click(`document.querySelector('#hand .card')`);
+    const beforeB=await evaluate('JSON.stringify(view)'),handB=await handContents();
+    const serverA=await evaluate(`api('/api/seat',{seat:'a'})`);
+    await click(`document.getElementById('concede')`);await wait(`!busy&&document.getElementById('status').textContent.includes('Người chơi đã thay đổi')`);
+    assert.equal(commands.at(-1).seat,'b');assert.equal(await evaluate('JSON.stringify(view)'),beforeB);assert.deepEqual(await handContents(),handB);
+    await click(`document.getElementById('refresh')`);await wait(`!busy&&document.getElementById('status').textContent.includes('Người chơi đã thay đổi')`);
+    assert.equal(await evaluate('JSON.stringify(view)'),beforeB);assert.deepEqual(await evaluate(`api('/api/view')`),serverA);
+    await seat('a');const version=await evaluate('view.stateVersion');
+    await click(`document.getElementById('refresh')`);await wait(`!busy&&document.getElementById('status').textContent.includes('Đã cập nhật')`);
+    assert.equal(await evaluate('view.stateVersion'),version);
+    await actionClick(`document.getElementById('concede')`);
+    assert.equal(commands.at(-1).seat,'a');assert.deepEqual(await evaluate('view.result'),{winner:'b',reason:'concession'});
+    assert.equal(await evaluate('view.activity.length'),1);assert.equal(await evaluate('view.activity[0].actorId'),'a');
+    await verifyResultSummary('đầu hàng');
+    assert.equal(await evaluate(`api('/api/deck').then(data=>JSON.stringify(data))`),savedA);await seat('b');
+    assert.equal(await evaluate(`api('/api/deck').then(data=>JSON.stringify(data))`),savedB);assert.equal(errors.length,0);
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'seat-guard',
+      bothSeatsProtected:true,concedeAndPassRejectedForWrongSeat:true,refreshKeepsOriginalHand:true,rejectionKeepsSelection:true,
+      serverDuelUnchangedOnRejection:true,explicitReseatRecovers:true,validConcessionAttributedCorrectly:true,savedDecksUnchanged:true,
+      stateEditedDuringPlay:false,runtimeExceptions:errors.length}));
+  } else if (choiceIdentities) {
     const commands=[],previousOnMessage=ws.onmessage;
     ws.onmessage=event=>{
       const m=JSON.parse(event.data);

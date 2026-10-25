@@ -7,7 +7,7 @@ import { z } from 'zod';
 import { exportDeck, importDeck } from './deck-transfer.js';
 import { createDeckStore } from './deck-store.js';
 import type { DeckStore } from './deck-store.js';
-import { createCommandAdapter } from '../packages/engine/src/command-adapter.js';
+import { createCommandAdapter, ClientCommandSchema } from '../packages/engine/src/command-adapter.js';
 import { createDuel } from '../packages/engine/src/duel.js';
 import type { DuelState } from '../packages/protocol/src/duel.js';
 import type { Registry } from '../packages/engine/src/registry.js';
@@ -44,6 +44,11 @@ export function createBetaServer(registry: Registry, publicRoot = resolve(projec
       if (req.method === 'GET' && url.pathname === '/api/catalog') { json(200, { cards: catalog, deckRules: registry.rules.deck }); return; }
       if (req.method === 'GET' && url.pathname === '/api/view') {
         if (!actor) { json(401, { error: 'Hãy chọn người chơi.' }); return; }
+        const expectedSeat = url.searchParams.get('seat');
+        if (expectedSeat !== null) {
+          if (!['a', 'b'].includes(expectedSeat)) { json(400, { error: 'Người chơi không hợp lệ.' }); return; }
+          if (expectedSeat !== actor) { json(409, { error: 'Người chơi đã thay đổi. Hãy chọn lại người chơi trước khi thao tác.' }); return; }
+        }
         json(200, game.getView(actor, true)); return;
       }
       if (req.method === 'GET' && url.pathname === '/api/deck') {
@@ -101,7 +106,15 @@ export function createBetaServer(registry: Registry, publicRoot = resolve(projec
         }
         game = newGame(settings.data.firstPlayer); json(200, game.getView(actor, true)); return;
       }
-      const outcome = game.submit(actor, body);
+      let command = body;
+      if (body !== null && typeof body === 'object' && Object.hasOwn(body, 'seat')) {
+        const guarded = ClientCommandSchema.extend({ seat: z.enum(['a', 'b']) }).safeParse(body);
+        if (!guarded.success) { json(400, { error: 'Lệnh đấu không hợp lệ.' }); return; }
+        if (guarded.data.seat !== actor) { json(409, { error: 'Người chơi đã thay đổi. Hãy chọn lại người chơi trước khi thao tác.' }); return; }
+        const { seat: _seat, ...intent } = guarded.data;
+        command = intent;
+      }
+      const outcome = game.submit(actor, command);
       json(200, { outcome, view: game.getView(actor, true) });
     } catch {
       // Never return server exceptions, state or private event logs to the browser.
