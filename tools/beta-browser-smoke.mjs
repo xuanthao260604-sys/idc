@@ -360,6 +360,32 @@ try {
     assert.equal(await evaluate('JSON.stringify(view)'),before);assert.equal(await evaluate('JSON.stringify(selected)'),selection);
     return expected;
   }
+  async function verifyResultSummary(reason) {
+    const before=await evaluate('JSON.stringify(view)'),v=await evaluate('view');
+    assert.equal(await evaluate(`document.getElementById('result-panel').hidden`),!v.result);
+    if(!v.result) {
+      for(const id of ['result-title','result-reason','result-turn','result-rows'])assert.equal(await evaluate(`document.getElementById(${JSON.stringify(id)}).textContent`),'');
+      assert.equal(await evaluate(`document.getElementById('result-new-game').disabled`),true);
+      return;
+    }
+    assert.equal(await evaluate(`document.getElementById('result-title').textContent`),`Kết quả trận · ${v.result.winner?'Người chơi '+v.result.winner.toUpperCase()+' thắng':'Hòa'}`);
+    assert.match(await evaluate(`document.getElementById('result-reason').textContent`),new RegExp(reason));
+    assert.match(await evaluate(`document.getElementById('result-turn').textContent`),new RegExp(`Lượt ${v.turn.number} ·`));
+    const byId=id=>v.players.find(p=>p.playerId===id),hand=id=>id===v.viewerId?v.selfHand.length:v.opponentHandCount;
+    assert.deepEqual(await evaluate(`[...document.querySelectorAll('#result-rows tr')].map(r=>[...r.children].map(c=>c.textContent))`),[
+      ['LP',...['a','b'].map(id=>String(byId(id).lifePoints))],
+      ['Bài trên tay',...['a','b'].map(id=>String(hand(id)))],
+      ['Bài trong Deck',...['a','b'].map(id=>String(byId(id).deckCount))],
+      ['Bài trong Mộ',...['a','b'].map(id=>String(byId(id).graveyard.length))],
+    ]);
+    assert.equal(await evaluate(`document.querySelectorAll('#result-panel button').length`),1);
+    assert.equal(await evaluate(`document.getElementById('result-new-game').disabled`),false);
+    assert.equal(await evaluate(`document.querySelectorAll('#result-panel .card,#result-panel [data-card-handle]').length`),0);
+    const summary=await evaluate(`document.getElementById('result-panel').textContent`);
+    assert.ok(Object.values(r.cards).every(c=>!summary.includes(c.name)), 'Summary must contain counts, never card identities');
+    assert.equal(await evaluate('JSON.stringify(view)'),before);
+    return summary;
+  }
   async function playNaturalDuel() {
     // Policy reads only the active PlayerView/catalog, never the server state or deck order.
     let currentTurn = 0, normalUsed = false, attacked = new Set();
@@ -394,10 +420,12 @@ try {
         for(const entry of v.activity) assert.deepEqual(Object.keys(entry).filter(k=>k!=='resolution').sort(), ['action','actorId','phase','stateVersion','turn']);
         for(const scope of ['all','turn'])for(const hidePass of [false,true])await verifyActivityFilters(scope,hidePass);
         await verifyActivityFilters('all',false);
+        const summary=await verifyResultSummary('điểm gốc về 0');
+        for(const who of ['a','b']) {await seat(who);assert.equal(await verifyResultSummary('điểm gốc về 0'),summary);}
         assert.equal(errors.length,0);
         console.log(JSON.stringify({ browser: browser.brand, browserVersion: browserVersion.product, platform: process.platform, mode: expanded ? 'natural-expanded-duel' : 'natural-full-duel', catalogDefinitions: Object.keys(r.cards).length, openingHands: [6, 5],
           turns: v.turn.number, acceptedCommands: actions, attacks, decisions, effectsUsed: [...usedEffects].sort(),
-          result: v.result, lifePoints: v.players.map(p=>p.lifePoints), stateEditedDuringPlay: false,activityFilteringAtHistoryLimit:true,battleCues:true,directAttackCues:true, runtimeExceptions: errors.length }));
+          result: v.result, lifePoints: v.players.map(p=>p.lifePoints), stateEditedDuringPlay: false,resultSummary:true,activityFilteringAtHistoryLimit:true,battleCues:true,directAttackCues:true, runtimeExceptions: errors.length }));
         break;
       }
       if (actions > 2500 || v.turn.number > 100) throw new Error('Natural browser duel exceeded limit');
@@ -498,6 +526,7 @@ try {
   }
   await send('Runtime.enable'); await send('Page.enable'); await send('Page.navigate', { url: `http://127.0.0.1:${server.address().port}` });
   await wait(`document.getElementById('seat-dialog')?.open`); await seat('a');
+  await verifyResultSummary();
   if (choiceIdentities) {
     const commands=[],previousOnMessage=ws.onmessage;
     ws.onmessage=event=>{
@@ -1623,9 +1652,11 @@ try {
       assert.deepEqual(await evaluate('view.result'),{winner:'a',reason:'life-points'});
       assert.match(await evaluate(`document.getElementById('guide-title').textContent`),/thắng/);
       assert.equal(await evaluate(`document.getElementById('pass').disabled`),true);
+      const summary=await verifyResultSummary('điểm gốc về 0');await seat('b');assert.equal(await verifyResultSummary('điểm gốc về 0'),summary);
     } else assert.equal(await evaluate('view.result'),null);
+    if(lifePointsMode==='normal')await verifyResultSummary();
     assert.equal(errors.length,0);
-    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'life-points-'+lifePointsMode,gainFromOwnSet:lifePointsMode==='normal',lifePoints:await evaluate('view.players.map(p=>p.lifePoints)'),delayedUntilResolution:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'life-points-'+lifePointsMode,resultSummary:lifePointsMode==='lethal',summaryHiddenWhenOngoing:lifePointsMode==='normal',gainFromOwnSet:lifePointsMode==='normal',lifePoints:await evaluate('view.players.map(p=>p.lifePoints)'),delayedUntilResolution:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
   } else if (expanded && !fullDuel && !deckOverview) {
     assert.equal(await evaluate('catalog.size'), 109);
     assert.match(await evaluate(`document.getElementById('catalog-count').textContent`), /109/);
@@ -2019,17 +2050,49 @@ try {
     assert.equal(errors.length, 0);
     console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'deck-builder',importPreview:true,importCancelAndEscapePreserveDraft:true,importApplyOneUndoStep:true,importSameFileNoHistoryChange:true,importPreviewResponsive:true, importedDeckUndoRedo:true,invalidImportPreservesHistory:true,portableFileRoundtrip: true, invalidImportPreservesDraft: true, importRequiresSave: true, decks: [41,42], invalidSizeBlocked: true, copyLimits: true, cancelPreservesSaved: true, networkErrorPreservesDraft: true, savePreservesDuel: true, appliedOnNewDuel: true, runtimeExceptions: errors.length }));
   } else if (concede) {
+    const requests=[],previousOnMessage=ws.onmessage;
+    ws.onmessage=event=>{
+      const m=JSON.parse(event.data);
+      if(m.method==='Network.requestWillBeSent'&&m.params.request.method==='POST')requests.push(m.params.request.url);
+      previousOnMessage(event);
+    };
+    await send('Network.enable');
+    const savedA=await evaluate(`api('/api/deck').then(data=>JSON.stringify(data))`);
+    await seat('b');const savedB=await evaluate(`api('/api/deck').then(data=>JSON.stringify(data))`);await seat('a');
     const before = await evaluate('JSON.stringify(view)');
     dialogAnswer = false; await click(`document.getElementById('concede')`);
     assert.equal(nativeDialogs.length, 1); assert.equal(nativeDialogs[0].type, 'confirm');
     assert.equal(await evaluate('JSON.stringify(view)'), before);
+    await verifyResultSummary();
     dialogAnswer = true; await actionClick(`document.getElementById('concede')`);
     assert.deepEqual(await evaluate('view.result'), { winner: 'b', reason: 'concession' });
     assert.match(await evaluate(`document.getElementById('guide-text').textContent`), /đầu hàng/);
     assert.deepEqual(await evaluate('view.availableActions'), []);
+    const summary=await verifyResultSummary('đầu hàng');
     await seat('b'); assert.equal(await evaluate('view.result.reason'), 'concession');
+    assert.equal(await verifyResultSummary('đầu hàng'),summary);
+    const finished=await evaluate('JSON.stringify(view)'),version=await evaluate('view.stateVersion');
+    await click(`document.getElementById('refresh')`);await wait(`!busy&&document.getElementById('status').textContent.includes('Đã cập nhật')`);
+    assert.equal(await evaluate('view.stateVersion'),version);assert.equal(await verifyResultSummary('đầu hàng'),summary);
+    for(const [label,width,height]of [['desktop',1440,1000],['narrow',390,844]]) {
+      await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
+      await evaluate(`document.getElementById('result-panel').scrollIntoView({block:'start'})`);
+      assert.equal(await evaluate(`(()=>{const e=document.getElementById('result-panel'),r=e.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1&&e.scrollWidth<=e.clientWidth+1&&document.documentElement.scrollWidth<=innerWidth+1})()`),true);
+      if(process.argv.includes('--screenshots')) {
+        const folder=join(projectRoot,'artifacts','result-summary');await mkdir(folder,{recursive:true});
+        const shot=await send('Page.captureScreenshot',{format:'png'});await writeFile(join(folder,label+'.png'),Buffer.from(shot.data,'base64'));
+      }
+    }
+    await send('Emulation.clearDeviceMetricsOverride');await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
+    const requestCount=requests.length;
+    await click(`document.getElementById('result-new-game')`);await wait(`document.getElementById('new-game-dialog').open`);
+    await click(`document.getElementById('cancel-new-game')`);assert.equal(await evaluate('JSON.stringify(view)'),finished);
+    assert.equal(await verifyResultSummary('đầu hàng'),summary);assert.equal(requests.length,requestCount);
+    await click(`document.getElementById('result-new-game')`);
+    await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});
+    await wait(`!document.getElementById('new-game-dialog').open`);assert.equal(await evaluate('JSON.stringify(view)'),finished);assert.equal(requests.length,requestCount);
     const oldId = await evaluate('view.duelId');
-    await click(`document.getElementById('reset')`);
+    await click(`document.getElementById('result-new-game')`);
     await click(`document.querySelector('#new-game-form input[value="b"]')`);
     await click(`document.querySelector('#new-game-form button[type="submit"]')`);
     await wait(`!busy && view.duelId!==${JSON.stringify(oldId)} && !document.getElementById('new-game-dialog').open`);
@@ -2038,8 +2101,11 @@ try {
     assert.equal(await evaluate('view.turn.activePlayer'), 'b');
     assert.equal(await evaluate('view.selfHand.length'), 6);
     assert.equal(await evaluate('view.players.every(p=>p.lifePoints===8000)'), true);
+    await verifyResultSummary();
+    assert.equal(await evaluate(`api('/api/deck').then(data=>JSON.stringify(data))`),savedB);await seat('a');
+    assert.equal(await evaluate(`api('/api/deck').then(data=>JSON.stringify(data))`),savedA);
     assert.equal(errors.length, 0);
-    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'concede', cancelledWithoutChanges: true, winner: 'b', freshDuelAfterFinish: true, runtimeExceptions: errors.length }));
+    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'concede',resultSummary:true,summarySameAcrossSeats:true,summaryRefreshStable:true,summaryResponsive:true,restartCancelPreservesResult:true,summaryClearedOnRestart:true,savedDecksUnchanged:true, cancelledWithoutChanges: true, winner: 'b', freshDuelAfterFinish: true, runtimeExceptions: errors.length }));
   } else if (deckOut !== null) {
     const before = await evaluate('view.selfHand.length');
     await hand('Pot of Greed'); await click(textButton('#actions button', 'Kích hoạt')); await confirm();
@@ -2060,12 +2126,14 @@ try {
       assert.equal(await evaluate(`document.querySelectorAll('.card.actionable').length`),0);
       assert.match(await evaluate(`document.getElementById('action-hints').textContent`),/Trận đấu đã kết thúc/);
       await seat('b'); assert.equal(await evaluate('view.result.reason'), 'failed-draw');
+      const summary=await verifyResultSummary('không thể bốc đủ bài');await seat('a');assert.equal(await verifyResultSummary('không thể bốc đủ bài'),summary);
     } else {
       assert.equal(await evaluate('view.result'), null);
       assert.match(await evaluate(`document.getElementById('status').textContent`), /bốc 2 lá/);
+      await verifyResultSummary();
     }
     assert.equal(errors.length, 0);
-    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'pot-deck-out', remainingBefore: deckOut, actualDraws: deckOut, result: await evaluate('view.result'), runtimeExceptions: errors.length }));
+    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'pot-deck-out',resultSummary:deckOut<2,summaryHiddenWhenOngoing:deckOut===2, remainingBefore: deckOut, actualDraws: deckOut, result: await evaluate('view.result'), runtimeExceptions: errors.length }));
   } else if (discard) {
     await actionClick(textButton('#turn-actions button', 'KẾT THÚC')); await pass('b');
     assert.equal(await evaluate('view.decision'), null);
