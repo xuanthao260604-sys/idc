@@ -1,6 +1,10 @@
 # Kiểm thử giao diện bằng trình duyệt trên Windows
 
-> Mốc hiện hành: [phân biệt các bản sao cùng tên](../beta/choice-identities.md), catalog 109; [run 40188941251](https://github.com/xuanthao260604-sys/idc/actions/runs/40188941251), commit 49b5b42.
+> Mốc hiện hành: [bảng tổng kết trận](../beta/result-summary.md), catalog 109; [run 40190980631](https://github.com/xuanthao260604-sys/idc/actions/runs/40190980631), commit 1bdc19f.
+> Windows/Ubuntu đạt; Windows: 784/784 test, 46/46 bước, 36 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Đã đọc artifact windows-validation-40190980631-1: tổng kết đúng ở A/B khi hết LP, failed draw hoặc đầu hàng; Hủy/Escape giữ trận, xác nhận trận mới xóa tổng kết cũ và giữ deck A/B. Không đổi engine/dữ liệu; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [phân biệt các bản sao cùng tên](../beta/choice-identities.md), catalog 109; [run 40188941251](https://github.com/xuanthao260604-sys/idc/actions/runs/40188941251), commit 49b5b42.
 > Windows/Ubuntu đạt; Windows: 784/784 test, 46/46 bước, 36 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Đã đọc artifact windows-validation-40188941251-1: nhãn vị trí tay/Mộ/hiến tế rõ từng bản sao, đúng handle và đúng lá bị bỏ/lấy lại, Hủy giữ state và giữ kín bài úp. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
 

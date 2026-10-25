@@ -41,8 +41,22 @@ Bổ sung assertion vào các ca trình duyệt sẵn có, giữ 46 bước/36 r
   nút bài. Không sửa state khi đang chơi.
 - Đã chụp/xem ca đầu hàng tại 1440×1000 và 390×844: bảng/nút không tràn ngang.
 
-Ca đầu hàng riêng đạt Linux/Chromium 154.0.8037.57, runtimeExceptions=0.
-Đang chạy bộ tổng hợp Linux; Windows CI chưa xác minh source mới.
+Ca đầu hàng riêng và bộ tổng hợp đạt Linux/Chromium 154.0.8037.57:
+784/784 test trong 35 file, 46/46 bước và 36 browser report, tổng
+runtimeExceptions=0. Report tại
+artifacts/platform-validation/2026-10-25T11-55-54-049Z-97612/report.json.
+Hai trận tự nhiên giữ 16 lượt/339 lệnh (pilot) và 13 lượt/262 lệnh (109).
+Windows và Ubuntu CI [run 40190980631](https://github.com/xuanthao260604-sys/idc/actions/runs/40190980631)
+đạt trên source commit 1bdc19fba464373ae5a7387846fa47a15d78af9b.
+Đã tải và đọc artifact windows-validation-40190980631-1:
+win32 x64, OS 10.0.26100, Node 24.19.0, npm 11.17.0, Edge 155.0.4283.62.
+Windows đạt 784/784 test trong 35 file, 46/46 bước và 36 browser report,
+tổng runtimeExceptions=0. Sáu report có resultSummary=true: Hinotama lethal,
+Pot Deck 0/1, đầu hàng và hai trận tự nhiên. Ca đầu hàng xác nhận tổng kết
+giống nhau ở A/B, refresh ổn định, Hủy/Escape giữ kết quả, trận mới xóa bảng
+cũ và deck A/B giữ nguyên. Ca đang chơi tiếp xác nhận bảng ẩn.
+Report ghi windows11DesktopVerified=false. Report đã đọc tại
+artifacts/ci-result-summary/2026-10-25T11-57-19-127Z-8772/report.json.
 
 Không đổi catalog 109, dữ liệu/review, engine, artwork, starter hay deck cũ.
 Windows 11 desktop chưa thử trực tiếp; chưa đóng gói hoặc bàn giao beta.
