@@ -1,6 +1,10 @@
 # Kết quả Windows CI
 
-> Mốc hiện hành: [bảng tổng kết trận](../beta/result-summary.md), catalog 109; [run 40190980631](https://github.com/xuanthao260604-sys/idc/actions/runs/40190980631), commit 1bdc19f.
+> Mốc hiện hành: [bảo vệ tạo trận mới khi mất phản hồi](../beta/new-game-recovery.md), catalog 109; [run 40193216185](https://github.com/xuanthao260604-sys/idc/actions/runs/40193216185), commit bced07d.
+> Windows/Ubuntu đạt; Windows: 791/791 test, 46/46 bước, 36 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Đã đọc artifact windows-validation-40193216185-1: retry sau mất phản hồi giữ trận đã tạo, kiểm tra chỉ đọc, guard version/ghế và ba reset đồng thời đạt; deck A/B giữ nguyên. Không đổi engine/dữ liệu; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [bảng tổng kết trận](../beta/result-summary.md), catalog 109; [run 40190980631](https://github.com/xuanthao260604-sys/idc/actions/runs/40190980631), commit 1bdc19f.
 > Windows/Ubuntu đạt; Windows: 784/784 test, 46/46 bước, 36 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Đã đọc artifact windows-validation-40190980631-1: tổng kết đúng ở A/B khi hết LP, failed draw hoặc đầu hàng; Hủy/Escape giữ trận, xác nhận trận mới xóa tổng kết cũ và giữ deck A/B. Không đổi engine/dữ liệu; Windows 11 desktop chưa chạy.
 

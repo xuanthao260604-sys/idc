@@ -57,9 +57,22 @@ Mở rộng ca `--new-game` sẵn có (`npm run beta:browser-setup`):
 - Deck A/B đọc trước/sau giống nhau. Không chỉnh state khi đang chơi.
 - Đã chụp/xem 1440×1000 và 390×844: dialog, ba nút và thông báo nằm trong viewport.
 
-HTTP riêng, typecheck và ca trình duyệt đạt Linux/Chromium 154.0.8037.57,
-runtimeExceptions=0. Đang chạy bộ tổng hợp Linux; Windows CI chưa xác minh
-source mới. Không thêm browser mode/step: giữ 46 bước và 36 report.
+HTTP riêng, typecheck và bộ tổng hợp đạt Linux/Chromium 154.0.8037.57:
+791/791 test trong 35 file, 46/46 bước và 36 browser report, tổng
+runtimeExceptions=0. Report tại
+artifacts/platform-validation/2026-10-25T12-26-35-282Z-104764/report.json.
+Giữ cả hai trận tự nhiên pilot/109, các ca deck và bảo vệ dữ liệu cũ.
+Windows và Ubuntu CI [run 40193216185](https://github.com/xuanthao260604-sys/idc/actions/runs/40193216185)
+đạt trên source commit bced07db98b3b7edf739a2a0ef1d08e1fccfbbf3.
+Đã tải và đọc artifact windows-validation-40193216185-1:
+win32 x64, OS 10.0.26100, Node 24.19.0, npm 11.17.0, Edge 155.0.4283.62.
+Windows đạt 791/791 test trong 35 file, gồm 20 test beta-server; 46/46 bước
+và 36 browser report, tổng runtimeExceptions=0. Report new-game xác nhận
+mất phản hồi không tạo lại trận khi retry, GET kiểm tra chỉ đọc, mất mạng
+giữ view/hộp, version cũ và cookie đổi ghế được bảo vệ; deck A/B giữ nguyên.
+Report ghi windows11DesktopVerified=false. Report đã đọc tại
+artifacts/ci-new-game-recovery/2026-10-25T12-28-23-988Z-9196/report.json.
+Không thêm browser mode/step: giữ 46 bước và 36 report.
 
 Không đổi engine, catalog 109, dữ liệu/review, artwork, starter hoặc deck cũ.
 Windows 11 desktop chưa thử trực tiếp; chưa đóng gói hoặc bàn giao beta.

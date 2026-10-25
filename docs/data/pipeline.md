@@ -1,4 +1,6 @@
-> Mốc hiện tại: [bảng tổng kết trận](../beta/result-summary.md), catalog 109 không đổi; kết quả, lý do, lượt cuối và số liệu công khai A/B, mở trận mới có xác nhận. Linux và Windows CI đạt 784 test, 46 bước, 36 browser report. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
+> Mốc hiện tại: [bảo vệ tạo trận mới khi mất phản hồi](../beta/new-game-recovery.md), catalog 109 không đổi; UI gửi guard trận/phiên bản/ghế, retry không thay trận đã tạo, kiểm tra chỉ đọc. Linux và Windows CI đạt 791 test, 46 bước, 36 browser report. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [bảng tổng kết trận](../beta/result-summary.md), catalog 109 không đổi; kết quả, lý do, lượt cuối và số liệu công khai A/B, mở trận mới có xác nhận. Linux và Windows CI đạt 784 test, 46 bước, 36 browser report. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
 
 > Mốc trước: [phân biệt các bản sao cùng tên](../beta/choice-identities.md), catalog 109 không đổi; vị trí tay/Mộ và ô hiến tế rõ ràng, giữ đúng bản sao sau sắp xếp và gửi đúng handle. Linux và Windows CI đạt 784 test, 46 bước, 36 browser report. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
 

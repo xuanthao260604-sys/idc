@@ -1,5 +1,7 @@
 # Thiết lập trận mới
 
+> Bổ sung 25/10/2026: [bảo vệ tạo trận mới khi mất phản hồi](new-game-recovery.md) đã đạt Linux và Windows CI. Giao diện hiện gửi guard trận/phiên bản/ghế và có kiểm tra chỉ đọc; API legacy vẫn tương thích. Các số kiểm thử bên dưới là lịch sử. Windows 11 desktop chưa chạy.
+
 Nút Trận mới mở hộp xác nhận, cho chọn A, B hoặc ngẫu nhiên đi trước.
 Mặc định trong hộp là ngẫu nhiên. Hủy hoặc Escape giữ nguyên trận hiện tại.
 Khi đang gửi yêu cầu, các nút bị khóa để tránh gửi trùng.
