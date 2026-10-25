@@ -79,3 +79,5 @@
 .card.decision-choice{outline:2px solid #9dc9ec;outline-offset:2px}.card.decision-chosen{outline:3px solid #f0cf75;outline-offset:2px}.card.decision-choice:focus-visible{outline-color:#d9efff}.decision-card-hint{position:absolute;z-index:2;top:53%;left:8%;right:8%;padding:2px 0;border-radius:3px;background:#17374cec;color:#e3f2ff;font:7px/1.4 Segoe UI,sans-serif;text-align:center}.decision-chosen .decision-card-hint{background:#66521aef;color:#fff4d5}@media(max-width:720px){.decision-card-hint{font-size:4px}.hand .decision-card-hint{font-size:7px}}
 
 .result-panel{margin:12px 0;padding:14px;border:1px solid var(--gold);border-radius:8px;background:#15271f;overflow-wrap:anywhere}.result-panel h2{margin:0;color:var(--gold)}.result-panel table{width:100%;table-layout:fixed;border-collapse:collapse;font-size:12px}.result-panel th,.result-panel td{padding:9px 5px;border-bottom:1px solid var(--line);text-align:center;overflow-wrap:anywhere}.result-panel th:first-child{text-align:left;width:40%}.result-panel p{font-size:12px}.result-panel button{max-width:100%}
+
+#new-game-form .dialog-buttons{flex-wrap:wrap}#new-game-error{overflow-wrap:anywhere}

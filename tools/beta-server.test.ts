@@ -69,6 +69,54 @@ describe('Loopback beta HTTP boundary', () => {
     expect((await post('/api/reset', { firstPlayer: 'b' })).status).toBe(401);
   });
 
+  it.each(['a', 'b', 'random'])('guards a %s reset and rejects its retry without replacing the created duel', async firstPlayer => {
+    const a = await post('/api/seat', { seat: 'a' }), cookie = a.headers.get('set-cookie')!.split(';')[0]!, old = await a.json();
+    const b = await post('/api/seat', { seat: 'b' }), cookieB = b.headers.get('set-cookie')!.split(';')[0]!;
+    const get = (path: string, seatCookie = cookie) => fetch(base + path, { headers: { Cookie: seatCookie } }).then(r => r.json());
+    const decks = [await get('/api/deck'), await get('/api/deck', cookieB)];
+    const body = { firstPlayer, seat: 'a', duelId: old.duelId, expectedStateVersion: old.stateVersion };
+    const response = await post('/api/reset', body, cookie); expect(response.status).toBe(200);
+    const created = await response.json(); expect(created.duelId).not.toBe(old.duelId); expect(created.stateVersion).toBe(0);
+    if (firstPlayer !== 'random') expect(created.turn.activePlayer).toBe(firstPlayer);
+    expect((await post('/api/reset', body, cookie)).status).toBe(409);
+    expect(await get('/api/view')).toEqual(created);
+    expect([await get('/api/deck'), await get('/api/deck', cookieB)]).toEqual(decks);
+  });
+  it('rejects a reset confirmed before another accepted command and permits a newly reviewed version', async () => {
+    const seat = await post('/api/seat', { seat: 'a' }), cookie = seat.headers.get('set-cookie')!.split(';')[0]!;
+    const view = await (await post('/api/reset', { firstPlayer: 'a' }, cookie)).json();
+    const body = { firstPlayer: 'b', seat: 'a', duelId: view.duelId, expectedStateVersion: view.stateVersion };
+    const moved = await (await post('/api/command', { commandId: 'before-guarded-reset', duelId: view.duelId, expectedStateVersion: view.stateVersion, action: { type: 'pass' } }, cookie)).json();
+    expect(moved.outcome.accepted).toBe(true);
+    expect((await post('/api/reset', body, cookie)).status).toBe(409);
+    expect(await (await fetch(base + '/api/view', { headers: { Cookie: cookie } })).json()).toEqual(moved.view);
+    expect((await post('/api/reset', { ...body, expectedStateVersion: moved.view.stateVersion }, cookie)).status).toBe(200);
+  });
+  it('rejects a mismatched reset seat and incomplete or malformed guards while preserving the current view', async () => {
+    const a = await post('/api/seat', { seat: 'a' }), cookieA = a.headers.get('set-cookie')!.split(';')[0]!, view = await a.json();
+    const b = await post('/api/seat', { seat: 'b' }), cookieB = b.headers.get('set-cookie')!.split(';')[0]!, before = await b.json();
+    const body = { firstPlayer: 'b', seat: 'a', duelId: view.duelId, expectedStateVersion: view.stateVersion };
+    expect((await post('/api/reset', body, cookieB)).status).toBe(409);
+    for (const bad of [
+      { firstPlayer: 'a', seat: 'a' }, { firstPlayer: 'a', duelId: view.duelId },
+      { ...body, duelId: '' }, { ...body, expectedStateVersion: -1 }, { ...body, expectedStateVersion: 0.5 }, { ...body, seedHex: '12'.repeat(32) },
+    ]) expect((await post('/api/reset', bad, cookieA)).status).toBe(400);
+    expect(await (await fetch(base + '/api/view', { headers: { Cookie: cookieB } })).json()).toEqual(before);
+  });
+  it('accepts only one of concurrent guarded resets for the same duel and version', async () => {
+    const seat = await post('/api/seat', { seat: 'a' }), cookie = seat.headers.get('set-cookie')!.split(';')[0]!, view = await seat.json();
+    const body = { firstPlayer: 'random', seat: 'a', duelId: view.duelId, expectedStateVersion: view.stateVersion };
+    const responses = await Promise.all(Array.from({ length: 3 }, () => post('/api/reset', body, cookie)));
+    expect(responses.map(r => r.status).sort()).toEqual([200, 409, 409]);
+    const created = await responses.find(r => r.status === 200)!.json();
+    expect(await (await fetch(base + '/api/view', { headers: { Cookie: cookie } })).json()).toEqual(created);
+  });
+  it('preserves the documented empty legacy reset request with A first', async () => {
+    const seat = await post('/api/seat', { seat: 'a' }), cookie = seat.headers.get('set-cookie')!.split(';')[0]!;
+    const response = await post('/api/reset', {}, cookie); expect(response.status).toBe(200);
+    expect((await response.json()).turn.activePlayer).toBe('a');
+  });
+
   it('requires a seat and binds deck edits to the cookie seat even across shared-cookie tabs', async () => {
     expect((await fetch(base+'/api/deck')).status).toBe(401);
     expect((await post('/api/deck', {})).status).toBe(401);

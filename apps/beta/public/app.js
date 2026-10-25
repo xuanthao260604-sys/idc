@@ -7,6 +7,7 @@ let decisionDraft = null;
 let handSort = 'received', handContext = null;
 let graveyardContext = null;
 let activityContext = null;
+let newGameContext = null;
 let view = null, selected = null, busy = false, message = 'Chọn một lá bài để bắt đầu.';
 const names = { a: 'Người chơi A', b: 'Người chơi B' };
 const phaseNames = { draw: 'BỐC BÀI', standby: 'CHUẨN BỊ', main1: 'MAIN 1', battle: 'CHIẾN ĐẤU', main2: 'MAIN 2', end: 'KẾT THÚC' };
@@ -576,24 +577,40 @@ $('concede').addEventListener('click', () => { if (confirm('Đầu hàng trận 
 $('result-new-game').addEventListener('click', () => $('reset').click());
 $('reset').addEventListener('click', () => {
   if (busy || !view) return;
+  newGameContext = { seat: view.viewerId, duelId: view.duelId, expectedStateVersion: view.stateVersion };
   $('new-game-error').textContent = '';
   $('new-game-warning').textContent = view.result ? 'Kết quả và lịch sử trận trước sẽ được thay bằng trận mới.' : 'Trận đang chơi sẽ bị thay thế khi xác nhận. Chọn Hủy để giữ nguyên trận.';
   $('new-game-dialog').showModal();
 });
 $('cancel-new-game').addEventListener('click', () => { if (!busy) $('new-game-dialog').close(); });
 $('new-game-dialog').addEventListener('cancel', e => { if (busy) e.preventDefault(); });
+$('new-game-dialog').addEventListener('close', () => { if (!$('new-game-dialog').open) newGameContext = null; });
+$('new-game-check').addEventListener('click', async () => {
+  if (busy || !newGameContext) return;
+  const context = newGameContext;
+  busy = true; $('new-game-error').textContent = '';
+  for (const c of $('new-game-form').elements) c.disabled = true;
+  try {
+    const next = await api('/api/view');
+    if (next.viewerId !== context.seat) throw new Error('Người chơi đã thay đổi. Hãy đóng hộp và chọn lại người chơi.');
+    view = next; selected = null; message = 'Đã tải bàn đấu hiện tại. Chọn Trận mới nếu muốn bắt đầu lại.';
+    $('new-game-dialog').close();
+  } catch (error) { $('new-game-error').textContent = error.message; }
+  finally { busy = false; for (const c of $('new-game-form').elements) c.disabled = false; render(); }
+});
 $('new-game-form').addEventListener('submit', async e => {
-  e.preventDefault(); if (busy || !view) return;
+  e.preventDefault(); if (busy || !view || !newGameContext) return;
+  const context = newGameContext;
   const firstPlayer = $('new-game-form').querySelector('input[name="first-player"]:checked')?.value;
   if (!firstPlayer) return;
   busy = true; $('new-game-error').textContent = '';
   for (const c of $('new-game-form').elements) c.disabled = true;
   try {
-    const next = await api('/api/reset', { firstPlayer });
+    const next = await api('/api/reset', { ...context, firstPlayer });
     view = next; selected = null;
     message = `Trận mới: ${names[view.turn.activePlayer]} đi trước.`;
     $('new-game-dialog').close();
-  } catch (error) { $('new-game-error').textContent = error.message; }
+  } catch (error) { $('new-game-error').textContent = 'Chưa xác nhận tạo trận mới. Dùng Kiểm tra bàn đấu nếu chưa rõ kết quả. ' + error.message; }
   finally { busy = false; for (const c of $('new-game-form').elements) c.disabled = false; render(); }
 });
 (async () => { try { const data = await api('/api/catalog'); data.cards.forEach(c => catalog.set(c.id, c)); deckRules = data.deckRules; $('catalog-count').textContent = `${catalog.size} loại bài thử nghiệm`; handoff(); } catch (e) { $('status').textContent = e.message; } })();

@@ -86,8 +86,19 @@ export function createBetaServer(registry: Registry, publicRoot = resolve(projec
         json(200, result.deck); return;
       }
       if (url.pathname === '/api/reset') {
-        const settings = z.strictObject({ firstPlayer: z.enum(['a', 'b', 'random']).default('a') }).safeParse(body);
+        const firstPlayer = z.enum(['a', 'b', 'random']).default('a');
+        const settings = z.union([
+          z.strictObject({ firstPlayer, seat: z.enum(['a', 'b']), duelId: z.string().min(1).max(128), expectedStateVersion: z.number().int().nonnegative().safe() }),
+          z.strictObject({ firstPlayer }), // Preserve the documented legacy API; the UI always sends all guards.
+        ]).safeParse(body);
         if (!settings.success) { json(400, { error: 'Thiết lập người đi trước không hợp lệ.' }); return; }
+        if ('seat' in settings.data) {
+          if (settings.data.seat !== actor) { json(409, { error: 'Người chơi đã thay đổi. Hãy kiểm tra bàn đấu rồi chọn lại người chơi.' }); return; }
+          const current = game.getView(actor);
+          if (settings.data.duelId !== current.duelId || settings.data.expectedStateVersion !== current.stateVersion) {
+            json(409, { error: 'Bàn đấu đã thay đổi. Hãy kiểm tra bàn đấu rồi mở lại Trận mới.' }); return;
+          }
+        }
         game = newGame(settings.data.firstPlayer); json(200, game.getView(actor, true)); return;
       }
       const outcome = game.submit(actor, body);

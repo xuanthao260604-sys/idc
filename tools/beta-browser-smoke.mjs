@@ -2210,6 +2210,15 @@ try {
     assert.equal(errors.length, 0);
     console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'discard', networkFailurePreservesSelection: true, unchangedRefreshPreservesSelection: true, seatSwitchClearsDraft: true, lostResponseNoDuplicateDiscard: true, decisionPreviews: true, viewingPreservesSelection: true, escapeClearsPreview: true, handAfterDiscard: 6, discarded: 2, nextPlayer: 'b', runtimeExceptions: errors.length }));
   } else if (newGame) {
+    const resets=[],previousOnMessage=ws.onmessage;
+    ws.onmessage=event=>{
+      const m=JSON.parse(event.data);
+      if(m.method==='Network.requestWillBeSent'&&m.params.request.url.endsWith('/api/reset'))resets.push(JSON.parse(m.params.request.postData));
+      previousOnMessage(event);
+    };
+    await send('Network.enable');
+    const savedA=await evaluate(`api('/api/deck').then(data=>JSON.stringify(data))`);await seat('b');
+    const savedB=await evaluate(`api('/api/deck').then(data=>JSON.stringify(data))`);await seat('a');
     const before = await evaluate('JSON.stringify(view)');
     await click(`document.getElementById('reset')`);
     await wait(`document.getElementById('new-game-dialog').open`);
@@ -2234,8 +2243,67 @@ try {
         assert.equal(await evaluate('view.players.every(p=>p.lifePoints===8000 && p.monsters.every(c=>c===null) && p.spellsTraps.every(c=>c===null))'), true);
       }
     }
+    await seat('a');
+    const unchanged=await evaluate('JSON.stringify(view)'),oldId=await evaluate('view.duelId');
+    await click(`document.getElementById('reset')`);await click(`document.querySelector('#new-game-form input[value="b"]')`);
+    // Let the real server create a duel, then lose the response before the UI sees it.
+    await evaluate(`(()=>{const original=window.fetch;window.fetch=async(...args)=>{const response=await original(...args);if(args[0]==='/api/reset'){window.fetch=original;throw new Error('Simulated lost reset response');}return response;};})()`);
+    await click(`document.querySelector('#new-game-form button[type="submit"]')`);await wait(`!busy&&document.getElementById('new-game-error').textContent.includes('Simulated lost reset response')`);
+    assert.equal(await evaluate('JSON.stringify(view)'),unchanged);assert.equal(await evaluate(`document.getElementById('new-game-dialog').open`),true);
+    const created=await evaluate(`api('/api/view')`);assert.notEqual(created.duelId,oldId);assert.equal(created.turn.activePlayer,'b');
+    await click(`document.querySelector('#new-game-form button[type="submit"]')`);await wait(`!busy&&document.getElementById('new-game-error').textContent.includes('Bàn đấu đã thay đổi')`);
+    assert.deepEqual(resets.at(-1),resets.at(-2));assert.equal(await evaluate('JSON.stringify(view)'),unchanged);
+    assert.deepEqual(await evaluate(`api('/api/view')`),created);
+    for(const [label,width,height]of [['desktop',1440,1000],['narrow',390,844]]) {
+      await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
+      assert.equal(await evaluate(`(()=>{const d=document.getElementById('new-game-dialog'),r=d.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1&&d.scrollWidth<=d.clientWidth+1&&r.height<=innerHeight})()`),true);
+      if(process.argv.includes('--screenshots')) {
+        const folder=join(projectRoot,'artifacts','new-game-recovery');await mkdir(folder,{recursive:true});
+        const shot=await send('Page.captureScreenshot',{format:'png'});await writeFile(join(folder,label+'.png'),Buffer.from(shot.data,'base64'));
+      }
+    }
+    await send('Emulation.clearDeviceMetricsOverride');await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
+    let resetCount=resets.length;
+    await send('Network.emulateNetworkConditions',{offline:true,latency:0,downloadThroughput:0,uploadThroughput:0});
+    await click(`document.getElementById('new-game-check')`);await wait(`!busy&&document.getElementById('new-game-error').textContent.length>0`);
+    assert.equal(await evaluate('JSON.stringify(view)'),unchanged);assert.equal(await evaluate(`document.querySelector('#new-game-form input:checked').value`),'b');
+    await send('Network.emulateNetworkConditions',{offline:false,latency:0,downloadThroughput:-1,uploadThroughput:-1});
+    await click(`document.getElementById('new-game-check')`);await wait(`!busy&&!document.getElementById('new-game-dialog').open`);
+    assert.equal(await evaluate('view.duelId'),created.duelId);assert.equal(resets.length,resetCount);
+    assert.equal(await evaluate('view.stateVersion'),0);assert.equal(await evaluate('view.turn.activePlayer'),'b');
+    // Offline before sending creates nothing; checking the old duel is still a read-only recovery.
+    const beforeOffline=await evaluate('JSON.stringify(view)');await click(`document.getElementById('reset')`);
+    await send('Network.emulateNetworkConditions',{offline:true,latency:0,downloadThroughput:0,uploadThroughput:0});
+    await click(`document.querySelector('#new-game-form button[type="submit"]')`);await wait(`!busy&&document.getElementById('new-game-error').textContent.length>0`);
+    assert.equal(await evaluate('JSON.stringify(view)'),beforeOffline);
+    await send('Network.emulateNetworkConditions',{offline:false,latency:0,downloadThroughput:-1,uploadThroughput:-1});
+    resetCount=resets.length;await click(`document.getElementById('new-game-check')`);await wait(`!busy&&!document.getElementById('new-game-dialog').open`);
+    assert.equal(await evaluate('JSON.stringify(view)'),beforeOffline);assert.equal(resets.length,resetCount);
+    // Another local session advances the real duel while the confirmation remains open.
+    await click(`document.getElementById('reset')`);const stale=await evaluate('JSON.stringify(view)');
+    const url=`http://127.0.0.1:${server.address().port}`;
+    const other=await fetch(url+'/api/seat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({seat:'b'})});
+    const otherCookie=other.headers.get('set-cookie').split(';')[0],otherView=await other.json();
+    const advanced=await (await fetch(url+'/api/command',{method:'POST',headers:{'Content-Type':'application/json',Cookie:otherCookie},body:JSON.stringify({commandId:'reset-stale-version',duelId:otherView.duelId,expectedStateVersion:otherView.stateVersion,action:{type:'pass'}})})).json();
+    assert.equal(advanced.outcome.accepted,true);const afterAdvance=await evaluate(`api('/api/view')`);
+    await click(`document.querySelector('#new-game-form button[type="submit"]')`);await wait(`!busy&&document.getElementById('new-game-error').textContent.includes('Bàn đấu đã thay đổi')`);
+    assert.equal(await evaluate('JSON.stringify(view)'),stale);assert.deepEqual(await evaluate(`api('/api/view')`),afterAdvance);
+    resetCount=resets.length;await click(`document.getElementById('new-game-check')`);await wait(`!busy&&!document.getElementById('new-game-dialog').open`);
+    assert.equal(await evaluate('view.stateVersion'),afterAdvance.stateVersion);assert.equal(resets.length,resetCount);
+    // A shared-cookie seat change must neither reset the duel nor render the other seat's hand.
+    await click(`document.getElementById('reset')`);const beforeSeatChange=await evaluate('JSON.stringify(view)');
+    await evaluate(`api('/api/seat',{seat:'b'})`);
+    await click(`document.querySelector('#new-game-form button[type="submit"]')`);await wait(`!busy&&document.getElementById('new-game-error').textContent.includes('Người chơi đã thay đổi')`);
+    assert.equal(await evaluate('JSON.stringify(view)'),beforeSeatChange);
+    resetCount=resets.length;await click(`document.getElementById('new-game-check')`);await wait(`!busy&&document.getElementById('new-game-error').textContent.includes('chọn lại người chơi')`);
+    assert.equal(await evaluate('JSON.stringify(view)'),beforeSeatChange);assert.equal(resets.length,resetCount);
+    assert.equal(await evaluate(`document.getElementById('new-game-dialog').open`),true);
+    await click(`document.getElementById('cancel-new-game')`);await seat('b');
+    assert.equal(await evaluate('view.duelId'),created.duelId);assert.equal(await evaluate('view.stateVersion'),afterAdvance.stateVersion);
+    assert.equal(await evaluate(`api('/api/deck').then(data=>JSON.stringify(data))`),savedB);await seat('a');
+    assert.equal(await evaluate(`api('/api/deck').then(data=>JSON.stringify(data))`),savedA);
     assert.equal(errors.length, 0);
-    console.log(JSON.stringify({ browser: browser.brand, browserVersion: browserVersion.product, platform: process.platform, newGame: ['cancel-preserves-view', 'b', 'a', 'random'], runtimeExceptions: errors.length }));
+    console.log(JSON.stringify({ browser: browser.brand, browserVersion: browserVersion.product, platform: process.platform,mode:'new-game', newGame: ['cancel-preserves-view', 'b', 'a', 'random'],lostResponseRetryKeepsCreatedDuel:true,readOnlyRecovery:true,offlinePreservesView:true,staleVersionProtected:true,sharedCookieSeatProtected:true,recoveryFailureKeepsDialog:true,responsive:true,savedDecksUnchanged:true, runtimeExceptions: errors.length }));
   } else if (fullDuel) {
     assert.equal(await evaluate('view.selfHand.length'), 6);
     await seat('b'); assert.equal(await evaluate('view.selfHand.length'), 5); await seat('a');
