@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "formatId": "goat-2005-08-17",
+  "cards": [
+    {
+      "passcode": "19523799",
+      "expectedName": "Ookazi",
+      "konamiId": 4352
+    }
+  ],
+  "eligibleSetPrefixes": [
+    "SDK"
+  ],
+  "eligibilitySource": {
+    "url": "https://www.goatformat.com/cardpool.html",
+    "accessedOn": "2026-10-26",
+    "scope": "release",
+    "notes": "Reviewed legal sets explicitly include Yugi and Kaiba Starter Decks (SDY/SDK). SDK-023 original North American printing independently checked on Konami; no historical printed wording claimed."
+  }
+}

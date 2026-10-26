@@ -1,0 +1,20 @@
+[
+  {
+    "id": "official:19523799",
+    "baseFingerprint": "cbbb75f70bb7bb11d7e77a058b4eae5c6552ece4b6a6a52ac71e59edb7489ba1",
+    "revision": 1,
+    "patch": {
+      "text": "Inflict 800 points of damage to your opponent's Life Points."
+    },
+    "historicalTextReview": "pending",
+    "notes": "Current Konami wording copied verbatim; API wording retained in the source snapshot. Original SDK-023 North American printing verified. Historical printed wording remains pending; this import does not enable runtime behavior.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4352&request_locale=en",
+        "accessedOn": "2026-10-26",
+        "scope": "text",
+        "notes": "Current official reference, not asserted as original 2005 printed wording."
+      }
+    ]
+  }
+]

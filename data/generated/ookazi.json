@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "format": {
+    "id": "goat-2005-08-17",
+    "revision": 4
+  },
+  "provenance": {
+    "upstreamSha256": "64f09716dfd58a62d347b6af253b615b26581252aed61b0f0ed8d5c7e6d618ca",
+    "manifestSha256": "10744a433f279edb3427989a69490f89e219066f272aef3511e197ff72226327",
+    "reviewSha256": "d7b74e0cc3282a99bc2430ffdebc818a3b662e8d08d11a097c23414d173d19bd",
+    "officialEvidenceSha256": "99e07ce91dcb02b3c899f8c897977cb2da85826113d29a4b434666f9092a214a"
+  },
+  "cards": [
+    {
+      "schemaVersion": 1,
+      "id": "official:19523799",
+      "origin": "official",
+      "revision": 1,
+      "name": "Ookazi",
+      "passcode": "19523799",
+      "text": "Inflict 800 points of damage to your opponent's Life Points.",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?name=Ookazi&misc=yes",
+          "accessedOn": "2026-10-26",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4352&request_locale=en",
+          "accessedOn": "2026-10-26",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 4352."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4352&request_locale=en",
+          "accessedOn": "2026-10-26",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4352&request_locale=en",
+          "accessedOn": "2026-10-26",
+          "scope": "text",
+          "notes": "Current official reference, not asserted as original 2005 printed wording."
+        }
+      ],
+      "verification": "pending",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4352&request_locale=en",
+            "accessedOn": "2026-10-26",
+            "scope": "release",
+            "notes": "Reviewed North American print SDK-023, 2002-03-29, STARTER DECK KAIBA; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-26",
+            "scope": "release",
+            "notes": "Reviewed legal sets explicitly include Yugi and Kaiba Starter Decks (SDY/SDK). SDK-023 original North American printing independently checked on Konami; no historical printed wording claimed."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "kind": "spell",
+      "subtype": "normal"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "official:19523799",
+      "fingerprint": "cbbb75f70bb7bb11d7e77a058b4eae5c6552ece4b6a6a52ac71e59edb7489ba1",
+      "historicalTextReview": "pending",
+      "upstreamText": "Inflict 800 damage to your opponent.",
+      "referenceText": "Inflict 800 points of damage to your opponent's Life Points.",
+      "notes": "Current Konami wording copied verbatim; API wording retained in the source snapshot. Original SDK-023 North American printing verified. Historical printed wording remains pending; this import does not enable runtime behavior.",
+      "printing": {
+        "date": "2002-03-29",
+        "setCode": "SDK-023",
+        "product": "STARTER DECK KAIBA"
+      },
+      "upstreamTcgDate": "2002-03-29"
+    }
+  ],
+  "summary": {
+    "imported": 1,
+    "verifiedData": 0,
+    "historicalReviewPending": 1,
+    "implemented": 0,
+    "testedEffects": 0,
+    "playable": 0
+  }
+}

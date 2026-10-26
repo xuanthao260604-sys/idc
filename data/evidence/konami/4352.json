@@ -1,0 +1,18 @@
+{
+  "passcode": "19523799",
+  "konamiId": 4352,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4352&request_locale=en",
+  "accessedOn": "2026-10-26",
+  "htmlSha256": "f197145576d527bc20b289c136d6bc9d2c7325aabb2dfe75252bb94a8336fec1",
+  "currentFacts": {
+    "name": "Ookazi",
+    "text": "Inflict 800 points of damage to your opponent's Life Points.",
+    "kind": "spell",
+    "subtype": "normal"
+  },
+  "printing": {
+    "date": "2002-03-29",
+    "setCode": "SDK-023",
+    "product": "STARTER DECK KAIBA"
+  }
+}
