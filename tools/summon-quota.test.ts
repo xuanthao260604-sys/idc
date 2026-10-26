@@ -52,3 +52,36 @@ describe.each(['a','b'])('Public Normal Summon/Set quota for active player %s',a
   const before=structuredClone(s);expect(applyAction(registry,s,{actorId:actor,expectedStateVersion:s.stateVersion,action:{type:'normal-summon',instanceId:second,slot:0,tributeIds:[]}})).toMatchObject({accepted:false,code:'quota-used',state:s});expect(s).toEqual(before);
  });
 });
+describe.each(['a','b'])('Own monster activity for viewer %s',actor=>{
+ function activity(s:DuelState,id:string){const before=structuredClone(s),p=createPlayerProjection(registry,s,actor),entry=p.view.ownMonsterActivity.find(e=>p.resolveCardHandle(e.cardHandle,s,actor)===id);expect(s).toEqual(before);expect(entry).toBeDefined();expect(Object.isFrozen(entry)).toBe(true);return entry!;}
+ const unused={summonedOrSetThisTurn:false,positionChangedThisTurn:false,attackDeclaredThisTurn:false};
+ it('allows only own field handles and three boolean flags, including own Set cards',()=>{
+  const f=setup(actor),own=f.move('Battle Ox',actor,'monster',0,true),opposing=f.move('Mystical Elf',f.other,'monster',0,true);
+  const p=createPlayerProjection(registry,f.s,actor);expect(p.view.ownMonsterActivity).toHaveLength(1);
+  expect(activity(f.s,own)).toMatchObject(unused);expect(Object.keys(p.view.ownMonsterActivity[0]!).sort()).toEqual(['attackDeclaredThisTurn','cardHandle','positionChangedThisTurn','summonedOrSetThisTurn']);
+  expect(p.resolveCardHandle(p.view.ownMonsterActivity[0]!.cardHandle,f.s,actor)).toBe(own);expect(JSON.stringify(p.view.ownMonsterActivity)).not.toContain(own);
+  const other=createPlayerProjection(registry,f.s,f.other);expect(other.view.ownMonsterActivity).toHaveLength(1);expect(other.resolveCardHandle(other.view.ownMonsterActivity[0]!.cardHandle,f.s,f.other)).toBe(opposing);
+  expect(other.view.players.find(p=>p.playerId===actor)!.monsters[0]!.visibility).toBe('hidden');expect(Object.isFrozen(p.view.ownMonsterActivity)).toBe(true);
+ });
+ it.each(['normal-summon','set-monster'] as const)('%s records the actual action and removes activity when the card leaves the field',type=>{
+  const f=setup(actor),id=f.move('Battle Ox'),bounce=f.move('Hane-Hane',actor,'monster',1,true);
+  let s=settle(step(f.s,actor,{type,instanceId:id,slot:0,tributeIds:[]}));expect(activity(s,id)).toMatchObject({...unused,summonedOrSetThisTurn:true});
+  s=step(s,actor,{type:'flip-summon',instanceId:bounce});s=step(s,actor,{type:'answer-decision',decisionId:s.pendingDecision!.id,optionIds:[id]});s=settle(s);
+  expect(s.cards[id]!.location.kind).toBe('hand');const p=createPlayerProjection(registry,s,actor);expect(p.view.ownMonsterActivity).toHaveLength(1);expect(p.resolveCardHandle(p.view.ownMonsterActivity[0]!.cardHandle,s,actor)).toBe(bounce);
+ });
+ it('records Flip Summon as a summon and manual change without consuming the Normal quota',()=>{
+  const f=setup(actor),id=f.move('Battle Ox',actor,'monster',0,true);const s=settle(step(f.s,actor,{type:'flip-summon',instanceId:id}));
+  expect(activity(s,id)).toMatchObject({...unused,summonedOrSetThisTurn:true,positionChangedThisTurn:true});quota(s,0);
+ });
+ it('distinguishes an effect position change from a later manual position change',()=>{
+  const f=setup(actor),id=f.move('Battle Ox',actor,'monster'),spell=f.move('Earthquake');
+  let s=settle(step(f.s,actor,{type:'activate-spell',instanceId:spell,slot:0}));expect(s.cards[id]!.position).toBe('face-up-defense');expect(activity(s,id)).toMatchObject(unused);
+  s=settle(step(s,actor,{type:'change-position',instanceId:id}));expect(activity(s,id)).toMatchObject({...unused,positionChangedThisTurn:true});
+ });
+ it('records declaration immediately, retains it in Main2 and resets on the real next turn',()=>{
+  const f=setup(actor),id=f.move('Battle Ox',actor,'monster');let s=phase(f.s,'battle');
+  s=step(s,actor,{type:'declare-attack',attackerId:id,targetId:'direct'});expect(activity(s,id)).toMatchObject({...unused,attackDeclaredThisTurn:true});
+  s=phase(settle(s),'main2');expect(activity(s,id)).toMatchObject({...unused,attackDeclaredThisTurn:true});
+  s=phase(phase(s,'end'),'draw');expect(s.turn.activePlayer).toBe(f.other);expect(activity(s,id)).toMatchObject(unused);
+ });
+});

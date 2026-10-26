@@ -45,8 +45,16 @@ export function createPlayerProjection(registry: Registry, state: DuelState, vie
   };
   const active = state.players.find(p => p.id === state.turn.activePlayer)!;
   const limit = registry.rules.summons.normalSummonOrSetQuota;
+  const ownMonsterActivity = self.monsters.flatMap(id => {
+    if (id === null) return [];
+    const markers = state.cards[id]!.markers;
+    return [{ cardHandle: handle(id),
+      summonedOrSetThisTurn: markers.summonedOnTurn === state.turn.number || markers.setOnTurn === state.turn.number,
+      positionChangedThisTurn: markers.manuallyChangedOnTurn === state.turn.number,
+      attackDeclaredThisTurn: markers.attackDeclarationsThisTurn > 0 }];
+  });
   const view: PlayerView = freeze({ duelId: state.id, stateVersion: state.stateVersion, viewerId,
-    turn: { ...state.turn }, normalSummonQuota: { playerId: active.id, used: active.normalSummonsOrSetsUsed, limit, remaining: Math.max(0, limit - active.normalSummonsOrSetsUsed) }, selfHand, opponentHandCount: opponent.hand.length, players, decision,
+    turn: { ...state.turn }, normalSummonQuota: { playerId: active.id, used: active.normalSummonsOrSetsUsed, limit, remaining: Math.max(0, limit - active.normalSummonsOrSetsUsed) }, ownMonsterActivity, selfHand, opponentHandCount: opponent.hand.length, players, decision,
     // A mandatory decision suspends response actions, even if the internal phase retains priority.
     timing: { window: state.timing.window, priorityPlayer: state.pendingDecision ? null : state.timing.priorityPlayer },
     chain: state.chain.map(link => ({ controllerId: link.controllerId, sourceHandle: publicHandle(link.source),

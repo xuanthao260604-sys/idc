@@ -129,6 +129,8 @@ export interface PlayerView {
   turn: DuelState['turn'];
   /** Public counter for the active player; remaining quota is not permission to act. */
   normalSummonQuota: { playerId: PlayerId; used: number; limit: number; remaining: number };
+  /** Recorded activity for this viewer's field monsters, not permission to act. */
+  ownMonsterActivity: readonly { cardHandle: string; summonedOrSetThisTurn: boolean; positionChangedThisTurn: boolean; attackDeclaredThisTurn: boolean }[];
   /** Response priority is suspended (null) while a mandatory decision is pending. */
   timing: { window: DuelState['timing']['window']; priorityPlayer: PlayerId | null };
   chain: readonly { controllerId: PlayerId; sourceHandle: string; targetHandles: readonly string[]; spellSpeed: 1 | 2 | 3 }[];

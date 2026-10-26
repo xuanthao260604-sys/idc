@@ -81,6 +81,7 @@
     "beta:browser-deck-save-check": "npm run build && node tools/beta-browser-smoke.mjs --deck-save-check",
     "beta:browser-graveyard-filters": "npm run build && node tools/beta-browser-smoke.mjs --graveyard-filters",
     "beta:browser-activity-filters": "npm run build && node tools/beta-browser-smoke.mjs --activity-filters",
+    "beta:browser-monster-activity": "npm run build && node tools/beta-browser-smoke.mjs --monster-activity",
     "beta:browser-seat-guard": "npm run build && node tools/beta-browser-smoke.mjs --seat-guard",
     "beta:browser-choice-identities": "npm run build && node tools/beta-browser-smoke.mjs --choice-identities",
     "beta:browser-field-keyboard": "npm run build && node tools/beta-browser-smoke.mjs --field-keyboard",

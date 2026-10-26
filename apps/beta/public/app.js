@@ -364,6 +364,19 @@ function detail() {
   panel.replaceChildren(node('h2', d.name), cardPreview(d), node('span', d.level ? `Cấp ${d.level} · ${d.attribute} · ATK ${d.attack} / DEF ${d.defense}` : d.kind === 'spell' ? 'Bài Phép' : 'Bài Bẫy', 'tag'), node('p', d.text));
   panel.append(cardSupport(d));
   if (zone === 'hand') panel.prepend(node('p', optionLabel(card.handle), 'choice-location'));
+  if (zone === 'monster' && player === view.viewerId && !view.result) {
+    const status = view.ownMonsterActivity?.find(entry => entry.cardHandle === card.handle);
+    if (status) {
+      const section = node('section', undefined, 'monster-activity'), list = node('dl');
+      section.append(node('h3', `Hành động của quái · lượt ${view.turn.number}`));
+      for (const [key, label] of [['summonedOrSetThisTurn', 'Triệu hồi / Set trong lượt'], ['positionChangedThisTurn', 'Đổi tư thế thủ công trong lượt'], ['attackDeclaredThisTurn', 'Tuyên bố tấn công trong lượt']]) {
+        const value = node('dd', status[key] ? 'Đã ghi nhận' : 'Chưa ghi nhận'); value.dataset.monsterActivity = key;
+        list.append(node('dt', label), value);
+      }
+      section.append(list, node('div', 'Đây là hành động đã ghi nhận. Các nút thao tác vẫn quyết định việc có thể làm lúc này.', 'support-note'));
+      panel.append(section);
+    }
+  }
   if (player !== view.viewerId || view.result) return;
   const canMain = view.turn.activePlayer === view.viewerId && ['main1', 'main2'].includes(view.turn.phase) && view.timing.window === 'open' && !view.decision;
   const canBattle = view.turn.activePlayer === view.viewerId && view.turn.phase === 'battle' && view.timing.window === 'open' && !view.decision;

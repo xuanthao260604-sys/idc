@@ -24,6 +24,7 @@ const decisionCards = process.argv.includes('--decision-cards');
 const fieldKeyboard = process.argv.includes('--field-keyboard');
 const choiceIdentities = process.argv.includes('--choice-identities');
 const seatGuard = process.argv.includes('--seat-guard');
+const monsterActivity = process.argv.includes('--monster-activity');
 const handSorting = handKeyboard || process.argv.includes('--hand-sorting');
 const faithBattleArg = process.argv.find(arg => /^--faith-battle=[ab]:[02]$/.test(arg));
 const faithBattle = faithBattleArg ? { defender: faithBattleArg.split('=')[1].split(':')[0], spells: Number(faithBattleArg.split(':')[1]) } : null;
@@ -63,7 +64,7 @@ function move(name, owner, zone, slot = 0, down = false) {
   c.location = { kind: zone, playerId: owner, slot }; c.position = down ? zone === 'monster' ? 'face-down-defense' : 'face-down' : 'face-up-attack';
   if (down) c.markers.setOnTurn = 2;
 }
-if (!fullDuel && !newGame && !discard && !concede && !seatGuard && !deckBuilder && !chainView && !decisionCards && !fieldKeyboard && !expanded && deckOut === null) {
+if (!fullDuel && !newGame && !discard && !concede && !seatGuard && !monsterActivity && !deckBuilder && !chainView && !decisionCards && !fieldKeyboard && !expanded && deckOut === null) {
 move('Pot of Greed', 'a', 'hand'); move('Fissure', 'a', 'hand'); move('Battle Ox', 'a', 'hand');
 move('La Jinn the Mystical Genie of the Lamp', 'a', 'monster', 0); move('Celtic Guardian', 'a', 'monster', 1);
 move('Mystical Elf', 'b', 'monster', 0); move('Hane-Hane', 'b', 'monster', 1, true); move('Man-Eater Bug', 'b', 'monster', 2, true); move('Trap Hole', 'b', 'spell-trap', 0, true); move('Fissure', 'b', 'spell-trap', 1, true);
@@ -80,6 +81,11 @@ if (fieldKeyboard) {
   move('La Jinn the Mystical Genie of the Lamp','b','monster',0);move('Hane-Hane','b','monster',2,true);move('Man-Eater Bug','b','monster',4,true);
   move('Trap Hole','b','spell-trap',2,true);
   s.turn.number=4;s.turn.activePlayer='b';s.turn.phase='main1';s.timing.window='open';s.timing.priorityPlayer='b';s.timing.consecutivePasses=0;
+}
+if (monsterActivity) {
+  move('Battle Ox','a','monster',0);move('Mystical Elf','a','monster',2,true);move('Celtic Guardian','a','hand');
+  move('Mystical Elf','b','monster',0,true);move('Battle Ox','b','monster',2);
+  s.turn.number=3;s.turn.activePlayer='a';s.turn.phase='main1';s.timing.window='open';s.timing.priorityPlayer='a';s.timing.consecutivePasses=0;
 }
 if (magicianFaith) {
   move('Magician of Faith','a','monster',0,true);
@@ -550,7 +556,48 @@ try {
   await send('Runtime.enable'); await send('Page.enable'); await send('Page.navigate', { url: `http://127.0.0.1:${server.address().port}` });
   await wait(`document.getElementById('seat-dialog')?.open`); await seat('a');
   await verifyResultSummary();
-  if (seatGuard) {
+  if (monsterActivity) {
+    const settleUI=async()=>{for(let n=0;n<12;n++){const v=await evaluate('view');if(v.timing.window==='open')return;assert.ok(v.timing.priorityPlayer);await pass(v.timing.priorityPlayer);}throw new Error('Unresolved activity test window');};
+    const saved={};for(const who of ['a','b']){await seat(who);saved[who]=await evaluate(`api('/api/deck').then(data=>JSON.stringify(data))`);}await seat('a');
+    const select=(side,slot)=>click(`document.querySelector('#${side} .zone-row:nth-child(${side==='self'?2:3}) .slot:nth-child(${slot+1}) button')`);
+    const verify=async(side,slot,expected)=>{
+      const before=await evaluate('JSON.stringify(view)');await select(side,slot);
+      if(expected===null)assert.equal(await evaluate(`document.querySelectorAll('#detail .monster-activity').length`),0);
+      else {
+        assert.deepEqual(await evaluate(`[...document.querySelectorAll('#detail [data-monster-activity]')].map(e=>e.textContent)`),expected.map(v=>v?'Đã ghi nhận':'Chưa ghi nhận'));
+        assert.equal(await evaluate(`document.querySelectorAll('#detail .monster-activity button').length`),0);
+        const flags=await evaluate('view.ownMonsterActivity.find(e=>e.cardHandle===selected.card.handle)');
+        assert.deepEqual([flags.summonedOrSetThisTurn,flags.positionChangedThisTurn,flags.attackDeclaredThisTurn],expected);
+      }
+      assert.equal(await evaluate('JSON.stringify(view)'),before);
+    };
+    await verify('self',0,[false,false,false]);await verify('self',2,[false,false,false]);await verify('opponent',0,null);
+    assert.equal(await evaluate(`document.querySelector('#detail h2').textContent`),'Bài úp');
+    await verify('opponent',2,null);await seat('b');await verify('self',2,[false,false,false]);await verify('opponent',2,null);await seat('a');
+    await hand('Celtic Guardian');assert.equal(await evaluate(`document.querySelectorAll('#detail .monster-activity').length`),0);
+    await click(textButton('#actions button','Triệu hồi'));await evaluate(`document.querySelector('#action-fields select[name="slot"]').value='1'`);await confirm();await settleUI();await seat('a');
+    await verify('self',1,[true,false,false]);
+    await select('self',0);await actionClick(textButton('#actions button','Đổi tư thế'));await settleUI();await seat('a');await verify('self',0,[false,true,false]);
+    await select('self',2);await actionClick(textButton('#actions button','Flip Summon'));await settleUI();await seat('a');await verify('self',2,[true,true,false]);
+    await actionClick(textButton('#turn-actions button','CHIẾN ĐẤU'));await settleUI();await seat('a');
+    await select('self',2);await click(textButton('#actions button','Tấn công'));await confirm();
+    await verify('self',2,[true,true,true]);await settleUI();await seat('a');await verify('self',2,[true,true,true]);
+    assert.deepEqual(await evaluate('view.players.map(p=>p.lifePoints)'),[6800,8000]);
+    await actionClick(textButton('#turn-actions button','MAIN 2'));await settleUI();await seat('a');await verify('self',2,[true,true,true]);
+    const stable=await evaluate('JSON.stringify(view)');await click(`document.getElementById('refresh')`);await wait('!busy');assert.equal(await evaluate('JSON.stringify(view)'),stable);await verify('self',2,[true,true,true]);
+    for(const [label,width,height]of [['desktop',1440,1000],['narrow',390,844]]) {
+      await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
+      await evaluate(`document.querySelector('#detail .monster-activity').scrollIntoView({block:'center'})`);
+      assert.equal(await evaluate(`document.documentElement.scrollWidth<=innerWidth+1&&document.querySelector('#detail .monster-activity').scrollWidth<=document.querySelector('#detail .monster-activity').clientWidth+1`),true);
+      if(process.argv.includes('--screenshots')) {const folder=join(projectRoot,'artifacts','monster-activity');await mkdir(folder,{recursive:true});const shot=await send('Page.captureScreenshot',{format:'png'});await writeFile(join(folder,label+'.png'),Buffer.from(shot.data,'base64'));}
+    }
+    await send('Emulation.clearDeviceMetricsOverride');await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
+    await actionClick(textButton('#turn-actions button','KẾT THÚC'));await settleUI();await seat('a');
+    await actionClick(textButton('#turn-actions button','Sang lượt đối thủ'));await settleUI();await seat('a');
+    assert.equal(await evaluate('view.turn.activePlayer'),'b');await verify('self',2,[false,false,false]);await verify('self',0,[false,false,false]);
+    for(const who of ['a','b']){await seat(who);assert.equal(await evaluate(`api('/api/deck').then(data=>JSON.stringify(data))`),saved[who]);}
+    assert.equal(errors.length,0);console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'monster-activity',ownFieldOnly:true,hiddenPrivacy:true,summonAndFlipRecorded:true,manualChangeRecorded:true,attackRecordedBeforeResolution:true,main2AndRefreshPreserve:true,nextTurnResets:true,readOnlySelection:true,responsive:true,savedDecksUnchanged:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
+  } else if (seatGuard) {
     const commands=[],previousOnMessage=ws.onmessage;
     ws.onmessage=event=>{
       const m=JSON.parse(event.data);
