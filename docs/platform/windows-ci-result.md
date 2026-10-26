@@ -1,6 +1,10 @@
 # Kết quả Windows CI
 
-> Mốc hiện hành: [giữ đúng ghế khi đọc deck](../beta/deck-read-guard.md), catalog 109; [run 40278994288](https://github.com/xuanthao260604-sys/idc/actions/runs/40278994288), commit da700d6.
+> Mốc hiện hành: [kiểm tra đủ đầu vào catalog trước khởi động](catalog-preflight.md), catalog 109; [run 40290978843](https://github.com/xuanthao260604-sys/idc/actions/runs/40290978843), commit ef7aecc.
+> Windows/Ubuntu đạt; Windows: 817/817 test, 47/47 bước, 37 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Đã đọc artifact windows-validation-40290978843-1: 13 test đường dẫn/preflight đạt, báo đúng file thiếu hoặc thư mục đặt nhầm, giữ byte cũ; kiểm tra nguồn trước npm ci đạt. Catalog/capabilities JSON giống Linux, deck và hai trận tự nhiên giữ nguyên; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [giữ đúng ghế khi đọc deck](../beta/deck-read-guard.md), catalog 109; [run 40278994288](https://github.com/xuanthao260604-sys/idc/actions/runs/40278994288), commit da700d6.
 > Windows/Ubuntu đạt; Windows: 809/809 test, 47/47 bước, 37 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Đã đọc artifact windows-validation-40278994288-1: mở/kiểm tra/tải deck sai ghế chỉ nhận lỗi; giữ nháp, undo/redo, preview, bộ lọc và bàn đấu; chọn lại ghế đọc bình thường, deck A/B giữ nguyên. Không đổi engine/dữ liệu; Windows 11 desktop chưa chạy.
 

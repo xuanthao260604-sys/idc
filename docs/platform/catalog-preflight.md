@@ -49,6 +49,18 @@ report bằng Chromium 154.0.8037.57, tổng runtimeExceptions=0. Đã đọc re
 artifacts/platform-validation/2026-10-26T08-11-53-697Z-174210/report.json.
 Đã so sánh toàn capabilities JSON với mốc trước: giống nhau. Hai trận tự
 nhiên, nhập lỗi, kiểm tra/lưu/tải deck và startup lifecycle vẫn đạt.
-Windows CI đang được kiểm tra; chưa dùng kết quả Linux để xác nhận Windows.
+Windows và Ubuntu CI [run 40290978843](https://github.com/xuanthao260604-sys/idc/actions/runs/40290978843)
+đạt trên source commit ef7aecc32e798ac337434a373365204dd28c1db5.
+Đã tải và đọc artifact windows-validation-40290978843-1:
+win32 x64, OS 10.0.26100, Node 24.19.0, npm 11.17.0, Edge 155.0.4283.62.
+Windows đạt 817/817 test trong 35 file, gồm 13 test đường dẫn/preflight
+và 53 test catalog; 47/47 bước, 37 browser report, tổng runtimeExceptions=0.
+Workflow cũng đã chạy environment:check thành công trước npm ci.
+Đã đọc environment.log/tests.log và so sánh toàn capabilities JSON với
+Linux: giống nhau, đủ 16 bundle, 109 định nghĩa, 14 hiệu ứng/11 scope;
+trạng thái nhập và runtime vẫn tách riêng. Hai trận tự nhiên vẫn đạt
+16 lượt/339 lệnh và 13 lượt/262 lệnh. Report ghi windows11DesktopVerified=false.
+Report đã đọc tại
+artifacts/ci-catalog-preflight/2026-10-26T08-15-45-994Z-8376/report.json.
 
 Windows 11 desktop chưa thử trực tiếp; chưa đóng gói hoặc bàn giao beta.
