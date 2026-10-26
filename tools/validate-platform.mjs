@@ -4,8 +4,29 @@ import { createWriteStream } from 'node:fs';
 import { platform, arch, release } from 'node:os';
 import { join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { StringDecoder } from 'node:string_decoder';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
+
+/** stdout chunks need not end at a UTF-8 character or newline boundary. */
+export function createBrowserReportCollector() {
+  const decoder = new StringDecoder('utf8'), reports = [];
+  let pending = '';
+  const consume = line => {
+    try {
+      const value = JSON.parse(line);
+      if (value && typeof value === 'object' && !Array.isArray(value) && Object.hasOwn(value, 'browserVersion')) reports.push(value);
+    } catch {} // Non-report output is still preserved in the step log.
+  };
+  return {
+    write(chunk) {
+      pending += decoder.write(chunk);
+      const lines = pending.split('\n'); pending = lines.pop();
+      for (const line of lines) consume(line);
+    },
+    finish() { pending += decoder.end(); consume(pending); pending = ''; return reports; },
+  };
+}
 
 /** Persist every transition; a failed check leaves subsequent checks explicitly unrun. */
 export async function runChecks(steps, execute, persist, environment) {
@@ -20,6 +41,16 @@ export async function runChecks(steps, execute, persist, environment) {
       step.exitCode = outcome.exitCode; step.signal = outcome.signal ?? null;
       if (outcome.browserReports?.length) step.browserReports = outcome.browserReports;
       step.status = outcome.exitCode === 0 && !outcome.signal ? 'passed' : 'failed';
+      if (step.status === 'passed' && step.expectedBrowserReports !== undefined) {
+        const reports = outcome.browserReports ?? [];
+        if (!Array.isArray(reports) || reports.length !== step.expectedBrowserReports) {
+          step.error = `Expected ${step.expectedBrowserReports} browser report(s); received ${Array.isArray(reports) ? reports.length : 'invalid evidence'}`;
+        } else if (reports.some(report => !report || report.platform !== environment.platform
+          || typeof report.browserVersion !== 'string' || !report.browserVersion.trim() || report.runtimeExceptions !== 0)) {
+          step.error = 'Browser evidence must match the host platform, name a browser version and report runtimeExceptions=0';
+        }
+        if (step.error) step.status = 'failed';
+      }
     } catch (error) {
       step.status = 'failed'; step.error = error.message;
     }
@@ -50,24 +81,20 @@ async function main() {
       ...['a:0','a:2','b:0','b:2'].map(mode=>['faith-battle-'+mode.replace(':','-'),'--faith-battle='+mode]),
       ['chain-view', '--chain-view'], ['deck-overview', '--deck-overview'], ['earthquake', '--earthquake'], ['block-attack', '--block-attack'], ['reincarnation-grave', '--reincarnation=grave'], ['reincarnation-cost', '--reincarnation=cost'], ['tribute-doomed', '--tribute-doomed'], ['hammer-shot', '--hammer-shot'], ['smashing-ground', '--smashing-ground'], ['life-points-normal', '--life-points=normal'], ['life-points-lethal', '--life-points=lethal'], ['expanded-catalog', '--expanded-catalog'], ['deck-builder', '--deck-builder'], ['setup', '--new-game'], ['discard', '--discard'],
       ['deck-out-0', '--deck-out=0'], ['deck-out-1', '--deck-out=1'], ['deck-out-2', '--deck-out=2'],
-      ['concede', '--concede'], ['full-duel', '--full-duel'], ['expanded-duel', '--expanded-duel']].map(([id, ...args]) => node('browser-' + id, 'tools/beta-browser-smoke.mjs', ...args))];
+      ['concede', '--concede'], ['full-duel', '--full-duel'], ['expanded-duel', '--expanded-duel']].map(([id, ...args]) => ({ ...node('browser-' + id, 'tools/beta-browser-smoke.mjs', ...args), expectedBrowserReports: 1 }))];
   const reportPath = join(directory, 'report.json');
   const persist = report => writeFile(reportPath, JSON.stringify(report, null, 2) + '\n');
   const execute = step => new Promise((resolveStep, reject) => {
     const log = createWriteStream(join(directory, step.id + '.log'));
-    const browserReports = []; let line = '', launchError;
+    const collector = createBrowserReportCollector(); let launchError;
     log.on('error', reject);
     const child = spawn(step.command[0], step.command.slice(1), { cwd: root, shell: false, windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'] });
     child.on('error', error => { launchError = error; });
     child.stdout.on('data', chunk => {
-      process.stdout.write(chunk); log.write(chunk); line += chunk.toString();
-      const lines = line.split('\n'); line = lines.pop();
-      for (const text of lines) {
-        try { const value = JSON.parse(text); if (value.browserVersion && value.platform) browserReports.push(value); } catch {}
-      }
+      process.stdout.write(chunk); log.write(chunk); collector.write(chunk);
     });
     child.stderr.on('data', chunk => { process.stderr.write(chunk); log.write(chunk); });
-    child.on('close', (exitCode, signal) => log.end(() => launchError ? reject(launchError) : resolveStep({ exitCode, signal, browserReports })));
+    child.on('close', (exitCode, signal) => log.end(() => launchError ? reject(launchError) : resolveStep({ exitCode, signal, browserReports: collector.finish() })));
   });
   const manifest = JSON.parse(await readFile(join(root, 'package.json'), 'utf8'));
   console.log(`Báo cáo kiểm chứng: ${reportPath}`);
