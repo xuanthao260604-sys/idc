@@ -560,6 +560,65 @@ try {
     await send('Network.enable');
     const savedA=await evaluate(`api('/api/deck').then(data=>JSON.stringify(data))`);await seat('b');
     const savedB=await evaluate(`api('/api/deck').then(data=>JSON.stringify(data))`);await seat('a');
+    const openingHands={};
+    for(const who of ['a','b']) {await seat(who);openingHands[who]=await evaluate('view.selfHand.map(c=>c.definition)');}
+    const initialDialogs=nativeDialogs.length;
+    const expectConcealed=async before=>{
+      assert.equal(await evaluate('JSON.stringify(view)'),before);
+      assert.equal(await evaluate(`document.getElementById('seat-dialog').open&&document.body.classList.contains('concealed')`),true);
+      assert.equal(await evaluate(`getComputedStyle(document.querySelector('.arena')).visibility==='hidden'&&getComputedStyle(document.querySelector('aside')).visibility==='hidden'`),true);
+    };
+    for(const from of ['a','b']) {
+      await seat(from);const to=from==='a'?'b':'a',before=await evaluate('JSON.stringify(view)');
+      await click(`document.getElementById('switch')`);
+      await send('Network.emulateNetworkConditions',{offline:true,latency:0,downloadThroughput:0,uploadThroughput:0});
+      await click(`document.querySelector('[data-seat="${to}"]')`);await wait('!busy');
+      await expectConcealed(before);
+      assert.match(await evaluate(`document.getElementById('seat-error').textContent`),/Chưa mở được góc nhìn/);
+      assert.equal(await evaluate('document.activeElement.dataset.seat'),to);
+      assert.equal(await evaluate(`document.querySelectorAll('[data-seat]:disabled').length`),0);
+      if(from==='a')for(const [label,width,height]of [['desktop',1440,1000],['narrow',390,844]]) {
+        await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
+        assert.equal(await evaluate(`(()=>{const d=document.getElementById('seat-dialog'),r=d.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1&&r.height<=innerHeight&&d.scrollWidth<=d.clientWidth+1})()`),true);
+        if(process.argv.includes('--screenshots')) {
+          const folder=join(projectRoot,'artifacts','seat-recovery');await mkdir(folder,{recursive:true});
+          const shot=await send('Page.captureScreenshot',{format:'png'});await writeFile(join(folder,label+'.png'),Buffer.from(shot.data,'base64'));
+        }
+      }
+      await send('Emulation.clearDeviceMetricsOverride');await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
+      await send('Network.emulateNetworkConditions',{offline:false,latency:0,downloadThroughput:-1,uploadThroughput:-1});
+      // The server really changes the cookie, then only the response is lost.
+      await evaluate(`(()=>{const original=window.fetch;window.fetch=async(...args)=>{if(args[0]==='/api/seat'){window.fetch=original;const response=await original(...args);await response.text();throw new Error('Mất phản hồi sau khi đổi người chơi');}return original(...args);};})()`);
+      await click(`document.querySelector('[data-seat="${to}"]')`);await wait('!busy');await expectConcealed(before);
+      assert.match(await evaluate(`document.getElementById('seat-error').textContent`),/Mất phản hồi/);
+      const serverView=await evaluate(`api('/api/view')`);assert.equal(serverView.viewerId,to);
+      assert.equal(serverView.stateVersion,JSON.parse(before).stateVersion);assert.equal(serverView.duelId,JSON.parse(before).duelId);
+      // A mismatched response must not be adopted or reveal the board.
+      await evaluate(`(()=>{const original=window.fetch;window.fetch=async(...args)=>{if(args[0]==='/api/seat'){window.fetch=original;const response=await original(...args);const data=await response.json();return new Response(JSON.stringify({...data,viewerId:${JSON.stringify(from)}}),{headers:{'Content-Type':'application/json'}});}return original(...args);};})()`);
+      await click(`document.querySelector('[data-seat="${to}"]')`);await wait('!busy');await expectConcealed(before);
+      assert.match(await evaluate(`document.getElementById('seat-error').textContent`),/không khớp người chơi/);
+      // Hold a real response to inspect the UI while waiting and prevent double selection.
+      await evaluate(`window.handoffCalls=0;(()=>{const original=window.fetch;window.fetch=async(...args)=>{if(args[0]==='/api/seat'){window.handoffCalls++;window.fetch=original;const response=await original(...args);await new Promise(resolve=>window.releaseHandoff=resolve);return response;}return original(...args);};})()`);
+      await click(`document.querySelector('[data-seat="${to}"]')`);await wait(`busy&&typeof window.releaseHandoff==='function'`);
+      await expectConcealed(before);
+      assert.equal(await evaluate(`document.getElementById('seat-dialog').getAttribute('aria-busy')`),'true');
+      assert.equal(await evaluate(`document.querySelectorAll('[data-seat]:disabled').length`),2);
+      assert.match(await evaluate(`document.getElementById('seat-progress').textContent`),new RegExp('Người chơi '+to.toUpperCase()));
+      await evaluate(`document.querySelectorAll('[data-seat]').forEach(b=>b.click())`);assert.equal(await evaluate('window.handoffCalls'),1);
+      await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});
+      await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Escape',code:'Escape',windowsVirtualKeyCode:27});await expectConcealed(before);
+      await evaluate('window.releaseHandoff();delete window.releaseHandoff');
+      await wait(`!busy&&view.viewerId===${JSON.stringify(to)}&&!document.getElementById('seat-dialog').open`);
+      assert.equal(await evaluate(`document.body.classList.contains('concealed')`),false);
+      assert.equal(await evaluate(`document.getElementById('seat-error').textContent+document.getElementById('seat-progress').textContent`),'');
+      assert.equal(await evaluate(`document.getElementById('seat-dialog').getAttribute('aria-busy')`),'false');
+      assert.deepEqual(await evaluate('view.selfHand.map(c=>c.definition)'),openingHands[to]);
+      assert.equal(await evaluate('view.stateVersion'),JSON.parse(before).stateVersion);
+      assert.deepEqual(await evaluate('view.players'),JSON.parse(before).players);
+      assert.deepEqual(await evaluate('view.activity'),JSON.parse(before).activity);
+    }
+    assert.equal(nativeDialogs.length,initialDialogs);assert.equal(commands.length,0);
+    await seat('a');
     // A stale tab must not receive the other seat's saved list, even transiently over HTTP.
     await evaluate(`window.deckReadEvidence=[];window.deckGuardFetch=window.fetch;window.fetch=async(...args)=>{const response=await window.deckGuardFetch(...args);if(String(args[0]).startsWith('/api/deck?'))window.deckReadEvidence.push({url:String(args[0]),status:response.status,body:await response.clone().json()});return response;}`);
     for(const who of ['a','b']) {
@@ -649,6 +708,7 @@ try {
     console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'seat-guard',
       bothSeatsProtected:true,concedeAndPassRejectedForWrongSeat:true,refreshKeepsOriginalHand:true,rejectionKeepsSelection:true,
       guardedDeckReads:true,wrongSeatDeckResponsesContainOnlyError:true,deckDraftHistoryAndFiltersPreserved:true,explicitReseatRestoresDeckReads:true,
+      seatFailuresInline:true,lostSeatResponseKeepsConcealed:true,mismatchedSeatViewRejected:true,seatButtonsLockedUntilResponse:true,noActionsOnSeatRetry:true,
       serverDuelUnchangedOnRejection:true,explicitReseatRecovers:true,validConcessionAttributedCorrectly:true,savedDecksUnchanged:true,
       stateEditedDuringPlay:false,runtimeExceptions:errors.length}));
   } else if (choiceIdentities) {

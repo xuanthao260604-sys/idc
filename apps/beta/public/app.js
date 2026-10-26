@@ -552,7 +552,13 @@ function syncDecisionCards() {
     card.querySelector('.decision-card-hint').textContent = selected ? '✓ Đã chọn' : 'Chọn cho quyết định';
   }
 }
-function handoff() { clearChainCard(); decisionDraft = null; handSort = 'received'; handContext = null; document.body.classList.add('concealed'); selected = null; $('seat-dialog').showModal(); }
+function handoff() {
+  if (busy || $('seat-dialog').open) return;
+  clearChainCard(); decisionDraft = null; handSort = 'received'; handContext = null;
+  document.body.classList.add('concealed'); selected = null;
+  $('seat-error').textContent = ''; $('seat-progress').textContent = '';
+  $('seat-dialog').showModal();
+}
 $('hand-sort').addEventListener('change', () => { if (busy || !view) return; handSort = $('hand-sort').value; renderHand(); syncDecisionCards(); });
 function navigateCardRow(event, container) {
   if (busy || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
@@ -570,9 +576,25 @@ for (const id of ['self', 'opponent']) $(id).addEventListener('keydown', event =
 });
 $('seat-dialog').addEventListener('cancel', e => e.preventDefault());
 for (const b of document.querySelectorAll('[data-seat]')) b.addEventListener('click', async () => {
-  if (busy) return; busy = true;
-  try { view = await api('/api/seat', { seat: b.dataset.seat }); message = `Bạn đang xem ${names[view.viewerId]}.`; selected = null; render(); $('seat-dialog').close(); document.body.classList.remove('concealed'); }
-  catch (e) { alert(e.message); } finally { busy = false; render(); }
+  if (busy) return;
+  const seat = b.dataset.seat; busy = true;
+  $('seat-error').textContent = ''; $('seat-progress').textContent = `Đang mở góc nhìn ${names[seat]}…`;
+  $('seat-dialog').setAttribute('aria-busy', 'true');
+  for (const button of document.querySelectorAll('[data-seat]')) button.disabled = true;
+  try {
+    const next = await api('/api/seat', { seat });
+    if (next?.viewerId !== seat) throw new Error('Góc nhìn nhận được không khớp người chơi đã chọn.');
+    view = next; message = `Bạn đang xem ${names[view.viewerId]}.`; selected = null;
+    render(); $('seat-dialog').close(); document.body.classList.remove('concealed');
+  } catch (e) {
+    const detail = e instanceof TypeError ? 'Không kết nối được bàn đấu.' : e.message;
+    $('seat-error').textContent = 'Chưa mở được góc nhìn. Bàn đấu vẫn được che; hãy chọn người chơi để thử lại. ' + detail;
+  }
+  finally {
+    busy = false; $('seat-progress').textContent = ''; $('seat-dialog').setAttribute('aria-busy', 'false');
+    for (const button of document.querySelectorAll('[data-seat]')) button.disabled = false;
+    render(); if ($('seat-dialog').open) b.focus();
+  }
 });
 $('switch').addEventListener('click', handoff);
 $('handoff-next').addEventListener('click', handoff);
