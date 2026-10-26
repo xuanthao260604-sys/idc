@@ -4,6 +4,9 @@ import { z } from 'zod';
 import { CardBatchSchema } from '../packages/card-data/src/schema.js';
 import { goat200508Format } from '../packages/card-data/src/formats/goat-2005-08-17.js';
 import { createRegistry } from '../packages/engine/src/registry.js';
+import { SpellReviewsSchema } from '../packages/engine/src/spell-review.js';
+import { FlipReviewsSchema } from '../packages/engine/src/flip-review.js';
+import { TrapReviewsSchema } from '../packages/engine/src/trap-review.js';
 import { projectRoot } from './project-root.js';
 
 const Bundle = z.object({ schemaVersion: z.literal(1), format: z.strictObject({ id: z.string(), revision: z.number().int() }), cards: CardBatchSchema });
@@ -35,7 +38,11 @@ export function loadRuntimeCatalog(root = projectRoot) {
   const earthquake = read('data/generated/earthquake.json');
   const magicianFaith = read('data/generated/magician-faith.json');
   const cards = combineCatalogBundles([pilot, classic10, classic10b, classic10c, classic10d, classic10e, classic10f, classic20, lpSpells, defenseSpell, hammerShot, tributeDoomed, reincarnation, blockAttack, earthquake, magicianFaith]);
-  const registry = createRegistry(cards, goat200508Format, {}, [...read('data/reviews/pilot.spell-effects.json'), ...read('data/reviews/life-point-spells.effects.json'), ...read('data/reviews/defense-spell.effects.json'), ...read('data/reviews/hammer-shot.effects.json'), ...read('data/reviews/tribute-doomed.effects.json'), ...read('data/reviews/reincarnation.effects.json'), ...read('data/reviews/block-attack.effects.json'), ...read('data/reviews/earthquake.effects.json')],
-    [...read('data/reviews/pilot.flip-effects.json'), ...read('data/reviews/magician-faith.effects.json')], read('data/reviews/pilot.trap-effects.json'));
-  return { cards, registry, importedSnapshots: { pilot: pilot.summary, classic10: classic10.summary, classic10b: classic10b.summary, classic10c: classic10c.summary, classic10d: classic10d.summary, classic10e: classic10e.summary, classic10f: classic10f.summary, classic20: classic20.summary, lpSpells: lpSpells.summary, defenseSpell: defenseSpell.summary, hammerShot: hammerShot.summary, tributeDoomed: tributeDoomed.summary, reincarnation: reincarnation.summary, blockAttack: blockAttack.summary, earthquake: earthquake.summary, magicianFaith: magicianFaith.summary } };
+  const effectReviews = {
+    spells: SpellReviewsSchema.parse([...read('data/reviews/pilot.spell-effects.json'), ...read('data/reviews/life-point-spells.effects.json'), ...read('data/reviews/defense-spell.effects.json'), ...read('data/reviews/hammer-shot.effects.json'), ...read('data/reviews/tribute-doomed.effects.json'), ...read('data/reviews/reincarnation.effects.json'), ...read('data/reviews/block-attack.effects.json'), ...read('data/reviews/earthquake.effects.json')]),
+    flips: FlipReviewsSchema.parse([...read('data/reviews/pilot.flip-effects.json'), ...read('data/reviews/magician-faith.effects.json')]),
+    traps: TrapReviewsSchema.parse(read('data/reviews/pilot.trap-effects.json')),
+  };
+  const registry = createRegistry(cards, goat200508Format, {}, effectReviews.spells, effectReviews.flips, effectReviews.traps);
+  return { cards, registry, effectReviews, importedSnapshots: { pilot: pilot.summary, classic10: classic10.summary, classic10b: classic10b.summary, classic10c: classic10c.summary, classic10d: classic10d.summary, classic10e: classic10e.summary, classic10f: classic10f.summary, classic20: classic20.summary, lpSpells: lpSpells.summary, defenseSpell: defenseSpell.summary, hammerShot: hammerShot.summary, tributeDoomed: tributeDoomed.summary, reincarnation: reincarnation.summary, blockAttack: blockAttack.summary, earthquake: earthquake.summary, magicianFaith: magicianFaith.summary } };
 }

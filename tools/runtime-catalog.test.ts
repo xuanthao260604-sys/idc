@@ -7,6 +7,8 @@ import { combineCatalogBundles, loadRuntimeCatalog } from './runtime-catalog.js'
 import { projectRoot } from './project-root.js';
 import { run } from './card-import/src/cli.js';
 import { createDeckStore } from './deck-store.js';
+import { createCapabilityReport } from './engine-capabilities.js';
+import { definitionFingerprint } from '../packages/engine/src/spell-review.js';
 const load = (p: string) => JSON.parse(readFileSync(join(projectRoot,p),'utf8'));
 const pilot=load('data/generated/pilot.json'), extra=load('data/generated/classic-10.json'), extraB=load('data/generated/classic-10b.json'), extraC=load('data/generated/classic-10c.json'), extraD=load('data/generated/classic-10d.json'), extraE=load('data/generated/classic-10e.json'), extraF=load('data/generated/classic-10f.json'), final20=load('data/generated/classic-20.json');
 describe('Additive 109-card runtime catalog', () => {
@@ -156,5 +158,74 @@ describe('Additive 109-card runtime catalog', () => {
       await expect(run('import',d,batch)).rejects.toThrow(mode==='review'?'Review conflict':'checksum mismatch');
       expect(await Promise.all(['pilot','classic-10','classic-10b','classic-10c','classic-10d','classic-10e','classic-10f','classic-20','lp-spells','defense-spell','hammer-shot','tribute-doomed','reincarnation','block-attack','earthquake','magician-faith'].map(n=>readFile(join(d,`data/generated/${n}.json`),'utf8')))).toEqual(before);
     } finally { await rm(d,{recursive:true,force:true}); }
+  });
+});
+
+describe('Capability report follows validated runtime reviews', () => {
+  it('reports all eleven active scopes and maps each effect to its validated review', () => {
+    const report = createCapabilityReport(), { registry, effectReviews } = loadRuntimeCatalog();
+    const capabilities = report.engineCapabilities;
+    expect(capabilities.supportedDefinitions).toBe(109); expect(capabilities.normalMonsters).toBe(95);
+    expect(capabilities.reviewedNormalSpells).toHaveLength(10); expect(capabilities.reviewedFlipMonsters).toHaveLength(3); expect(capabilities.reviewedNormalTraps).toHaveLength(1);
+    expect(capabilities.scope).toEqual([
+      'normal-spell-single-link-vanilla-v1', 'normal-spell-life-points-single-link-v1', 'normal-spell-highest-defense-single-link-v1',
+      'normal-spell-highest-attack-position-single-link-v1', 'normal-spell-discard-target-single-link-v1', 'normal-spell-discard-graveyard-single-link-v1',
+      'normal-spell-target-position-single-link-v1', 'normal-spell-all-position-single-link-v1',
+      'flip-single-link-v1', 'flip-own-graveyard-spell-single-link-v1', 'summon-response-trap-v1',
+    ].sort());
+    expect(capabilities.reviewedEffects).toHaveLength(14);
+    expect(capabilities.reviewedEffects.map(e => e.cardId)).toEqual([
+      ...Object.keys(registry.spellHandlers), ...Object.keys(registry.flipHandlers), ...Object.keys(registry.trapHandlers),
+    ].sort((a, b) => a.localeCompare(b, 'en')));
+    for (const entry of capabilities.reviewedEffects) {
+      const reviews = entry.kind === 'normal-spell' ? effectReviews.spells : entry.kind === 'flip-monster' ? effectReviews.flips : effectReviews.traps;
+      const review = reviews.find(r => r.cardId === entry.cardId)!;
+      expect(entry).toMatchObject({ scope: review.scope, reviewStatus: review.status, reviewRevision: review.revision, definitionSha256: review.definitionSha256 });
+      expect(entry.name).toBe(registry.cards[entry.cardId]!.name);
+      expect(entry.definitionSha256).toBe(definitionFingerprint(registry.cards[entry.cardId]!));
+    }
+    expect(capabilities.unsupportedIds).toEqual([]);
+  });
+  it('keeps imported pending/not-started/not-run statuses distinct from reviewed runtime effects', () => {
+    const report = createCapabilityReport();
+    expect(Object.keys(report.importedSnapshots)).toHaveLength(16);
+    expect(report.importedSnapshots.magicianFaith).toMatchObject({ imported: 1, verifiedData: 0, historicalReviewPending: 1, implemented: 0, testedEffects: 0, playable: 0 });
+    for (const entry of report.engineCapabilities.reviewedEffects) {
+      expect(entry.importedStatus).toEqual({ verification: 'pending', implementation: 'not-started', testing: 'not-run' });
+      expect(entry.reviewStatus).toBe('reviewed-for-supported-scope');
+    }
+    expect(createCapabilityReport()).toEqual(report);
+    expect(report.engineCapabilities.limitations).toContain('no general mixed Chain/negation');
+  });
+  it('does not claim an imported effect is supported when its enabling review is absent', async () => {
+    const directory = await mkdtemp(join(tmpdir(), 'YGO capability missing review '));
+    try {
+      await cp(join(projectRoot, 'data'), join(directory, 'data'), { recursive: true });
+      const path = join(directory, 'data/generated/magician-faith.json'), before = await readFile(path, 'utf8');
+      await writeFile(join(directory, 'data/reviews/magician-faith.effects.json'), '[]\n');
+      const report = createCapabilityReport(directory);
+      expect(report.engineCapabilities.supportedDefinitions).toBe(108);
+      expect(report.engineCapabilities.reviewedEffects).toHaveLength(13);
+      expect(report.engineCapabilities.reviewedEffects.some(e => e.cardId === 'official:31560081')).toBe(false);
+      expect(report.engineCapabilities.scope).not.toContain('flip-own-graveyard-spell-single-link-v1');
+      expect(report.engineCapabilities.unsupportedIds).toEqual(['official:31560081']);
+      expect(report.importedSnapshots.magicianFaith.imported).toBe(1);
+      expect(await readFile(path, 'utf8')).toBe(before);
+    } finally { await rm(directory, { recursive: true, force: true }); }
+  });
+  it.each(['scope', 'definition'] as const)('rejects a conflicting %s without repairing or rewriting report inputs', async mode => {
+    const directory = await mkdtemp(join(tmpdir(), 'YGO capability conflict '));
+    try {
+      await cp(join(projectRoot, 'data'), join(directory, 'data'), { recursive: true });
+      const relative = mode === 'scope' ? 'data/reviews/magician-faith.effects.json' : 'data/generated/magician-faith.json';
+      const path = join(directory, relative), value = JSON.parse(await readFile(path, 'utf8'));
+      if (mode === 'scope') value[0].scope = 'normal-spell-target-position-single-link-v1';
+      else value.cards[0].text += ' altered test fixture';
+      await writeFile(path, JSON.stringify(value, null, 2) + '\n');
+      const paths = ['data/generated/pilot.json', 'data/generated/magician-faith.json', 'data/reviews/magician-faith.effects.json'].map(p => join(directory, p));
+      const before = await Promise.all(paths.map(p => readFile(p, 'utf8')));
+      expect(() => createCapabilityReport(directory)).toThrow(mode === 'scope' ? /scope|Invalid/ : /FLIP review conflict/);
+      expect(await Promise.all(paths.map(p => readFile(p, 'utf8')))).toEqual(before);
+    } finally { await rm(directory, { recursive: true, force: true }); }
   });
 });
