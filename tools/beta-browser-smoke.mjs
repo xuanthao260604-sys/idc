@@ -238,12 +238,31 @@ try {
     try { await click(`document.getElementById('deck-close')`);await wait(`!document.getElementById('deck-dialog').open`); }
     finally { dialogAnswer=previousAnswer; }
   }
+  async function verifyCardSupport(scope, card, toggle = false) {
+    const selector=scope+' .card-support';
+    assert.equal(await evaluate(`document.querySelectorAll(${JSON.stringify(selector)}).length`),card?1:0);
+    if(!card)return;
+    const expected=[card.verification==='verified'?'Đã kiểm tra':'Còn chờ đối chiếu',
+      {'current-reference':'Tham chiếu hiện hành','historical-reviewed':'Đã đối chiếu lịch sử',custom:'Bài tự tạo'}[card.textBasis]||'Chưa ghi loại văn bản',
+      r.spellHandlers[card.id]?'Hiệu ứng Phép trong phạm vi thử nghiệm':r.flipHandlers[card.id]?'Hiệu ứng FLIP trong phạm vi thử nghiệm':r.trapHandlers[card.id]?'Hiệu ứng Bẫy trong phạm vi thử nghiệm':'Quái thường theo luật hiện có'];
+    assert.deepEqual(await evaluate(`[...document.querySelectorAll(${JSON.stringify(selector+' dd')})].map(e=>e.textContent)`),expected);
+    assert.equal(await evaluate(`document.querySelectorAll(${JSON.stringify(selector+' button')}).length`),0);
+    if(toggle) {
+      const before=await evaluate('JSON.stringify(view)'),selectedBefore=await evaluate('JSON.stringify(selected)');
+      await click(`document.querySelector(${JSON.stringify(selector+' summary')})`);
+      assert.equal(await evaluate(`document.querySelector(${JSON.stringify(selector)}).open`),true);
+      await click(`document.querySelector(${JSON.stringify(selector+' summary')})`);
+      assert.equal(await evaluate(`document.querySelector(${JSON.stringify(selector)}).open`),false);
+      assert.equal(await evaluate('JSON.stringify(view)'),before);assert.equal(await evaluate('JSON.stringify(selected)'),selectedBefore);
+    }
+  }
   async function inspectChain(role, expectedName, escape = false, responsive = false) {
     const before=await evaluate('JSON.stringify(view)');
     await click(`document.querySelector('#chain-links [data-chain-card="${role}"]')`);
     await wait(`document.getElementById('chain-card-dialog').open`);
     assert.equal(await evaluate(`document.querySelectorAll('#chain-card-detail button').length`),0);
     assert.equal(await evaluate(`document.querySelector('#chain-card-detail h2').textContent`),expectedName??'Bài úp');
+    await verifyCardSupport('#chain-card-detail',Object.values(r.cards).find(c=>c.name===expectedName));
     if(expectedName){const d=Object.values(r.cards).find(c=>c.name===expectedName);assert.equal(await evaluate(`document.querySelector('#chain-card-detail p').textContent`),d.text);}
     else{assert.equal(await evaluate(`document.querySelectorAll('#chain-card-detail .card-preview').length`),0);assert.equal(await evaluate(`document.getElementById('chain-card-detail').textContent.includes('Man-Eater Bug')`),false);}
     if(responsive){
@@ -275,6 +294,7 @@ try {
   }
   async function preview(kind, name) {
     const scope = `#action-fields [data-preview="${kind}"]`;
+    await verifyCardSupport(scope,Object.values(r.cards).find(c=>c.name===name));
     assert.equal(await evaluate(`document.querySelector(${JSON.stringify(scope+' h2')})?.textContent`),name || 'Bài úp');
     assert.equal(await evaluate(`document.querySelectorAll(${JSON.stringify(scope+' button')}).length`),0);
     if (name) {
@@ -292,6 +312,7 @@ try {
     const card = await evaluate(`visibleCard(${JSON.stringify(handle)})`);
     await click(`document.querySelectorAll('#decision-form [data-inspect]')[${index}]`);
     await wait(`document.getElementById('decision-card-dialog').open`);
+    await verifyCardSupport('#decision-card-detail',card.visibility==='known'?r.cards[card.definition.id]:null,true);
     assert.equal(await evaluate(`document.querySelectorAll('#decision-card-detail button').length`),0);
     if (card.visibility === 'known') {
       assert.equal(await evaluate(`document.querySelector('#decision-card-detail h2').textContent`),r.cards[card.definition.id].name);
@@ -344,6 +365,7 @@ try {
       const definition = Object.values(r.cards).find(c=>c.name===expectedNames[i]);
       assert.equal(await evaluate(`document.querySelector('#graveyard-detail h2').textContent`), definition.name);
       assert.equal(await evaluate(`document.querySelector('#graveyard-detail p').textContent`), definition.text);
+      await verifyCardSupport('#graveyard-detail',definition);
       assert.equal(await evaluate(`document.querySelectorAll('#graveyard-detail button').length`), 0);
     }
     await click(`document.getElementById('close-graveyard')`);
@@ -774,6 +796,7 @@ try {
     assert.equal(await evaluate(`document.querySelector('#decision-form input:checked').value`),handle);
     assert.equal(await evaluate(`document.querySelector('#detail h2').textContent`),'Bài úp');
     assert.equal(await evaluate(`document.querySelector('#detail .card-preview')`),null);
+    await verifyCardSupport('#detail',null);
     assert.equal(await evaluate(`${hidden}.querySelector('.card-name')`),null);
     assert.equal(await evaluate('JSON.stringify(view)'),before);
     // The radio list and board must stay in sync in both directions.
@@ -1717,6 +1740,8 @@ try {
     assert.match(await evaluate(`document.getElementById('catalog-count').textContent`), /109/);
     await click(`document.getElementById('deck-builder')`); await wait(`!busy && document.getElementById('deck-dialog').open`);
     const added = Object.values(r.cards);
+    const beforeCatalogRead=await evaluate('JSON.stringify(view)'),beforeDeckRead=await evaluate('JSON.stringify(deckDraft.cards)');
+    const statusCounts={verified:0,pending:0};
     for (const card of added) {
       await click(`document.querySelector('#deck-catalog [data-card-id="${card.id}"] .deck-name')`);
       assert.equal(await evaluate(`document.querySelector('#deck-preview h2').textContent`), card.name);
@@ -1724,6 +1749,8 @@ try {
       assert.equal(await evaluate(`document.querySelectorAll('#deck-preview .card-star').length`), card.level || 0);
       assert.equal(await evaluate(`document.querySelector('#deck-preview .card-name').textContent`), card.name);
       assert.equal(await evaluate(`document.querySelector('#deck-preview .card-description').textContent`), card.text);
+      await verifyCardSupport('#deck-preview',card,['Blue-Eyes White Dragon','Magician of Faith','Pot of Greed','Trap Hole'].includes(card.name));
+      statusCounts[card.verification]++;
       const kind=card.kind==='spell'?'spell':card.kind==='trap'?'trap':'monster';
       assert.equal(await evaluate(`document.querySelector('#deck-preview .card-preview').classList.contains(${JSON.stringify(kind)})`),true);
       if(card.level) {
@@ -1742,12 +1769,27 @@ try {
         await send('Emulation.clearDeviceMetricsOverride');
       }
     }
+    assert.deepEqual(statusCounts,{verified:95,pending:14});
+    assert.equal(await evaluate('JSON.stringify(view)'),beforeCatalogRead);assert.equal(await evaluate('JSON.stringify(deckDraft.cards)'),beforeDeckRead);
+    const faith=Object.values(r.cards).find(c=>c.name==='Magician of Faith');
+    await click(`document.querySelector('#deck-catalog [data-card-id="${faith.id}"] .deck-name')`);
+    await click(`document.querySelector('#deck-preview .card-support summary')`);
+    for(const [label,width,height]of [['desktop',1440,1000],['narrow',390,844]]) {
+      await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
+      await evaluate(`document.querySelector('#deck-preview .card-support').scrollIntoView({block:'center'})`);
+      assert.equal(await evaluate(`(()=>{const d=document.getElementById('deck-dialog'),r=d.getBoundingClientRect(),s=document.querySelector('#deck-preview .card-support');return r.left>=0&&r.right<=innerWidth+1&&d.scrollWidth<=d.clientWidth+1&&s.scrollWidth<=s.clientWidth+1&&r.height<=innerHeight})()`),true);
+      if(process.argv.includes('--screenshots')) {
+        const folder=join(projectRoot,'artifacts','card-support');await mkdir(folder,{recursive:true});
+        const shot=await send('Page.captureScreenshot',{format:'png'});await writeFile(join(folder,label+'.png'),Buffer.from(shot.data,'base64'));
+      }
+    }
+    await send('Emulation.clearDeviceMetricsOverride');await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
     await closeDeck();
     await seat('b');
     assert.equal(await evaluate(`document.getElementById('opponent').textContent.includes('Celtic Guardian')`),false);
     await seat('a');
     const beforeTribute = await evaluate('JSON.stringify(view)');
-    await hand('Curse of Dragon'); await click(textButton('#actions button','Úp quái'));
+    await hand('Curse of Dragon');await verifyCardSupport('#detail',Object.values(r.cards).find(c=>c.name==='Curse of Dragon'),true); await click(textButton('#actions button','Úp quái'));
     assert.match(await evaluate(`document.getElementById('tribute-progress').textContent`),/0\/1/);
     await click(`document.querySelectorAll('#action-fields input[type="checkbox"]')[1]`);
     assert.equal(await evaluate(`document.querySelector('[data-preview="tributes"] h2').textContent`),'Celtic Guardian');
@@ -1792,7 +1834,7 @@ try {
     assert.equal(await evaluate('view.players[1].lifePoints'), 7200);
     assert.equal(await evaluate(`view.players[1].graveyard.some(c=>catalog.get(c.definition.id).name==='Armored Lizard')`), true);
     assert.equal(errors.length, 0);
-    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'expanded-catalog', catalog: 109, reviewedCardPreviews: 109, dataDrivenLevels: true, tributePreviews: true, oneTributeSetCancelPreservesState: true, deselectionUpdatesPreview: true, ownSetPrivacy: true, tributeSummon: 'Gaia The Fierce Knight', battleTarget: 'Armored Lizard', battleDamage: 800, fixtureOnlyAtSetup: true, runtimeExceptions: errors.length }));
+    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'expanded-catalog', catalog: 109, cardSupportStatuses:109, dataVerified:95, dataPending:14, separateRuntimeStatus:true, statusReadOnly:true, reviewedCardPreviews: 109, dataDrivenLevels: true, tributePreviews: true, oneTributeSetCancelPreservesState: true, deselectionUpdatesPreview: true, ownSetPrivacy: true, tributeSummon: 'Gaia The Fierce Knight', battleTarget: 'Armored Lizard', battleDamage: 800, fixtureOnlyAtSetup: true, runtimeExceptions: errors.length }));
   } else if (deckOverview) {
     const openDeck=async()=>{await click(`document.getElementById('deck-builder')`);await wait(`!busy && document.getElementById('deck-dialog').open`);};
     const change=(id,direction)=>click(`document.querySelector('#deck-catalog [data-card-id="${id}"] [data-change="${direction}"]')`);

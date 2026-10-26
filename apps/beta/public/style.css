@@ -81,3 +81,5 @@
 .result-panel{margin:12px 0;padding:14px;border:1px solid var(--gold);border-radius:8px;background:#15271f;overflow-wrap:anywhere}.result-panel h2{margin:0;color:var(--gold)}.result-panel table{width:100%;table-layout:fixed;border-collapse:collapse;font-size:12px}.result-panel th,.result-panel td{padding:9px 5px;border-bottom:1px solid var(--line);text-align:center;overflow-wrap:anywhere}.result-panel th:first-child{text-align:left;width:40%}.result-panel p{font-size:12px}.result-panel button{max-width:100%}
 
 #new-game-form .dialog-buttons{flex-wrap:wrap}#new-game-error{overflow-wrap:anywhere}
+
+.card-support{margin-top:14px;border-top:1px solid var(--line);padding-top:10px;font:12px/1.6 Segoe UI,sans-serif;overflow-wrap:anywhere}.card-support summary{cursor:pointer;color:var(--gold)}.card-support dl{margin:10px 0}.card-support dt{color:var(--muted);margin-top:7px}.card-support dd{margin:0;color:#ede8da}.support-note{color:var(--muted);font-size:11px}

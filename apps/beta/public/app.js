@@ -337,10 +337,24 @@ function chooseAction(title, base, { slots = false, tributes = false, targets = 
   };
   $('action-dialog').showModal();
 }
+function cardSupport(d) {
+  const section = node('details', undefined, 'card-support');
+  section.append(node('summary', 'Trạng thái dữ liệu và hoạt động'));
+  const statuses = [
+    ['data', 'Đối chiếu dữ liệu', { verified: 'Đã kiểm tra', pending: 'Còn chờ đối chiếu' }[d.support?.dataVerification] || 'Chưa có thông tin'],
+    ['text', 'Loại văn bản', { 'current-reference': 'Tham chiếu hiện hành', 'historical-reviewed': 'Đã đối chiếu lịch sử', custom: 'Bài tự tạo' }[d.support?.textBasis] || 'Chưa ghi loại văn bản'],
+    ['runtime', 'Khả năng đã mở', { 'normal-monster': 'Quái thường theo luật hiện có', spell: 'Hiệu ứng Phép trong phạm vi thử nghiệm', flip: 'Hiệu ứng FLIP trong phạm vi thử nghiệm', trap: 'Hiệu ứng Bẫy trong phạm vi thử nghiệm' }[d.support?.runtime] || 'Chưa có thông tin'],
+  ];
+  const list = node('dl');
+  for (const [key, label, value] of statuses) { const description = node('dd', value); description.dataset.support = key; list.append(node('dt', label), description); }
+  section.append(list, node('div', 'Dữ liệu và khả năng trong game được theo dõi riêng. Chưa hỗ trợ mọi tương tác trong Yu-Gi-Oh!', 'support-note'));
+  return section;
+}
 function cardInfo(panel, card) {
   const d = def(card);
   if (!d) { panel.replaceChildren(node('h2', 'Bài úp'), node('p', 'Danh tính lá bài được giữ kín.')); return; }
   panel.replaceChildren(node('h2', d.name), cardPreview(d), node('span', d.level ? `Cấp ${d.level} · ${d.attribute} · ATK ${d.attack} / DEF ${d.defense}` : d.kind === 'spell' ? 'Bài Phép' : 'Bài Bẫy', 'tag'), node('p', d.text));
+  panel.append(cardSupport(d));
 }
 function detail() {
   const panel = $('detail'), actions = $('actions'); actions.replaceChildren();
@@ -348,6 +362,7 @@ function detail() {
   const { card, zone, player, slot } = selected, d = def(card);
   if (!d) { panel.replaceChildren(node('h2', 'Bài úp'), node('div', '◇', 'large-symbol'), node('p', 'Danh tính lá bài được giữ kín.')); return; }
   panel.replaceChildren(node('h2', d.name), cardPreview(d), node('span', d.level ? `Cấp ${d.level} · ${d.attribute} · ATK ${d.attack} / DEF ${d.defense}` : d.kind === 'spell' ? 'Bài Phép' : 'Bài Bẫy', 'tag'), node('p', d.text));
+  panel.append(cardSupport(d));
   if (zone === 'hand') panel.prepend(node('p', optionLabel(card.handle), 'choice-location'));
   if (player !== view.viewerId || view.result) return;
   const canMain = view.turn.activePlayer === view.viewerId && ['main1', 'main2'].includes(view.turn.phase) && view.timing.window === 'open' && !view.decision;

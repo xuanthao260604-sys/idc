@@ -21,6 +21,8 @@ export function createBetaServer(registry: Registry, publicRoot = resolve(projec
   let game = testInitialState ? createCommandAdapter(registry, testInitialState) : newGame();
   const seats = new Map<string, 'a' | 'b'>();
   const catalog = Object.values(registry.cards).map(c => ({ id: c.id, revision: c.revision, name: c.name, text: c.text, kind: c.kind, maxCopies: Math.min(registry.rules.deck.combinedCopyLimit, c.legality.maxCopies!),
+    support: { dataVerification: c.verification, textBasis: c.textBasis ?? null,
+      runtime: registry.spellHandlers[c.id] ? 'spell' : registry.flipHandlers[c.id] ? 'flip' : registry.trapHandlers[c.id] ? 'trap' : 'normal-monster' },
     ...('level' in c ? { level: c.level, attack: c.attack, defense: c.defense, attribute: c.attribute, race: c.race } : { subtype: c.subtype }) }));
   const assets: Record<string, [string, string]> = { '/': ['index.html', 'text/html'], '/app.js': ['app.js', 'text/javascript'], '/style.css': ['style.css', 'text/css'],
     '/assets/card-frames/monster-and-back.png': ['assets/card-frames/monster-and-back.png', 'image/png'],

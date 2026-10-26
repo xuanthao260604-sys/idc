@@ -22,6 +22,25 @@ describe('Loopback beta HTTP boundary', () => {
       expect(Buffer.from(await asset.arrayBuffer()).equals(readFileSync(new URL(`../apps/beta/public/assets/card-frames/${name}.png`,import.meta.url)))).toBe(true);
     }
   });
+  it('separates imported verification and text basis from runtime support without changing card snapshots', async () => {
+    const before = JSON.stringify(registry.cards);
+    const { cards } = await (await fetch(base + '/api/catalog')).json();
+    const counts: Record<string, number> = {};
+    for (const card of cards) {
+      const definition = registry.cards[card.id]!;
+      expect(Object.keys(card.support).sort()).toEqual(['dataVerification', 'runtime', 'textBasis']);
+      expect(card.support.dataVerification).toBe(definition.verification);
+      expect(card.support.textBasis).toBe(definition.textBasis ?? null);
+      counts[card.support.runtime] = (counts[card.support.runtime] ?? 0) + 1;
+      if (definition.verification === 'pending') {
+        expect(card.support.runtime).not.toBe('normal-monster');
+        expect(definition.implementation).toBe('not-started'); expect(definition.testing).toBe('not-run');
+      }
+    }
+    expect(counts).toEqual({ 'normal-monster': 15, spell: 2, flip: 2, trap: 1 });
+    expect(cards.find((c: {name:string}) => c.name === 'Pot of Greed').support).toEqual({ dataVerification: 'pending', textBasis: 'current-reference', runtime: 'spell' });
+    expect(JSON.stringify(registry.cards)).toBe(before);
+  });
   it('requires seat selection then sends only the selected PlayerView', async () => {
     expect((await fetch(base + '/api/view')).status).toBe(401);
     const response = await post('/api/seat', { seat: 'b' });
