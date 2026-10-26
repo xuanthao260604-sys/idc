@@ -1,6 +1,10 @@
 # Kết quả Windows CI
 
-> Mốc hiện hành: [yêu cầu đủ bằng chứng trình duyệt](browser-evidence.md), catalog 109; [run 40318785650](https://github.com/xuanthao260604-sys/idc/actions/runs/40318785650), commit ef36ddb.
+> Mốc hiện hành: [thử lại chuyển người chơi khi mất kết nối](../beta/seat-recovery.md), catalog 109; [run 40322720859](https://github.com/xuanthao260604-sys/idc/actions/runs/40322720859), commit 86ea1e5.
+> Windows/Ubuntu đạt; Windows: 829/829 test, 47/47 bước, 37 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Đã đọc artifact windows-validation-40322720859-1: lỗi/mất phản hồi/sai viewer khi chọn ghế giữ màn che, nút khóa trong lúc chờ, thử lại mở đúng tay bài và không gửi lệnh đấu; guard deck/lệnh, dữ liệu và hai trận tự nhiên vẫn đạt. Windows 11 desktop chưa chạy.
+
+> Mốc trước: [yêu cầu đủ bằng chứng trình duyệt](browser-evidence.md), catalog 109; [run 40318785650](https://github.com/xuanthao260604-sys/idc/actions/runs/40318785650), commit ef36ddb.
 > Windows/Ubuntu đạt; Windows: 829/829 test, 47/47 bước, 37 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Đã đọc artifact windows-validation-40318785650-1: 37 bước yêu cầu report, mỗi bước đúng một report win32/version hợp lệ/lỗi runtime=0; exit 0 thiếu/sai bằng chứng bị từ chối trong test. Catalog, dữ liệu/deck và hai trận tự nhiên giữ nguyên; Windows 11 desktop chưa chạy.
 

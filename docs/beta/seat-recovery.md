@@ -50,7 +50,20 @@ tổng runtimeExceptions=0. Đã đọc report
 artifacts/platform-validation/2026-10-26T12-24-01-969Z-195357/report.json:
 đủ bằng chứng từng bước, ca seat-guard có năm cờ chuyển ghế mới; các kiểm
 tra bảo toàn deck và hai trận tự nhiên vẫn đạt. Capabilities JSON giống
-mốc trước. Windows CI đang được kiểm tra; chưa dùng Linux xác nhận Windows.
+mốc trước.
+Windows và Ubuntu CI [run 40322720859](https://github.com/xuanthao260604-sys/idc/actions/runs/40322720859)
+đạt trên source commit 86ea1e51e18905dc703fcf4434b61c2e73339124.
+Đã tải và đọc artifact windows-validation-40322720859-1:
+win32 x64, OS 10.0.26100, Node 24.19.0, npm 11.17.0, Edge 155.0.4283.62.
+Windows đạt 829/829 test trong 35 file, 47/47 bước, 37 browser report,
+tổng runtimeExceptions=0; mỗi bước trình duyệt có đúng một report khớp host.
+Ca seat-guard có đủ năm cờ mới: seatFailuresInline,
+lostSeatResponseKeepsConcealed, mismatchedSeatViewRejected,
+seatButtonsLockedUntilResponse và noActionsOnSeatRetry. Các cờ guard
+đọc deck, giữ bản nháp và savedDecksUnchanged vẫn đạt. Capabilities JSON
+giống Linux; hai trận tự nhiên giữ 16 lượt/339 lệnh và 13 lượt/262 lệnh.
+Report ghi windows11DesktopVerified=false. Report đã đọc tại
+artifacts/ci-seat-recovery/2026-10-26T12-28-17-144Z-6612/report.json.
 
 Catalog giữ 109 loại; trạng thái nhập và khả năng runtime vẫn tách riêng.
 Windows 11 desktop chưa thử trực tiếp; chưa đóng gói hoặc bàn giao beta.
