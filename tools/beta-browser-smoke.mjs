@@ -560,6 +560,52 @@ try {
     await send('Network.enable');
     const savedA=await evaluate(`api('/api/deck').then(data=>JSON.stringify(data))`);await seat('b');
     const savedB=await evaluate(`api('/api/deck').then(data=>JSON.stringify(data))`);await seat('a');
+    // A stale tab must not receive the other seat's saved list, even transiently over HTTP.
+    await evaluate(`window.deckReadEvidence=[];window.deckGuardFetch=window.fetch;window.fetch=async(...args)=>{const response=await window.deckGuardFetch(...args);if(String(args[0]).startsWith('/api/deck?'))window.deckReadEvidence.push({url:String(args[0]),status:response.status,body:await response.clone().json()});return response;}`);
+    for(const who of ['a','b']) {
+      await seat(who);
+      const other=who==='a'?'b':'a',unchanged=await evaluate('JSON.stringify(view)');
+      await click(`document.getElementById('deck-builder')`);await wait(`!busy&&document.getElementById('deck-dialog').open`);
+      const id=await evaluate(`[...catalog.values()].find(c=>deckDraft.cards.filter(id=>id===c.id).length<c.maxCopies).id`);
+      const add=`document.querySelector('#deck-catalog [data-card-id="${id}"] [data-change="add"]')`;
+      await click(add);await click(`document.querySelector('#deck-catalog [data-card-id="${id}"] [data-change="remove"]')`);await click(`document.getElementById('deck-undo')`);
+      await click(`document.querySelector('#deck-catalog [data-card-id="${id}"] .deck-name')`);
+      await evaluate(`document.getElementById('deck-search').value=${JSON.stringify('Battle')};document.getElementById('deck-search').dispatchEvent(new Event('input'));document.getElementById('deck-sort').value='name';document.getElementById('deck-sort').dispatchEvent(new Event('change'))`);
+      const draft=await evaluate('JSON.stringify(deckDraft)'),preview=await evaluate(`document.getElementById('deck-preview').textContent`);
+      assert.equal(await evaluate('deckDraft.undo.length>0&&deckDraft.redo.length>0'),true);
+      await evaluate(`api('/api/seat',{seat:${JSON.stringify(other)}})`);
+      for(const button of ['deck-check-saved','deck-load-saved']) {
+        await click(`document.getElementById('${button}')`);await wait('!busy');
+        assert.match(await evaluate(`document.getElementById('deck-error').textContent`),/Người chơi đã thay đổi/);
+        assert.equal(await evaluate('JSON.stringify(deckDraft)'),draft);
+        assert.equal(await evaluate(`document.getElementById('deck-preview').textContent`),preview);
+        assert.equal(await evaluate(`document.getElementById('deck-search').value`),'Battle');
+        assert.equal(await evaluate(`document.getElementById('deck-sort').value`),'name');
+        assert.equal(await evaluate('JSON.stringify(view)'),unchanged);
+      }
+      dialogAnswer=true;await click(`document.getElementById('deck-close')`);
+      await click(`document.getElementById('deck-builder')`);await wait('!busy');
+      assert.equal(await evaluate(`document.getElementById('deck-dialog').open`),false);
+      assert.equal(await evaluate('deckDraft'),null);
+      assert.match(await evaluate(`document.getElementById('status').textContent`),/Người chơi đã thay đổi/);
+      assert.equal(await evaluate('JSON.stringify(view)'),unchanged);
+      // Choosing the seat explicitly restores all three guarded read flows.
+      await seat(other);await seat(who);
+      await click(`document.getElementById('deck-builder')`);await wait(`!busy&&document.getElementById('deck-dialog').open`);
+      for(const button of ['deck-check-saved','deck-load-saved']) {await click(`document.getElementById('${button}')`);await wait('!busy');}
+      assert.equal(await evaluate('deckDraft.seat'),who);
+      assert.equal(await evaluate('deckHasChanges()'),false);
+      await click(`document.getElementById('deck-close')`);
+    }
+    const reads=await evaluate('window.deckReadEvidence');
+    assert.equal(reads.filter(r=>r.status===409).length,6);
+    assert.equal(reads.filter(r=>r.status===200).length,8);
+    for(const response of reads) {
+      if(response.status===409)assert.deepEqual(Object.keys(response.body),['error']);
+      else {assert.equal(response.status,200);assert.equal(response.body.seat,new URL(response.url,'http://localhost').searchParams.get('seat'));}
+    }
+    await evaluate('window.fetch=window.deckGuardFetch;delete window.deckGuardFetch');
+    await seat('a');
     const handContents=()=>evaluate(`[...document.querySelectorAll('#hand .card')].map(c=>({handle:c.dataset.cardHandle,label:c.getAttribute('aria-label')}))`);
     await click(`document.querySelector('#hand .card')`);
     const before=await evaluate('JSON.stringify(view)'),handA=await handContents(),chosen=await evaluate('selected.card.handle');
@@ -602,6 +648,7 @@ try {
     assert.equal(await evaluate(`api('/api/deck').then(data=>JSON.stringify(data))`),savedB);assert.equal(errors.length,0);
     console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'seat-guard',
       bothSeatsProtected:true,concedeAndPassRejectedForWrongSeat:true,refreshKeepsOriginalHand:true,rejectionKeepsSelection:true,
+      guardedDeckReads:true,wrongSeatDeckResponsesContainOnlyError:true,deckDraftHistoryAndFiltersPreserved:true,explicitReseatRestoresDeckReads:true,
       serverDuelUnchangedOnRejection:true,explicitReseatRecovers:true,validConcessionAttributedCorrectly:true,savedDecksUnchanged:true,
       stateEditedDuringPlay:false,runtimeExceptions:errors.length}));
   } else if (choiceIdentities) {

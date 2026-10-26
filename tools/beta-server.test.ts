@@ -140,7 +140,7 @@ describe('Loopback beta HTTP boundary', () => {
     expect((await fetch(base+'/api/deck')).status).toBe(401);
     expect((await post('/api/deck', {})).status).toBe(401);
     const seat=await post('/api/seat',{seat:'a'}), cookie=seat.headers.get('set-cookie')!.split(';')[0]!;
-    const own=await (await fetch(base+'/api/deck?seat=b',{headers:{Cookie:cookie}})).json();
+    const own=await (await fetch(base+'/api/deck',{headers:{Cookie:cookie}})).json();
     expect(own.seat).toBe('a');
     const saved=await post('/api/deck',{seat:'b',revision:own.revision,cards:own.cards},cookie);
     expect(saved.status).toBe(409);
@@ -245,4 +245,35 @@ describe('Loopback beta HTTP boundary', () => {
     expect(await (await fetch(base + '/api/view', { headers: { Cookie: guardCookie } })).json()).toEqual(before);
   });
 
+  it.each(['a', 'b'] as const)('guards saved-deck reads for %s before returning any deck fields', async actor => {
+    const beforeView = await guardSeat(actor);
+    const get = (path: string) => fetch(base + path, { headers: { Cookie: guardCookie } });
+    const before = await (await get('/api/deck')).json();
+    const correct = await get('/api/deck?seat=' + actor); expect(correct.status).toBe(200);
+    expect(await correct.json()).toEqual(before);
+    const wrong = await get('/api/deck?seat=' + (actor === 'a' ? 'b' : 'a'));
+    expect(wrong.status).toBe(409); expect(Object.keys(await wrong.json())).toEqual(['error']);
+    expect(await (await get('/api/deck')).json()).toEqual(before);
+    expect(await (await get('/api/view')).json()).toEqual(beforeView);
+  });
+  it('rejects malformed deck read guards without returning deck data or changing the saved deck', async () => {
+    const beforeView = await guardSeat('a');
+    const get = (path: string) => fetch(base + path, { headers: { Cookie: guardCookie } });
+    const a = await (await get('/api/deck')).json();
+    for (const value of ['', 'spectator', 'null', '%5B%22a%22%5D']) {
+      const response = await get('/api/deck?seat=' + value);
+      expect(response.status).toBe(400); expect(Object.keys(await response.json())).toEqual(['error']);
+    }
+    expect(await (await get('/api/deck')).json()).toEqual(a);
+    expect(await (await get('/api/view')).json()).toEqual(beforeView);
+    await guardSeat('b');
+    const b = await (await get('/api/deck')).json();
+    expect(await (await get('/api/deck?seat=b')).json()).toEqual(b);
+  });
+  it('requires a selected cookie seat even when a deck read guard is supplied', async () => {
+    for (const query of ['a', 'b', 'spectator']) {
+      const response = await fetch(base + '/api/deck?seat=' + query);
+      expect(response.status).toBe(401); expect(Object.keys(await response.json())).toEqual(['error']);
+    }
+  });
 });

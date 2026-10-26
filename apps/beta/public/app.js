@@ -779,7 +779,7 @@ function renderDeck() {
 $('deck-builder').addEventListener('click', async () => {
   if (busy || !view) return; busy = true; render();
   try {
-    const saved = await api('/api/deck'); if (saved.seat !== view.viewerId) throw new Error('Người chơi đã thay đổi. Hãy chọn lại góc nhìn trước khi sửa deck.'); deckDraft = { ...saved, cards: [...saved.cards], savedCards: [...saved.cards], undo: [], redo: [] };
+    const saved = await api('/api/deck?seat=' + view.viewerId); if (saved.seat !== view.viewerId) throw new Error('Người chơi đã thay đổi. Hãy chọn lại góc nhìn trước khi sửa deck.'); deckDraft = { ...saved, cards: [...saved.cards], savedCards: [...saved.cards], undo: [], redo: [] };
     $('deck-search').value = ''; $('deck-kind').value = 'all'; $('deck-presence').value = 'all'; $('deck-sort').value = 'catalog'; $('deck-error').textContent = '';
     $('deck-preview').replaceChildren(node('p', 'Chọn tên lá bài để xem nội dung và chỉ số.'));
     $('deck-dialog').showModal();
@@ -820,7 +820,7 @@ $('deck-check-saved').addEventListener('click', async () => {
   if (busy || !deckDraft) return;
   busy = true; renderDeck();
   try {
-    const saved = await api('/api/deck');
+    const saved = await api('/api/deck?seat=' + deckDraft.seat);
     if (saved.seat !== deckDraft.seat || saved.seat !== view.viewerId) throw new Error('Người chơi đã thay đổi. Hãy chọn lại góc nhìn trước khi kiểm tra deck.');
     if (JSON.stringify(saved.cards) === JSON.stringify(deckDraft.cards)) {
       deckDraft.revision = saved.revision; deckDraft.savedCards = [...saved.cards];
@@ -835,7 +835,7 @@ $('deck-load-saved').addEventListener('click', async () => {
   if (busy || !deckDraft) return;
   busy = true; renderDeck();
   try {
-    const saved = await api('/api/deck');
+    const saved = await api('/api/deck?seat=' + deckDraft.seat);
     if (saved.seat !== deckDraft.seat || saved.seat !== view.viewerId) throw new Error('Người chơi đã thay đổi. Hãy chọn lại góc nhìn trước khi tải deck.');
     editDeck(saved.cards);
     deckDraft.revision = saved.revision; deckDraft.savedCards = [...saved.cards];

@@ -55,6 +55,11 @@ export function createBetaServer(registry: Registry, publicRoot = resolve(projec
       }
       if (req.method === 'GET' && url.pathname === '/api/deck') {
         if (!actor) { json(401, { error: 'Hãy chọn người chơi.' }); return; }
+        const expectedSeat = url.searchParams.get('seat');
+        if (expectedSeat !== null) {
+          if (!['a', 'b'].includes(expectedSeat)) { json(400, { error: 'Người chơi không hợp lệ.' }); return; }
+          if (expectedSeat !== actor) { json(409, { error: 'Người chơi đã thay đổi. Hãy chọn lại góc nhìn trước khi đọc deck.' }); return; }
+        }
         json(200, { ...deckStore.get(actor), defaultCards: deckStore.defaults }); return;
       }
       if (req.method !== 'POST' || !['/api/seat', '/api/command', '/api/reset', '/api/deck', '/api/deck/import', '/api/deck/export'].includes(url.pathname)) { json(404, { error: 'Không tìm thấy.' }); return; }
