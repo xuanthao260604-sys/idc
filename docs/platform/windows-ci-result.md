@@ -1,6 +1,10 @@
 # Kết quả Windows CI
 
-> Mốc hiện hành: [kiểm tra đủ đầu vào catalog trước khởi động](catalog-preflight.md), catalog 109; [run 40290978843](https://github.com/xuanthao260604-sys/idc/actions/runs/40290978843), commit ef7aecc.
+> Mốc hiện hành: [yêu cầu đủ bằng chứng trình duyệt](browser-evidence.md), catalog 109; [run 40318785650](https://github.com/xuanthao260604-sys/idc/actions/runs/40318785650), commit ef36ddb.
+> Windows/Ubuntu đạt; Windows: 829/829 test, 47/47 bước, 37 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Đã đọc artifact windows-validation-40318785650-1: 37 bước yêu cầu report, mỗi bước đúng một report win32/version hợp lệ/lỗi runtime=0; exit 0 thiếu/sai bằng chứng bị từ chối trong test. Catalog, dữ liệu/deck và hai trận tự nhiên giữ nguyên; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [kiểm tra đủ đầu vào catalog trước khởi động](catalog-preflight.md), catalog 109; [run 40290978843](https://github.com/xuanthao260604-sys/idc/actions/runs/40290978843), commit ef7aecc.
 > Windows/Ubuntu đạt; Windows: 817/817 test, 47/47 bước, 37 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Đã đọc artifact windows-validation-40290978843-1: 13 test đường dẫn/preflight đạt, báo đúng file thiếu hoặc thư mục đặt nhầm, giữ byte cũ; kiểm tra nguồn trước npm ci đạt. Catalog/capabilities JSON giống Linux, deck và hai trận tự nhiên giữ nguyên; Windows 11 desktop chưa chạy.
 

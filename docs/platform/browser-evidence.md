@@ -53,4 +53,16 @@ artifacts/platform-validation/2026-10-26T11-52-58-669Z-187684/report.json:
 đủ 37 bước có expectedBrowserReports=1, mỗi bước đúng một report khớp
 platform và không có lỗi runtime. Capabilities JSON giống mốc trước;
 hai trận tự nhiên, dữ liệu nhập và deck cũ vẫn đạt hồi quy.
-Windows CI đang được kiểm tra; chưa dùng kết quả Linux để xác nhận Windows.
+Windows và Ubuntu CI [run 40318785650](https://github.com/xuanthao260604-sys/idc/actions/runs/40318785650)
+đạt trên source commit ef36ddbdcb1123cae553e3fb314d432f52906878.
+Đã tải và đọc artifact windows-validation-40318785650-1:
+win32 x64, OS 10.0.26100, Node 24.19.0, npm 11.17.0, Edge 155.0.4283.62.
+Windows đạt 829/829 test trong 35 file, gồm 16 test báo cáo; 47/47 bước.
+Đã kiểm đủ 37 bước có expectedBrowserReports=1: mỗi bước đúng một report,
+platform=win32 khớp host, browserVersion không rỗng và runtimeExceptions=0.
+Tổng 37 browser report, không có bằng chứng dư từ bước khác. Capabilities
+JSON giống Linux: 109 định nghĩa trong 16 bundle, 14 hiệu ứng/11 scope,
+trạng thái nhập và runtime vẫn riêng. Hai trận tự nhiên giữ kết quả
+16 lượt/339 lệnh và 13 lượt/262 lệnh; hồi quy dữ liệu/deck vẫn đạt.
+Report ghi windows11DesktopVerified=false. Report đã đọc tại
+artifacts/ci-browser-evidence/2026-10-26T11-57-06-328Z-8680/report.json.

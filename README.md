@@ -14,14 +14,16 @@ Hinotama, Dian Keto the Cure Master, Smashing Ground, Hammer Shot, Tribute to Th
 Đã kiểm chứng [hai Phép thay đổi LP](docs/engine/life-point-spells.md) trên Linux và Windows CI; còn ca Windows 11 desktop chưa chạy.
 Không coi việc cấu hình CI Windows hoặc chạy Linux là đã kiểm chứng Windows.
 
-817/817 test đạt trên Linux và Windows CI cho catalog 109.
-47/47 bước validation và 37 browser run đạt bằng Edge trên Windows CI; chi tiết tại [kiểm tra đủ đầu vào catalog trước khởi động](docs/platform/catalog-preflight.md).
+829/829 test đạt trên Linux và Windows CI cho catalog 109.
+47/47 bước validation và 37 browser run đạt bằng Edge trên Windows CI; chi tiết tại [yêu cầu đủ bằng chứng trình duyệt](docs/platform/browser-evidence.md).
 Browser regression tính riêng: xây/lưu deck, 5 hiệu ứng, xem Mộ, tạo trận A/B/ngẫu nhiên, bỏ bài,
 Pot với deck 0/1/2 lá, đầu hàng/hủy và tạo trận sau kết thúc, trận tự nhiên đầy đủ.
 Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không phải game hoàn tất mọi luật Yu-Gi-Oh!.
 
 Đã nhận bộ khung người dùng: [mặt sau chung](docs/beta/card-frames.md) được dùng cho bài úp của cả ba loại.
 Đã ghép [ba khung mặt trước](docs/beta/card-fronts.md), hàng sao và chỉ số lấy từ dữ liệu; ảnh minh họa từng lá sẽ bổ sung sau.
+
+Đã siết [bằng chứng kiểm thử trình duyệt](docs/platform/browser-evidence.md): exit 0 vẫn bị từ chối nếu thiếu/trùng report, sai nền tảng, thiếu phiên bản hoặc có lỗi runtime; đọc đủ UTF-8 và dòng cuối không newline.
 
 Đã sửa [kiểm tra đầu vào trước khởi động](docs/platform/catalog-preflight.md): dùng chung danh sách 16 bundle/11 file review với bộ nạp, phát hiện sáu file bị bỏ sót và từ chối thư mục đặt nhầm chỗ file; không tự sửa dữ liệu.
 
