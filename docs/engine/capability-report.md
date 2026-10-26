@@ -51,9 +51,25 @@ Thêm 5 test vào runtime-catalog.test.ts (48 → 53):
 - Trong bản sao tạm, làm sai scope review hoặc đổi text khiến lệch SHA:
   báo cáo bị từ chối, các file đầu vào còn nguyên byte sau lỗi.
 
-Typecheck, build/lệnh báo cáo và 53 test catalog riêng đã đạt trên Linux.
-Đang chạy bộ tổng hợp Linux; Windows CI chưa xác minh source mới.
-Giữ 47 bước validation và 37 browser report, không thêm browser invocation.
+Typecheck, build/lệnh báo cáo, 53 test catalog riêng và bộ tổng hợp đã đạt
+Linux/Chromium 154.0.8037.57: 805/805 test trong 35 file, 47/47 bước và
+37 browser report, tổng runtimeExceptions=0. Report tại
+artifacts/platform-validation/2026-10-26T02-52-34-182Z-150776/report.json.
+Đã đọc capabilities.log: 16 importedSnapshots, 109 supportedDefinitions,
+14 reviewedEffects và 11 scope. Các hồi quy dữ liệu/deck và hai trận tự
+nhiên vẫn đạt. Không thêm browser invocation.
+Windows và Ubuntu CI [run 40261376014](https://github.com/xuanthao260604-sys/idc/actions/runs/40261376014)
+đạt trên source commit 5530d78dc8e85b5eaec560e6bd57099716036134.
+Đã tải và đọc artifact windows-validation-40261376014-1:
+win32 x64, OS 10.0.26100, Node 24.19.0, npm 11.17.0, Edge 155.0.4283.62.
+Windows đạt 805/805 test trong 35 file, gồm 53 test runtime-catalog;
+47/47 bước và 37 browser report, tổng runtimeExceptions=0.
+Đã parse capabilities.log và so sánh toàn JSON với Linux: giống nhau,
+đủ 16 bundle nhập, 109 định nghĩa, 95 quái thường, 14 record và 11 scope.
+Ba record Block Attack/Earthquake/Faith có đúng scope và importedStatus
+pending/not-started/not-run. Report ghi windows11DesktopVerified=false.
+Report đã đọc tại
+artifacts/ci-capability-report/2026-10-26T02-54-39-773Z-1452/report.json.
 
 Không đổi catalog 109, facts/effect/review, artwork, starter hay deck cũ.
 Windows 11 desktop chưa thử trực tiếp; chưa đóng gói hoặc bàn giao beta.

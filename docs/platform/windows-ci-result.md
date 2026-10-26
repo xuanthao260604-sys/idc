@@ -1,6 +1,10 @@
 # Kết quả Windows CI
 
-> Mốc hiện hành: [trạng thái dữ liệu và hoạt động của từng lá](../beta/card-support.md), catalog 109; [run 40256826758](https://github.com/xuanthao260604-sys/idc/actions/runs/40256826758), commit 85cc626.
+> Mốc hiện hành: [báo cáo khả năng từ review đang hoạt động](../engine/capability-report.md), catalog 109; [run 40261376014](https://github.com/xuanthao260604-sys/idc/actions/runs/40261376014), commit 5530d78.
+> Windows/Ubuntu đạt; Windows: 805/805 test, 47/47 bước, 37 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Đã đọc artifact windows-validation-40261376014-1: capabilities JSON giống Linux, đủ 14 effect record/11 scope, giữ nhập/runtime riêng; thiếu hoặc lệch review không bị báo nhầm hỗ trợ. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [trạng thái dữ liệu và hoạt động của từng lá](../beta/card-support.md), catalog 109; [run 40256826758](https://github.com/xuanthao260604-sys/idc/actions/runs/40256826758), commit 85cc626.
 > Windows/Ubuntu đạt; Windows: 800/800 test, 47/47 bước, 37 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Đã đọc artifact windows-validation-40256826758-1: trạng thái 109 lá tách 95 verified/14 pending với runtime, chỉ đọc và giữ kín lá úp. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
 

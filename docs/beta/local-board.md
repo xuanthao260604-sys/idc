@@ -1,4 +1,6 @@
-> Mốc hiện tại: [trạng thái dữ liệu và hoạt động của từng lá](card-support.md), catalog 109 không đổi; tách đối chiếu dữ liệu, loại văn bản và khả năng đã mở, không hiện cho lá úp. Linux và Windows CI đạt 800 test, 47 bước, 37 browser report. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
+> Mốc hiện tại: [báo cáo khả năng từ review đang hoạt động](../engine/capability-report.md), catalog 109 không đổi; đủ 14 effect record và 11 scope, nhập/runtime riêng, không suy hỗ trợ từ dữ liệu chưa có review. Linux và Windows CI đạt 805 test, 47 bước, 37 browser report. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [trạng thái dữ liệu và hoạt động của từng lá](card-support.md), catalog 109 không đổi; tách đối chiếu dữ liệu, loại văn bản và khả năng đã mở, không hiện cho lá úp. Linux và Windows CI đạt 800 test, 47 bước, 37 browser report. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
 
 > Mốc trước: [kiểm tra ghế khi gửi lệnh/đọc bàn đấu](seat-guard.md), catalog 109 không đổi; lệnh/GET có guard ghế, cookie đổi không làm đầu hàng nhầm hoặc nhận tay bài ghế khác. Linux và Windows CI đạt 799 test, 47 bước, 37 browser report. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
 
