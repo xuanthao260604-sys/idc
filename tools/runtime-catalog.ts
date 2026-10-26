@@ -8,6 +8,7 @@ import { SpellReviewsSchema } from '../packages/engine/src/spell-review.js';
 import { FlipReviewsSchema } from '../packages/engine/src/flip-review.js';
 import { TrapReviewsSchema } from '../packages/engine/src/trap-review.js';
 import { projectRoot } from './project-root.js';
+import inputs from './runtime-catalog-inputs.json' with { type: 'json' };
 
 const Bundle = z.object({ schemaVersion: z.literal(1), format: z.strictObject({ id: z.string(), revision: z.number().int() }), cards: CardBatchSchema });
 /** Additive snapshots: never rewrite old definitions or silently choose a duplicate winner. */
@@ -22,27 +23,13 @@ export function combineCatalogBundles(inputs: readonly unknown[]) {
 }
 export function loadRuntimeCatalog(root = projectRoot) {
   const read = (path: string) => JSON.parse(readFileSync(join(root, path), 'utf8'));
-  const pilot = read('data/generated/pilot.json'), classic10 = read('data/generated/classic-10.json');
-  const classic10b = read('data/generated/classic-10b.json');
-  const classic10c = read('data/generated/classic-10c.json');
-  const classic10d = read('data/generated/classic-10d.json');
-  const classic10e = read('data/generated/classic-10e.json');
-  const classic10f = read('data/generated/classic-10f.json');
-  const classic20 = read('data/generated/classic-20.json');
-  const lpSpells = read('data/generated/lp-spells.json');
-  const defenseSpell = read('data/generated/defense-spell.json');
-  const hammerShot = read('data/generated/hammer-shot.json');
-  const tributeDoomed = read('data/generated/tribute-doomed.json');
-  const reincarnation = read('data/generated/reincarnation.json');
-  const blockAttack = read('data/generated/block-attack.json');
-  const earthquake = read('data/generated/earthquake.json');
-  const magicianFaith = read('data/generated/magician-faith.json');
-  const cards = combineCatalogBundles([pilot, classic10, classic10b, classic10c, classic10d, classic10e, classic10f, classic20, lpSpells, defenseSpell, hammerShot, tributeDoomed, reincarnation, blockAttack, earthquake, magicianFaith]);
+  const bundles = Object.entries(inputs.bundles).map(([key, path]) => ({ key, bundle: read(path) }));
+  const cards = combineCatalogBundles(bundles.map(({ bundle }) => bundle));
   const effectReviews = {
-    spells: SpellReviewsSchema.parse([...read('data/reviews/pilot.spell-effects.json'), ...read('data/reviews/life-point-spells.effects.json'), ...read('data/reviews/defense-spell.effects.json'), ...read('data/reviews/hammer-shot.effects.json'), ...read('data/reviews/tribute-doomed.effects.json'), ...read('data/reviews/reincarnation.effects.json'), ...read('data/reviews/block-attack.effects.json'), ...read('data/reviews/earthquake.effects.json')]),
-    flips: FlipReviewsSchema.parse([...read('data/reviews/pilot.flip-effects.json'), ...read('data/reviews/magician-faith.effects.json')]),
-    traps: TrapReviewsSchema.parse(read('data/reviews/pilot.trap-effects.json')),
+    spells: SpellReviewsSchema.parse(inputs.reviews.spells.flatMap(read)),
+    flips: FlipReviewsSchema.parse(inputs.reviews.flips.flatMap(read)),
+    traps: TrapReviewsSchema.parse(inputs.reviews.traps.flatMap(read)),
   };
   const registry = createRegistry(cards, goat200508Format, {}, effectReviews.spells, effectReviews.flips, effectReviews.traps);
-  return { cards, registry, effectReviews, importedSnapshots: { pilot: pilot.summary, classic10: classic10.summary, classic10b: classic10b.summary, classic10c: classic10c.summary, classic10d: classic10d.summary, classic10e: classic10e.summary, classic10f: classic10f.summary, classic20: classic20.summary, lpSpells: lpSpells.summary, defenseSpell: defenseSpell.summary, hammerShot: hammerShot.summary, tributeDoomed: tributeDoomed.summary, reincarnation: reincarnation.summary, blockAttack: blockAttack.summary, earthquake: earthquake.summary, magicianFaith: magicianFaith.summary } };
+  return { cards, registry, effectReviews, importedSnapshots: Object.fromEntries(bundles.map(({ key, bundle }) => [key, bundle.summary])) };
 }

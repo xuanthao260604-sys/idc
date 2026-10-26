@@ -1,0 +1,39 @@
+{
+  "bundles": {
+    "pilot": "data/generated/pilot.json",
+    "classic10": "data/generated/classic-10.json",
+    "classic10b": "data/generated/classic-10b.json",
+    "classic10c": "data/generated/classic-10c.json",
+    "classic10d": "data/generated/classic-10d.json",
+    "classic10e": "data/generated/classic-10e.json",
+    "classic10f": "data/generated/classic-10f.json",
+    "classic20": "data/generated/classic-20.json",
+    "lpSpells": "data/generated/lp-spells.json",
+    "defenseSpell": "data/generated/defense-spell.json",
+    "hammerShot": "data/generated/hammer-shot.json",
+    "tributeDoomed": "data/generated/tribute-doomed.json",
+    "reincarnation": "data/generated/reincarnation.json",
+    "blockAttack": "data/generated/block-attack.json",
+    "earthquake": "data/generated/earthquake.json",
+    "magicianFaith": "data/generated/magician-faith.json"
+  },
+  "reviews": {
+    "spells": [
+      "data/reviews/pilot.spell-effects.json",
+      "data/reviews/life-point-spells.effects.json",
+      "data/reviews/defense-spell.effects.json",
+      "data/reviews/hammer-shot.effects.json",
+      "data/reviews/tribute-doomed.effects.json",
+      "data/reviews/reincarnation.effects.json",
+      "data/reviews/block-attack.effects.json",
+      "data/reviews/earthquake.effects.json"
+    ],
+    "flips": [
+      "data/reviews/pilot.flip-effects.json",
+      "data/reviews/magician-faith.effects.json"
+    ],
+    "traps": [
+      "data/reviews/pilot.trap-effects.json"
+    ]
+  }
+}
