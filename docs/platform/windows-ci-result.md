@@ -1,6 +1,10 @@
 # Kết quả Windows CI
 
-> Mốc hiện hành: [hành động trong lượt của quái mình](../beta/monster-activity.md), catalog 109; [run 40325600572](https://github.com/xuanthao260604-sys/idc/actions/runs/40325600572), commit 272267c.
+> Mốc hiện hành: [Ookazi — nhập dữ liệu, chưa mở runtime](../data/ookazi.md), nhập 110/runtime 109; [run 40331712686](https://github.com/xuanthao260604-sys/idc/actions/runs/40331712686), commit 3eb63fc.
+> Windows/Ubuntu đạt; Windows: 848/848 test, 48/48 bước, 38 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Đã đọc artifact windows-validation-40331712686-1: kiểm đủ 17 bundle/110 lá/95 verified/15 pending; bảy test nhập Ookazi đạt, lỗi giữ byte của toàn bộ dữ liệu/deck fixture. Capabilities JSON giống Linux, runtime vẫn 109 lá/14 hiệu ứng từ 16 bundle; Ookazi chưa có binding. Windows 11 desktop chưa chạy.
+
+> Mốc trước: [hành động trong lượt của quái mình](../beta/monster-activity.md), catalog 109; [run 40325600572](https://github.com/xuanthao260604-sys/idc/actions/runs/40325600572), commit 272267c.
 > Windows/Ubuntu đạt; Windows: 841/841 test, 48/48 bước, 38 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Đã đọc artifact windows-validation-40325600572-1: chỉ ghi nhận quái của viewer, giữ kín đối thủ, đúng summon/Flip/đổi tư thế/tuyên bố tấn công; giữ qua Main2/refresh, đặt lại lượt mới. Dữ liệu/deck và hai trận tự nhiên giữ nguyên; Windows 11 desktop chưa chạy.
 

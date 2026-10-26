@@ -73,7 +73,19 @@ Typecheck, build/import và bảy test riêng đã đạt Linux. Bộ tổng h�
 artifacts/platform-validation/2026-10-26T13-29-44-842Z-210986/report.json:
 cards:check có đủ 17 bundle/110 lá/95 verified/15 pending; toàn capabilities
 JSON giống mốc runtime trước. Các ca bảo toàn deck và hai trận tự nhiên
-vẫn đạt. Windows CI đang được kiểm tra; chưa dùng Linux xác nhận Windows.
+vẫn đạt.
+Windows và Ubuntu CI [run 40331712686](https://github.com/xuanthao260604-sys/idc/actions/runs/40331712686)
+đạt trên source commit 3eb63fc2a3cdb3e3f88778c6bcff37800a9b8dbf.
+Đã tải và đọc artifact windows-validation-40331712686-1:
+win32 x64, OS 10.0.26100, Node 24.19.0, npm 11.17.0, Edge 155.0.4283.62.
+Windows đạt 848/848 test trong 36 file, gồm bảy test nhập Ookazi;
+48/48 bước và 38 browser report, tổng runtimeExceptions=0, đủ bằng chứng
+từng bước. Đã parse data-and-build.log: 17 bundle, 110 lá, 95 verified,
+15 pending; summary nhập implemented/testedEffects/playable vẫn 0.
+Toàn capabilities JSON giống Linux: runtime 109 lá, 14 hiệu ứng và 16
+snapshot cấp cho runtime. Report ghi windows11DesktopVerified=false.
+Report đã đọc tại
+artifacts/ci-ookazi-import/2026-10-26T13-34-37-161Z-8316/report.json.
 Không thêm browser invocation hoặc hiệu ứng mới. Bước sau phải review
 scope và kiểm thử runtime riêng trước khi mở Ookazi trong game.
 

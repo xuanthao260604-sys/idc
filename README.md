@@ -14,14 +14,16 @@ Hinotama, Dian Keto the Cure Master, Smashing Ground, Hammer Shot, Tribute to Th
 Đã kiểm chứng [hai Phép thay đổi LP](docs/engine/life-point-spells.md) trên Linux và Windows CI; còn ca Windows 11 desktop chưa chạy.
 Không coi việc cấu hình CI Windows hoặc chạy Linux là đã kiểm chứng Windows.
 
-841/841 test đạt trên Linux và Windows CI cho catalog 109.
-48/48 bước validation và 38 browser run đạt bằng Edge trên Windows CI; chi tiết tại [hành động trong lượt của quái mình](docs/beta/monster-activity.md).
+848/848 test đạt trên Linux và Windows CI; dữ liệu nhập 110 lá, catalog runtime vẫn 109.
+48/48 bước validation và 38 browser run đạt bằng Edge trên Windows CI; chi tiết tại [Ookazi — nhập dữ liệu, chưa mở runtime](docs/data/ookazi.md).
 Browser regression tính riêng: xây/lưu deck, 5 hiệu ứng, xem Mộ, tạo trận A/B/ngẫu nhiên, bỏ bài,
 Pot với deck 0/1/2 lá, đầu hàng/hủy và tạo trận sau kết thúc, trận tự nhiên đầy đủ.
 Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không phải game hoàn tất mọi luật Yu-Gi-Oh!.
 
 Đã nhận bộ khung người dùng: [mặt sau chung](docs/beta/card-frames.md) được dùng cho bài úp của cả ba loại.
 Đã ghép [ba khung mặt trước](docs/beta/card-fronts.md), hàng sao và chỉ số lấy từ dữ liệu; ảnh minh họa từng lá sẽ bổ sung sau.
+
+Đã nhập riêng [dữ liệu Ookazi](docs/data/ookazi.md), đối chiếu Konami/SDK-023 và giữ snapshot nguồn; văn bản lịch sử còn pending, chưa có binding hoặc kiểm thử hiệu ứng, chưa dùng được trong deck đấu.
 
 Đã thêm [bảng hành động trong lượt của quái mình](docs/beta/monster-activity.md): ghi nhận triệu hồi/Set, đổi tư thế thủ công và tuyên bố tấn công từ engine; chỉ đọc cho quái trên sân của viewer, không thay quyền thao tác.
 
@@ -134,10 +136,10 @@ Người dùng chưa cần nhận beta hoặc tự kiểm thử ở thời đi�
 ## Phạm vi và dữ liệu
 
 [Pipeline nhập](docs/data/pipeline.md) bảo vệ dữ liệu cũ khi nhập lại lỗi, giữ raw/evidence/overlay
-riêng. Hiện có 16 bundle với 109 định nghĩa: 95 verified data và 14 pending rà soát văn bản lịch sử.
+riêng. Hiện có 17 bundle với 110 định nghĩa: 95 verified data và 15 pending rà soát văn bản lịch sử.
 Các số implemented/tested/playable=0 trong snapshot nhập là metadata lần nhập;
-runtime mở riêng 95 quái thường và 14 lá hiệu ứng qua review/kiểm thử trong scope giới hạn.
-Reimport lỗi giữ cả 16 bundle; deck cũ tải nguyên byte. `cards:import` nhập offline,
+runtime mở riêng 95 quái thường và 14 lá hiệu ứng qua review/kiểm thử trong scope giới hạn từ 16 bundle;
+batch Ookazi chưa cấp cho runtime. Reimport Ookazi lỗi giữ cả 17 bundle và deck A/B nguyên byte. `cards:import` nhập offline,
 `cards:fetch` chỉ dùng khi chủ động refresh nguồn.
 
 Xem [Phép](docs/engine/reviewed-spells.md), [FLIP](docs/engine/reviewed-flips.md),
