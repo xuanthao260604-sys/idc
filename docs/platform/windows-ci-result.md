@@ -1,6 +1,10 @@
 # Kết quả Windows CI
 
-> Mốc hiện hành: [báo cáo khả năng từ review đang hoạt động](../engine/capability-report.md), catalog 109; [run 40261376014](https://github.com/xuanthao260604-sys/idc/actions/runs/40261376014), commit 5530d78.
+> Mốc hiện hành: [giữ đúng ghế khi đọc deck](../beta/deck-read-guard.md), catalog 109; [run 40278994288](https://github.com/xuanthao260604-sys/idc/actions/runs/40278994288), commit da700d6.
+> Windows/Ubuntu đạt; Windows: 809/809 test, 47/47 bước, 37 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Đã đọc artifact windows-validation-40278994288-1: mở/kiểm tra/tải deck sai ghế chỉ nhận lỗi; giữ nháp, undo/redo, preview, bộ lọc và bàn đấu; chọn lại ghế đọc bình thường, deck A/B giữ nguyên. Không đổi engine/dữ liệu; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [báo cáo khả năng từ review đang hoạt động](../engine/capability-report.md), catalog 109; [run 40261376014](https://github.com/xuanthao260604-sys/idc/actions/runs/40261376014), commit 5530d78.
 > Windows/Ubuntu đạt; Windows: 805/805 test, 47/47 bước, 37 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Đã đọc artifact windows-validation-40261376014-1: capabilities JSON giống Linux, đủ 14 effect record/11 scope, giữ nhập/runtime riêng; thiếu hoặc lệch review không bị báo nhầm hỗ trợ. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
 

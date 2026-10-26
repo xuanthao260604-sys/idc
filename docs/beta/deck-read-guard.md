@@ -50,7 +50,19 @@ với Chromium 154.0.8037.57, tổng runtimeExceptions=0. Đã đọc report t�
 artifacts/platform-validation/2026-10-26T06-14-48-788Z-163754/report.json;
 ca seat-guard có đủ bốn cờ kiểm chứng đọc deck mới. Các hồi quy nhập lỗi,
 deck cũ, mất phản hồi/xung đột và hai trận tự nhiên vẫn đạt.
-Windows CI đang được kiểm tra; chưa dùng kết quả Linux để xác nhận Windows.
+Windows và Ubuntu CI [run 40278994288](https://github.com/xuanthao260604-sys/idc/actions/runs/40278994288)
+đạt trên source commit da700d60e77781b5e71e0a51038462999aebc61f.
+Đã tải và đọc artifact windows-validation-40278994288-1:
+win32 x64, OS 10.0.26100, Node 24.19.0, npm 11.17.0, Edge 155.0.4283.62.
+Windows đạt 809/809 test trong 35 file, gồm 33 test HTTP; 47/47 bước,
+37 browser report, tổng runtimeExceptions=0. Ca seat-guard xác nhận
+đọc deck có guard, phản hồi sai ghế chỉ có error, giữ nháp/lịch sử/bộ lọc
+và chọn lại ghế khôi phục đọc deck. Deck A/B trước/sau không thay đổi;
+các ca mất phản hồi/xung đột và hai trận tự nhiên vẫn đạt. Đã so sánh
+toàn capabilities JSON với Linux: giống nhau, đủ 16 bundle, 109 định nghĩa,
+14 hiệu ứng/11 scope, trạng thái nhập và runtime vẫn tách riêng.
+Report ghi windows11DesktopVerified=false. Report đã đọc tại
+artifacts/ci-deck-read-guard/2026-10-26T06-18-23-928Z-8036/report.json.
 
 Catalog vẫn 109 loại; snapshot nhập và khả năng runtime tách riêng.
 Windows 11 desktop chưa thử trực tiếp; chưa đóng gói hoặc bàn giao beta.
