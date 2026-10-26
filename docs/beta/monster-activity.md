@@ -53,7 +53,20 @@ report, tổng runtimeExceptions=0. Đã đọc report
 artifacts/platform-validation/2026-10-26T12-46-42-972Z-202974/report.json:
 đủ bằng chứng mỗi bước, ca monster-activity có đủ cờ kiểm chứng; các ca
 riêng tư, dữ liệu/deck cũ và hai trận tự nhiên vẫn đạt. Capabilities JSON
-giống mốc trước. Windows CI đang được kiểm tra; chưa dùng Linux xác nhận Windows.
+giống mốc trước.
+Windows và Ubuntu CI [run 40325600572](https://github.com/xuanthao260604-sys/idc/actions/runs/40325600572)
+đạt trên source commit 272267c2690a6a4f088510a19164c856744d202e.
+Đã tải và đọc artifact windows-validation-40325600572-1:
+win32 x64, OS 10.0.26100, Node 24.19.0, npm 11.17.0, Edge 155.0.4283.62.
+Windows đạt 841/841 test trong 35 file, gồm 26 test quota/activity;
+48/48 bước và 38 browser report, tổng runtimeExceptions=0, mỗi bước có
+đúng một report khớp host. Ca monster-activity xác nhận ownFieldOnly,
+hiddenPrivacy, summonAndFlipRecorded, manualChangeRecorded,
+attackRecordedBeforeResolution, main2AndRefreshPreserve, nextTurnResets,
+readOnlySelection, responsive và savedDecksUnchanged. Capabilities JSON
+giống Linux; hai trận tự nhiên giữ 16 lượt/339 lệnh và 13 lượt/262 lệnh.
+Report ghi windows11DesktopVerified=false. Report đã đọc tại
+artifacts/ci-monster-activity/2026-10-26T12-50-40-921Z-6864/report.json.
 
 Catalog vẫn 109 loại; nhập dữ liệu và hiệu ứng đã review vẫn tách riêng.
 Windows 11 desktop chưa thử trực tiếp; chưa đóng gói hoặc bàn giao beta.

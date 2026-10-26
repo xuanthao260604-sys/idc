@@ -14,14 +14,16 @@ Hinotama, Dian Keto the Cure Master, Smashing Ground, Hammer Shot, Tribute to Th
 Đã kiểm chứng [hai Phép thay đổi LP](docs/engine/life-point-spells.md) trên Linux và Windows CI; còn ca Windows 11 desktop chưa chạy.
 Không coi việc cấu hình CI Windows hoặc chạy Linux là đã kiểm chứng Windows.
 
-829/829 test đạt trên Linux và Windows CI cho catalog 109.
-47/47 bước validation và 37 browser run đạt bằng Edge trên Windows CI; chi tiết tại [thử lại chuyển người chơi khi mất kết nối](docs/beta/seat-recovery.md).
+841/841 test đạt trên Linux và Windows CI cho catalog 109.
+48/48 bước validation và 38 browser run đạt bằng Edge trên Windows CI; chi tiết tại [hành động trong lượt của quái mình](docs/beta/monster-activity.md).
 Browser regression tính riêng: xây/lưu deck, 5 hiệu ứng, xem Mộ, tạo trận A/B/ngẫu nhiên, bỏ bài,
 Pot với deck 0/1/2 lá, đầu hàng/hủy và tạo trận sau kết thúc, trận tự nhiên đầy đủ.
 Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không phải game hoàn tất mọi luật Yu-Gi-Oh!.
 
 Đã nhận bộ khung người dùng: [mặt sau chung](docs/beta/card-frames.md) được dùng cho bài úp của cả ba loại.
 Đã ghép [ba khung mặt trước](docs/beta/card-fronts.md), hàng sao và chỉ số lấy từ dữ liệu; ảnh minh họa từng lá sẽ bổ sung sau.
+
+Đã thêm [bảng hành động trong lượt của quái mình](docs/beta/monster-activity.md): ghi nhận triệu hồi/Set, đổi tư thế thủ công và tuyên bố tấn công từ engine; chỉ đọc cho quái trên sân của viewer, không thay quyền thao tác.
 
 Đã thêm [phục hồi chuyển người chơi khi lỗi mạng](docs/beta/seat-recovery.md): thông báo ngay trong màn chọn A/B, khóa nút khi chờ và giữ bàn đấu che kín đến khi mở đúng góc nhìn; thử lại không gửi lệnh đấu.
 
@@ -151,7 +153,7 @@ hoặc mọi tương tác bài. Bài tự tạo giữ ở [kế hoạch mở r�
 
 `npm run validate:platform` chạy bộ kiểm chứng tổng hợp, ghi report JSON và log từng bước
 vào artifacts/platform-validation/ (Git bỏ qua). Lỗi dừng ngay, phần còn lại ghi chưa chạy.
-Windows CI đã chạy cùng lệnh, đạt 47/47 bước và giữ artifact; report Linux vẫn chỉ xác nhận Linux.
+Windows CI đã chạy cùng lệnh, đạt 48/48 bước và giữ artifact; report Linux vẫn chỉ xác nhận Linux.
 
 ## Kiểm thử giao diện
 
