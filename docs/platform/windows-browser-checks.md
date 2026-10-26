@@ -1,6 +1,10 @@
 # Kiểm thử giao diện bằng trình duyệt trên Windows
 
-> Mốc hiện hành: [kiểm tra ghế khi gửi lệnh/đọc bàn đấu](../beta/seat-guard.md), catalog 109; [run 40199836126](https://github.com/xuanthao260604-sys/idc/actions/runs/40199836126), commit 58a2228.
+> Mốc hiện hành: [trạng thái dữ liệu và hoạt động của từng lá](../beta/card-support.md), catalog 109; [run 40256826758](https://github.com/xuanthao260604-sys/idc/actions/runs/40256826758), commit 85cc626.
+> Windows/Ubuntu đạt; Windows: 800/800 test, 47/47 bước, 37 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Đã đọc artifact windows-validation-40256826758-1: trạng thái 109 lá tách 95 verified/14 pending với runtime, chỉ đọc và giữ kín lá úp. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [kiểm tra ghế khi gửi lệnh/đọc bàn đấu](../beta/seat-guard.md), catalog 109; [run 40199836126](https://github.com/xuanthao260604-sys/idc/actions/runs/40199836126), commit 58a2228.
 > Windows/Ubuntu đạt; Windows: 799/799 test, 47/47 bước, 37 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Đã đọc artifact windows-validation-40199836126-1: đổi cookie không làm đầu hàng nhầm, refresh giữ tay/selection đang xem; chọn lại ghế thao tác được, receipt và deck A/B giữ nguyên. Không đổi engine/dữ liệu; Windows 11 desktop chưa chạy.
 

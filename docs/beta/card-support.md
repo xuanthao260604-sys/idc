@@ -46,8 +46,22 @@ Chain kiểm đúng trạng thái cho lá đã biết, không có mục trạng 
 úp. Mở/đóng mục trong quyết định giữ các ô đã chọn và không đổi view.
 Không thêm browser invocation/step: giữ 47 bước và 37 browser report.
 
-Ca catalog riêng đạt Linux/Chromium 154.0.8037.57, runtimeExceptions=0.
-Đang chạy bộ tổng hợp Linux; Windows CI chưa xác minh source mới.
+Ca catalog riêng và bộ tổng hợp đạt Linux/Chromium 154.0.8037.57:
+800/800 test trong 35 file, 47/47 bước và 37 browser report, tổng
+runtimeExceptions=0. Report tại
+artifacts/platform-validation/2026-10-26T01-57-54-713Z-142720/report.json.
+Giữ các ca đọc bài, lựa chọn, Chain, Mộ, deck và hai trận tự nhiên.
+Windows và Ubuntu CI [run 40256826758](https://github.com/xuanthao260604-sys/idc/actions/runs/40256826758)
+đạt trên source commit 85cc62613b6eadafb9b577fdcffb102e067f20ac.
+Đã tải và đọc artifact windows-validation-40256826758-1:
+win32 x64, OS 10.0.26100, Node 24.19.0, npm 11.17.0, Edge 155.0.4283.62.
+Windows đạt 800/800 test trong 35 file, gồm 29 test beta-server; 47/47 bước
+và 37 browser report, tổng runtimeExceptions=0. Ca expanded-catalog ghi
+cardSupportStatuses=109, dataVerified=95, dataPending=14,
+separateRuntimeStatus=true và statusReadOnly=true. Giữ các kiểm tra lá úp,
+preview, hiến tế/chiến đấu, quyết định/Chain/Mộ, deck và hai trận tự nhiên.
+Report ghi windows11DesktopVerified=false. Report đã đọc tại
+artifacts/ci-card-support/2026-10-26T01-59-21-933Z-6620/report.json.
 
 Không đổi engine, catalog 109, facts/effect/review, artwork, starter hoặc deck cũ.
 Windows 11 desktop chưa thử trực tiếp; chưa đóng gói hoặc bàn giao beta.
