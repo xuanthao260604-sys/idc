@@ -14,8 +14,8 @@ Hinotama, Dian Keto the Cure Master, Smashing Ground, Hammer Shot, Tribute to Th
 Đã kiểm chứng [hai Phép thay đổi LP](docs/engine/life-point-spells.md) trên Linux và Windows CI; còn ca Windows 11 desktop chưa chạy.
 Không coi việc cấu hình CI Windows hoặc chạy Linux là đã kiểm chứng Windows.
 
-Mốc trước đã đạt 897/897 test, 54/54 bước và 44 browser report trên Linux/Windows CI.
-Mục hiện tại: [nhập dữ liệu Magic Jammer](docs/data/magic-jammer.md), đang kiểm chứng bộ tổng hợp mới.
+905/905 test trong 39 file đạt trên Linux và Windows CI.
+54/54 bước validation và 44 browser report đạt bằng Edge trên Windows CI; chi tiết [nhập dữ liệu Magic Jammer](docs/data/magic-jammer.md), tổng runtimeExceptions=0.
 Dữ liệu nhập 111 lá; catalog runtime 110 lá. Magic Jammer chưa mở để đấu; trạng thái nhập vẫn tách riêng review/runtime.
 Browser regression tính riêng: xây/lưu deck, 5 hiệu ứng, xem Mộ, tạo trận A/B/ngẫu nhiên, bỏ bài,
 Pot với deck 0/1/2 lá, đầu hàng/hủy và tạo trận sau kết thúc, trận tự nhiên đầy đủ.

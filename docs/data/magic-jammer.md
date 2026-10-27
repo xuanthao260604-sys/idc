@@ -66,8 +66,31 @@ fingerprint review, facts chính thức, ngày sau cutoff và mã bản in chưa
 được giữ nguyên. Chỉ làm lỗi trên bản sao thư mục tạm.
 Các ca nhập Ookazi cũng được cập nhật để kiểm đủ 18 bundle hiện hành.
 
-Typecheck, import offline và tám ca riêng đã đạt Linux. Bộ tổng hợp Linux
-và Windows CI sẽ được ghi sau khi đọc report thực tế.
+Linux đạt 905/905 test trong 39 file, 54/54 bước validation và 44 browser
+report bằng Chromium 154.0.8037.57, runtimeExceptions=0. Đã đọc report tại
+artifacts/platform-validation/2026-10-27T09-29-31-026Z-276583/report.json,
+kiểm tra từng bước browser có đúng một report khớp host/version/lỗi runtime.
+Log test ghi đủ tám ca nhập Magic Jammer; log data-and-build ghi 18 bundle,
+111 lá/95 verified/16 historical pending. Snapshot nhập vẫn chưa có hiệu ứng.
+
+Toàn capabilities JSON giống mốc runtime trước: 110 supported/15 reviewed
+effects/11 scope/17 snapshot đang hoạt động; không có Magic Jammer.
+Hai trận tự nhiên giữ kết quả pilot 16 lượt/339 lệnh, B thắng LP 0/4200;
+expanded 16 lượt/348 lệnh, B thắng LP 0/3450. Không chỉnh state khi chơi.
+
+Windows và Ubuntu CI đã đạt trên source commit
+8600676814b8c27f27d5807973146dbdd05992b1,
+[run 40481382302](https://github.com/xuanthao260604-sys/idc/actions/runs/40481382302).
+Đã tải/đọc artifact windows-validation-40481382302-1:
+win32 x64, OS 10.0.26100, Node 24.19.0, npm 11.17.0,
+Edge 155.0.4283.62. Windows đạt 905/905 test (39 file), 54/54 bước,
+44 browser report, runtimeExceptions=0; từng bước browser đúng một report
+khớp host/version. Đã kiểm tra tám ca nhập Magic Jammer, log 18 bundle/
+111 lá/95 verified/16 historical pending. Toàn capabilities JSON giống
+Linux và mốc trước; runtime 110/15, không có Magic Jammer. Hai trận tự nhiên
+có kết quả giống Linux. Report ghi windows11DesktopVerified=false tại
+artifacts/ci-magic-jammer-import/2026-10-27T09-31-32-765Z-6980/report.json.
+Không thêm browser mode hoặc kiểm thử hiệu ứng phủ nhận ở mốc này.
 
 ## Điều kiện trước khi mở hiệu ứng
 

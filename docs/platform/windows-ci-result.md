@@ -1,6 +1,10 @@
 # Kết quả Windows CI
 
-> Mốc hiện hành: [rà soát tương tác Ookazi](../engine/ookazi-interaction-audit.md), catalog 110; [run 40463530657](https://github.com/xuanthao260604-sys/idc/actions/runs/40463530657), commit 58f179e.
+> Mốc hiện hành: [Magic Jammer — nhập dữ liệu, chưa mở runtime](../data/magic-jammer.md), nhập 111/runtime 110; [run 40481382302](https://github.com/xuanthao260604-sys/idc/actions/runs/40481382302), commit 8600676.
+> Windows/Ubuntu đạt; Windows: 905/905 test trong 39 file, 54/54 bước, 44 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Đã tải/đọc artifact windows-validation-40481382302-1: tám ca nhập Magic Jammer đạt, giữ Counter subtype và trạng thái pending; lỗi nhập giữ byte của toàn bộ dữ liệu/deck fixture. Log kiểm đủ 18 bundle/111 lá/95 verified/16 historical pending. Capabilities JSON giống Linux và mốc trước: runtime 110 lá/15 hiệu ứng từ 17 bundle; chưa có binding Magic Jammer. Hai trận tự nhiên giữ kết quả; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [rà soát tương tác Ookazi](../engine/ookazi-interaction-audit.md), catalog 110; [run 40463530657](https://github.com/xuanthao260604-sys/idc/actions/runs/40463530657), commit 58f179e.
 > Windows/Ubuntu đạt; Windows: 897/897 test trong 38 file, 54/54 bước, 44 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Đã tải/đọc artifact windows-validation-40463530657-1: 16 ca tương tác mới và hai luồng hotseat A/B đạt; bỏ Ookazi làm cost/lấy lại bằng Faith không tự gây sát thương, dùng tiếp các Phép cho LP 9000/6700, public facts và saved deck A/B giữ đúng. Capabilities JSON giống Linux và mốc trước: 110 supported/15 hiệu ứng/11 scope/17 snapshot; nhập 95 verified/15 historical pending. Hai trận tự nhiên giữ kết quả; Windows 11 desktop chưa chạy.
 
