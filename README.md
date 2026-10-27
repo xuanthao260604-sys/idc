@@ -24,6 +24,8 @@ Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không 
 Đã nhận bộ khung người dùng: [mặt sau chung](docs/beta/card-frames.md) được dùng cho bài úp của cả ba loại.
 Đã ghép [ba khung mặt trước](docs/beta/card-fronts.md), hàng sao và chỉ số lấy từ dữ liệu; ảnh minh họa từng lá sẽ bổ sung sau.
 
+Đã chốt [review thiết kế Magic Jammer](docs/rules/magic-jammer-review.md): nguồn, chi phí, phản hồi trực tiếp và phạm vi hai liên kết; chưa triển khai hoặc mở hiệu ứng trong runtime.
+
 Đã nhập riêng [Magic Jammer](docs/data/magic-jammer.md), giữ Counter Trap và văn bản nguồn; chuẩn bị cho nhánh phản hồi/phủ nhận Phép. Chưa có review hiệu ứng hoặc binding runtime.
 
 Đã bổ sung [rà soát tương tác Ookazi](docs/engine/ookazi-interaction-audit.md): bỏ làm chi phí không tự gây sát thương, Faith lấy lại đúng Mộ mình rồi dùng lại, kết hợp các Phép LP và bảo vệ handle/receipt.

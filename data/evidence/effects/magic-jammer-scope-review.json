@@ -1,0 +1,359 @@
+{
+  "schemaVersion": 1,
+  "status": "design-reviewed-not-enabled",
+  "reviewedOn": "2026-10-27",
+  "cardId": "official:77414722",
+  "definitionSha256": "dcbfa15ffcecc32dd594e2794ab516642bc5ede743942717406b95f955e946bf",
+  "format": {
+    "id": "goat-2005-08-17",
+    "revision": 4
+  },
+  "proposedScope": "counter-trap-normal-spell-activation-v1",
+  "historicalPrintedTextReview": "pending",
+  "runtimeEnabled": false,
+  "sources": [
+    {
+      "id": "card-text",
+      "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4862&request_locale=en",
+      "accessedOn": "2026-10-27",
+      "sourceKind": "official-current",
+      "sha256": "c845de6762ad7f9dce7f1f229a3af767c313b6a1d5e455f9ebc01be5a8220ab3",
+      "bytes": 147299,
+      "notes": "Frozen English card reference from the completed import; original printed wording remains pending.",
+      "rawPath": "data/raw/konami/c845de6762ad7f9dce7f1f229a3af767c313b6a1d5e455f9ebc01be5a8220ab3.html"
+    },
+    {
+      "id": "v5",
+      "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+      "accessedOn": "2026-10-27",
+      "sourceKind": "archive",
+      "sha256": "d02c016334f65c98a9fe900ae0b2630a3de63f63e330426ab07c55d9466dc61a",
+      "bytes": 681725,
+      "notes": "English v5 archive; bytes match d02c0163... reviewed on 2026-10-15. Hash is consistency evidence, not a publisher signature. PDF is not copied into repository."
+    },
+    {
+      "id": "current-book",
+      "url": "https://www.yugioh-card.com/en/downloads/rulebook/SD_RuleBook_EN_10.pdf",
+      "accessedOn": "2026-10-27",
+      "sourceKind": "official-current",
+      "sha256": "82be14641b2b7940467034a5b14b0d4037835831866537738d34fd9df5a0f444",
+      "bytes": 3415528,
+      "notes": "Current rulebook baseline under the existing Goat policy, not a 2005 rulebook. PDF is not copied into repository."
+    },
+    {
+      "id": "goat-basics",
+      "url": "https://www.goatformat.com/basics.html",
+      "accessedOn": "2026-10-27",
+      "sourceKind": "community",
+      "sha256": "c4ce900ab808c269392a84a4a077970ec39ac30a4d937d63689ffc0cae3213d0",
+      "bytes": 136366,
+      "notes": "Community convention selected by existing format profile; keep its caveat about recent rule changes.",
+      "rawPath": "data/raw/goatformat/c4ce900ab808c269392a84a4a077970ec39ac30a4d937d63689ffc0cae3213d0.html"
+    },
+    {
+      "id": "goat-rulings3",
+      "url": "https://www.goatformat.com/rulings3.html",
+      "accessedOn": "2026-10-27",
+      "sourceKind": "community",
+      "sha256": "a0af5e7d899fb5131026972265b7a2e6862e8d537ccce5aec6432eddc2ba69d1",
+      "bytes": 230091,
+      "notes": "Curated Individual Card FAQ, Gravekeeper’s Watcher subsection. Cost classification only; does not enable Watcher or any discard trigger.",
+      "rawPath": "data/raw/goatformat/a0af5e7d899fb5131026972265b7a2e6862e8d537ccce5aec6432eddc2ba69d1.html"
+    },
+    {
+      "id": "goat-rulings5",
+      "url": "https://www.goatformat.com/rulings5.html",
+      "accessedOn": "2026-10-27",
+      "sourceKind": "community",
+      "sha256": "dbad6e8dd1e19b393e73e8a08cd53b5f7d00070c8ddbebe677fcc38c1d4f9660",
+      "bytes": 266319,
+      "notes": "Magic Jammer subsection explicitly labelled Netrep Rulings. Not represented as an authenticated original UDE bulletin; Wave Motion Cannon/Double Spell stay unsupported.",
+      "rawPath": "data/raw/goatformat/dbad6e8dd1e19b393e73e8a08cd53b5f7d00070c8ddbebe677fcc38c1d4f9660.html"
+    },
+    {
+      "id": "current-faq",
+      "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=4&cid=4862&request_locale=ja",
+      "accessedOn": "2026-10-27",
+      "sourceKind": "official-current",
+      "sha256": "e9429e0c759fc0b046905e1a995f3cd6755c57c2cf9ceac22a3b7570c5cc07e8",
+      "bytes": 86655,
+      "notes": "Current official OCG supplement. Separate Japanese quotation from Vietnamese interpretation; not original 2005 TCG wording. No modern-card Q&A is imported.",
+      "displayedDate": "2017-09-28",
+      "rawPath": "data/raw/konami/e9429e0c759fc0b046905e1a995f3cd6755c57c2cf9ceac22a3b7570c5cc07e8.html"
+    }
+  ],
+  "quotations": [
+    {
+      "id": "effect",
+      "sourceId": "card-text",
+      "locator": "Card Text",
+      "evidence": {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4862&request_locale=en",
+        "accessedOn": "2026-10-27",
+        "sourceKind": "official-current",
+        "quotation": "When a Spell Card is activated: Discard 1 card; negate the activation, and if you do, destroy it.",
+        "historicalApplicability": "Current reference semantics, cross-checked with the curated Goat Magic Jammer entries. Not an original printed-text verification."
+      }
+    },
+    {
+      "id": "lifo",
+      "sourceId": "v5",
+      "locator": "printed p.32, What is a Chain?",
+      "evidence": {
+        "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+        "accessedOn": "2026-10-27",
+        "sourceKind": "archive",
+        "quotation": "The effects are then resolved, starting at the top link and working down to the Chain Link 1 at the bottom.",
+        "historicalApplicability": "Archived period baseline for reverse resolution; does not establish every individual card ruling."
+      }
+    },
+    {
+      "id": "own-response",
+      "sourceId": "v5",
+      "locator": "printed p.32, parenthetical text",
+      "evidence": {
+        "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+        "accessedOn": "2026-10-27",
+        "sourceKind": "archive",
+        "quotation": "the same player can play consecutive cards if their opponent does not respond",
+        "historicalApplicability": "Period baseline for the owner responding to their own activation after the opponent declines; priority is still checked."
+      }
+    },
+    {
+      "id": "speed3",
+      "sourceId": "v5",
+      "locator": "printed p.33, Spell Speed 3 / Counter Trap",
+      "evidence": {
+        "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+        "accessedOn": "2026-10-27",
+        "sourceKind": "archive",
+        "quotation": "Only another Spell Speed 3 card may be used against these cards.",
+        "historicalApplicability": "Counter Trap section of the archived rulebook. Eligibility still requires the responding card trigger, not speed alone."
+      }
+    },
+    {
+      "id": "cost-no-refund",
+      "sourceId": "v5",
+      "locator": "printed p.36, Pay a Cost",
+      "evidence": {
+        "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+        "accessedOn": "2026-10-27",
+        "sourceKind": "archive",
+        "quotation": "Even if the activation of the card is negated, you cannot get a refund of the cost that you have paid.",
+        "historicalApplicability": "Costs already paid by the original Spell remain paid; the new Counter Trap cost must also be paid at its activation."
+      }
+    },
+    {
+      "id": "trap-set",
+      "sourceId": "current-book",
+      "locator": "Normal Trap Cards, common Trap rules",
+      "evidence": {
+        "url": "https://www.yugioh-card.com/en/downloads/rulebook/SD_RuleBook_EN_10.pdf",
+        "accessedOn": "2026-10-27",
+        "sourceKind": "official-current",
+        "quotation": "Before you can activate a Trap Card, you must Set it on the field first.",
+        "historicalApplicability": "Current baseline under Goat basics; no exception allowing hand activation or same-turn Set is introduced."
+      }
+    },
+    {
+      "id": "trap-wait",
+      "sourceId": "current-book",
+      "locator": "Normal Trap Cards, common Trap rules",
+      "evidence": {
+        "url": "https://www.yugioh-card.com/en/downloads/rulebook/SD_RuleBook_EN_10.pdf",
+        "accessedOn": "2026-10-27",
+        "sourceKind": "official-current",
+        "quotation": "You cannot activate a Trap in the same turn that you Set it, but you can activate it at any time after that",
+        "historicalApplicability": "Read together with each Trap activation condition. Does not allow Magic Jammer at arbitrary timing."
+      }
+    },
+    {
+      "id": "baseline-policy",
+      "sourceId": "goat-basics",
+      "locator": "Basic Mechanics opening paragraph",
+      "evidence": {
+        "url": "https://www.goatformat.com/basics.html",
+        "accessedOn": "2026-10-27",
+        "sourceKind": "community",
+        "quotation": "if a general rule is not explicitly listed here is being different in Goat Format, you can assume that it works the exact same way as it does in the current format.",
+        "historicalApplicability": "Community policy already adopted by the project. Its editorial caveat about recent changes remains applicable."
+      }
+    },
+    {
+      "id": "discard-cost",
+      "sourceId": "goat-rulings3",
+      "locator": "GRAVEKEEPER'S WATCHER / Individual Card FAQs",
+      "evidence": {
+        "url": "https://www.goatformat.com/rulings3.html",
+        "accessedOn": "2026-10-27",
+        "sourceKind": "community",
+        "quotation": "You cannot activate \"Gravekeeper’s Watcher\" when a card is discarded as a cost, such as \"Magic Jammer\", \"Kuriboh\", \"Tribute to the Doomed\", \"Thunder Dragon\", or \"Type Zero Magic Crusher\".",
+        "historicalApplicability": "Community-curated corroboration that Magic Jammer discards as cost. No discard-trigger mechanics are enabled."
+      }
+    },
+    {
+      "id": "activation-not-effect",
+      "sourceId": "goat-rulings5",
+      "locator": "MAGIC JAMMER / Netrep Rulings",
+      "evidence": {
+        "url": "https://www.goatformat.com/rulings5.html",
+        "accessedOn": "2026-10-27",
+        "sourceKind": "community",
+        "quotation": "“Magic Jammer” may only be activated in a chain to the initial activation of “Wave Motion Cannon.” “Magic Jammer” may not be activated in a response to the action of Tributing “Wave Motion Cannon.”",
+        "historicalApplicability": "Curated period ruling supports card activation versus an already active Spell effect; the example card is outside runtime scope."
+      }
+    },
+    {
+      "id": "no-late-negation",
+      "sourceId": "goat-rulings5",
+      "locator": "MAGIC JAMMER / Netrep Rulings",
+      "evidence": {
+        "url": "https://www.goatformat.com/rulings5.html",
+        "accessedOn": "2026-10-27",
+        "sourceKind": "community",
+        "quotation": "“Magic Jammer” must be activated in a chain with the activation of “Double Spell.” If “Double Spell” has successfully resolved, “Magic Jammer” may not be used to negate the activation of the Spell activated through the effect of “Double Spell.”",
+        "historicalApplicability": "Curated corroboration that it cannot respond later during resolution; Double Spell remains unsupported."
+      }
+    },
+    {
+      "id": "non-targeting",
+      "sourceId": "current-faq",
+      "locator": "supplement displayed 2017-09-28",
+      "evidence": {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=4&cid=4862&request_locale=ja",
+        "accessedOn": "2026-10-27",
+        "sourceKind": "official-current",
+        "quotation": "■対象を取る効果ではありません。",
+        "historicalApplicability": "Current OCG supplement: no card target. Use only with English current text and curated Goat activation semantics; not labelled historical TCG evidence."
+      }
+    },
+    {
+      "id": "direct-self-or-other",
+      "sourceId": "current-faq",
+      "locator": "supplement displayed 2017-09-28",
+      "evidence": {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=4&cid=4862&request_locale=ja",
+        "accessedOn": "2026-10-27",
+        "sourceKind": "official-current",
+        "quotation": "■自分または相手の魔法カードのカードの発動に直接チェーンして発動するカードです。（魔法カードの効果の発動にチェーンして発動する事はできません。）",
+        "historicalApplicability": "Current OCG supplement: directly chain to own/opponent Spell card activation, not effect activation. Corroborated for proposed limited scope by v5 priority and curated Goat Magic Jammer entries."
+      }
+    },
+    {
+      "id": "cost-faq",
+      "sourceId": "current-faq",
+      "locator": "supplement displayed 2017-09-28",
+      "evidence": {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=4&cid=4862&request_locale=ja",
+        "accessedOn": "2026-10-27",
+        "sourceKind": "official-current",
+        "quotation": "■発動する際に、コストとして、自分の手札を1枚捨てます。",
+        "historicalApplicability": "Current OCG cost statement, independently corroborated by the curated Goat discard-cost example."
+      }
+    },
+    {
+      "id": "damage-step-faq",
+      "sourceId": "current-faq",
+      "locator": "supplement displayed 2017-09-28",
+      "evidence": {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=4&cid=4862&request_locale=ja",
+        "accessedOn": "2026-10-27",
+        "sourceKind": "official-current",
+        "quotation": "■ダメージステップでも発動する事ができます。",
+        "historicalApplicability": "Current supplement permits Damage Step; proposed implementation scope excludes it because no eligible Spell card activation is supported there. Do not describe it as a universal card prohibition."
+      }
+    }
+  ],
+  "decisions": [
+    {
+      "id": "activation",
+      "value": {
+        "cardKind": "trap",
+        "subtype": "counter",
+        "spellSpeed": 3,
+        "mustBeSetOnEarlierTurn": true,
+        "requiresPriority": true,
+        "requiresNoPendingDecision": true,
+        "respondToLatestLink": true,
+        "originalSpellController": "self-or-opponent",
+        "cardTargeting": false,
+        "responseKind": "spell-card-activation"
+      },
+      "evidenceRefs": [
+        "effect",
+        "speed3",
+        "trap-set",
+        "trap-wait",
+        "non-targeting",
+        "direct-self-or-other",
+        "own-response"
+      ]
+    },
+    {
+      "id": "cost",
+      "value": {
+        "discardCount": 1,
+        "zone": "own-hand",
+        "paidAtActivation": true,
+        "validateAllBeforePaying": true,
+        "refundOriginalSpellCost": false,
+        "discardTriggersSupported": false
+      },
+      "evidenceRefs": [
+        "effect",
+        "discard-cost",
+        "cost-faq",
+        "cost-no-refund"
+      ],
+      "notes": "Atomic validation/rejection is a project implementation requirement; no generic discard triggers are enabled."
+    },
+    {
+      "id": "limited-chain",
+      "value": {
+        "pattern": [
+          "reviewed-normal-spell",
+          "magic-jammer"
+        ],
+        "maxLinks": 2,
+        "otherResponsesInThisScope": "pass-only",
+        "resolutionOrder": "last-in-first-out",
+        "clientCommandsDuringResolution": false
+      },
+      "evidenceRefs": [
+        "lifo",
+        "speed3",
+        "activation-not-effect",
+        "no-late-negation"
+      ],
+      "notes": "Two-link maximum is an implementation boundary, not a Yu-Gi-Oh! rule. Other legal Counter Traps are not implemented. Magic Jammer cannot respond to a Counter Trap because that is not Spell card activation."
+    },
+    {
+      "id": "resolution",
+      "value": {
+        "negate": "activation",
+        "skipOriginalSpellPlan": true,
+        "destroyOriginalSpell": true,
+        "retainPaidCosts": true,
+        "cleanupCounterOnce": true,
+        "normalSummonQuotaConsumed": false
+      },
+      "evidenceRefs": [
+        "effect",
+        "cost-no-refund",
+        "lifo"
+      ],
+      "notes": "Within this limited pool the original Spell remains on the field, with no protection/replacement. General outcomes if it left the field or could not be destroyed need separate review."
+    }
+  ],
+  "notCovered": [
+    "general mixed Chain",
+    "other Counter Traps and counter-to-counter resolution",
+    "Quick-Play, Field, Continuous, Equip and Ritual Spell cards",
+    "Spell effect activation",
+    "Damage Step Spell activation",
+    "negation/protection/replacement modifiers",
+    "SEGOC and discard triggers",
+    "online/persistent-match command recovery"
+  ],
+  "implementationAndEffectTests": "not-started"
+}

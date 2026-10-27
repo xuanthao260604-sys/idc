@@ -1,5 +1,8 @@
 # Magic Jammer — nhập dữ liệu, chưa mở runtime — 27/10/2026
 
+Cập nhật: đã có [review thiết kế Chain/phủ nhận](../rules/magic-jammer-review.md).
+Runtime và trạng thái nhập dưới đây giữ nguyên; binding/kiểm thử hiệu ứng chưa triển khai.
+
 Chuẩn bị dữ liệu cho nhánh phản hồi/phủ nhận Phép tiếp theo. Thêm batch
 magic-jammer riêng; tổng nhập tăng 110 → 111 loại trong 18 bundle, gồm
 95 verified data và 16 historical pending. Runtime giữ 110 loại/15 hiệu ứng
