@@ -11,12 +11,12 @@ import { createCapabilityReport } from './engine-capabilities.js';
 import { definitionFingerprint } from '../packages/engine/src/spell-review.js';
 const load = (p: string) => JSON.parse(readFileSync(join(projectRoot,p),'utf8'));
 const pilot=load('data/generated/pilot.json'), extra=load('data/generated/classic-10.json'), extraB=load('data/generated/classic-10b.json'), extraC=load('data/generated/classic-10c.json'), extraD=load('data/generated/classic-10d.json'), extraE=load('data/generated/classic-10e.json'), extraF=load('data/generated/classic-10f.json'), final20=load('data/generated/classic-20.json');
-describe('Additive 109-card runtime catalog', () => {
-  it('preserves all 108 prior parsed definitions, including all prior reviewed effects', () => {
-    const {cards,registry}=loadRuntimeCatalog(); expect(cards).toHaveLength(109);
-    for(const old of [...pilot.cards,...extra.cards,...extraB.cards,...extraC.cards,...extraD.cards,...extraE.cards,...extraF.cards,...final20.cards,...load('data/generated/lp-spells.json').cards,...load('data/generated/defense-spell.json').cards,...load('data/generated/hammer-shot.json').cards,...load('data/generated/tribute-doomed.json').cards,...load('data/generated/reincarnation.json').cards,...load('data/generated/block-attack.json').cards,...load('data/generated/earthquake.json').cards]) expect(cards.find(c=>c.id===old.id)).toEqual(old);
-    expect(Object.keys(registry.cards)).toHaveLength(109); expect(registry.unsupportedIds).toEqual([]);
-    expect(Object.keys(registry.spellHandlers)).toHaveLength(10); expect(Object.keys(registry.flipHandlers)).toHaveLength(3); expect(Object.keys(registry.trapHandlers)).toHaveLength(1);
+describe('Additive 110-card runtime catalog', () => {
+  it('preserves all 109 prior parsed definitions, including all prior reviewed effects', () => {
+    const {cards,registry}=loadRuntimeCatalog(); expect(cards).toHaveLength(110);
+    for(const old of [...pilot.cards,...extra.cards,...extraB.cards,...extraC.cards,...extraD.cards,...extraE.cards,...extraF.cards,...final20.cards,...load('data/generated/lp-spells.json').cards,...load('data/generated/defense-spell.json').cards,...load('data/generated/hammer-shot.json').cards,...load('data/generated/tribute-doomed.json').cards,...load('data/generated/reincarnation.json').cards,...load('data/generated/block-attack.json').cards,...load('data/generated/earthquake.json').cards,...load('data/generated/magician-faith.json').cards]) expect(cards.find(c=>c.id===old.id)).toEqual(old);
+    expect(Object.keys(registry.cards)).toHaveLength(110); expect(registry.unsupportedIds).toEqual([]);
+    expect(Object.keys(registry.spellHandlers)).toHaveLength(11); expect(Object.keys(registry.flipHandlers)).toHaveLength(3); expect(Object.keys(registry.trapHandlers)).toHaveLength(1);
     for(const card of [...extra.cards,...extraB.cards,...extraC.cards,...extraD.cards,...extraE.cards,...extraF.cards,...final20.cards]) { expect(card.kind).toBe('normal-monster'); expect(card.verification).toBe('verified'); expect(card.implementation).toBe('not-started'); }
   });
   it('loads an existing 102-card catalog deck containing both LP spells without rewriting it', async () => {
@@ -41,7 +41,7 @@ describe('Additive 109-card runtime catalog', () => {
     try {
       const {createRegistry}=await import('../packages/engine/src/registry.js');
       const {goat200508Format}=await import('../packages/card-data/src/formats/goat-2005-08-17.js');
-      const oldCards=loadRuntimeCatalog().cards.filter(c=>c.id!=='official:31560081').filter(c=>c.id!=='official:82828051').filter(c=>c.id!=='official:25880422').filter(c=>!['official:26412047','official:79759861','official:74848038'].includes(c.id));
+      const oldCards=loadRuntimeCatalog().cards.filter(c=>c.id!=='official:19523799').filter(c=>c.id!=='official:31560081').filter(c=>c.id!=='official:82828051').filter(c=>c.id!=='official:25880422').filter(c=>!['official:26412047','official:79759861','official:74848038'].includes(c.id));
       expect(oldCards).toHaveLength(103);
       const old=createRegistry(oldCards,goat200508Format,{},[...load('data/reviews/pilot.spell-effects.json'),...load('data/reviews/life-point-spells.effects.json'),...load('data/reviews/defense-spell.effects.json')],load('data/reviews/pilot.flip-effects.json'),load('data/reviews/pilot.trap-effects.json'));
       const store=createDeckStore(old,d), ids=['official:97169186','official:46130346','official:84257639'];
@@ -57,7 +57,7 @@ describe('Additive 109-card runtime catalog', () => {
     try {
       const {createRegistry}=await import('../packages/engine/src/registry.js');
       const {goat200508Format}=await import('../packages/card-data/src/formats/goat-2005-08-17.js');
-      const cards=loadRuntimeCatalog().cards.filter(c=>c.id!=='official:31560081').filter(c=>c.id!=='official:82828051').filter(c=>c.id!=='official:25880422').filter(c=>!['official:79759861','official:74848038'].includes(c.id)); expect(cards).toHaveLength(104);
+      const cards=loadRuntimeCatalog().cards.filter(c=>c.id!=='official:19523799').filter(c=>c.id!=='official:31560081').filter(c=>c.id!=='official:82828051').filter(c=>c.id!=='official:25880422').filter(c=>!['official:79759861','official:74848038'].includes(c.id)); expect(cards).toHaveLength(104);
       const old=createRegistry(cards,goat200508Format,{},[...load('data/reviews/pilot.spell-effects.json'),...load('data/reviews/life-point-spells.effects.json'),...load('data/reviews/defense-spell.effects.json'),...load('data/reviews/hammer-shot.effects.json')],load('data/reviews/pilot.flip-effects.json'),load('data/reviews/pilot.trap-effects.json'));
       const store=createDeckStore(old,d), ids=['official:26412047','official:97169186'];
       const saved=[...ids,...store.defaults.filter(id=>!ids.includes(id))].slice(0,40);
@@ -72,7 +72,7 @@ describe('Additive 109-card runtime catalog', () => {
     try {
       const {createRegistry}=await import('../packages/engine/src/registry.js');
       const {goat200508Format}=await import('../packages/card-data/src/formats/goat-2005-08-17.js');
-      const cards=loadRuntimeCatalog().cards.filter(c=>c.id!=='official:31560081').filter(c=>c.id!=='official:82828051').filter(c=>c.id!=='official:25880422').filter(c=>c.id!=='official:74848038'); expect(cards).toHaveLength(105);
+      const cards=loadRuntimeCatalog().cards.filter(c=>c.id!=='official:19523799').filter(c=>c.id!=='official:31560081').filter(c=>c.id!=='official:82828051').filter(c=>c.id!=='official:25880422').filter(c=>c.id!=='official:74848038'); expect(cards).toHaveLength(105);
       const old=createRegistry(cards,goat200508Format,{},[...load('data/reviews/pilot.spell-effects.json'),...load('data/reviews/life-point-spells.effects.json'),...load('data/reviews/defense-spell.effects.json'),...load('data/reviews/hammer-shot.effects.json'),...load('data/reviews/tribute-doomed.effects.json')],load('data/reviews/pilot.flip-effects.json'),load('data/reviews/pilot.trap-effects.json'));
       const store=createDeckStore(old,d), ids=['official:79759861','official:26412047'];
       const saved=[...ids,...store.defaults.filter(id=>!ids.includes(id))].slice(0,40);
@@ -87,7 +87,7 @@ describe('Additive 109-card runtime catalog', () => {
     try {
       const {createRegistry}=await import('../packages/engine/src/registry.js');
       const {goat200508Format}=await import('../packages/card-data/src/formats/goat-2005-08-17.js');
-      const cards=loadRuntimeCatalog().cards.filter(c=>c.id!=='official:31560081').filter(c=>c.id!=='official:82828051').filter(c=>c.id!=='official:25880422');expect(cards).toHaveLength(106);
+      const cards=loadRuntimeCatalog().cards.filter(c=>c.id!=='official:19523799').filter(c=>c.id!=='official:31560081').filter(c=>c.id!=='official:82828051').filter(c=>c.id!=='official:25880422');expect(cards).toHaveLength(106);
       const old=createRegistry(cards,goat200508Format,{},['pilot.spell-effects','life-point-spells.effects','defense-spell.effects','hammer-shot.effects','tribute-doomed.effects','reincarnation.effects'].flatMap(n=>load(`data/reviews/${n}.json`)),load('data/reviews/pilot.flip-effects.json'),load('data/reviews/pilot.trap-effects.json'));
       const store=createDeckStore(old,d),saved=['official:74848038',...store.defaults].slice(0,40);expect((await store.save('a',0,saved)).ok).toBe(true);
       const bytes=await readFile(join(d,'a.json'),'utf8'),next=createDeckStore(loadRuntimeCatalog().registry,d);
@@ -98,7 +98,7 @@ describe('Additive 109-card runtime catalog', () => {
     const d=await mkdtemp(join(tmpdir(),'YGO 107 preserve '));
     try {
       const {createRegistry}=await import('../packages/engine/src/registry.js');const {goat200508Format}=await import('../packages/card-data/src/formats/goat-2005-08-17.js');
-      const cards=loadRuntimeCatalog().cards.filter(c=>c.id!=='official:31560081').filter(c=>c.id!=='official:82828051');expect(cards).toHaveLength(107);
+      const cards=loadRuntimeCatalog().cards.filter(c=>c.id!=='official:19523799').filter(c=>c.id!=='official:31560081').filter(c=>c.id!=='official:82828051');expect(cards).toHaveLength(107);
       const old=createRegistry(cards,goat200508Format,{},['pilot.spell-effects','life-point-spells.effects','defense-spell.effects','hammer-shot.effects','tribute-doomed.effects','reincarnation.effects','block-attack.effects'].flatMap(n=>load(`data/reviews/${n}.json`)),load('data/reviews/pilot.flip-effects.json'),load('data/reviews/pilot.trap-effects.json'));
       const store=createDeckStore(old,d),saved=['official:25880422','official:74848038',...store.defaults].slice(0,40);expect((await store.save('b',0,saved)).ok).toBe(true);
       const bytes=await readFile(join(d,'b.json'),'utf8'),next=createDeckStore(loadRuntimeCatalog().registry,d);expect(next.get('b')).toEqual(store.get('b'));expect(next.defaults).toEqual(store.defaults);expect(await readFile(join(d,'b.json'),'utf8')).toBe(bytes);
@@ -126,14 +126,14 @@ describe('Additive 109-card runtime catalog', () => {
       expect(next.get('a')).toEqual(store.get('a')); expect(await readFile(join(d,'a.json'),'utf8')).toBe(bytes);
     } finally { await rm(d,{recursive:true,force:true}); }
   });
-  it('allows a legal 325-card Main Deck under Goat without introducing a modern 60-card cap', async () => {
+  it('allows a legal 328-card Main Deck under Goat without introducing a modern 60-card cap', async () => {
     const {registry}=loadRuntimeCatalog();
     const cards=Object.values(registry.cards).flatMap(c=>Array<string>(c.legality.maxCopies!).fill(c.id));
-    expect(cards).toHaveLength(325);
+    expect(cards).toHaveLength(328);
     const store=createDeckStore(registry); expect((await store.save('a',0,cards)).ok).toBe(true);
     const {createDuel}=await import('../packages/engine/src/duel.js');
     const result=createDuel(registry,{duelId:'goat-large-deck',players:[{id:'a',deck:cards},{id:'b',deck:cards}],firstPlayerId:'a'});
-    expect(result.state.players[0].hand.length+result.state.players[0].deck.length).toBe(325);
+    expect(result.state.players[0].hand.length+result.state.players[0].deck.length).toBe(328);
   });
   it('reimports all expansion batches twice without modifying any bundle or original reviews', async () => {
     const d=await mkdtemp(join(tmpdir(),'YGO expansion import '));
@@ -165,15 +165,15 @@ describe('Capability report follows validated runtime reviews', () => {
   it('reports all eleven active scopes and maps each effect to its validated review', () => {
     const report = createCapabilityReport(), { registry, effectReviews } = loadRuntimeCatalog();
     const capabilities = report.engineCapabilities;
-    expect(capabilities.supportedDefinitions).toBe(109); expect(capabilities.normalMonsters).toBe(95);
-    expect(capabilities.reviewedNormalSpells).toHaveLength(10); expect(capabilities.reviewedFlipMonsters).toHaveLength(3); expect(capabilities.reviewedNormalTraps).toHaveLength(1);
+    expect(capabilities.supportedDefinitions).toBe(110); expect(capabilities.normalMonsters).toBe(95);
+    expect(capabilities.reviewedNormalSpells).toHaveLength(11); expect(capabilities.reviewedFlipMonsters).toHaveLength(3); expect(capabilities.reviewedNormalTraps).toHaveLength(1);
     expect(capabilities.scope).toEqual([
       'normal-spell-single-link-vanilla-v1', 'normal-spell-life-points-single-link-v1', 'normal-spell-highest-defense-single-link-v1',
       'normal-spell-highest-attack-position-single-link-v1', 'normal-spell-discard-target-single-link-v1', 'normal-spell-discard-graveyard-single-link-v1',
       'normal-spell-target-position-single-link-v1', 'normal-spell-all-position-single-link-v1',
       'flip-single-link-v1', 'flip-own-graveyard-spell-single-link-v1', 'summon-response-trap-v1',
     ].sort());
-    expect(capabilities.reviewedEffects).toHaveLength(14);
+    expect(capabilities.reviewedEffects).toHaveLength(15);
     expect(capabilities.reviewedEffects.map(e => e.cardId)).toEqual([
       ...Object.keys(registry.spellHandlers), ...Object.keys(registry.flipHandlers), ...Object.keys(registry.trapHandlers),
     ].sort((a, b) => a.localeCompare(b, 'en')));
@@ -188,7 +188,7 @@ describe('Capability report follows validated runtime reviews', () => {
   });
   it('keeps imported pending/not-started/not-run statuses distinct from reviewed runtime effects', () => {
     const report = createCapabilityReport();
-    expect(Object.keys(report.importedSnapshots)).toHaveLength(16);
+    expect(Object.keys(report.importedSnapshots)).toHaveLength(17);
     expect(report.importedSnapshots.magicianFaith).toMatchObject({ imported: 1, verifiedData: 0, historicalReviewPending: 1, implemented: 0, testedEffects: 0, playable: 0 });
     for (const entry of report.engineCapabilities.reviewedEffects) {
       expect(entry.importedStatus).toEqual({ verification: 'pending', implementation: 'not-started', testing: 'not-run' });
@@ -204,8 +204,8 @@ describe('Capability report follows validated runtime reviews', () => {
       const path = join(directory, 'data/generated/magician-faith.json'), before = await readFile(path, 'utf8');
       await writeFile(join(directory, 'data/reviews/magician-faith.effects.json'), '[]\n');
       const report = createCapabilityReport(directory);
-      expect(report.engineCapabilities.supportedDefinitions).toBe(108);
-      expect(report.engineCapabilities.reviewedEffects).toHaveLength(13);
+      expect(report.engineCapabilities.supportedDefinitions).toBe(109);
+      expect(report.engineCapabilities.reviewedEffects).toHaveLength(14);
       expect(report.engineCapabilities.reviewedEffects.some(e => e.cardId === 'official:31560081')).toBe(false);
       expect(report.engineCapabilities.scope).not.toContain('flip-own-graveyard-spell-single-link-v1');
       expect(report.engineCapabilities.unsupportedIds).toEqual(['official:31560081']);

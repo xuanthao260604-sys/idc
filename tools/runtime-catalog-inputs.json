@@ -15,7 +15,8 @@
     "reincarnation": "data/generated/reincarnation.json",
     "blockAttack": "data/generated/block-attack.json",
     "earthquake": "data/generated/earthquake.json",
-    "magicianFaith": "data/generated/magician-faith.json"
+    "magicianFaith": "data/generated/magician-faith.json",
+    "ookazi": "data/generated/ookazi.json"
   },
   "reviews": {
     "spells": [
@@ -26,7 +27,8 @@
       "data/reviews/tribute-doomed.effects.json",
       "data/reviews/reincarnation.effects.json",
       "data/reviews/block-attack.effects.json",
-      "data/reviews/earthquake.effects.json"
+      "data/reviews/earthquake.effects.json",
+      "data/reviews/ookazi.effects.json"
     ],
     "flips": [
       "data/reviews/pilot.flip-effects.json",

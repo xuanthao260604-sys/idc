@@ -58,8 +58,8 @@ describe('Cross-platform project resource paths', () => {
     return { folder, run, expectPreserved };
   }
   it('checks the complete source-only catalog before dependencies or compiled outputs exist', () => {
-    expect(Object.keys(inputs.bundles)).toHaveLength(16);
-    expect(Object.values(inputs.reviews).flat()).toHaveLength(11);
+    expect(Object.keys(inputs.bundles)).toHaveLength(17);
+    expect(Object.values(inputs.reviews).flat()).toHaveLength(12);
     const fixture = preflightFixture(), result = fixture.run();
     expect(result.error).toBeUndefined(); expect(result.status).toBe(0);
     expect(result.stdout).toContain('Kiểm tra môi trường đạt');
@@ -68,6 +68,7 @@ describe('Cross-platform project resource paths', () => {
     fixture.expectPreserved();
   });
   it.each([
+    'data/generated/ookazi.json', 'data/reviews/ookazi.effects.json',
     'data/generated/block-attack.json', 'data/reviews/block-attack.effects.json',
     'data/generated/earthquake.json', 'data/reviews/earthquake.effects.json',
     'data/generated/magician-faith.json', 'data/reviews/magician-faith.effects.json',

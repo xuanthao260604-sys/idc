@@ -13,7 +13,7 @@ describe('Portable deck files', () => {
   it('roundtrips the full legal pool without imposing a modern 60-card ceiling', () => {
     const pool = Object.values(registry.cards).flatMap(c => Array(Math.min(3, c.legality.maxCopies!)).fill(c.id));
     const text = JSON.stringify(exportDeck(registry, pool), null, 2) + '\n';
-    expect(pool).toHaveLength(325); expect(importDeck(registry, text)).toEqual(pool);
+    expect(pool).toHaveLength(328); expect(importDeck(registry, text)).toEqual(pool);
   });
   it.each(['json', 'version', 'format', 'format-revision', 'unknown', 'copies', 'short', 'definitions', 'seat', 'oversize'])('rejects %s without mutating the source deck', mode => {
     const file: any = exportDeck(registry, cards), before = [...cards];

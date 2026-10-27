@@ -82,7 +82,7 @@ describe('Reviewed Magician of Faith own Graveyard Spell recovery',()=>{
  it('loads an old 108-card deck containing Earthquake without rewriting bytes or starter',async()=>{
   const d=await mkdtemp(join(tmpdir(),'YGO faith preserved '));try{
    const spellReviews=['pilot.spell-effects','life-point-spells.effects','defense-spell.effects','hammer-shot.effects','tribute-doomed.effects','reincarnation.effects','block-attack.effects','earthquake.effects'].flatMap(n=>load(`data/reviews/${n}.json`));
-   const old=createRegistry(cards.filter(c=>c.id!==faith),goat200508Format,{},spellReviews,load('data/reviews/pilot.flip-effects.json'),load('data/reviews/pilot.trap-effects.json')),store=createDeckStore(old,d);
+   const old=createRegistry(cards.filter(c=>c.id!==faith && c.id!=='official:19523799'),goat200508Format,{},spellReviews,load('data/reviews/pilot.flip-effects.json'),load('data/reviews/pilot.trap-effects.json')),store=createDeckStore(old,d);
    const saved=['official:82828051','official:74848038',...store.defaults].slice(0,40);expect((await store.save('a',0,saved)).ok).toBe(true);const bytes=await readFile(join(d,'a.json'),'utf8'),next=createDeckStore(registry,d);expect(next.defaults).toEqual(store.defaults);expect(next.get('a')).toEqual(store.get('a'));expect(await readFile(join(d,'a.json'),'utf8')).toBe(bytes);
   }finally{await rm(d,{recursive:true,force:true});}
  });

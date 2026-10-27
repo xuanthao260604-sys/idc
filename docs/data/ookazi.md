@@ -1,5 +1,8 @@
 # Ookazi — nhập dữ liệu, chưa mở runtime — 26/10/2026
 
+Cập nhật 27/10: [runtime Ookazi được triển khai riêng](../engine/ookazi.md).
+Nội dung và kết quả bên dưới lưu mốc nhập dữ liệu 26/10, trước khi mở runtime.
+
 Thêm batch riêng ookazi, một lá mới. Tổng dữ liệu đã nhập: 110 định nghĩa
 trong 17 bundle, gồm 95 verified data và 15 pending đối chiếu văn bản lịch
 sử. Runtime vẫn 109 loại/14 hiệu ứng từ 16 bundle đang hoạt động; Ookazi

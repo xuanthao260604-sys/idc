@@ -6,16 +6,17 @@ Game đấu bài hai người theo Goat Format Bắc Mỹ: cutoff 17/8/2005, ban
 
 ## Tiến độ hiện tại
 
-Đã có bàn đấu hotseat hai người thay phiên cùng máy, catalog 109 loại và deck mẫu hợp lệ 40 lá; deck A/B tự xây vẫn được giữ.
-Core hỗ trợ 95 quái thường; 14 hiệu ứng Pot of Greed, Fissure, Trap Hole, Hane-Hane, Man-Eater Bug,
-Hinotama, Dian Keto the Cure Master, Smashing Ground, Hammer Shot, Tribute to The Doomed, Monster Reincarnation, Block Attack, Earthquake và Magician of Faith được mở bằng hồ sơ review và kiểm thử trong scope giới hạn.
+Đã có bàn đấu hotseat hai người thay phiên cùng máy, catalog 110 loại và deck mẫu hợp lệ 40 lá; deck A/B tự xây vẫn được giữ.
+Core hỗ trợ 95 quái thường; 15 hiệu ứng Pot of Greed, Fissure, Trap Hole, Hane-Hane, Man-Eater Bug,
+Hinotama, Dian Keto the Cure Master, Smashing Ground, Hammer Shot, Tribute to The Doomed, Monster Reincarnation, Block Attack, Earthquake, Magician of Faith và Ookazi được mở bằng hồ sơ review và kiểm thử trong scope giới hạn.
 
 Đã hoàn tất [hotseat nội bộ 20 lá](docs/milestones/hotseat-20.md) và [xây/lưu deck A/B](docs/beta/deck-builder.md) trong scope giới hạn.
 Đã kiểm chứng [hai Phép thay đổi LP](docs/engine/life-point-spells.md) trên Linux và Windows CI; còn ca Windows 11 desktop chưa chạy.
 Không coi việc cấu hình CI Windows hoặc chạy Linux là đã kiểm chứng Windows.
 
-848/848 test đạt trên Linux và Windows CI; dữ liệu nhập 110 lá, catalog runtime vẫn 109.
-48/48 bước validation và 38 browser run đạt bằng Edge trên Windows CI; chi tiết tại [Ookazi — nhập dữ liệu, chưa mở runtime](docs/data/ookazi.md).
+Mốc kiểm chứng trước: 848/848 test, 48/48 bước và 38 browser run đạt trên Linux và Windows CI.
+Mục hiện tại: [mở hiệu ứng Ookazi](docs/engine/ookazi.md), đang kiểm chứng bộ tổng hợp mới.
+Dữ liệu nhập và catalog runtime đều 110 lá; trạng thái nhập vẫn tách riêng review/runtime.
 Browser regression tính riêng: xây/lưu deck, 5 hiệu ứng, xem Mộ, tạo trận A/B/ngẫu nhiên, bỏ bài,
 Pot với deck 0/1/2 lá, đầu hàng/hủy và tạo trận sau kết thúc, trận tự nhiên đầy đủ.
 Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không phải game hoàn tất mọi luật Yu-Gi-Oh!.
@@ -23,7 +24,7 @@ Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không 
 Đã nhận bộ khung người dùng: [mặt sau chung](docs/beta/card-frames.md) được dùng cho bài úp của cả ba loại.
 Đã ghép [ba khung mặt trước](docs/beta/card-fronts.md), hàng sao và chỉ số lấy từ dữ liệu; ảnh minh họa từng lá sẽ bổ sung sau.
 
-Đã nhập riêng [dữ liệu Ookazi](docs/data/ookazi.md), đối chiếu Konami/SDK-023 và giữ snapshot nguồn; văn bản lịch sử còn pending, chưa có binding hoặc kiểm thử hiệu ứng, chưa dùng được trong deck đấu.
+Đã mở [hiệu ứng Ookazi](docs/engine/ookazi.md): 800 sát thương hiệu ứng cho đối thủ khi link xử lý, từ tay hoặc bài úp của mình; dùng review riêng. [Dữ liệu nguồn](docs/data/ookazi.md) và văn bản lịch sử pending giữ nguyên, không tự nâng trạng thái nhập.
 
 Đã thêm [bảng hành động trong lượt của quái mình](docs/beta/monster-activity.md): ghi nhận triệu hồi/Set, đổi tư thế thủ công và tuyên bố tấn công từ engine; chỉ đọc cho quái trên sân của viewer, không thay quyền thao tác.
 
@@ -31,11 +32,11 @@ Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không 
 
 Đã siết [bằng chứng kiểm thử trình duyệt](docs/platform/browser-evidence.md): exit 0 vẫn bị từ chối nếu thiếu/trùng report, sai nền tảng, thiếu phiên bản hoặc có lỗi runtime; đọc đủ UTF-8 và dòng cuối không newline.
 
-Đã sửa [kiểm tra đầu vào trước khởi động](docs/platform/catalog-preflight.md): dùng chung danh sách 16 bundle/11 file review với bộ nạp, phát hiện sáu file bị bỏ sót và từ chối thư mục đặt nhầm chỗ file; không tự sửa dữ liệu.
+Đã sửa [kiểm tra đầu vào trước khởi động](docs/platform/catalog-preflight.md): dùng chung danh sách 17 bundle/12 file review với bộ nạp, phát hiện sáu file bị bỏ sót và từ chối thư mục đặt nhầm chỗ file; không tự sửa dữ liệu.
 
 Đã thêm [giữ đúng ghế khi đọc deck](docs/beta/deck-read-guard.md): mở/kiểm tra/tải deck từ chối tại server khi cookie đổi ghế ở cửa sổ khác; lỗi giữ nguyên nháp và lịch sử.
 
-Đã sửa [báo cáo khả năng thực thi](docs/engine/capability-report.md): lấy phạm vi từ review đang hoạt động, ghi đủ 14 hiệu ứng/11 scope và giữ trạng thái nhập riêng.
+Đã sửa [báo cáo khả năng thực thi](docs/engine/capability-report.md): lấy phạm vi từ review đang hoạt động, ghi đủ 15 hiệu ứng/11 scope và giữ trạng thái nhập riêng.
 
 Đã thêm [trạng thái dữ liệu và hoạt động của từng lá](docs/beta/card-support.md): tách đối chiếu dữ liệu, loại văn bản và khả năng đang mở; chỉ hiện cho lá đã biết danh tính.
 
