@@ -50,6 +50,30 @@ cùng di chuyển một bản bài. Không có chỉnh state sau khởi động 
 
 ## Kết quả
 
-16 ca tích hợp mới và hai ca trình duyệt A/B đã đạt Linux. Bộ tổng hợp
-Linux và Windows CI đang được kiểm chứng; kết quả sẽ ghi từ report thực tế.
+Linux đạt 897/897 test trong 38 file, 54/54 bước validation và 44 browser
+report bằng Chromium 154.0.8037.57, runtimeExceptions=0. Đã đọc report tại
+artifacts/platform-validation/2026-10-27T06-49-33-735Z-263989/report.json,
+kiểm tra từng browser step có đúng một report khớp host/version/lỗi runtime.
+Cả hai report tương tác A/B đều có LP controller 9000, đối thủ 6700,
+đủ public facts và savedDecksUnchanged. Log ghi đủ 16 ca tích hợp mới;
+17 bundle nhập giữ 110 lá/95 verified/15 historical pending.
+
+Toàn capabilities JSON giống mốc Ookazi trước: runtime 110 lá/15 hiệu ứng,
+11 scope/17 snapshot, riêng import Ookazi vẫn pending/not-started/not-run.
+Không có diff trong data, packages hoặc apps. Hai trận tự nhiên giữ kết quả:
+pilot 16 lượt/339 lệnh, B thắng LP 0/4200; expanded 16 lượt/348 lệnh,
+B thắng LP 0/3450. Không chỉnh state trong khi chơi.
+
+Windows và Ubuntu CI đã đạt trên source commit
+58f179edc49b6215453e4b22ce7b8c997894bd20,
+[run 40463530657](https://github.com/xuanthao260604-sys/idc/actions/runs/40463530657).
+Đã tải/đọc artifact windows-validation-40463530657-1:
+win32 x64, OS 10.0.26100, Node 24.19.0, npm 11.17.0,
+Edge 155.0.4283.62. Windows đạt 897/897 test (38 file), 54/54 bước,
+44 browser report; từng bước browser có đúng một report khớp host/version,
+runtimeExceptions=0. Đã đọc log đủ 16 ca mới, 17 bundle/110 lá và cả hai
+report tương tác A/B (LP 9000/6700, các cờ kiểm tra đều đạt).
+Toàn capabilities JSON giống Linux và mốc trước; cả hai trận tự nhiên có
+kết quả giống Linux. Report ghi windows11DesktopVerified=false tại
+artifacts/ci-ookazi-interactions/2026-10-27T06-51-18-222Z-5820/report.json.
 Windows 11 desktop chưa thử trực tiếp; chưa đóng gói hoặc bàn giao beta.

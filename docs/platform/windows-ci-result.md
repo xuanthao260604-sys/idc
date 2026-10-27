@@ -1,6 +1,10 @@
 # Kết quả Windows CI
 
-> Mốc hiện hành: [hiệu ứng Ookazi](../engine/ookazi.md), catalog 110; [run 40437834117](https://github.com/xuanthao260604-sys/idc/actions/runs/40437834117), commit 2e34328.
+> Mốc hiện hành: [rà soát tương tác Ookazi](../engine/ookazi-interaction-audit.md), catalog 110; [run 40463530657](https://github.com/xuanthao260604-sys/idc/actions/runs/40463530657), commit 58f179e.
+> Windows/Ubuntu đạt; Windows: 897/897 test trong 38 file, 54/54 bước, 44 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Đã tải/đọc artifact windows-validation-40463530657-1: 16 ca tương tác mới và hai luồng hotseat A/B đạt; bỏ Ookazi làm cost/lấy lại bằng Faith không tự gây sát thương, dùng tiếp các Phép cho LP 9000/6700, public facts và saved deck A/B giữ đúng. Capabilities JSON giống Linux và mốc trước: 110 supported/15 hiệu ứng/11 scope/17 snapshot; nhập 95 verified/15 historical pending. Hai trận tự nhiên giữ kết quả; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [hiệu ứng Ookazi](../engine/ookazi.md), catalog 110; [run 40437834117](https://github.com/xuanthao260604-sys/idc/actions/runs/40437834117), commit 2e34328.
 > Windows/Ubuntu đạt; Windows: 881/881 test trong 37 file, 52/52 bước, 42 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Đã tải/đọc artifact windows-validation-40437834117-1: bốn ca Ookazi A/B, tay/Set, normal/lethal đạt; đúng 800 sát thương khi resolve, không tiêu quota, public facts/kết quả giống giữa ghế. Capabilities JSON giống Linux: 110 supported/15 hiệu ứng/11 scope/17 snapshot; nhập 95 verified/15 historical pending vẫn tách riêng. Hai trận tự nhiên đạt, dữ liệu/deck cũ giữ byte; Windows 11 desktop chưa chạy.
 
