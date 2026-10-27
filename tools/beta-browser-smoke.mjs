@@ -16,6 +16,8 @@ const lifePointsArg = process.argv.find(arg => /^--life-points=(normal|lethal)$/
 const lifePointsMode = lifePointsArg?.split('=')[1] ?? null;
 const ookaziArg = process.argv.find(arg => /^--ookazi=[ab]:(hand|set):(normal|lethal)$/.test(arg));
 const ookazi = ookaziArg ? ookaziArg.split('=')[1].split(':') : null;
+const ookaziInteractionsArg = process.argv.find(arg => /^--ookazi-interactions=[ab]$/.test(arg));
+const ookaziInteractions = ookaziInteractionsArg?.split('=')[1] ?? null;
 const smashingGround = process.argv.includes('--smashing-ground');
 const hammerShot = process.argv.includes('--hammer-shot');
 const magicianFaith = process.argv.includes('--magician-faith');
@@ -38,7 +40,7 @@ const reincarnationMode = reincarnationArg?.split('=')[1] ?? null;
 const deckDraftGuard = process.argv.includes('--deck-draft-guard');
 const deckSaveCheck = process.argv.includes('--deck-save-check');
 const deckOverview = deckSaveCheck || deckDraftGuard || process.argv.includes('--deck-overview');
-const expanded = ookazi !== null || choiceIdentities || graveyardFilters || handSorting || faithBattle !== null || magicianFaith || deckOverview || earthquake || blockAttack || reincarnationMode !== null || tributeDoomed || hammerShot || smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
+const expanded = ookaziInteractions !== null || ookazi !== null || choiceIdentities || graveyardFilters || handSorting || faithBattle !== null || magicianFaith || deckOverview || earthquake || blockAttack || reincarnationMode !== null || tributeDoomed || hammerShot || smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
 const r = expanded ? loadRuntimeCatalog().registry : createRegistry((await read('data/generated/pilot.json')).cards, goat200508Format, {},
   await read('data/reviews/pilot.spell-effects.json'), await read('data/reviews/pilot.flip-effects.json'), await read('data/reviews/pilot.trap-effects.json'));
 const deck = Object.keys(r.cards);
@@ -138,7 +140,7 @@ if (chainView) {
   move('Man-Eater Bug','b','monster',0,true);
   s.turn.number=3;s.turn.phase='main1';s.timing.window='open';s.timing.priorityPlayer='a';s.timing.consecutivePasses=0;
 }
-if (expanded && !fullDuel && lifePointsMode === null && !smashingGround && !hammerShot && !tributeDoomed && !blockAttack && !earthquake && !magicianFaith && !faithBattle && !handSorting && !graveyardFilters && !choiceIdentities && !deckOverview && reincarnationMode === null) {
+if (expanded && ookaziInteractions === null && !fullDuel && lifePointsMode === null && !smashingGround && !hammerShot && !tributeDoomed && !blockAttack && !earthquake && !magicianFaith && !faithBattle && !handSorting && !graveyardFilters && !choiceIdentities && !deckOverview && reincarnationMode === null) {
   move('Gaia The Fierce Knight', 'a', 'hand');
   move('Battle Ox', 'a', 'monster', 0); move('Celtic Guardian', 'a', 'monster', 1, true);
   move('Curse of Dragon', 'a', 'hand');
@@ -181,6 +183,13 @@ if (smashingGround) {
   move('Mystical Elf', 'b', 'monster', 0); move('Giant Soldier of Stone', 'b', 'monster', 1);
   move('Battle Ox', 'b', 'monster', 2); move('Blue-Eyes White Dragon', 'b', 'monster', 3, true);
   s.turn.number = 3; s.turn.phase = 'main1'; s.timing.window = 'open'; s.timing.priorityPlayer = 'a'; s.timing.consecutivePasses = 0;
+}
+if (ookaziInteractions !== null) {
+  const actor=ookaziInteractions,other=actor==='a'?'b':'a';
+  for(const name of ['Ookazi','Monster Reincarnation','Hinotama','Dian Keto the Cure Master'])move(name,actor,'hand');
+  move('Magician of Faith',actor,'monster',0,true);move('Battle Ox',actor,'graveyard');move('Ookazi',other,'graveyard');
+  s.turn.number=actor==='a'?3:4;s.turn.activePlayer=actor;s.turn.phase='main1';
+  s.timing.window='open';s.timing.priorityPlayer=actor;s.timing.consecutivePasses=0;
 }
 if (ookazi !== null) {
   const [actor,,mode] = ookazi; move('Ookazi',actor,'hand');
@@ -1863,6 +1872,62 @@ try {
     assert.deepEqual(await evaluate('view.players.map(p=>p.lifePoints)'),[8000,8000]);
     assert.equal(errors.length,0);
     console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'smashing-ground',nonTargeting:true,tiedHighestDefenseChoice:true,ownAndHiddenExcluded:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
+  } else if (ookaziInteractions !== null) {
+    const actor=ookaziInteractions,other=actor==='a'?'b':'a',saved={};
+    for(const who of ['a','b']) {await seat(who);saved[who]=await evaluate(`api('/api/deck?seat='+view.viewerId).then(data=>JSON.stringify(data))`);}
+    await seat(actor);assert.equal(await evaluate('catalog.size'),110);
+    const own=`view.players.find(p=>p.playerId===${JSON.stringify(actor)})`;
+    const foe=`view.players.find(p=>p.playerId===${JSON.stringify(other)})`;
+    const selectHand=async name=>{await seat(actor);await click(`[...document.querySelectorAll('#hand .card')].find(e=>e.querySelector('.card-name')?.textContent===${JSON.stringify(name)})`);};
+    const settleUI=async()=>{for(let n=0;await evaluate(`!view.result && view.timing.window!=='open'`);n++){assert.ok(n<10);await pass(await evaluate('view.timing.priorityPlayer'));}};
+    const noDamage=async()=>assert.deepEqual(await evaluate('view.players.map(p=>p.lifePoints)'),[8000,8000]);
+    await selectHand('Monster Reincarnation');await click(textButton('#actions button','Kích hoạt'));
+    await evaluate(`(()=>{const f=document.getElementById('action-fields'),d=f.querySelector('select[name="discard"]'),t=f.querySelector('select[name="target"]');d.value=[...d.options].find(o=>label(visibleCard(o.value))==='Ookazi').value;t.value=[...t.options].find(o=>label(visibleCard(o.value))==='Battle Ox').value;f.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+    await preview('discard','Ookazi');await preview('target','Battle Ox');await noDamage();await confirm();
+    assert.equal(await evaluate(`${own}.graveyard.some(c=>c.definition.id==='official:19523799')`),true);
+    assert.equal(await evaluate(`${own}.graveyard.some(c=>catalog.get(c.definition.id).name==='Battle Ox')`),true);
+    await noDamage();await pass(other);await noDamage();await pass(actor);await settleUI();await noDamage();
+    await seat(actor);assert.equal(await evaluate(`view.selfHand.some(c=>catalog.get(c.definition.id).name==='Battle Ox')`),true);
+    await click(`document.querySelector('#self .zone-row:nth-child(2) .card')`);await actionClick(textButton('#actions button','Flip Summon'));
+    assert.equal(await evaluate('view.decision.kind'),'target');assert.equal(await evaluate('view.decision.optionIds.length'),2);
+    assert.equal(await evaluate(`view.decision.optionIds.includes(${foe}.graveyard.find(c=>c.definition.id==='official:19523799').handle)`),false);
+    const choice=await evaluate(`[...document.querySelectorAll('#decision-form label')].findIndex(e=>e.textContent.includes('Ookazi'))`);
+    assert.ok(choice>=0);await inspectDecision(choice);await noDamage();
+    await seat(other);assert.equal(await evaluate('view.decision'),null);assert.equal(await evaluate(`document.querySelectorAll('#decision-form input').length`),0);await seat(actor);
+    await click(`[...document.querySelectorAll('#decision-form label')].find(e=>e.textContent.includes('Ookazi')).querySelector('input')`);
+    await actionClick(`document.querySelector('#decision-form button[type="submit"]')`);
+    assert.equal(await evaluate(`view.selfHand.some(c=>c.definition.id==='official:19523799')`),false);
+    assert.equal(await evaluate(`${own}.graveyard.some(c=>c.definition.id==='official:19523799')`),true);
+    await noDamage();await settleUI();await noDamage();await seat(actor);
+    assert.equal(await evaluate(`view.selfHand.some(c=>c.definition.id==='official:19523799')`),true);
+    for(const [name,amount,recipient,kind] of [['Ookazi',800,other,'effect-damage'],['Dian Keto the Cure Master',1000,actor,'life-points-gained'],['Hinotama',500,other,'effect-damage']]) {
+      await selectHand(name);const before=await evaluate('view.players.map(p=>p.lifePoints)');
+      await click(textButton('#actions button','Kích hoạt'));await confirm();
+      assert.deepEqual(await evaluate('view.players.map(p=>p.lifePoints)'),before);
+      await pass(other);assert.deepEqual(await evaluate('view.players.map(p=>p.lifePoints)'),before);await pass(actor);await settleUI();
+      assert.equal(await evaluate('view.chain.length'),0);assert.equal(await evaluate('view.decision'),null);assert.equal(await evaluate(`${own}.spellsTraps[0]`),null);
+      assert.ok((await evaluate('view.activity.flatMap(e=>e.resolution||[])')).some(f=>f.kind===kind&&f.playerId===recipient&&f.amount===amount));
+    }
+    const facts=await evaluate('view.activity.flatMap(e=>e.resolution||[])');
+    assert.deepEqual(facts.filter(f=>['effect-damage','life-points-gained'].includes(f.kind)),[
+      {kind:'effect-damage',playerId:other,amount:800},{kind:'life-points-gained',playerId:actor,amount:1000},{kind:'effect-damage',playerId:other,amount:500},
+    ]);
+    assert.ok(facts.some(f=>f.kind==='discard-cost'&&f.playerId===actor&&f.count===1));
+    assert.equal(facts.filter(f=>f.kind==='return-to-hand'&&f.playerId===actor&&f.count===1).length,2);
+    assert.equal(await evaluate(`${own}.lifePoints`),9000);assert.equal(await evaluate(`${foe}.lifePoints`),6700);
+    assert.equal(await evaluate(`${own}.graveyard.filter(c=>c.definition.id==='official:19523799').length`),1);
+    assert.equal(await evaluate(`${foe}.graveyard.filter(c=>c.definition.id==='official:19523799').length`),1);
+    await seat(actor);assert.equal(await evaluate('view.normalSummonQuota.remaining'),1);assert.equal(await evaluate('view.result'),null);
+    const version=await evaluate('view.stateVersion');
+    for(const who of ['a','b']) {
+      await seat(who);assert.deepEqual(await evaluate('view.activity.flatMap(e=>e.resolution||[])'),facts);
+      assert.equal(await evaluate(`api('/api/deck?seat='+view.viewerId).then(data=>JSON.stringify(data))`),saved[who]);
+    }
+    assert.equal(await evaluate('view.stateVersion'),version);assert.equal(errors.length,0);
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'ookazi-interactions-'+actor,catalog:110,
+      costDoesNotBurn:true,ownSpellRecovery:true,privateDecision:true,recoveryDoesNotBurn:true,recoveredSpellUsed:true,
+      distinctLPAmounts:[800,1000,500],controllerLP:9000,opponentLP:6700,sequentialSingleLinks:true,noNormalQuotaConsumed:true,
+      samePublicFactsAcrossSeats:true,savedDecksUnchanged:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
   } else if (ookazi !== null) {
     const [actor,origin,mode]=ookazi, other=actor==='a'?'b':'a', beforeLP=mode==='lethal'?800:8000;
     await seat(actor);

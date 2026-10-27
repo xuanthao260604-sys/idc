@@ -14,8 +14,8 @@ Hinotama, Dian Keto the Cure Master, Smashing Ground, Hammer Shot, Tribute to Th
 Đã kiểm chứng [hai Phép thay đổi LP](docs/engine/life-point-spells.md) trên Linux và Windows CI; còn ca Windows 11 desktop chưa chạy.
 Không coi việc cấu hình CI Windows hoặc chạy Linux là đã kiểm chứng Windows.
 
-881/881 test trong 37 file đạt trên Linux và Windows CI.
-52/52 bước validation và 42 browser report đạt, gồm bốn ca [hiệu ứng Ookazi](docs/engine/ookazi.md); Windows dùng Edge, tổng runtimeExceptions=0.
+Mốc trước đã đạt 881/881 test, 52/52 bước và 42 browser report trên Linux/Windows CI.
+Mục hiện tại: [rà soát tương tác Ookazi](docs/engine/ookazi-interaction-audit.md), đang kiểm chứng bộ tổng hợp mới.
 Dữ liệu nhập và catalog runtime đều 110 lá; trạng thái nhập vẫn tách riêng review/runtime.
 Browser regression tính riêng: xây/lưu deck, 5 hiệu ứng, xem Mộ, tạo trận A/B/ngẫu nhiên, bỏ bài,
 Pot với deck 0/1/2 lá, đầu hàng/hủy và tạo trận sau kết thúc, trận tự nhiên đầy đủ.
@@ -23,6 +23,8 @@ Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không 
 
 Đã nhận bộ khung người dùng: [mặt sau chung](docs/beta/card-frames.md) được dùng cho bài úp của cả ba loại.
 Đã ghép [ba khung mặt trước](docs/beta/card-fronts.md), hàng sao và chỉ số lấy từ dữ liệu; ảnh minh họa từng lá sẽ bổ sung sau.
+
+Đã bổ sung [rà soát tương tác Ookazi](docs/engine/ookazi-interaction-audit.md): bỏ làm chi phí không tự gây sát thương, Faith lấy lại đúng Mộ mình rồi dùng lại, kết hợp các Phép LP và bảo vệ handle/receipt.
 
 Đã mở [hiệu ứng Ookazi](docs/engine/ookazi.md): 800 sát thương hiệu ứng cho đối thủ khi link xử lý, từ tay hoặc bài úp của mình; dùng review riêng. [Dữ liệu nguồn](docs/data/ookazi.md) và văn bản lịch sử pending giữ nguyên, không tự nâng trạng thái nhập.
 

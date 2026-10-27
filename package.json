@@ -88,7 +88,8 @@
     "beta:browser-choice-identities": "npm run build && node tools/beta-browser-smoke.mjs --choice-identities",
     "beta:browser-field-keyboard": "npm run build && node tools/beta-browser-smoke.mjs --field-keyboard",
     "beta:browser-decision-cards": "npm run build && node tools/beta-browser-smoke.mjs --decision-cards",
-    "beta:browser-ookazi": "npm run build && node tools/beta-browser-smoke.mjs --ookazi=a:hand:normal && node tools/beta-browser-smoke.mjs --ookazi=b:set:normal && node tools/beta-browser-smoke.mjs --ookazi=a:set:lethal && node tools/beta-browser-smoke.mjs --ookazi=b:hand:lethal"
+    "beta:browser-ookazi": "npm run build && node tools/beta-browser-smoke.mjs --ookazi=a:hand:normal && node tools/beta-browser-smoke.mjs --ookazi=b:set:normal && node tools/beta-browser-smoke.mjs --ookazi=a:set:lethal && node tools/beta-browser-smoke.mjs --ookazi=b:hand:lethal",
+    "beta:browser-ookazi-interactions": "npm run build && node tools/beta-browser-smoke.mjs --ookazi-interactions=a && node tools/beta-browser-smoke.mjs --ookazi-interactions=b"
   },
   "devDependencies": {
     "@types/node": "24.19.2",
