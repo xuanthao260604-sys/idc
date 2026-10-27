@@ -14,15 +14,17 @@ Hinotama, Dian Keto the Cure Master, Smashing Ground, Hammer Shot, Tribute to Th
 Đã kiểm chứng [hai Phép thay đổi LP](docs/engine/life-point-spells.md) trên Linux và Windows CI; còn ca Windows 11 desktop chưa chạy.
 Không coi việc cấu hình CI Windows hoặc chạy Linux là đã kiểm chứng Windows.
 
-897/897 test trong 38 file đạt trên Linux và Windows CI.
-54/54 bước validation và 44 browser report đạt, gồm hai ca [tương tác Ookazi](docs/engine/ookazi-interaction-audit.md); Windows dùng Edge, tổng runtimeExceptions=0.
-Dữ liệu nhập và catalog runtime đều 110 lá; trạng thái nhập vẫn tách riêng review/runtime.
+Mốc trước đã đạt 897/897 test, 54/54 bước và 44 browser report trên Linux/Windows CI.
+Mục hiện tại: [nhập dữ liệu Magic Jammer](docs/data/magic-jammer.md), đang kiểm chứng bộ tổng hợp mới.
+Dữ liệu nhập 111 lá; catalog runtime 110 lá. Magic Jammer chưa mở để đấu; trạng thái nhập vẫn tách riêng review/runtime.
 Browser regression tính riêng: xây/lưu deck, 5 hiệu ứng, xem Mộ, tạo trận A/B/ngẫu nhiên, bỏ bài,
 Pot với deck 0/1/2 lá, đầu hàng/hủy và tạo trận sau kết thúc, trận tự nhiên đầy đủ.
 Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không phải game hoàn tất mọi luật Yu-Gi-Oh!.
 
 Đã nhận bộ khung người dùng: [mặt sau chung](docs/beta/card-frames.md) được dùng cho bài úp của cả ba loại.
 Đã ghép [ba khung mặt trước](docs/beta/card-fronts.md), hàng sao và chỉ số lấy từ dữ liệu; ảnh minh họa từng lá sẽ bổ sung sau.
+
+Đã nhập riêng [Magic Jammer](docs/data/magic-jammer.md), giữ Counter Trap và văn bản nguồn; chuẩn bị cho nhánh phản hồi/phủ nhận Phép. Chưa có review hiệu ứng hoặc binding runtime.
 
 Đã bổ sung [rà soát tương tác Ookazi](docs/engine/ookazi-interaction-audit.md): bỏ làm chi phí không tự gây sát thương, Faith lấy lại đúng Mộ mình rồi dùng lại, kết hợp các Phép LP và bảo vệ handle/receipt.
 
@@ -139,10 +141,10 @@ Người dùng chưa cần nhận beta hoặc tự kiểm thử ở thời đi�
 ## Phạm vi và dữ liệu
 
 [Pipeline nhập](docs/data/pipeline.md) bảo vệ dữ liệu cũ khi nhập lại lỗi, giữ raw/evidence/overlay
-riêng. Hiện có 17 bundle với 110 định nghĩa: 95 verified data và 15 pending rà soát văn bản lịch sử.
+riêng. Hiện có 18 bundle với 111 định nghĩa: 95 verified data và 16 pending rà soát văn bản lịch sử.
 Các số implemented/tested/playable=0 trong snapshot nhập là metadata lần nhập;
-runtime mở riêng 95 quái thường và 14 lá hiệu ứng qua review/kiểm thử trong scope giới hạn từ 16 bundle;
-batch Ookazi chưa cấp cho runtime. Reimport Ookazi lỗi giữ cả 17 bundle và deck A/B nguyên byte. `cards:import` nhập offline,
+runtime mở riêng 95 quái thường và 15 lá hiệu ứng qua review/kiểm thử trong scope giới hạn từ 17 bundle;
+batch Magic Jammer chưa cấp cho runtime. Reimport Ookazi/Magic Jammer lỗi giữ cả 18 bundle và deck A/B nguyên byte. `cards:import` nhập offline,
 `cards:fetch` chỉ dùng khi chủ động refresh nguồn.
 
 Xem [Phép](docs/engine/reviewed-spells.md), [FLIP](docs/engine/reviewed-flips.md),
@@ -158,7 +160,7 @@ hoặc mọi tương tác bài. Bài tự tạo giữ ở [kế hoạch mở r�
 
 `npm run validate:platform` chạy bộ kiểm chứng tổng hợp, ghi report JSON và log từng bước
 vào artifacts/platform-validation/ (Git bỏ qua). Lỗi dừng ngay, phần còn lại ghi chưa chạy.
-Windows CI đã chạy cùng lệnh, đạt 48/48 bước và giữ artifact; report Linux vẫn chỉ xác nhận Linux.
+Windows CI đã chạy cùng lệnh, đạt 54/54 bước và giữ artifact; report Linux vẫn chỉ xác nhận Linux.
 
 ## Kiểm thử giao diện
 
@@ -196,4 +198,4 @@ và dừng/khởi động lại process. Xem [điểm dừng phần chuẩn bị
 Xây deck lưu riêng cho A/B và dùng khi tạo trận mới; sửa deck không đổi trận đang chơi.
 Deck được lưu local qua restart, còn trận đấu vẫn chỉ trong bộ nhớ.
 
-Catalog runtime hợp nhất pilot 20 và classic-10; giữ nguyên định nghĩa/hồ sơ hiệu ứng cũ.
+Catalog runtime nạp 17 bundle đang hoạt động từ danh sách đầu vào chung; giữ nguyên định nghĩa/hồ sơ hiệu ứng cũ.

@@ -1,0 +1,18 @@
+{
+  "passcode": "77414722",
+  "konamiId": 4862,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4862&request_locale=en",
+  "accessedOn": "2026-10-27",
+  "htmlSha256": "c845de6762ad7f9dce7f1f229a3af767c313b6a1d5e455f9ebc01be5a8220ab3",
+  "currentFacts": {
+    "name": "Magic Jammer",
+    "text": "When a Spell Card is activated: Discard 1 card; negate the activation, and if you do, destroy it.",
+    "kind": "trap",
+    "subtype": "counter"
+  },
+  "printing": {
+    "date": "2002-06-26",
+    "setCode": "MRD-128",
+    "product": "METAL RAIDERS"
+  }
+}

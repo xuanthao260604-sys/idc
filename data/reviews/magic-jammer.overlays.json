@@ -1,0 +1,18 @@
+[
+  {
+    "id": "official:77414722",
+    "baseFingerprint": "4c52827717962e80be1c6952cc0df61d9940df652d23507c0010c078cc1186c3",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "pending",
+    "notes": "Current API and official Konami reference text agree. MRD-128 original North American printing verified separately. Historical printed wording remains pending; no Counter Trap runtime review, binding or negation behavior enabled by this import.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4862&request_locale=en",
+        "accessedOn": "2026-10-27",
+        "scope": "text",
+        "notes": "Current official reference verified against frozen Card Text, not asserted as original 2005 printed wording."
+      }
+    ]
+  }
+]

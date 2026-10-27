@@ -44,18 +44,18 @@ describe('Ookazi imported data, separate from runtime behavior', () => {
     expect(sha256(html)).toBe(proof.htmlSha256); expect(html.toString('utf8')).toContain(card.text);
     expect(overlay[0].patch.text).toBe(card.text);
   });
-  it('counts 110 imported cards while runtime support still requires a separate validated review', async () => {
+  it('counts 111 imported cards while runtime support still requires a separate validated review', async () => {
     const files = await readdir(join(projectRoot, 'data/generated'));
     const bundles = files.filter(name => name.endsWith('.json')).map(name => load(`data/generated/${name}`));
-    expect(bundles).toHaveLength(17);
-    expect(bundles.reduce((n, b) => n + b.summary.imported, 0)).toBe(110);
+    expect(bundles).toHaveLength(18);
+    expect(bundles.reduce((n, b) => n + b.summary.imported, 0)).toBe(111);
     expect(bundles.reduce((n, b) => n + b.summary.verifiedData, 0)).toBe(95);
-    expect(bundles.reduce((n, b) => n + b.summary.historicalReviewPending, 0)).toBe(15);
+    expect(bundles.reduce((n, b) => n + b.summary.historicalReviewPending, 0)).toBe(16);
     expect(Object.keys(registry.cards)).toHaveLength(110); expect(registry.cards['official:19523799']).toEqual(imported.cards[0]);
     expect(Object.keys(registry.spellHandlers).length + Object.keys(registry.flipHandlers).length + Object.keys(registry.trapHandlers).length).toBe(15);
     expect(createRegistry(imported.cards, goat200508Format).unsupportedIds).toEqual(['official:19523799']);
   });
-  it('reimports twice offline and checks all seventeen bundles and saved A/B decks without changing bytes', async () => {
+  it('reimports twice offline and checks all eighteen bundles and saved A/B decks without changing bytes', async () => {
     const f = await fixture();
     try {
       const before = await snapshot(f.root);
@@ -65,7 +65,7 @@ describe('Ookazi imported data, separate from runtime behavior', () => {
       const reloaded = createDeckStore(registry, f.directory); expect([reloaded.get('a'), reloaded.get('b')]).toEqual(f.decks);
     } finally { await rm(f.root, { recursive: true, force: true }); }
   });
-  it.each(['checksum', 'review', 'official facts', 'cutoff'])('failed %s reimport preserves all seventeen bundles, inputs and valid deck files', async mode => {
+  it.each(['checksum', 'review', 'official facts', 'cutoff'])('failed %s reimport preserves all eighteen bundles, inputs and valid deck files', async mode => {
     const f = await fixture();
     try {
       let message: string;
