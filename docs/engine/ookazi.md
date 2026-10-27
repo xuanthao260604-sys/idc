@@ -67,5 +67,34 @@ Faith phát hiện phép đếm tay sau Pass đã dùng ghế đang xem thay vì
 sở hữu; ca thử được sửa để luôn đếm tay A, kể cả khi viewer là B. Không
 đổi engine hoặc kết quả hiệu ứng để khớp kiểm thử.
 
-Kết quả đầy đủ Linux và Windows CI sẽ được ghi sau khi đọc report thực tế.
+Linux đã đạt 881/881 test trong 37 file, 52/52 bước validation và 42 browser
+report bằng Chromium 154.0.8037.57, runtimeExceptions=0. Đã đọc report tại
+artifacts/platform-validation/2026-10-27T02-18-50-946Z-247909/report.json;
+kiểm tra từng browser step có đúng một report khớp host và đủ phiên bản.
+Bốn ca Ookazi, preview/status đủ 110 lá, nhập 17 bundle và bảo toàn deck
+đều đạt. engine:capabilities có 110 supported, 15 reviewed effects, 11 scope,
+17 snapshot; riêng trạng thái nhập Ookazi vẫn pending/not-started/not-run.
+
+Hai trận tự nhiên chỉ dùng thao tác UI, không chỉnh state khi chơi:
+
+- Pilot 20 loại giữ nguyên seed 08: 16 lượt, 339 lệnh, 15 tấn công,
+  4 quyết định, đủ năm hiệu ứng cũ; B thắng, LP 0/4200.
+- Expanded 110 loại giữ seed 09: 16 lượt, 348 lệnh, 15 tấn công,
+  1 quyết định; B thắng, LP 0/3450. Dùng Dian Keto, Earthquake,
+  Magician of Faith, Monster Reincarnation, Pot of Greed và Tribute to
+  The Doomed. Ookazi được xác minh riêng ở bốn ca fixture, không gán
+  cho trận tự nhiên khi không xuất hiện trong effectsUsed.
+
+Windows và Ubuntu CI đã đạt trên source commit
+2e343281ecae31af95d342e827549ee455ac6fbd,
+[run 40437834117](https://github.com/xuanthao260604-sys/idc/actions/runs/40437834117).
+Đã tải và đọc artifact windows-validation-40437834117-1:
+win32 x64, OS 10.0.26100, Node 24.19.0, npm 11.17.0,
+Edge 155.0.4283.62. Windows đạt 881/881 test (37 file), 52/52 bước,
+42 browser report; từng bước browser đúng một report win32/version hợp lệ,
+runtimeExceptions=0. Đã kiểm tra đủ 31 test Ookazi và 17 bundle/110 lá/
+95 verified/15 pending trong log thực tế. Toàn capabilities JSON giống Linux,
+gồm trạng thái nhập pending của Ookazi; bốn ca Ookazi và hai trận tự nhiên
+có kết quả giống Linux. Report ghi windows11DesktopVerified=false tại
+artifacts/ci-ookazi-runtime/2026-10-27T02-20-49-739Z-5692/report.json.
 Windows 11 desktop chưa thử trực tiếp; chưa đóng gói hoặc bàn giao beta.

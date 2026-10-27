@@ -14,8 +14,8 @@ Hinotama, Dian Keto the Cure Master, Smashing Ground, Hammer Shot, Tribute to Th
 Đã kiểm chứng [hai Phép thay đổi LP](docs/engine/life-point-spells.md) trên Linux và Windows CI; còn ca Windows 11 desktop chưa chạy.
 Không coi việc cấu hình CI Windows hoặc chạy Linux là đã kiểm chứng Windows.
 
-Mốc kiểm chứng trước: 848/848 test, 48/48 bước và 38 browser run đạt trên Linux và Windows CI.
-Mục hiện tại: [mở hiệu ứng Ookazi](docs/engine/ookazi.md), đang kiểm chứng bộ tổng hợp mới.
+881/881 test trong 37 file đạt trên Linux và Windows CI.
+52/52 bước validation và 42 browser report đạt, gồm bốn ca [hiệu ứng Ookazi](docs/engine/ookazi.md); Windows dùng Edge, tổng runtimeExceptions=0.
 Dữ liệu nhập và catalog runtime đều 110 lá; trạng thái nhập vẫn tách riêng review/runtime.
 Browser regression tính riêng: xây/lưu deck, 5 hiệu ứng, xem Mộ, tạo trận A/B/ngẫu nhiên, bỏ bài,
 Pot với deck 0/1/2 lá, đầu hàng/hủy và tạo trận sau kết thúc, trận tự nhiên đầy đủ.

@@ -1,6 +1,10 @@
 # Kết quả Windows CI
 
-> Mốc hiện hành: [Ookazi — nhập dữ liệu, chưa mở runtime](../data/ookazi.md), nhập 110/runtime 109; [run 40331712686](https://github.com/xuanthao260604-sys/idc/actions/runs/40331712686), commit 3eb63fc.
+> Mốc hiện hành: [hiệu ứng Ookazi](../engine/ookazi.md), catalog 110; [run 40437834117](https://github.com/xuanthao260604-sys/idc/actions/runs/40437834117), commit 2e34328.
+> Windows/Ubuntu đạt; Windows: 881/881 test trong 37 file, 52/52 bước, 42 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Đã tải/đọc artifact windows-validation-40437834117-1: bốn ca Ookazi A/B, tay/Set, normal/lethal đạt; đúng 800 sát thương khi resolve, không tiêu quota, public facts/kết quả giống giữa ghế. Capabilities JSON giống Linux: 110 supported/15 hiệu ứng/11 scope/17 snapshot; nhập 95 verified/15 historical pending vẫn tách riêng. Hai trận tự nhiên đạt, dữ liệu/deck cũ giữ byte; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [Ookazi — nhập dữ liệu, chưa mở runtime](../data/ookazi.md), nhập 110/runtime 109; [run 40331712686](https://github.com/xuanthao260604-sys/idc/actions/runs/40331712686), commit 3eb63fc.
 > Windows/Ubuntu đạt; Windows: 848/848 test, 48/48 bước, 38 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Đã đọc artifact windows-validation-40331712686-1: kiểm đủ 17 bundle/110 lá/95 verified/15 pending; bảy test nhập Ookazi đạt, lỗi giữ byte của toàn bộ dữ liệu/deck fixture. Capabilities JSON giống Linux, runtime vẫn 109 lá/14 hiệu ứng từ 16 bundle; Ookazi chưa có binding. Windows 11 desktop chưa chạy.
 
