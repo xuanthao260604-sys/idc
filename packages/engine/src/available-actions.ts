@@ -70,7 +70,12 @@ export function availableActions(registry: Registry, state: DuelState, projectio
     if (!c || c.visibility !== 'known' || c.position !== 'face-down') continue;
     const id = own.spellsTraps[slot]!, def = registry.cards[state.cards[id]!.definition.id]!;
     if (def.kind === 'spell') offerSpell(c.handle, id, slot as Slot);
-    if (def.kind === 'trap') for (const target of opponent.monsters) {
+    if (registry.counterTrapHandlers[def.id] && view.chain.length === 1) for (const discard of view.selfHand) {
+      const chainHandle = view.chain[0]!.chainHandle;
+      offer({ type: 'activate-counter-trap', cardHandle: c.handle, discardHandle: discard.handle, chainHandle },
+        { type: 'activate-counter-trap', instanceId: id, discardId: resolve(discard.handle), respondingToLinkId: projection.resolveChainHandle(chainHandle, state, actorId) });
+    }
+    if (registry.trapHandlers[def.id]) for (const target of opponent.monsters) {
       if (!target || target.visibility !== 'known' || target.position === 'face-down-defense') continue;
       offer({ type: 'activate-trap', cardHandle: c.handle, targetHandle: target.handle }, { type: 'activate-trap', instanceId: id, targetId: resolve(target.handle) });
     }

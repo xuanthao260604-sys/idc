@@ -1,5 +1,8 @@
 # Magic Jammer — review thiết kế Chain/phủ nhận — 27/10/2026
 
+Cập nhật 28/10: [runtime Magic Jammer](../engine/magic-jammer.md) đã được triển khai riêng.
+Nội dung bên dưới giữ mốc nhập/review ngày 27/10, không thay trạng thái snapshot nguồn.
+
 Đã đối chiếu nguồn và chốt thiết kế phạm vi đầu tiên. Đây là đầu vào cho
 triển khai, chưa phải hiệu ứng đã hoạt động. Magic Jammer vẫn nằm ngoài
 runtime; nhập 111 loại, chơi được 110 loại/15 hiệu ứng. Không đổi engine,

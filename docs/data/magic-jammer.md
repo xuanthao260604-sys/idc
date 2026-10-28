@@ -1,5 +1,8 @@
 # Magic Jammer — nhập dữ liệu, chưa mở runtime — 27/10/2026
 
+Cập nhật 28/10: [runtime Magic Jammer](../engine/magic-jammer.md) đã được triển khai riêng.
+Nội dung bên dưới giữ mốc nhập/review ngày 27/10, không thay trạng thái snapshot nguồn.
+
 Cập nhật: đã có [review thiết kế Chain/phủ nhận](../rules/magic-jammer-review.md).
 Runtime và trạng thái nhập dưới đây giữ nguyên; binding/kiểm thử hiệu ứng chưa triển khai.
 

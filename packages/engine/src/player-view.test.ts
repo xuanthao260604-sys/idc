@@ -106,7 +106,7 @@ describe('Player view allowlist and private handle mapping', () => {
     if (!activated.accepted) throw new Error(activated.message);
     const projection = createPlayerProjection(registry, activated.state, 'b'), chain = projection.view.chain[0]!;
     expect(chain.sourceHandle).toBe(projection.view.players[0]!.spellsTraps[0]!.handle);
-    expect(chain).toEqual({ controllerId: 'a', sourceHandle: expect.any(String), targetHandles: [], spellSpeed: 1 });
+    expect(chain).toEqual({ chainHandle: expect.any(String), controllerId: 'a', sourceHandle: expect.any(String), targetHandles: [], spellSpeed: 1 });
     const json = JSON.stringify(projection.view);
     expect(json).not.toContain(activated.state.chain[0]!.id); expect(json).not.toContain('sourceAtActivation');
   });

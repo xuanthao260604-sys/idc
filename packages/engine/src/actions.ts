@@ -6,6 +6,7 @@ export const ActionSchema = z.discriminatedUnion('type', [
   z.strictObject({ type: z.literal('normal-summon'), instanceId: instance, slot, tributeIds: z.array(instance).max(5) }),
   z.strictObject({ type: z.literal('set-monster'), instanceId: instance, slot, tributeIds: z.array(instance).max(5) }),
   z.strictObject({ type: z.literal('set-trap'), instanceId: instance, slot }),
+  z.strictObject({ type: z.literal('activate-counter-trap'), instanceId: instance, discardId: instance, respondingToLinkId: instance }),
   z.strictObject({ type: z.literal('activate-trap'), instanceId: instance, targetId: instance }),
   z.strictObject({ type: z.literal('activate-spell'), instanceId: instance, slot, discardId: instance.optional(), targetId: instance.optional() }),
   z.strictObject({ type: z.literal('set-spell'), instanceId: instance, slot }),

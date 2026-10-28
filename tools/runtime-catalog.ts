@@ -6,6 +6,7 @@ import { goat200508Format } from '../packages/card-data/src/formats/goat-2005-08
 import { createRegistry } from '../packages/engine/src/registry.js';
 import { SpellReviewsSchema } from '../packages/engine/src/spell-review.js';
 import { FlipReviewsSchema } from '../packages/engine/src/flip-review.js';
+import { CounterReviewsSchema } from '../packages/engine/src/counter-review.js';
 import { TrapReviewsSchema } from '../packages/engine/src/trap-review.js';
 import { projectRoot } from './project-root.js';
 import inputs from './runtime-catalog-inputs.json' with { type: 'json' };
@@ -29,7 +30,8 @@ export function loadRuntimeCatalog(root = projectRoot) {
     spells: SpellReviewsSchema.parse(inputs.reviews.spells.flatMap(read)),
     flips: FlipReviewsSchema.parse(inputs.reviews.flips.flatMap(read)),
     traps: TrapReviewsSchema.parse(inputs.reviews.traps.flatMap(read)),
+    counters: CounterReviewsSchema.parse(inputs.reviews.counters.flatMap(read)),
   };
-  const registry = createRegistry(cards, goat200508Format, {}, effectReviews.spells, effectReviews.flips, effectReviews.traps);
+  const registry = createRegistry(cards, goat200508Format, {}, effectReviews.spells, effectReviews.flips, effectReviews.traps, effectReviews.counters);
   return { cards, registry, effectReviews, importedSnapshots: Object.fromEntries(bundles.map(({ key, bundle }) => [key, bundle.summary])) };
 }

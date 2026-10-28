@@ -19,6 +19,7 @@ const ClientAction = z.discriminatedUnion('type', [
   z.strictObject({ type: z.literal('change-position'), cardHandle: token }),
   z.strictObject({ type: z.literal('flip-summon'), cardHandle: token }),
   z.strictObject({ type: z.literal('activate-spell'), cardHandle: token, slot, discardHandle: token.optional(), targetHandle: token.optional() }),
+  z.strictObject({ type: z.literal('activate-counter-trap'), cardHandle: token, discardHandle: token, chainHandle: token }),
   z.strictObject({ type: z.literal('activate-trap'), cardHandle: token, targetHandle: token }),
   z.strictObject({ type: z.literal('declare-attack'), attackerHandle: token, targetHandle: token }),
   z.strictObject({ type: z.literal('answer-decision'), decisionId: token, optionIds: z.array(token).max(80) }),
@@ -94,6 +95,12 @@ export function createCommandAdapter(registry: Registry, initialState: DuelState
             case 'activate-spell': action = { type: a.type, instanceId: resolve(a.cardHandle), slot: a.slot,
               ...(a.discardHandle !== undefined ? { discardId: resolve(a.discardHandle) } : {}),
               ...(a.targetHandle !== undefined ? { targetId: resolve(a.targetHandle) } : {}) }; break;
+            case 'activate-counter-trap': {
+              let respondingToLinkId: string;
+              try { respondingToLinkId = p.resolveChainHandle(a.chainHandle, state, actorId); }
+              catch { throw new RuleError('invalid-target', 'Invalid Chain handle'); }
+              action = { type: a.type, instanceId: resolve(a.cardHandle), discardId: resolve(a.discardHandle), respondingToLinkId }; break;
+            }
             case 'activate-trap': action = { type: a.type, instanceId: resolve(a.cardHandle), targetId: resolve(a.targetHandle) }; break;
             case 'set-spell-trap': {
               if (a.zone !== 'spell-trap' || a.slot === null) throw new RuleError('invalid-action', 'Unsupported zone');

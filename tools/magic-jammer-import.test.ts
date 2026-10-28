@@ -56,11 +56,11 @@ describe('Magic Jammer imported data, separate from runtime behavior', () => {
     expect(bundles.reduce((n, b) => n + b.summary.imported, 0)).toBe(111);
     expect(bundles.reduce((n, b) => n + b.summary.verifiedData, 0)).toBe(95);
     expect(bundles.reduce((n, b) => n + b.summary.historicalReviewPending, 0)).toBe(16);
-    expect(Object.keys(registry.cards)).toHaveLength(110); expect(registry.cards['official:77414722']).toBeUndefined();
-    const runtime=loadRuntimeCatalog(),probe=createRegistry([...runtime.cards,...imported.cards],goat200508Format,{},runtime.effectReviews.spells,runtime.effectReviews.flips,runtime.effectReviews.traps);
+    expect(Object.keys(registry.cards)).toHaveLength(111); expect(registry.cards['official:77414722']).toEqual(imported.cards[0]);
+    const runtime=loadRuntimeCatalog(),probe=createRegistry([...runtime.cards.filter(c=>c.id!=='official:77414722'),...imported.cards],goat200508Format,{},runtime.effectReviews.spells,runtime.effectReviews.flips,runtime.effectReviews.traps);
     expect(probe.unsupportedIds).toEqual(['official:77414722']);expect(probe.spellHandlers).toEqual(registry.spellHandlers);expect(probe.flipHandlers).toEqual(registry.flipHandlers);expect(probe.trapHandlers).toEqual(registry.trapHandlers);
     expect(()=>validateDeck(probe,[...createDeckStore(registry).defaults,'official:77414722'])).toThrow('Unsupported');
-    expect(Object.keys(registry.spellHandlers).length + Object.keys(registry.flipHandlers).length + Object.keys(registry.trapHandlers).length).toBe(15);
+    expect(Object.keys(registry.spellHandlers).length + Object.keys(registry.flipHandlers).length + Object.keys(registry.trapHandlers).length + Object.keys(registry.counterTrapHandlers).length).toBe(16);
     expect(createRegistry(imported.cards, goat200508Format).unsupportedIds).toEqual(['official:77414722']);
   });
   it('reimports twice offline and checks all eighteen bundles and saved A/B decks without changing bytes', async () => {

@@ -51,8 +51,8 @@ describe('Ookazi imported data, separate from runtime behavior', () => {
     expect(bundles.reduce((n, b) => n + b.summary.imported, 0)).toBe(111);
     expect(bundles.reduce((n, b) => n + b.summary.verifiedData, 0)).toBe(95);
     expect(bundles.reduce((n, b) => n + b.summary.historicalReviewPending, 0)).toBe(16);
-    expect(Object.keys(registry.cards)).toHaveLength(110); expect(registry.cards['official:19523799']).toEqual(imported.cards[0]);
-    expect(Object.keys(registry.spellHandlers).length + Object.keys(registry.flipHandlers).length + Object.keys(registry.trapHandlers).length).toBe(15);
+    expect(Object.keys(registry.cards)).toHaveLength(111); expect(registry.cards['official:19523799']).toEqual(imported.cards[0]);
+    expect(Object.keys(registry.spellHandlers).length + Object.keys(registry.flipHandlers).length + Object.keys(registry.trapHandlers).length + Object.keys(registry.counterTrapHandlers).length).toBe(16);
     expect(createRegistry(imported.cards, goat200508Format).unsupportedIds).toEqual(['official:19523799']);
   });
   it('reimports twice offline and checks all eighteen bundles and saved A/B decks without changing bytes', async () => {

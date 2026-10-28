@@ -6,17 +6,17 @@ Game đấu bài hai người theo Goat Format Bắc Mỹ: cutoff 17/8/2005, ban
 
 ## Tiến độ hiện tại
 
-Đã có bàn đấu hotseat hai người thay phiên cùng máy, catalog 110 loại và deck mẫu hợp lệ 40 lá; deck A/B tự xây vẫn được giữ.
-Core hỗ trợ 95 quái thường; 15 hiệu ứng Pot of Greed, Fissure, Trap Hole, Hane-Hane, Man-Eater Bug,
-Hinotama, Dian Keto the Cure Master, Smashing Ground, Hammer Shot, Tribute to The Doomed, Monster Reincarnation, Block Attack, Earthquake, Magician of Faith và Ookazi được mở bằng hồ sơ review và kiểm thử trong scope giới hạn.
+Đã có bàn đấu hotseat hai người thay phiên cùng máy, catalog 111 loại và deck mẫu hợp lệ 40 lá; deck A/B tự xây vẫn được giữ.
+Core hỗ trợ 95 quái thường; 16 hiệu ứng Pot of Greed, Fissure, Trap Hole, Hane-Hane, Man-Eater Bug,
+Hinotama, Dian Keto the Cure Master, Smashing Ground, Hammer Shot, Tribute to The Doomed, Monster Reincarnation, Block Attack, Earthquake, Magician of Faith, Ookazi và Magic Jammer được mở bằng hồ sơ review và kiểm thử trong scope giới hạn.
 
 Đã hoàn tất [hotseat nội bộ 20 lá](docs/milestones/hotseat-20.md) và [xây/lưu deck A/B](docs/beta/deck-builder.md) trong scope giới hạn.
 Đã kiểm chứng [hai Phép thay đổi LP](docs/engine/life-point-spells.md) trên Linux và Windows CI; còn ca Windows 11 desktop chưa chạy.
 Không coi việc cấu hình CI Windows hoặc chạy Linux là đã kiểm chứng Windows.
 
-905/905 test trong 39 file đạt trên Linux và Windows CI.
-54/54 bước validation và 44 browser report đạt bằng Edge trên Windows CI; chi tiết [nhập dữ liệu Magic Jammer](docs/data/magic-jammer.md), tổng runtimeExceptions=0.
-Dữ liệu nhập 111 lá; catalog runtime 110 lá. Magic Jammer chưa mở để đấu; trạng thái nhập vẫn tách riêng review/runtime.
+Mốc trước đạt 905 test, 54 bước và 44 browser report trên Linux/Windows CI.
+Mục hiện tại: [mở Counter Trap Magic Jammer](docs/engine/magic-jammer.md), Linux đã đạt 1030 test/58 bước/48 browser report; đang kiểm chứng Windows CI.
+Dữ liệu nhập và catalog runtime đều 111 loại; trạng thái nhập vẫn tách riêng review/runtime.
 Browser regression tính riêng: xây/lưu deck, 5 hiệu ứng, xem Mộ, tạo trận A/B/ngẫu nhiên, bỏ bài,
 Pot với deck 0/1/2 lá, đầu hàng/hủy và tạo trận sau kết thúc, trận tự nhiên đầy đủ.
 Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không phải game hoàn tất mọi luật Yu-Gi-Oh!.
@@ -24,9 +24,9 @@ Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không 
 Đã nhận bộ khung người dùng: [mặt sau chung](docs/beta/card-frames.md) được dùng cho bài úp của cả ba loại.
 Đã ghép [ba khung mặt trước](docs/beta/card-fronts.md), hàng sao và chỉ số lấy từ dữ liệu; ảnh minh họa từng lá sẽ bổ sung sau.
 
-Đã chốt [review thiết kế Magic Jammer](docs/rules/magic-jammer-review.md): nguồn, chi phí, phản hồi trực tiếp và phạm vi hai liên kết; chưa triển khai hoặc mở hiệu ứng trong runtime.
+Đã mở [Counter Trap Magic Jammer](docs/engine/magic-jammer.md): bỏ một lá làm cost, phủ nhận activation của Phép đang phản hồi, giữ cost gốc và bỏ qua hiệu ứng Phép; chỉ pattern hai liên kết đã duyệt. [Review thiết kế](docs/rules/magic-jammer-review.md) giữ nguồn và ranh giới.
 
-Đã nhập riêng [Magic Jammer](docs/data/magic-jammer.md), giữ Counter Trap và văn bản nguồn; chuẩn bị cho nhánh phản hồi/phủ nhận Phép. Chưa có review hiệu ứng hoặc binding runtime.
+Đã nhập riêng [Magic Jammer](docs/data/magic-jammer.md), giữ Counter Trap và văn bản nguồn; chuẩn bị cho nhánh phản hồi/phủ nhận Phép. Review runtime và kiểm thử được ghi riêng ở mốc triển khai.
 
 Đã bổ sung [rà soát tương tác Ookazi](docs/engine/ookazi-interaction-audit.md): bỏ làm chi phí không tự gây sát thương, Faith lấy lại đúng Mộ mình rồi dùng lại, kết hợp các Phép LP và bảo vệ handle/receipt.
 
@@ -38,11 +38,11 @@ Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không 
 
 Đã siết [bằng chứng kiểm thử trình duyệt](docs/platform/browser-evidence.md): exit 0 vẫn bị từ chối nếu thiếu/trùng report, sai nền tảng, thiếu phiên bản hoặc có lỗi runtime; đọc đủ UTF-8 và dòng cuối không newline.
 
-Đã sửa [kiểm tra đầu vào trước khởi động](docs/platform/catalog-preflight.md): dùng chung danh sách 17 bundle/12 file review với bộ nạp, phát hiện sáu file bị bỏ sót và từ chối thư mục đặt nhầm chỗ file; không tự sửa dữ liệu.
+Đã sửa [kiểm tra đầu vào trước khởi động](docs/platform/catalog-preflight.md): dùng chung danh sách 18 bundle/13 file review với bộ nạp, phát hiện sáu file bị bỏ sót và từ chối thư mục đặt nhầm chỗ file; không tự sửa dữ liệu.
 
 Đã thêm [giữ đúng ghế khi đọc deck](docs/beta/deck-read-guard.md): mở/kiểm tra/tải deck từ chối tại server khi cookie đổi ghế ở cửa sổ khác; lỗi giữ nguyên nháp và lịch sử.
 
-Đã sửa [báo cáo khả năng thực thi](docs/engine/capability-report.md): lấy phạm vi từ review đang hoạt động, ghi đủ 15 hiệu ứng/11 scope và giữ trạng thái nhập riêng.
+Đã sửa [báo cáo khả năng thực thi](docs/engine/capability-report.md): lấy phạm vi từ review đang hoạt động, ghi đủ 16 hiệu ứng/12 scope và giữ trạng thái nhập riêng.
 
 Đã thêm [trạng thái dữ liệu và hoạt động của từng lá](docs/beta/card-support.md): tách đối chiếu dữ liệu, loại văn bản và khả năng đang mở; chỉ hiện cho lá đã biết danh tính.
 
@@ -145,8 +145,8 @@ Người dùng chưa cần nhận beta hoặc tự kiểm thử ở thời đi�
 [Pipeline nhập](docs/data/pipeline.md) bảo vệ dữ liệu cũ khi nhập lại lỗi, giữ raw/evidence/overlay
 riêng. Hiện có 18 bundle với 111 định nghĩa: 95 verified data và 16 pending rà soát văn bản lịch sử.
 Các số implemented/tested/playable=0 trong snapshot nhập là metadata lần nhập;
-runtime mở riêng 95 quái thường và 15 lá hiệu ứng qua review/kiểm thử trong scope giới hạn từ 17 bundle;
-batch Magic Jammer chưa cấp cho runtime. Reimport Ookazi/Magic Jammer lỗi giữ cả 18 bundle và deck A/B nguyên byte. `cards:import` nhập offline,
+runtime mở riêng 95 quái thường và 16 lá hiệu ứng qua review/kiểm thử trong scope giới hạn từ 18 bundle;
+Magic Jammer chỉ được mở trong phạm vi hai liên kết đã duyệt. Reimport Ookazi/Magic Jammer lỗi giữ cả 18 bundle và deck A/B nguyên byte. `cards:import` nhập offline,
 `cards:fetch` chỉ dùng khi chủ động refresh nguồn.
 
 Xem [Phép](docs/engine/reviewed-spells.md), [FLIP](docs/engine/reviewed-flips.md),
@@ -162,7 +162,7 @@ hoặc mọi tương tác bài. Bài tự tạo giữ ở [kế hoạch mở r�
 
 `npm run validate:platform` chạy bộ kiểm chứng tổng hợp, ghi report JSON và log từng bước
 vào artifacts/platform-validation/ (Git bỏ qua). Lỗi dừng ngay, phần còn lại ghi chưa chạy.
-Windows CI đã chạy cùng lệnh, đạt 54/54 bước và giữ artifact; report Linux vẫn chỉ xác nhận Linux.
+Windows CI đã chạy cùng lệnh, đạt 54/54 bước ở mốc trước; mục Magic Jammer đang kiểm chứng 58 bước và giữ artifact; report Linux vẫn chỉ xác nhận Linux.
 
 ## Kiểm thử giao diện
 
@@ -200,4 +200,4 @@ và dừng/khởi động lại process. Xem [điểm dừng phần chuẩn bị
 Xây deck lưu riêng cho A/B và dùng khi tạo trận mới; sửa deck không đổi trận đang chơi.
 Deck được lưu local qua restart, còn trận đấu vẫn chỉ trong bộ nhớ.
 
-Catalog runtime nạp 17 bundle đang hoạt động từ danh sách đầu vào chung; giữ nguyên định nghĩa/hồ sơ hiệu ứng cũ.
+Catalog runtime nạp 18 bundle đang hoạt động từ danh sách đầu vào chung; giữ nguyên định nghĩa/hồ sơ hiệu ứng cũ.

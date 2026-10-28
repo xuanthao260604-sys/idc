@@ -125,27 +125,41 @@ export function assertDuelInvariants(state: DuelState, registry: Registry) {
     p.spellsTraps.forEach((id, slot) => { if (id !== null) visit(id, p, 'spell-trap', slot as Slot); });
     p.monsters.forEach((id, slot) => { if (id !== null) visit(id, p, 'monster', slot as Slot); });
   }
+  const counterLinks = state.chain.filter(link => registry.counterTrapHandlers[state.cards[link.source]?.definition.id ?? '']);
+  if (counterLinks.length) {
+    if (counterLinks.length !== 1 || state.chain.length !== 2 || counterLinks[0] !== state.chain[1]
+      || state.chain[0]!.effectId !== 'normal-spell' || state.chain[1]!.respondingToLinkId !== state.chain[0]!.id
+      || state.turn.activePlayer !== state.chain[0]!.controllerId || registry.cards[state.cards[state.chain[0]!.source]?.definition.id ?? '']?.origin !== 'official' || !['main1', 'main2'].includes(state.turn.phase)) throw new Error('Invalid supported Counter Chain');
+  } else if (state.chain.length > 1 && !state.chain.every(link => link.effectId === 'destroy-opponent-normal-or-flip-summoned-1000')) throw new Error('Unsupported mixed Chain');
+  if (new Set(state.chain.map(link => link.id)).size !== state.chain.length || new Set(state.chain.map(link => link.source)).size !== state.chain.length) throw new Error('Duplicate Chain identity');
   for (const link of state.chain) {
     const card = state.cards[link.source];
     const flip = card && registry.flipHandlers[card.definition.id];
+    const counter = card && registry.counterTrapHandlers[card.definition.id];
     const trap = card && registry.trapHandlers[card.definition.id];
     const positionTarget = card && registry.spellHandlers[card.definition.id]?.handler === 'target-opposing-attack-to-defense';
     const graveyardReturn = card && registry.spellHandlers[card.definition.id]?.handler === 'discard-return-own-graveyard-monster';
     const discardTarget = graveyardReturn || (card && registry.spellHandlers[card.definition.id]?.handler === 'discard-destroy-target-monster');
-    const cost = link.costEvents[0], paid = cost?.affectedInstances[0] && state.cards[cost.affectedInstances[0]];
+    const cost = link.costEvents[0], paid = cost?.affectedInstances[0] ? state.cards[cost.affectedInstances[0]] : undefined;
     const ref = link.targetRefs[0], target = ref && state.cards[ref.instanceId];
     const targetDefinition = target && registry.cards[target.definition.id];
     const validDiscardTarget = ref && (targetDefinition?.kind === 'normal-monster' || targetDefinition?.kind === 'effect-monster')
       && (graveyardReturn
         ? ref.locationAtSelection.kind === 'graveyard' && ref.locationAtSelection.playerId === link.controllerId && target!.ownerId === link.controllerId
         : ref.locationAtSelection.kind === 'monster' && state.players.some(p => p.id === ref.locationAtSelection.playerId) && ref.instanceId !== cost?.affectedInstances[0]);
-    const validCosts = discardTarget
+    const validCosts = discardTarget || counter
       ? link.costEvents.length === 1 && cost!.kind === 'cards-discarded' && cost!.details?.reason === 'activation-cost'
         && cost!.details?.playerId === link.controllerId && cost!.affectedInstances.length === 1
         && paid && paid.ownerId === link.controllerId && paid.location.kind === 'graveyard'
         && Number.isSafeInteger(cost!.sequence) && cost!.sequence > 0 && cost!.sequence < state.eventSequence
       : link.costEvents.length === 0;
-    const validSource = card && (trap
+    const validSource = card && (counter
+      ? card.location.kind === 'spell-trap' && card.position === 'face-up' && link.effectId === counter && !link.targetRefs.length
+        && link.respondingToLinkId === state.chain[0]!.id && state.chain[1] === link
+        && card.markers.setOnTurn !== null && card.markers.setOnTurn < state.turn.number
+        && JSON.stringify(link.sourceAtActivation) === JSON.stringify(card)
+        && !state.chain[0]!.costEvents.some(event => event.affectedInstances.includes(paid?.id ?? '') || event.sequence >= (cost?.sequence ?? 0))
+      : trap
       ? card.location.kind === 'spell-trap' && card.position === 'face-up' && link.effectId === trap && link.targetRefs.length === 1
       : flip
       ? card.location.kind === 'monster' && link.effectId === flip && link.targetRefs.length <= 1
@@ -156,7 +170,7 @@ export function assertDuelInvariants(state: DuelState, registry: Registry) {
             && target?.location.kind === 'monster' && target.controllerId !== link.controllerId && target.position === 'face-up-attack'
             && JSON.stringify(target.location) === JSON.stringify(ref.locationAtSelection)
           : !link.targetRefs.length));
-    if (!validSource || link.controllerId !== card!.controllerId || link.spellSpeed !== (trap ? 2 : 1) || !validCosts
+    if (!validSource || link.controllerId !== card!.controllerId || link.spellSpeed !== (counter ? 3 : trap ? 2 : 1) || !validCosts || (!counter && link.respondingToLinkId !== undefined)
       || link.activationNegated || link.effectNegated || !['chain-response', 'resolving'].includes(state.timing.window)) throw new Error('Invalid supported Chain');
   }
   if (seen.size !== Object.keys(state.cards).length) throw new Error('Unreferenced card instance');
@@ -393,7 +407,7 @@ function resolveFlip(c: Context) {
 function setTrap(c: Context, actorId: string, id: string, slot: Slot) {
   requireMain(c, actorId);
   const p = mutablePlayer(c.state, actorId), card = c.state.cards[id];
-  rule(card && p.hand.includes(id) && c.registry.trapHandlers[card.definition.id], 'invalid-target', 'Unsupported Trap in hand');
+  rule(card && p.hand.includes(id) && (c.registry.trapHandlers[card.definition.id] || c.registry.counterTrapHandlers[card.definition.id]), 'invalid-target', 'Unsupported Trap in hand');
   rule(p.spellsTraps[slot] === null, 'occupied-zone', 'Spell/Trap zone occupied');
   p.hand.splice(p.hand.indexOf(id), 1); p.spellsTraps[slot] = id;
   card.location = { kind: 'spell-trap', playerId: actorId, slot }; card.position = 'face-down'; card.markers.setOnTurn = c.state.turn.number;
@@ -420,6 +434,42 @@ function activateTrap(c: Context, actorId: string, id: string, targetId: string)
   // A response belongs to the same summon event; do not erase that occurrence with activation bookkeeping.
   emit(c, 'trap-activated', [id, targetId], {}, false);
   c.state.timing.window = 'chain-response'; c.state.timing.priorityPlayer = other(c.state, actorId).id; c.state.timing.consecutivePasses = 0;
+}
+/** Deliberately restricted to the reviewed Normal Spell + Counter Trap pattern. */
+function activateCounterTrap(c: Context, actorId: string, id: string, discardId: string, respondingToLinkId: string) {
+  rule(!c.state.pendingDecision && c.state.timing.priorityPlayer === actorId, 'not-your-action', 'Wait for response priority');
+  const original = c.state.chain[0];
+  rule(c.state.timing.window === 'chain-response' && c.state.chain.length === 1 && original?.effectId === 'normal-spell'
+    && original.id === respondingToLinkId && original.controllerId === c.state.turn.activePlayer && ['main1', 'main2'].includes(c.state.turn.phase), 'illegal-timing', 'Respond directly to the supported Spell activation');
+  const originalCard = c.state.cards[original.source];
+  rule(originalCard && c.registry.cards[originalCard.definition.id]?.origin === 'official' && c.registry.spellHandlers[originalCard.definition.id] && originalCard.location.kind === 'spell-trap'
+    && originalCard.position === 'face-up', 'invalid-target', 'Missing original Spell activation');
+  const p = mutablePlayer(c.state, actorId), card = c.state.cards[id];
+  rule(card && c.registry.counterTrapHandlers[card.definition.id] && card.controllerId === actorId
+    && card.location.kind === 'spell-trap' && card.location.playerId === actorId && card.position === 'face-down', 'invalid-target', 'Counter Trap must be Set on your field');
+  rule(card.markers.setOnTurn !== null && card.markers.setOnTurn < c.state.turn.number, 'illegal-timing', 'Cannot activate Trap in the turn it was Set');
+  rule(discardId !== id && p.hand.includes(discardId), 'unpayable-cost', 'Discard one card from your hand');
+  // All conditions precede the first mutation. Rejected intent never pays or reveals anything.
+  sendToGraveyard(c, discardId); emit(c, 'cards-discarded', [discardId], { playerId: actorId, reason: 'activation-cost' });
+  const cost = c.events.at(-1)!; card.position = 'face-up';
+  c.state.chain.push({ id: `${c.state.id}:counter-link:${c.state.eventSequence + 1}`, controllerId: actorId, source: id,
+    sourceAtActivation: structuredClone(card), effectId: c.registry.counterTrapHandlers[card.definition.id]!, spellSpeed: 3,
+    costEvents: [{ ...cost, affectedInstances: [...cost.affectedInstances], details: { ...cost.details } }], targetRefs: [],
+    respondingToLinkId: original.id, activationNegated: false, effectNegated: false });
+  emit(c, 'counter-trap-activated', [id], {}, false);
+  c.state.timing.window = 'chain-response'; c.state.timing.priorityPlayer = other(c.state, actorId).id; c.state.timing.consecutivePasses = 0;
+}
+function resolveCounterChain(c: Context) {
+  // Called only after invariants validated the exact two-link pattern; no effect-choice pause.
+  c.state.timing.window = 'resolving'; c.state.timing.priorityPlayer = null;
+  const counter = c.state.chain.pop()!, original = c.state.chain.pop()!;
+  emit(c, 'chain-link-resolving', [counter.source], {}, false);
+  original.activationNegated = true;
+  emit(c, 'spell-activation-negated', [original.source], { playerId: original.controllerId });
+  sendToGraveyard(c, original.source); emit(c, 'spell-destroyed', [original.source], { playerId: original.controllerId });
+  emit(c, 'chain-link-negated-skipped', [original.source], {}, false);
+  sendToGraveyard(c, counter.source); emit(c, 'sent-to-graveyard', [counter.source], { reason: 'counter-trap-cleanup' });
+  emit(c, 'chain-resolved', [], {}, false); response(c, 'action-response');
 }
 function resolveTraps(c: Context) {
   const cleanup: string[] = [];
@@ -561,7 +611,8 @@ function pass(c: Context, actorId: string) {
   }
   const phase = c.state.timing.requestedPhase;
   if (c.state.chain.length) {
-    if (c.registry.trapHandlers[c.state.cards[c.state.chain[0]!.source]!.definition.id]) resolveTraps(c);
+    if (c.state.chain.length === 2 && c.registry.counterTrapHandlers[c.state.cards[c.state.chain[1]!.source]!.definition.id]) resolveCounterChain(c);
+    else if (c.registry.trapHandlers[c.state.cards[c.state.chain[0]!.source]!.definition.id]) resolveTraps(c);
     else if (c.state.chain[0]!.effectId === 'normal-spell') resolveSpell(c); else resolveFlip(c);
   }
   else if (phase !== null) enterPhase(c, phase);
@@ -602,6 +653,7 @@ export function applyAction(registry: Registry, state: DuelState, requestInput: 
     const a = request.action;
     switch (a.type) {
       case 'set-trap': setTrap(c, request.actorId, a.instanceId, a.slot as Slot); break;
+      case 'activate-counter-trap': activateCounterTrap(c, request.actorId, a.instanceId, a.discardId, a.respondingToLinkId); break;
       case 'activate-trap': activateTrap(c, request.actorId, a.instanceId, a.targetId); break;
       case 'activate-spell': case 'set-spell': spell(c, request.actorId, a); break;
       case 'normal-summon': case 'set-monster': summon(c, request.actorId, a); break;

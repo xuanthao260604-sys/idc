@@ -16,7 +16,8 @@
     "blockAttack": "data/generated/block-attack.json",
     "earthquake": "data/generated/earthquake.json",
     "magicianFaith": "data/generated/magician-faith.json",
-    "ookazi": "data/generated/ookazi.json"
+    "ookazi": "data/generated/ookazi.json",
+    "magicJammer": "data/generated/magic-jammer.json"
   },
   "reviews": {
     "spells": [
@@ -36,6 +37,9 @@
     ],
     "traps": [
       "data/reviews/pilot.trap-effects.json"
+    ],
+    "counters": [
+      "data/reviews/magic-jammer.effects.json"
     ]
   }
 }

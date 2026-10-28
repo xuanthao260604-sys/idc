@@ -12,6 +12,8 @@ import { createRegistry } from '../dist/packages/engine/src/registry.js';
 import { createDuel, assertDuelInvariants } from '../dist/packages/engine/src/duel.js';
 import { goat200508Format } from '../dist/packages/card-data/src/formats/goat-2005-08-17.js';
 const read = async p => JSON.parse(await readFile(join(projectRoot, p), 'utf8'));
+const magicArg=process.argv.find(arg=>/^--magic-jammer=[ab]:(self|opponent):(damage|cost|pot|choice)$/.test(arg));
+const magicMode=magicArg?.split('=')[1].split(':')??null;
 const lifePointsArg = process.argv.find(arg => /^--life-points=(normal|lethal)$/.test(arg));
 const lifePointsMode = lifePointsArg?.split('=')[1] ?? null;
 const ookaziArg = process.argv.find(arg => /^--ookazi=[ab]:(hand|set):(normal|lethal)$/.test(arg));
@@ -40,7 +42,7 @@ const reincarnationMode = reincarnationArg?.split('=')[1] ?? null;
 const deckDraftGuard = process.argv.includes('--deck-draft-guard');
 const deckSaveCheck = process.argv.includes('--deck-save-check');
 const deckOverview = deckSaveCheck || deckDraftGuard || process.argv.includes('--deck-overview');
-const expanded = ookaziInteractions !== null || ookazi !== null || choiceIdentities || graveyardFilters || handSorting || faithBattle !== null || magicianFaith || deckOverview || earthquake || blockAttack || reincarnationMode !== null || tributeDoomed || hammerShot || smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
+const expanded = magicMode !== null || ookaziInteractions !== null || ookazi !== null || choiceIdentities || graveyardFilters || handSorting || faithBattle !== null || magicianFaith || deckOverview || earthquake || blockAttack || reincarnationMode !== null || tributeDoomed || hammerShot || smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
 const r = expanded ? loadRuntimeCatalog().registry : createRegistry((await read('data/generated/pilot.json')).cards, goat200508Format, {},
   await read('data/reviews/pilot.spell-effects.json'), await read('data/reviews/pilot.flip-effects.json'), await read('data/reviews/pilot.trap-effects.json'));
 const deck = Object.keys(r.cards);
@@ -140,7 +142,7 @@ if (chainView) {
   move('Man-Eater Bug','b','monster',0,true);
   s.turn.number=3;s.turn.phase='main1';s.timing.window='open';s.timing.priorityPlayer='a';s.timing.consecutivePasses=0;
 }
-if (expanded && ookaziInteractions === null && !fullDuel && lifePointsMode === null && !smashingGround && !hammerShot && !tributeDoomed && !blockAttack && !earthquake && !magicianFaith && !faithBattle && !handSorting && !graveyardFilters && !choiceIdentities && !deckOverview && reincarnationMode === null) {
+if (expanded && magicMode === null && ookaziInteractions === null && !fullDuel && lifePointsMode === null && !smashingGround && !hammerShot && !tributeDoomed && !blockAttack && !earthquake && !magicianFaith && !faithBattle && !handSorting && !graveyardFilters && !choiceIdentities && !deckOverview && reincarnationMode === null) {
   move('Gaia The Fierce Knight', 'a', 'hand');
   move('Battle Ox', 'a', 'monster', 0); move('Celtic Guardian', 'a', 'monster', 1, true);
   move('Curse of Dragon', 'a', 'hand');
@@ -183,6 +185,16 @@ if (smashingGround) {
   move('Mystical Elf', 'b', 'monster', 0); move('Giant Soldier of Stone', 'b', 'monster', 1);
   move('Battle Ox', 'b', 'monster', 2); move('Blue-Eyes White Dragon', 'b', 'monster', 3, true);
   s.turn.number = 3; s.turn.phase = 'main1'; s.timing.window = 'open'; s.timing.priorityPlayer = 'a'; s.timing.consecutivePasses = 0;
+}
+if(magicMode!==null) {
+  const [actor,side,kind]=magicMode,other=actor==='a'?'b':'a',counterOwner=side==='self'?actor:other;
+  const name={damage:'Ookazi',cost:'Tribute to The Doomed',pot:'Pot of Greed',choice:'Smashing Ground'}[kind];
+  move(name,actor,'hand');move('Magic Jammer',counterOwner,'spell-trap',4,true);move('Skull Servant',counterOwner,'hand');
+  if(kind==='cost'){move('La Jinn the Mystical Genie of the Lamp',actor,'hand');move('Battle Ox',other,'monster',0);}
+  if(kind==='choice'){move('Mystical Elf',other,'monster',0);move('Giant Soldier of Stone',other,'monster',1);}
+  if(kind==='pot') {const p=s.players.find(p=>p.id===actor);for(const id of p.deck.splice(0)){p.graveyard.push(id);s.cards[id].location={kind:'graveyard',playerId:actor};s.cards[id].position='face-up';}}
+  if(kind==='damage')s.players.find(p=>p.id===other).lifePoints=800;
+  s.turn.number=actor==='a'?3:4;s.turn.activePlayer=actor;s.turn.phase='main1';s.timing.window='open';s.timing.priorityPlayer=actor;s.timing.consecutivePasses=0;
 }
 if (ookaziInteractions !== null) {
   const actor=ookaziInteractions,other=actor==='a'?'b':'a';
@@ -267,7 +279,7 @@ try {
     if(!card)return;
     const expected=[card.verification==='verified'?'Đã kiểm tra':'Còn chờ đối chiếu',
       {'current-reference':'Tham chiếu hiện hành','historical-reviewed':'Đã đối chiếu lịch sử',custom:'Bài tự tạo'}[card.textBasis]||'Chưa ghi loại văn bản',
-      r.spellHandlers[card.id]?'Hiệu ứng Phép trong phạm vi thử nghiệm':r.flipHandlers[card.id]?'Hiệu ứng FLIP trong phạm vi thử nghiệm':r.trapHandlers[card.id]?'Hiệu ứng Bẫy trong phạm vi thử nghiệm':'Quái thường theo luật hiện có'];
+      r.spellHandlers[card.id]?'Hiệu ứng Phép trong phạm vi thử nghiệm':r.flipHandlers[card.id]?'Hiệu ứng FLIP trong phạm vi thử nghiệm':r.counterTrapHandlers[card.id]?'Phản hồi và phủ nhận Phép trong phạm vi thử nghiệm':r.trapHandlers[card.id]?'Hiệu ứng Bẫy trong phạm vi thử nghiệm':'Quái thường theo luật hiện có'];
     assert.deepEqual(await evaluate(`[...document.querySelectorAll(${JSON.stringify(selector+' dd')})].map(e=>e.textContent)`),expected);
     assert.equal(await evaluate(`document.querySelectorAll(${JSON.stringify(selector+' button')}).length`),0);
     if(toggle) {
@@ -492,7 +504,13 @@ try {
         const own = v.players.find(p=>p.playerId===v.viewerId), opp = v.players.find(p=>p.playerId!==v.viewerId);
         const target = lastSummon && opp.playerId === lastSummon.player ? opp.monsters[lastSummon.slot] : null;
         const d = definition(target);
-        const trapSlot = own.spellsTraps.findIndex((c,i)=>c?.position==='face-down' && definition(c)?.kind==='trap' && trapSets[v.viewerId][i] < v.turn.number);
+        const counterPlan=v.chain.at(-1)?.controllerId!==v.viewerId?v.availableActions?.find(a=>a.type==='activate-counter-trap'):null;
+        if(counterPlan) {
+          const slot=own.spellsTraps.findIndex(c=>c?.handle===counterPlan.cardHandle);
+          await click(`document.querySelector('#self .zone-row:nth-child(3) .slot:nth-child(${slot+1}) .card')`);await click(textButton('#actions button','Phản hồi Phép'));
+          await evaluate(`(()=>{const d=document.querySelector('#action-fields select[name="discard"]');d.value=${JSON.stringify(counterPlan.discardHandle)};d.dispatchEvent(new Event('change',{bubbles:true}));})()`);await confirm();usedEffects.add('Magic Jammer');actions++;continue;
+        }
+        const trapSlot = own.spellsTraps.findIndex((c,i)=>c?.position==='face-down' && r.trapHandlers[definition(c)?.id] && trapSets[v.viewerId][i] < v.turn.number);
         if (trapSlot >= 0 && d?.attack >= 1000 && target.position !== 'face-down-defense'
           && (v.timing.window === 'summon-response' || (v.timing.window === 'chain-response' && v.chain.every(l=>l.spellSpeed===2)))) {
           await click(`document.querySelector('#self .zone-row:nth-child(3) .slot:nth-child(${trapSlot+1}) .card')`);
@@ -849,7 +867,7 @@ try {
     assert.deepEqual(await evaluate('view.players.map(p=>p.lifePoints)'),[8000,8000]);assert.equal(await evaluate('view.normalSummonQuota.remaining'),1);
     assert.equal(await evaluate(`api('/api/deck').then(data=>JSON.stringify(data))`),savedA);await seat('b');
     assert.equal(await evaluate(`api('/api/deck').then(data=>JSON.stringify(data))`),savedB);assert.equal(errors.length,0);
-    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'choice-identities',catalog:110,
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'choice-identities',catalog:111,
       handOriginalPositionsAfterSort:true,duplicateTributesDistinct:true,duplicateCostsDistinct:true,graveyardTopFirstPositions:true,
       cancelledChoicePreservesState:true,exactDiscardAndRecoveryCopies:true,duplicateFaithTargetsDistinct:true,exactFaithRecoveryCopy:true,
       previewsReadOnly:true,hiddenOpponentPrivacy:true,responsive:true,savedDecksUnchanged:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
@@ -1127,7 +1145,7 @@ try {
     assert.equal(await evaluate(`document.getElementById('graveyard-results').textContent`),'Hiển thị 0/0 lá.');
     await click(`document.getElementById('close-graveyard')`);assert.equal(await evaluate('JSON.stringify(view)'),empty);assert.equal(commands,0);
     assert.equal(errors.length,0);
-    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'graveyard-filters',catalog:110,
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'graveyard-filters',catalog:111,
       nameAndTextSearch:true,combinedKindFilters:true,duplicatesPreserved:true,originalPositionsPreserved:true,
       previewClearedWhenHidden:true,filtersResetOnReopen:true,seatIndependent:true,emptyGraveyard:true,
       readOnlyViews:true,noDuelCommands:true,hiddenCardsExcluded:true,responsive:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
@@ -1296,7 +1314,7 @@ try {
     const bNoOp=await evaluate('JSON.stringify(deckDraft)');await loadSaved();assert.equal(await evaluate('JSON.stringify(deckDraft)'),bNoOp);
     assert.deepEqual(await evaluate(`api('/api/deck')`),savedB);await closeDeck();
     assert.equal(errors.length,0);
-    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'deck-save-check',catalog:110,
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'deck-save-check',catalog:111,
       draftChangeTable:true,orderOnlyChanges:true,invalidDraftChanges:true,comparisonIgnoresCatalogFilters:true,comparisonResponsive:true,
       loadSavedUndoable:true,loadInvalidDraftUndoable:true,loadNoopPreservesHistory:true,loadFailurePreservesDraft:true,explicitSaveAfterLoad:true,
       lostSaveResponseConfirmed:true,noDuplicateSave:true,historyAndFiltersPreserved:true,undoUsesConfirmedBaseline:true,
@@ -1366,7 +1384,7 @@ try {
     await seat('a');await openDeck();assert.deepEqual(await evaluate('deckDraft.cards'),savedAfter.cards);
     assert.equal(await dirty(),false);await tryClose(false,false,false);
     assert.equal(errors.length,0);
-    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'deck-draft-guard',catalog:110,
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'deck-draft-guard',catalog:111,
       closeAndEscapeProtected:true,cancelPreservesDraftAndHistory:true,cleanCloseNoPrompt:true,undoClearsDirty:true,redoRestoresDirty:true,
       invalidDraftProtected:true,saveFailureProtected:true,saveSuccessNoPrompt:true,sampleIsEdit:true,seatBaselineIndependent:true,
       currentDuelUnchanged:true,runtimeExceptions:errors.length}));
@@ -1453,7 +1471,7 @@ try {
     await seat('a');
     assert.equal(await evaluate(`api('/api/deck').then(data=>JSON.stringify(data))`),savedDecks);
     assert.equal(errors.length,0);
-    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'hand-keyboard',catalog:110,
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'hand-keyboard',catalog:111,
       arrowsHomeEnd:true,boundedNavigation:true,nativeEnterSpace:true,focusAfterRender:true,nativeTabAndSelect:true,
       sortedDuplicateIdentity:true,readOnlyNavigation:true,keyboardSummon:true,hiddenOpponentPreview:true,
       narrowHandScroll:true,seatClearsSelection:true,savedDecksUnchanged:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
@@ -1536,7 +1554,7 @@ try {
     assert.deepEqual(await shownHandles(),await evaluate('view.selfHand.map(c=>c.handle)'));
     assert.equal(await evaluate(`api('/api/deck').then(data=>JSON.stringify(data))`),savedDecks);
     assert.equal(errors.length,0);
-    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'hand-sorting',catalog:110,
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'hand-sorting',catalog:111,
       keyboardSort:true,stableDuplicateOrder:true,selectionPreserved:true,sortedCardActions:true,drawAfterSorting:true,
       receivedOrderRestored:true,seatAndDuelReset:true,refreshPreservesMode:true,viewAndSavedDecksUnchanged:true,
       responsive:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
@@ -1645,7 +1663,7 @@ try {
     await pass('a');await pass('b');await seat('a');await hand('Pot of Greed');await click(textButton('#actions button','Kích hoạt'));await confirm();await pass('b');await pass('a');
     assert.equal(await controllerHandSize(),beforeHand+2);assert.equal(await evaluate('view.players[0].monsters[0].position'),'face-up-attack');
     assert.deepEqual(await evaluate('view.players.map(p=>p.lifePoints)'),[8000,8000]);assert.equal(errors.length,0);
-    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'magician-faith',catalog:110,ownGraveyardSpellsOnly:true,privateDecision:true,sourceAndTargetPreviews:true,targetCapturedAtActivation:true,returnOnlyAtResolution:true,recoveredSpellUsed:true,noNormalQuotaConsumed:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'magician-faith',catalog:111,ownGraveyardSpellsOnly:true,privateDecision:true,sourceAndTargetPreviews:true,targetCapturedAtActivation:true,returnOnlyAtResolution:true,recoveredSpellUsed:true,noNormalQuotaConsumed:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
   } else if (chainView) {
     assert.equal(await evaluate(`document.getElementById('chain-panel').hidden`),true);
     assert.match(await evaluate(`document.getElementById('summon-quota').textContent`),/Người chơi A.*còn 1\/1 lượt/);
@@ -1872,10 +1890,66 @@ try {
     assert.deepEqual(await evaluate('view.players.map(p=>p.lifePoints)'),[8000,8000]);
     assert.equal(errors.length,0);
     console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'smashing-ground',nonTargeting:true,tiedHighestDefenseChoice:true,ownAndHiddenExcluded:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
+  } else if(magicMode!==null) {
+    const [actor,side,kind]=magicMode,other=actor==='a'?'b':'a',counterOwner=side==='self'?actor:other;
+    const name={damage:'Ookazi',cost:'Tribute to The Doomed',pot:'Pot of Greed',choice:'Smashing Ground'}[kind],saved={};
+    for(const who of ['a','b']){await seat(who);saved[who]=await evaluate(`api('/api/deck?seat='+view.viewerId).then(JSON.stringify)`);}
+    await seat(actor);const baseline=await evaluate('view.players.map(p=>({playerId:p.playerId,lifePoints:p.lifePoints,deckCount:p.deckCount,monsters:p.monsters}))');
+    const own=`view.players.find(p=>p.playerId===${JSON.stringify(actor)})`,counterBoard=`view.players.find(p=>p.playerId===${JSON.stringify(counterOwner)})`;
+    if(side==='opponent')assert.equal(await evaluate(`${counterBoard}.spellsTraps[4].visibility`),'hidden');
+    await click(`[...document.querySelectorAll('#hand .card')].find(e=>e.querySelector('.card-name')?.textContent===${JSON.stringify(name)})`);await click(textButton('#actions button','Kích hoạt'));
+    if(kind==='cost') {
+      await evaluate(`(()=>{const f=document.getElementById('action-fields'),d=f.querySelector('select[name="discard"]'),t=f.querySelector('select[name="target"]');d.value=[...d.options].find(o=>label(visibleCard(o.value))==='La Jinn the Mystical Genie of the Lamp').value;t.value=[...t.options].find(o=>label(visibleCard(o.value))==='Battle Ox').value;f.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+    }
+    await confirm();if(side==='self')await pass(other);await seat(counterOwner);
+    const openCounter=async()=>{await click(`document.querySelector('#self .zone-row:nth-child(3) .slot:nth-child(5) .card')`);await click(textButton('#actions button','Phản hồi Phép'));};
+    const before=await evaluate('JSON.stringify(view)');await openCounter();
+    assert.equal(await evaluate(`document.querySelectorAll('#action-fields select[name="target"]').length`),0);
+    assert.match(await evaluate(`document.getElementById('action-fields').textContent`),/Phản hồi liên kết 1/);
+    assert.equal(await evaluate(`document.querySelector('[data-preview="response"] h2').textContent`),name);
+    await evaluate(`(()=>{const d=document.querySelector('#action-fields select[name="discard"]');d.value=[...d.options].find(o=>label(visibleCard(o.value))==='Skull Servant').value;d.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+    await preview('discard','Skull Servant');assert.equal(await evaluate('JSON.stringify(view)'),before);
+    for(const [label,width,height]of [['desktop',1440,1000],['narrow',390,844]]) {
+      await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
+      assert.equal(await evaluate(`(()=>{const d=document.getElementById('action-dialog'),r=d.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1&&r.height<=innerHeight&&d.scrollWidth<=d.clientWidth+1})()`),true);
+      if(process.argv.includes('--screenshots')) {const directory=join(projectRoot,'artifacts','magic-jammer');await mkdir(directory,{recursive:true});const shot=await send('Page.captureScreenshot',{format:'png'});await writeFile(join(directory,'choice-'+label+'.png'),Buffer.from(shot.data,'base64'));}
+    }
+    await send('Emulation.clearDeviceMetricsOverride');await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
+    await click(`document.getElementById('cancel-action')`);assert.equal(await evaluate('JSON.stringify(view)'),before);
+    await openCounter();await evaluate(`(()=>{const d=document.querySelector('#action-fields select[name="discard"]');d.value=[...d.options].find(o=>label(visibleCard(o.value))==='Skull Servant').value;d.dispatchEvent(new Event('change',{bubbles:true}));})()`);await confirm();
+    assert.equal(await evaluate('view.chain.length'),2);assert.deepEqual(await evaluate('view.chain.map(l=>l.spellSpeed)'),[1,3]);
+    assert.deepEqual(await evaluate('view.chain[1].targetHandles'),[]);assert.equal(await evaluate('view.chain[1].respondingToChainHandle===view.chain[0].chainHandle'),true);
+    assert.match(await evaluate(`document.getElementById('chain-links').textContent`),/Phản hồi liên kết 1/);
+    for(const [label,width,height]of [['desktop',1440,1000],['narrow',390,844]]) {
+      await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
+      await evaluate(`document.getElementById('chain-panel').scrollIntoView({block:'center'})`);
+      assert.equal(await evaluate(`document.documentElement.scrollWidth<=innerWidth+1`),true);
+      if(process.argv.includes('--screenshots')) {const directory=join(projectRoot,'artifacts','magic-jammer');await mkdir(directory,{recursive:true});const shot=await send('Page.captureScreenshot',{format:'png'});await writeFile(join(directory,label+'.png'),Buffer.from(shot.data,'base64'));}
+    }
+    await send('Emulation.clearDeviceMetricsOverride');await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
+    assert.equal(await evaluate(`${counterBoard}.graveyard.filter(c=>catalog.get(c.definition.id).name==='Skull Servant').length`),1);
+    await seat(counterOwner==='a'?'b':'a');assert.equal(await evaluate(`${counterBoard}.spellsTraps[4].visibility`),'known');
+    const lp=baseline.map(p=>p.lifePoints);assert.deepEqual(await evaluate('view.players.map(p=>p.lifePoints)'),lp);
+    await pass(counterOwner==='a'?'b':'a');assert.equal(await evaluate('view.chain.length'),2);assert.deepEqual(await evaluate('view.players.map(p=>p.lifePoints)'),lp);
+    await pass(counterOwner);assert.equal(await evaluate('view.chain.length'),0);assert.equal(await evaluate('view.decision'),null);assert.equal(await evaluate('view.result'),null);
+    assert.deepEqual(await evaluate('view.players.map(p=>p.lifePoints)'),lp);assert.deepEqual(await evaluate('view.players.map(p=>p.deckCount)'),baseline.map(p=>p.deckCount));
+    for(const initial of baseline) {
+      const current=await evaluate(`view.players.find(p=>p.playerId===${JSON.stringify(initial.playerId)}).monsters`);
+      const omitHandles=value=>JSON.stringify(value,(key,v)=>key==='handle'?undefined:v);assert.equal(omitHandles(current),omitHandles(initial.monsters));
+    }
+    assert.equal(await evaluate(`${own}.spellsTraps[0]`),null);assert.equal(await evaluate(`${counterBoard}.spellsTraps[4]`),null);
+    if(kind==='cost')assert.equal(await evaluate(`${own}.graveyard.filter(c=>catalog.get(c.definition.id).name==='La Jinn the Mystical Genie of the Lamp').length`),1);
+    const facts=await evaluate('view.activity.flatMap(e=>e.resolution||[])');
+    assert.deepEqual(facts.filter(f=>f.kind==='spell-activation-negated'||f.kind==='spell-destroyed'),[{kind:'spell-activation-negated',playerId:actor,count:1},{kind:'spell-destroyed',playerId:actor,count:1}]);
+    assert.equal(facts.some(f=>['draw','effect-damage','life-points-gained','effect-destroyed','effect-position-changed'].includes(f.kind)),false);
+    assert.match(await evaluate(`document.getElementById('status').textContent`),/bị phủ nhận/);assert.match(await evaluate(`document.getElementById('status').textContent`),/lá Phép/);
+    await seat(actor);assert.equal(await evaluate('view.normalSummonQuota.remaining'),1);
+    for(const who of ['a','b']){await seat(who);assert.deepEqual(await evaluate('view.activity.flatMap(e=>e.resolution||[])'),facts);assert.equal(await evaluate(`api('/api/deck?seat='+view.viewerId).then(JSON.stringify)`),saved[who]);}
+    assert.equal(errors.length,0);console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'magic-jammer-'+magicMode.join('-'),catalog:111,twoLinkCounter:true,nonTargeting:true,costOnce:true,cancelPreservesState:true,skipsOriginalPlan:true,preservesOriginalCost:kind==='cost',lethalDamagePrevented:kind==='damage',emptyDeckPreserved:kind==='pot',choiceSkipped:kind==='choice',samePublicFactsAcrossSeats:true,savedDecksUnchanged:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
   } else if (ookaziInteractions !== null) {
     const actor=ookaziInteractions,other=actor==='a'?'b':'a',saved={};
     for(const who of ['a','b']) {await seat(who);saved[who]=await evaluate(`api('/api/deck?seat='+view.viewerId).then(data=>JSON.stringify(data))`);}
-    await seat(actor);assert.equal(await evaluate('catalog.size'),110);
+    await seat(actor);assert.equal(await evaluate('catalog.size'),111);
     const own=`view.players.find(p=>p.playerId===${JSON.stringify(actor)})`;
     const foe=`view.players.find(p=>p.playerId===${JSON.stringify(other)})`;
     const selectHand=async name=>{await seat(actor);await click(`[...document.querySelectorAll('#hand .card')].find(e=>e.querySelector('.card-name')?.textContent===${JSON.stringify(name)})`);};
@@ -1924,14 +1998,14 @@ try {
       assert.equal(await evaluate(`api('/api/deck?seat='+view.viewerId).then(data=>JSON.stringify(data))`),saved[who]);
     }
     assert.equal(await evaluate('view.stateVersion'),version);assert.equal(errors.length,0);
-    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'ookazi-interactions-'+actor,catalog:110,
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'ookazi-interactions-'+actor,catalog:111,
       costDoesNotBurn:true,ownSpellRecovery:true,privateDecision:true,recoveryDoesNotBurn:true,recoveredSpellUsed:true,
       distinctLPAmounts:[800,1000,500],controllerLP:9000,opponentLP:6700,sequentialSingleLinks:true,noNormalQuotaConsumed:true,
       samePublicFactsAcrossSeats:true,savedDecksUnchanged:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
   } else if (ookazi !== null) {
     const [actor,origin,mode]=ookazi, other=actor==='a'?'b':'a', beforeLP=mode==='lethal'?800:8000;
     await seat(actor);
-    assert.equal(await evaluate('catalog.size'),110);
+    assert.equal(await evaluate('catalog.size'),111);
     await click(`[...document.querySelectorAll('#hand .card')].find(e=>e.querySelector('.card-name')?.textContent==='Ookazi')`);
     assert.ok(await evaluate(`[...document.querySelectorAll('#detail p')].some(p=>p.textContent===${JSON.stringify(r.cards['official:19523799'].text)})`));
     const quota=await evaluate('JSON.stringify(view.normalSummonQuota)');
@@ -1969,7 +2043,7 @@ try {
     } else { assert.equal(await evaluate('view.result'),null);await verifyResultSummary();await seat(other); }
     assert.deepEqual(await evaluate('view.activity.flatMap(e=>e.resolution||[])'),facts);
     assert.equal(errors.length,0);
-    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'ookazi-'+ookazi.join('-'),catalog:110,damage:800,delayedUntilResolution:true,noCostOrTarget:true,setPrivacy:origin==='set',lethal:mode==='lethal',noNormalQuotaConsumed:true,samePublicFactsAcrossSeats:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'ookazi-'+ookazi.join('-'),catalog:111,damage:800,delayedUntilResolution:true,noCostOrTarget:true,setPrivacy:origin==='set',lethal:mode==='lethal',noNormalQuotaConsumed:true,samePublicFactsAcrossSeats:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
   } else if (lifePointsMode !== null) {
     if (lifePointsMode === 'normal') {
       await hand('Dian Keto the Cure Master'); await click(textButton('#actions button','Úp bài')); await confirm();
@@ -2006,8 +2080,8 @@ try {
     assert.equal(errors.length,0);
     console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'life-points-'+lifePointsMode,resultSummary:lifePointsMode==='lethal',summaryHiddenWhenOngoing:lifePointsMode==='normal',gainFromOwnSet:lifePointsMode==='normal',lifePoints:await evaluate('view.players.map(p=>p.lifePoints)'),delayedUntilResolution:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
   } else if (expanded && !fullDuel && !deckOverview) {
-    assert.equal(await evaluate('catalog.size'), 110);
-    assert.match(await evaluate(`document.getElementById('catalog-count').textContent`), /110/);
+    assert.equal(await evaluate('catalog.size'), 111);
+    assert.match(await evaluate(`document.getElementById('catalog-count').textContent`), /111/);
     await click(`document.getElementById('deck-builder')`); await wait(`!busy && document.getElementById('deck-dialog').open`);
     const added = Object.values(r.cards);
     const beforeCatalogRead=await evaluate('JSON.stringify(view)'),beforeDeckRead=await evaluate('JSON.stringify(deckDraft.cards)');
@@ -2039,7 +2113,7 @@ try {
         await send('Emulation.clearDeviceMetricsOverride');
       }
     }
-    assert.deepEqual(statusCounts,{verified:95,pending:15});
+    assert.deepEqual(statusCounts,{verified:95,pending:16});
     assert.equal(await evaluate('JSON.stringify(view)'),beforeCatalogRead);assert.equal(await evaluate('JSON.stringify(deckDraft.cards)'),beforeDeckRead);
     const faith=Object.values(r.cards).find(c=>c.name==='Magician of Faith');
     await click(`document.querySelector('#deck-catalog [data-card-id="${faith.id}"] .deck-name')`);
@@ -2104,7 +2178,7 @@ try {
     assert.equal(await evaluate('view.players[1].lifePoints'), 7200);
     assert.equal(await evaluate(`view.players[1].graveyard.some(c=>catalog.get(c.definition.id).name==='Armored Lizard')`), true);
     assert.equal(errors.length, 0);
-    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'expanded-catalog', catalog: 110, cardSupportStatuses:110, dataVerified:95, dataPending:15, separateRuntimeStatus:true, statusReadOnly:true, reviewedCardPreviews: 110, dataDrivenLevels: true, tributePreviews: true, oneTributeSetCancelPreservesState: true, deselectionUpdatesPreview: true, ownSetPrivacy: true, tributeSummon: 'Gaia The Fierce Knight', battleTarget: 'Armored Lizard', battleDamage: 800, fixtureOnlyAtSetup: true, runtimeExceptions: errors.length }));
+    console.log(JSON.stringify({ platform: process.platform, browserVersion: browserVersion.product, mode: 'expanded-catalog', catalog: 111, cardSupportStatuses:111, dataVerified:95, dataPending:16, separateRuntimeStatus:true, statusReadOnly:true, reviewedCardPreviews: 111, dataDrivenLevels: true, tributePreviews: true, oneTributeSetCancelPreservesState: true, deselectionUpdatesPreview: true, ownSetPrivacy: true, tributeSummon: 'Gaia The Fierce Knight', battleTarget: 'Armored Lizard', battleDamage: 800, fixtureOnlyAtSetup: true, runtimeExceptions: errors.length }));
   } else if (deckOverview) {
     const openDeck=async()=>{await click(`document.getElementById('deck-builder')`);await wait(`!busy && document.getElementById('deck-dialog').open`);};
     const change=(id,direction)=>click(`document.querySelector('#deck-catalog [data-card-id="${id}"] [data-change="${direction}"]')`);
@@ -2117,7 +2191,7 @@ try {
     }
     const before=await evaluate('JSON.stringify(view)');await openDeck();
     const saved=await evaluate(`api('/api/deck')`),original=await evaluate('JSON.stringify(deckDraft.cards)');
-    assert.equal((await rows()).length,110);await verifyComposition();
+    assert.equal((await rows()).length,111);await verifyComposition();
     const key=async(key,code,windowsVirtualKeyCode,modifiers=0)=>{await send('Input.dispatchKeyEvent',{type:'keyDown',key,code,windowsVirtualKeyCode,modifiers,...(code==='Space'?{text:' '}:code==='Enter'?{text:'\r'}:{})});await send('Input.dispatchKeyEvent',{type:'keyUp',key,code,windowsVirtualKeyCode,modifiers});await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');};
     assert.equal(await evaluate(`document.getElementById('deck-undo').disabled`),true);
     assert.equal(await evaluate(`document.getElementById('deck-redo').disabled`),true);
@@ -2259,7 +2333,7 @@ try {
     // Seat handoff deliberately rotates private handles; compare public game state without handles.
     const withoutHandles=value=>JSON.stringify(value,(key,item)=>key==='handle'?undefined:item);
     assert.equal(withoutHandles(await evaluate('view')),withoutHandles(JSON.parse(before)));assert.equal(errors.length,0);
-    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'deck-overview',catalog:110,undoRedo:true,windowsHistoryShortcuts:true,nativeSearchUndoPreserved:true,historyLimit:50,defaultUndoable:true,historyResetOnReopen:true,compositionCountsCopies:true,sortModes:['catalog','name','level','attack','copies'],sortingPreservesDeckOrder:true,keyboardFocusRetained:true,copyLimitFocusFallback:true,removedRowFocusFallback:true,emptyListFocusSearch:true,combinedFilters:true,removedLastCopyDisappears:true,addRestoresRow:true,defaultRefreshesCounts:true,preview:true,filterPreservesDraft:true,cancelPreservesSaved:true,seatReset:true,responsiveWidths:[1440,390],runtimeExceptions:errors.length}));
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'deck-overview',catalog:111,undoRedo:true,windowsHistoryShortcuts:true,nativeSearchUndoPreserved:true,historyLimit:50,defaultUndoable:true,historyResetOnReopen:true,compositionCountsCopies:true,sortModes:['catalog','name','level','attack','copies'],sortingPreservesDeckOrder:true,keyboardFocusRetained:true,copyLimitFocusFallback:true,removedRowFocusFallback:true,emptyListFocusSearch:true,combinedFilters:true,removedLastCopyDisappears:true,addRestoresRow:true,defaultRefreshesCounts:true,preview:true,filterPreservesDraft:true,cancelPreservesSaved:true,seatReset:true,responsiveWidths:[1440,390],runtimeExceptions:errors.length}));
   } else if (deckBuilder) {
     const openDeck = async () => { await click(`document.getElementById('deck-builder')`); await wait(`!busy && document.getElementById('deck-dialog').open`); };
     const change = (id, direction) => click(`document.querySelector('#deck-catalog [data-card-id="${id}"] [data-change="${direction}"]')`);

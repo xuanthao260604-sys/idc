@@ -91,7 +91,8 @@
     "beta:browser-ookazi": "npm run build && node tools/beta-browser-smoke.mjs --ookazi=a:hand:normal && node tools/beta-browser-smoke.mjs --ookazi=b:set:normal && node tools/beta-browser-smoke.mjs --ookazi=a:set:lethal && node tools/beta-browser-smoke.mjs --ookazi=b:hand:lethal",
     "beta:browser-ookazi-interactions": "npm run build && node tools/beta-browser-smoke.mjs --ookazi-interactions=a && node tools/beta-browser-smoke.mjs --ookazi-interactions=b",
     "cards:magic-jammer-fetch": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js fetch magic-jammer",
-    "cards:magic-jammer-import": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js import magic-jammer"
+    "cards:magic-jammer-import": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js import magic-jammer",
+    "beta:browser-magic-jammer": "npm run build && node tools/beta-browser-smoke.mjs --magic-jammer=a:opponent:damage && node tools/beta-browser-smoke.mjs --magic-jammer=b:self:cost && node tools/beta-browser-smoke.mjs --magic-jammer=a:self:pot && node tools/beta-browser-smoke.mjs --magic-jammer=b:opponent:choice"
   },
   "devDependencies": {
     "@types/node": "24.19.2",

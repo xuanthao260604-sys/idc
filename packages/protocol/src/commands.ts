@@ -9,6 +9,7 @@ export type DuelAction =
   | { type: 'flip-summon'; cardHandle: string }
   | { type: 'declare-attack'; attackerHandle: string; targetHandle: string | 'direct' }
   | { type: 'activate-spell'; cardHandle: string; slot: Slot; discardHandle?: string; targetHandle?: string }
+  | { type: 'activate-counter-trap'; cardHandle: string; discardHandle: string; chainHandle: string }
   | { type: 'activate-trap'; cardHandle: string; targetHandle: string }
   | { type: 'answer-decision'; decisionId: string; optionIds: readonly string[] }
   | { type: 'pass' }
@@ -31,6 +32,7 @@ export type CommandOutcome =
         | 'wrong-duel' | 'command-conflict' | 'command-capacity' };
 
 export type PublicResolution =
+  | { kind: 'spell-activation-negated' | 'spell-destroyed'; playerId: string; count: number }
   | { kind: 'draw' | 'return-to-hand' | 'discard' | 'discard-cost' | 'tribute'; playerId: string; count: number }
   | { kind: 'battle-damage' | 'effect-damage' | 'life-points-gained'; playerId: string; amount: number }
   | { kind: 'effect-destroyed' | 'battle-destroyed' | 'effect-position-changed'; count: number };

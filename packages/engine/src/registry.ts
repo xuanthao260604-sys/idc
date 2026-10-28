@@ -5,6 +5,7 @@ import type { CardDefinition } from '../../card-data/src/schema.js';
 import { FormatSchema } from '../../card-data/src/format.js';
 import type { FormatDefinition } from '../../card-data/src/format.js';
 
+import { CounterReviewsSchema } from './counter-review.js';
 import { TrapReviewsSchema } from './trap-review.js';
 import { FlipReviewsSchema } from './flip-review.js';
 import type { FlipHandler } from './flip-review.js';
@@ -36,6 +37,7 @@ export interface Registry {
   readonly format: { readonly id: string; readonly revision: number };
   readonly revision: string;
   readonly cards: Readonly<Record<string, SupportedMonster | NormalSpell | NormalTrap>>;
+  readonly counterTrapHandlers: Readonly<Record<string, 'discard-negate-normal-spell-activation'>>;
   readonly trapHandlers: Readonly<Record<string, 'destroy-opponent-normal-or-flip-summoned-1000'>>;
   readonly flipHandlers: Readonly<Record<string, FlipHandler>>;
   readonly spellHandlers: Readonly<Record<string, SpellHandler>>;
@@ -44,7 +46,7 @@ export interface Registry {
 }
 
 /** Supported behavior is an engine capability, not an alteration of imported metadata. */
-export function createRegistry(definitions: unknown, formatInput: FormatDefinition, spellBindings: Readonly<Record<string, SpellHandler>> = {}, reviewInput: unknown = [], flipReviewInput: unknown = [], trapReviewInput: unknown = []): Registry {
+export function createRegistry(definitions: unknown, formatInput: FormatDefinition, spellBindings: Readonly<Record<string, SpellHandler>> = {}, reviewInput: unknown = [], flipReviewInput: unknown = [], trapReviewInput: unknown = [], counterReviewInput: unknown = []): Registry {
   const format = FormatSchema.parse(formatInput);
   if (format.status !== 'ready') throw new Error('Rules design profile is not ready');
   const d = format.decisions;
@@ -81,6 +83,14 @@ export function createRegistry(definitions: unknown, formatInput: FormatDefiniti
       || review.format.id !== format.id || review.format.revision !== format.revision
       || definitionFingerprint(card) !== review.definitionSha256) throw new Error(`Trap review conflict: ${review.cardId}`);
   }
+  const counterReviews = CounterReviewsSchema.parse(counterReviewInput);
+  for (const review of counterReviews) {
+    const card = parsed.find(c => c.id === review.cardId);
+    if (!card || card.kind !== 'trap' || card.subtype !== 'counter' || card.origin !== 'official'
+      || review.format.id !== format.id || review.format.revision !== format.revision
+      || definitionFingerprint(card) !== review.definitionSha256) throw new Error(`Counter Trap review conflict: ${review.cardId}`);
+  }
+  const counterTrapHandlers: Record<string, 'discard-negate-normal-spell-activation'> = {};
   const trapHandlers: Record<string, 'destroy-opponent-normal-or-flip-summoned-1000'> = {};
   const flipHandlers: Record<string, FlipHandler> = {};
   const cards: Record<string, SupportedMonster | NormalSpell | NormalTrap> = {};
@@ -92,22 +102,24 @@ export function createRegistry(definitions: unknown, formatInput: FormatDefiniti
     const customSpell = card.origin === 'custom' && card.kind === 'spell' && card.subtype === 'normal' && binding;
     const officialReview = reviews.find(r => r.cardId === card.id);
     const flipReview = flipReviews.find(r => r.cardId === card.id);
+    const counterReview = counterReviews.find(r => r.cardId === card.id);
     const trapReview = trapReviews.find(r => r.cardId === card.id);
     const supportedSpell = customSpell || officialReview;
-    if ((!supportedSpell && !flipReview && !trapReview && card.kind !== 'normal-monster') || (!officialReview && !flipReview && !trapReview && card.verification !== 'verified') || (!supportedSpell && !flipReview && !trapReview && card.effects.length !== 0)
+    if ((!supportedSpell && !flipReview && !trapReview && !counterReview && card.kind !== 'normal-monster') || (!officialReview && !flipReview && !trapReview && !counterReview && card.verification !== 'verified') || (!supportedSpell && !flipReview && !trapReview && !counterReview && card.effects.length !== 0)
       || card.legality.formatId !== format.id || card.legality.status !== 'legal' || !card.legality.maxCopies) {
       unsupportedIds.push(card.id); continue;
     }
     if (names.has(card.name)) throw new Error('Registry requires one definition per canonical card name');
     names.add(card.name);
     cards[card.id] = card as SupportedMonster | NormalSpell | NormalTrap;
+    if (counterReview) counterTrapHandlers[card.id] = counterReview.handler;
     if (trapReview) trapHandlers[card.id] = trapReview.handler;
     if (flipReview) flipHandlers[card.id] = flipReview.handler;
     if (supportedSpell) spellHandlers[card.id] = SpellHandlerSchema.parse(officialReview?.handler ?? binding);
   }
   const reference = { id: format.id, revision: format.revision };
-  const revision = createHash('sha256').update(JSON.stringify({ engineCapabilityVersion: 'summon-trap-reviewed-v1', format, rules, cards, spellHandlers, reviews, flipHandlers, flipReviews, trapHandlers, trapReviews })).digest('hex');
-  return freeze({ format: reference, revision, cards, spellHandlers, flipHandlers, trapHandlers, unsupportedIds, rules });
+  const revision = createHash('sha256').update(JSON.stringify({ engineCapabilityVersion: 'normal-spell-counter-two-link-v1', format, rules, cards, spellHandlers, reviews, flipHandlers, flipReviews, trapHandlers, trapReviews, counterTrapHandlers, counterReviews })).digest('hex');
+  return freeze({ format: reference, revision, cards, spellHandlers, flipHandlers, trapHandlers, counterTrapHandlers, unsupportedIds, rules });
 }
 
 export function validateDeck(registry: Registry, ids: readonly string[]) {

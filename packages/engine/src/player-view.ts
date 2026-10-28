@@ -18,6 +18,8 @@ export function createPlayerProjection(registry: Registry, state: DuelState, vie
     if (!value) { value = token(); cardToHandle.set(id, value); handleToCard.set(value, id); }
     return value;
   };
+  const chainToHandle = new Map(state.chain.map(link => [link.id, token()]));
+  const handleToChain = new Map([...chainToHandle].map(([id, value]) => [value, id]));
   const visible = (id: string): VisibleCard => {
     const card = state.cards[id]!;
     const faceDown = card.position === 'face-down' || card.position === 'face-down-defense';
@@ -57,7 +59,8 @@ export function createPlayerProjection(registry: Registry, state: DuelState, vie
     turn: { ...state.turn }, normalSummonQuota: { playerId: active.id, used: active.normalSummonsOrSetsUsed, limit, remaining: Math.max(0, limit - active.normalSummonsOrSetsUsed) }, ownMonsterActivity, selfHand, opponentHandCount: opponent.hand.length, players, decision,
     // A mandatory decision suspends response actions, even if the internal phase retains priority.
     timing: { window: state.timing.window, priorityPlayer: state.pendingDecision ? null : state.timing.priorityPlayer },
-    chain: state.chain.map(link => ({ controllerId: link.controllerId, sourceHandle: publicHandle(link.source),
+    chain: state.chain.map(link => ({ chainHandle: chainToHandle.get(link.id)!,
+      ...(link.respondingToLinkId ? { respondingToChainHandle: chainToHandle.get(link.respondingToLinkId)! } : {}), controllerId: link.controllerId, sourceHandle: publicHandle(link.source),
       targetHandles: link.targetRefs.map(ref => publicHandle(ref.instanceId)), spellSpeed: link.spellSpeed })),
     battle: state.battle ? { step: state.battle.step, damageTiming: state.battle.damageTiming,
       attackerHandle: state.battle.attacker ? publicHandle(state.battle.attacker) : null,
@@ -68,6 +71,12 @@ export function createPlayerProjection(registry: Registry, state: DuelState, vie
       || current.cardRegistryRevision !== state.cardRegistryRevision) throw new Error('Wrong viewer or stale projection');
   };
   return Object.freeze({ view,
+    resolveChainHandle(value: string, current: DuelState, actorId: string): string {
+      requireCurrent(current, actorId);
+      const id = handleToChain.get(value);
+      if (!id) throw new Error('Unknown Chain handle');
+      return id;
+    },
     resolveCardHandle(value: string, current: DuelState, actorId: string): string {
       requireCurrent(current, actorId);
       const id = handleToCard.get(value);

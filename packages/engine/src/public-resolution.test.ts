@@ -10,6 +10,11 @@ const r = createRegistry(data.cards, goat200508Format), ids = Object.keys(r.card
 const state = createDuel(r, { duelId: 'feedback-test', players: [{ id: 'a', deck }, { id: 'b', deck }], firstPlayerId: 'a', seedHex: '12'.repeat(32) }).state;
 const event = (kind: string, affectedInstances: string[], details: EngineEvent['details'] = {}): EngineEvent => ({ sequence: 99, simultaneousGroup: 'internal-secret-group', kind, affectedInstances, details });
 describe('Public resolution allowlist', () => {
+  it('keeps Spell negation/destruction separate from monsters, omitting private event fields', () => {
+    const summary = publicResolution([event('spell-activation-negated', ['private-source'], { playerId: 'a', discard: 'private-cost' }), event('spell-destroyed', ['private-source'], { playerId: 'a' }), event('sent-to-graveyard', ['private-counter']), event('spell-destroyed', ['bad'], { playerId: 'unknown' }), event('spell-activation-negated', [], { playerId: 'a' })], state);
+    expect(summary).toEqual([{ kind: 'spell-activation-negated', playerId: 'a', count: 1 }, { kind: 'spell-destroyed', playerId: 'a', count: 1 }]);
+    expect(JSON.stringify(summary)).not.toContain('private'); expect(Object.isFrozen(summary)).toBe(true);
+  });
   it('aggregates draw counts for the actual recipient without names, IDs or unknown details', () => {
     const input = [event('card-drawn', [state.players[1].hand[0]!], { playerId: 'b', hiddenName: 'secret-name' }), event('card-drawn', [state.players[1].hand[1]!], { playerId: 'b' })];
     const before = structuredClone(input), summary = publicResolution(input, state);

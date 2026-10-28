@@ -9,6 +9,7 @@ export function createCapabilityReport(root = projectRoot) {
   const groups = [
     { kind: 'normal-spell', bindings: registry.spellHandlers, reviews: effectReviews.spells },
     { kind: 'flip-monster', bindings: registry.flipHandlers, reviews: effectReviews.flips },
+    { kind: 'counter-trap', bindings: registry.counterTrapHandlers, reviews: effectReviews.counters },
     { kind: 'normal-trap', bindings: registry.trapHandlers, reviews: effectReviews.traps },
   ] as const;
   const reviewedEffects = groups.flatMap(group => Object.keys(group.bindings).map(cardId => {
@@ -28,11 +29,12 @@ export function createCapabilityReport(root = projectRoot) {
       normalMonsters: Object.values(registry.cards).filter(c => c.kind === 'normal-monster').length,
       reviewedNormalSpells: Object.keys(registry.spellHandlers),
       reviewedFlipMonsters: Object.keys(registry.flipHandlers),
+      reviewedCounterTraps: Object.keys(registry.counterTrapHandlers),
       reviewedNormalTraps: Object.keys(registry.trapHandlers),
       unsupportedIds: registry.unsupportedIds,
       scope: [...new Set(reviewedEffects.map(review => review.scope))].sort(),
       reviewedEffects,
-      limitations: ['only reviewed summon Traps or passes as responses', 'no general mixed Chain/negation', 'no general SEGOC/modifiers/replacements', 'no online multiplayer or persistent matches'],
+      limitations: ['only reviewed summon Traps, two-link Normal Spell activation Counter Trap or passes as responses', 'no general mixed Chain/negation', 'no general SEGOC/modifiers/replacements', 'no online multiplayer or persistent matches'],
     },
   };
 }

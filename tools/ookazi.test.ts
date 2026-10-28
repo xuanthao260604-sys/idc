@@ -132,7 +132,7 @@ describe('Ookazi reviewed runtime scope', () => {
   it('preserves both valid saved decks, starter and all prior handlers when extending catalog 109', async () => {
     const directory = await mkdtemp(join(tmpdir(), 'YGO Ookazi old decks '));
     try {
-      const old = createRegistry(cards.filter(c => c.id !== id), goat200508Format, {}, effectReviews.spells.filter(r => r.cardId !== id), effectReviews.flips, effectReviews.traps);
+      const old = createRegistry(cards.filter(c => c.id !== id && c.id !== 'official:77414722'), goat200508Format, {}, effectReviews.spells.filter(r => r.cardId !== id), effectReviews.flips, effectReviews.traps);
       expect(Object.keys(old.cards)).toHaveLength(109);
       const store = createDeckStore(old, directory);
       for (const seat of ['a', 'b'] as const) expect((await store.save(seat, 0, seat === 'a' ? store.defaults : ['official:31560081', ...store.defaults].slice(0, 40))).ok).toBe(true);
