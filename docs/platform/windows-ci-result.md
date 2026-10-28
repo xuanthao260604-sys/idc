@@ -1,6 +1,10 @@
 # Kết quả Windows CI
 
-> Mốc hiện hành: [Magic Jammer — nhập dữ liệu, chưa mở runtime](../data/magic-jammer.md), nhập 111/runtime 110; [run 40481382302](https://github.com/xuanthao260604-sys/idc/actions/runs/40481382302), commit 8600676.
+> Mốc hiện hành: [runtime Counter Trap Magic Jammer](../engine/magic-jammer.md), catalog 111; [run 40619933412](https://github.com/xuanthao260604-sys/idc/actions/runs/40619933412), commit 7f50e81.
+> Windows/Ubuntu đạt; Windows: 1030/1030 test trong 40 file, 58/58 bước, 48 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
+> Đã tải/đọc artifact windows-validation-40619933412-1: 122 ca Counter và bốn luồng UI A/B, tự/đối thủ, lethal/cost/deck rỗng/effect-choice đạt; cost không hoàn, plan của Phép bị phủ nhận bị bỏ qua, handle/riêng tư/deck được bảo vệ. Capabilities JSON giống Linux: 111 supported/16 hiệu ứng/12 scope/18 snapshot, review Counter tách khỏi Trap Hole; nhập 95 verified/16 historical pending giữ nguyên. Hai trận tự nhiên đạt; Windows 11 desktop chưa chạy.
+
+> Mốc trước: [Magic Jammer — nhập dữ liệu, chưa mở runtime](../data/magic-jammer.md), nhập 111/runtime 110; [run 40481382302](https://github.com/xuanthao260604-sys/idc/actions/runs/40481382302), commit 8600676.
 > Windows/Ubuntu đạt; Windows: 905/905 test trong 39 file, 54/54 bước, 44 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Đã tải/đọc artifact windows-validation-40481382302-1: tám ca nhập Magic Jammer đạt, giữ Counter subtype và trạng thái pending; lỗi nhập giữ byte của toàn bộ dữ liệu/deck fixture. Log kiểm đủ 18 bundle/111 lá/95 verified/16 historical pending. Capabilities JSON giống Linux và mốc trước: runtime 110 lá/15 hiệu ứng từ 17 bundle; chưa có binding Magic Jammer. Hai trận tự nhiên giữ kết quả; Windows 11 desktop chưa chạy.
 

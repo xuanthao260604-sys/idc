@@ -14,8 +14,8 @@ Hinotama, Dian Keto the Cure Master, Smashing Ground, Hammer Shot, Tribute to Th
 Đã kiểm chứng [hai Phép thay đổi LP](docs/engine/life-point-spells.md) trên Linux và Windows CI; còn ca Windows 11 desktop chưa chạy.
 Không coi việc cấu hình CI Windows hoặc chạy Linux là đã kiểm chứng Windows.
 
-Mốc trước đạt 905 test, 54 bước và 44 browser report trên Linux/Windows CI.
-Mục hiện tại: [mở Counter Trap Magic Jammer](docs/engine/magic-jammer.md), Linux đã đạt 1030 test/58 bước/48 browser report; đang kiểm chứng Windows CI.
+1030/1030 test trong 40 file đạt trên Linux và Windows CI.
+58/58 bước validation và 48 browser report đạt, gồm bốn ca [Counter Trap Magic Jammer](docs/engine/magic-jammer.md); Windows dùng Edge, tổng runtimeExceptions=0.
 Dữ liệu nhập và catalog runtime đều 111 loại; trạng thái nhập vẫn tách riêng review/runtime.
 Browser regression tính riêng: xây/lưu deck, 5 hiệu ứng, xem Mộ, tạo trận A/B/ngẫu nhiên, bỏ bài,
 Pot với deck 0/1/2 lá, đầu hàng/hủy và tạo trận sau kết thúc, trận tự nhiên đầy đủ.
@@ -162,7 +162,7 @@ hoặc mọi tương tác bài. Bài tự tạo giữ ở [kế hoạch mở r�
 
 `npm run validate:platform` chạy bộ kiểm chứng tổng hợp, ghi report JSON và log từng bước
 vào artifacts/platform-validation/ (Git bỏ qua). Lỗi dừng ngay, phần còn lại ghi chưa chạy.
-Windows CI đã chạy cùng lệnh, đạt 54/54 bước ở mốc trước; mục Magic Jammer đang kiểm chứng 58 bước và giữ artifact; report Linux vẫn chỉ xác nhận Linux.
+Windows CI đã chạy cùng lệnh, đạt 58/58 bước và giữ artifact; report Linux vẫn chỉ xác nhận Linux.
 
 ## Kiểm thử giao diện
 

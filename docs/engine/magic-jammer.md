@@ -82,11 +82,33 @@ b:opponent:choice thao tác UI/HTTP thật. Kiểm private Set, preview/cancel,
 trả cost một lần, Chain speed 1/3 không target, giữ nguyên LP/deck/quái,
 không effect-choice, public facts hai ghế và saved deck không đổi.
 Bố cục desktop 1440/hẹp 390 không tràn ngang; ảnh đã xem ở
-artifacts/magic-jammer/desktop.png và narrow.png. Chỉ sửa fixture trước
+artifacts/magic-jammer/desktop.png, narrow.png, choice-desktop.png và
+choice-narrow.png. Chỉ sửa fixture trước
 khởi động server. Không chỉnh state trong khi chơi.
 
-Linux đã đạt 1030/1030 test, 58/58 bước và 48 browser report bằng Chromium;
-Windows CI sẽ được ghi sau khi tải và đọc artifact thực tế.
+Linux đạt 1030/1030 test trong 40 file, 58/58 bước và 48 browser report,
+Chromium 154.0.8037.57, runtimeExceptions=0. Đã đọc report tại
+artifacts/platform-validation/2026-10-28T02-07-37-652Z-13473/report.json:
+mỗi bước browser đúng một report khớp host/version; đủ bốn mode Counter,
+122 ca Magic Jammer, 18 bundle/111 lá/95 verified/16 historical pending.
+Capabilities ghi 111 supported, 16 reviewed effects/12 scope; Counter
+review tách khỏi Trap Hole, trạng thái nhập Magic Jammer vẫn pending/
+not-started/not-run. Kiểm tra riêng UI bổ sung xác nhận modal có hai preview
+không tràn viewport ở cả hai kích thước sau khi hoàn tất bộ tổng hợp.
+
+Windows và Ubuntu CI đã đạt trên source commit
+7f50e81bf9260c53ea3565c47fe850e292aced96,
+[run 40619933412](https://github.com/xuanthao260604-sys/idc/actions/runs/40619933412).
+Đã tải/đọc artifact windows-validation-40619933412-1:
+win32 x64, OS 10.0.26100, Node 24.19.0, npm 11.17.0,
+Edge 155.0.4283.62. Windows đạt 1030/1030 test (40 file), 58/58 bước,
+48 browser report, runtimeExceptions=0; mỗi bước browser đúng một report
+khớp host/version. Đã kiểm tra đủ 122 ca Magic Jammer, bốn mode Counter,
+18 bundle/111 lá và cả hai trận tự nhiên. Toàn capabilities JSON giống
+Linux: 111 supported/16 effects/12 scope, Counter review riêng và trạng
+thái nhập Magic Jammer vẫn pending/not-started/not-run. Hai trận tự nhiên
+có kết quả giống Linux. Report ghi windows11DesktopVerified=false tại
+artifacts/ci-magic-jammer-runtime/2026-10-28T02-16-42-463Z-1880/report.json.
 Trận tự nhiên pilot giữ 16 lượt/339 lệnh, B thắng LP 0/4200. Expanded 111
 loại seed 09 đạt 13 lượt/263 lệnh, 13 tấn công/1 quyết định, A thắng LP
 6300/0; dùng Earthquake và Magician of Faith. Không gán Magic Jammer cho
