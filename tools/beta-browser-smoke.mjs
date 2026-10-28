@@ -14,6 +14,8 @@ import { goat200508Format } from '../dist/packages/card-data/src/formats/goat-20
 const read = async p => JSON.parse(await readFile(join(projectRoot, p), 'utf8'));
 const magicArg=process.argv.find(arg=>/^--magic-jammer=[ab]:(self|opponent):(damage|cost|pot|choice)$/.test(arg));
 const magicMode=magicArg?.split('=')[1].split(':')??null;
+const magicInteractionsArg = process.argv.find(arg => /^--magic-jammer-interactions=[ab]$/.test(arg));
+const magicInteractions = magicInteractionsArg?.split('=')[1] ?? null;
 const lifePointsArg = process.argv.find(arg => /^--life-points=(normal|lethal)$/.test(arg));
 const lifePointsMode = lifePointsArg?.split('=')[1] ?? null;
 const ookaziArg = process.argv.find(arg => /^--ookazi=[ab]:(hand|set):(normal|lethal)$/.test(arg));
@@ -42,7 +44,7 @@ const reincarnationMode = reincarnationArg?.split('=')[1] ?? null;
 const deckDraftGuard = process.argv.includes('--deck-draft-guard');
 const deckSaveCheck = process.argv.includes('--deck-save-check');
 const deckOverview = deckSaveCheck || deckDraftGuard || process.argv.includes('--deck-overview');
-const expanded = magicMode !== null || ookaziInteractions !== null || ookazi !== null || choiceIdentities || graveyardFilters || handSorting || faithBattle !== null || magicianFaith || deckOverview || earthquake || blockAttack || reincarnationMode !== null || tributeDoomed || hammerShot || smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
+const expanded = magicInteractions !== null || magicMode !== null || ookaziInteractions !== null || ookazi !== null || choiceIdentities || graveyardFilters || handSorting || faithBattle !== null || magicianFaith || deckOverview || earthquake || blockAttack || reincarnationMode !== null || tributeDoomed || hammerShot || smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
 const r = expanded ? loadRuntimeCatalog().registry : createRegistry((await read('data/generated/pilot.json')).cards, goat200508Format, {},
   await read('data/reviews/pilot.spell-effects.json'), await read('data/reviews/pilot.flip-effects.json'), await read('data/reviews/pilot.trap-effects.json'));
 const deck = Object.keys(r.cards);
@@ -142,7 +144,7 @@ if (chainView) {
   move('Man-Eater Bug','b','monster',0,true);
   s.turn.number=3;s.turn.phase='main1';s.timing.window='open';s.timing.priorityPlayer='a';s.timing.consecutivePasses=0;
 }
-if (expanded && magicMode === null && ookaziInteractions === null && !fullDuel && lifePointsMode === null && !smashingGround && !hammerShot && !tributeDoomed && !blockAttack && !earthquake && !magicianFaith && !faithBattle && !handSorting && !graveyardFilters && !choiceIdentities && !deckOverview && reincarnationMode === null) {
+if (expanded && magicInteractions === null && magicMode === null && ookaziInteractions === null && !fullDuel && lifePointsMode === null && !smashingGround && !hammerShot && !tributeDoomed && !blockAttack && !earthquake && !magicianFaith && !faithBattle && !handSorting && !graveyardFilters && !choiceIdentities && !deckOverview && reincarnationMode === null) {
   move('Gaia The Fierce Knight', 'a', 'hand');
   move('Battle Ox', 'a', 'monster', 0); move('Celtic Guardian', 'a', 'monster', 1, true);
   move('Curse of Dragon', 'a', 'hand');
@@ -185,6 +187,15 @@ if (smashingGround) {
   move('Mystical Elf', 'b', 'monster', 0); move('Giant Soldier of Stone', 'b', 'monster', 1);
   move('Battle Ox', 'b', 'monster', 2); move('Blue-Eyes White Dragon', 'b', 'monster', 3, true);
   s.turn.number = 3; s.turn.phase = 'main1'; s.timing.window = 'open'; s.timing.priorityPlayer = 'a'; s.timing.consecutivePasses = 0;
+}
+if (magicInteractions !== null) {
+  const actor = magicInteractions, other = actor === 'a' ? 'b' : 'a';
+  for (const name of ['Tribute to The Doomed', 'Ookazi', 'Skull Servant']) move(name, actor, 'hand');
+  move('Magician of Faith', actor, 'monster', 0, true);
+  move('Magic Jammer', other, 'spell-trap', 4, true); move('Magician of Faith', other, 'hand');
+  move('Battle Ox', other, 'monster', 0);
+  s.turn.number = actor === 'a' ? 3 : 4; s.turn.activePlayer = actor; s.turn.phase = 'main1';
+  s.timing.window = 'open'; s.timing.priorityPlayer = actor; s.timing.consecutivePasses = 0;
 }
 if(magicMode!==null) {
   const [actor,side,kind]=magicMode,other=actor==='a'?'b':'a',counterOwner=side==='self'?actor:other;
@@ -1890,6 +1901,70 @@ try {
     assert.deepEqual(await evaluate('view.players.map(p=>p.lifePoints)'),[8000,8000]);
     assert.equal(errors.length,0);
     console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'smashing-ground',nonTargeting:true,tiedHighestDefenseChoice:true,ownAndHiddenExcluded:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
+  } else if (magicInteractions !== null) {
+    const actor = magicInteractions, other = actor === 'a' ? 'b' : 'a', saved = {};
+    for (const who of ['a','b']) { await seat(who); saved[who] = await evaluate(`api('/api/deck?seat='+view.viewerId).then(JSON.stringify)`); }
+    await seat(actor); assert.equal(await evaluate('catalog.size'), 111);
+    const own = `view.players.find(p=>p.playerId===${JSON.stringify(actor)})`, foe = `view.players.find(p=>p.playerId===${JSON.stringify(other)})`;
+    const initialDecks = await evaluate('view.players.map(p=>p.deckCount)');
+    const unchangedLP = async () => assert.deepEqual(await evaluate('view.players.map(p=>p.lifePoints)'), [8000,8000]);
+    const graveCount = async (player, name) => evaluate(`view.players.find(p=>p.playerId===${JSON.stringify(player)}).graveyard.filter(c=>catalog.get(c.definition.id).name===${JSON.stringify(name)}).length`);
+    const settleUI = async () => { for (let n=0; await evaluate(`view.timing.window!=='open'`); n++) { assert.ok(n<12); assert.equal(await evaluate('view.decision'),null); await pass(await evaluate('view.timing.priorityPlayer')); } };
+    const activateTribute = async cost => {
+      await seat(actor); await click(`[...document.querySelectorAll('#hand .card')].find(e=>e.querySelector('.card-name')?.textContent==='Tribute to The Doomed')`);
+      await click(textButton('#actions button','Kích hoạt'));
+      await evaluate(`(()=>{const f=document.getElementById('action-fields'),d=f.querySelector('select[name="discard"]'),t=f.querySelector('select[name="target"]');d.value=[...d.options].find(o=>label(visibleCard(o.value))===${JSON.stringify(cost)}).value;t.value=[...t.options].find(o=>label(visibleCard(o.value))==='Battle Ox').value;f.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+      await preview('discard',cost); await preview('target','Battle Ox'); await unchangedLP(); await confirm();
+    };
+    assert.equal(await evaluate(`${foe}.spellsTraps[4].visibility`),'hidden');
+    await activateTribute('Ookazi'); assert.equal(await graveCount(actor,'Ookazi'),1); assert.equal(await evaluate('view.chain.length'),1);
+    await seat(other); await click(`document.querySelector('#self .zone-row:nth-child(3) .slot:nth-child(5) .card')`);
+    await click(textButton('#actions button','Phản hồi Phép'));
+    assert.equal(await evaluate(`document.querySelector('[data-preview="response"] h2').textContent`),'Tribute to The Doomed');
+    await evaluate(`(()=>{const d=document.querySelector('#action-fields select[name="discard"]');d.value=[...d.options].find(o=>label(visibleCard(o.value))==='Magician of Faith').value;d.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+    await preview('discard','Magician of Faith'); await confirm();
+    assert.equal(await graveCount(other,'Magician of Faith'),1); assert.equal(await evaluate('view.decision'),null);
+    assert.deepEqual(await evaluate('view.chain.map(l=>l.spellSpeed)'),[1,3]); await unchangedLP();
+    await pass(actor); assert.equal(await evaluate('view.chain.length'),2); await pass(other); await settleUI();
+    assert.equal(await evaluate('view.chain.length'),0); assert.equal(await evaluate('view.decision'),null);
+    assert.equal(await evaluate(`${foe}.monsters[0].definition.id`),'official:05053103');
+    assert.equal(await graveCount(actor,'Tribute to The Doomed'),1); await unchangedLP();
+    assert.equal((await evaluate('view.activity.flatMap(e=>e.resolution||[])')).some(f=>f.kind==='effect-destroyed'||f.kind==='effect-damage'),false);
+    await seat(actor); await click(`document.querySelector('#self .zone-row:nth-child(2) .slot:nth-child(1) .card')`);
+    await actionClick(textButton('#actions button','Flip Summon'));
+    assert.equal(await evaluate('view.decision.kind'),'target'); assert.equal(await evaluate('view.decision.optionIds.length'),2);
+    assert.equal(await evaluate(`view.decision.optionIds.includes(${foe}.graveyard.find(c=>catalog.get(c.definition.id).name==='Magic Jammer').handle)`),false);
+    const choice = await evaluate(`[...document.querySelectorAll('#decision-form label')].findIndex(e=>e.textContent.includes('Tribute to The Doomed'))`);
+    assert.ok(choice>=0); await inspectDecision(choice); await unchangedLP();
+    await seat(other); assert.equal(await evaluate('view.decision'),null); assert.equal(await evaluate(`document.querySelectorAll('#decision-form input').length`),0); await seat(actor);
+    await click(`[...document.querySelectorAll('#decision-form label')].find(e=>e.textContent.includes('Tribute to The Doomed')).querySelector('input')`);
+    await actionClick(`document.querySelector('#decision-form button[type="submit"]')`);
+    assert.equal(await graveCount(actor,'Tribute to The Doomed'),1); assert.equal(await evaluate('view.chain.length'),1);
+    await settleUI(); await seat(actor); await unchangedLP();
+    assert.equal(await evaluate(`view.selfHand.some(c=>catalog.get(c.definition.id).name==='Tribute to The Doomed')`),true);
+    assert.equal(await graveCount(actor,'Ookazi'),1); assert.equal(await graveCount(other,'Magician of Faith'),1);
+    await activateTribute('Skull Servant'); assert.equal(await graveCount(actor,'Skull Servant'),1); assert.equal(await evaluate('view.chain.length'),1);
+    assert.equal(await evaluate(`${foe}.monsters[0].definition.id`),'official:05053103');
+    await pass(other); assert.equal(await evaluate(`${foe}.monsters[0].definition.id`),'official:05053103'); await pass(actor); await settleUI();
+    assert.equal(await evaluate(`${foe}.monsters[0]`),null); assert.equal(await evaluate('view.chain.length'),0); assert.equal(await evaluate('view.decision'),null); await unchangedLP();
+    for (const name of ['Ookazi','Skull Servant','Tribute to The Doomed']) assert.equal(await graveCount(actor,name),1);
+    for (const name of ['Magic Jammer','Magician of Faith','Battle Ox']) assert.equal(await graveCount(other,name),1);
+    const facts = await evaluate('view.activity.flatMap(e=>e.resolution||[])');
+    assert.deepEqual(facts.filter(f=>f.kind==='discard-cost'),[{kind:'discard-cost',playerId:actor,count:1},{kind:'discard-cost',playerId:other,count:1},{kind:'discard-cost',playerId:actor,count:1}]);
+    assert.deepEqual(facts.filter(f=>f.kind==='spell-activation-negated'||f.kind==='spell-destroyed'),[{kind:'spell-activation-negated',playerId:actor,count:1},{kind:'spell-destroyed',playerId:actor,count:1}]);
+    assert.deepEqual(facts.filter(f=>f.kind==='effect-destroyed'),[{kind:'effect-destroyed',count:1}]);
+    assert.deepEqual(facts.filter(f=>f.kind==='return-to-hand'),[{kind:'return-to-hand',playerId:actor,count:1}]);
+    assert.equal(facts.some(f=>f.kind==='effect-damage'||f.kind==='life-points-gained'||f.kind==='draw'),false);
+    await seat(actor); assert.equal(await evaluate('view.normalSummonQuota.remaining'),1); assert.equal(await evaluate('view.result'),null);
+    assert.deepEqual(await evaluate('view.players.map(p=>p.deckCount)'),initialDecks);
+    const version=await evaluate('view.stateVersion');
+    for(const who of ['a','b']) { await seat(who); assert.deepEqual(await evaluate('view.activity.flatMap(e=>e.resolution||[])'),facts); assert.equal(await evaluate(`api('/api/deck?seat='+view.viewerId).then(JSON.stringify)`),saved[who]); }
+    assert.equal(await evaluate('view.stateVersion'),version); assert.equal(errors.length,0);
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'magic-jammer-interactions-'+actor,catalog:111,
+      negatedTargetPreserved:true,originalCostRetained:true,counterCostDoesNotFlip:true,discardedSpellDoesNotBurn:true,
+      ownSpellRecovery:true,privateDecision:true,recoveryDoesNotResolveSpell:true,recoveredSpellUsed:true,newCostPaidOnce:true,
+      onlyNewActivationDestroys:true,sequentialChainLengths:[2,1,1],noNormalQuotaConsumed:true,samePublicFactsAcrossSeats:true,
+      savedDecksUnchanged:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
   } else if(magicMode!==null) {
     const [actor,side,kind]=magicMode,other=actor==='a'?'b':'a',counterOwner=side==='self'?actor:other;
     const name={damage:'Ookazi',cost:'Tribute to The Doomed',pot:'Pot of Greed',choice:'Smashing Ground'}[kind],saved={};
