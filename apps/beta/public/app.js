@@ -410,8 +410,13 @@ function detail() {
   if (zone === 'spell-trap' && card.position === 'face-down') {
     if (d.kind === 'spell') add('Kích hoạt', () => activateSpell(h, slot));
     else if (d.subtype === 'counter') add('Phản hồi Phép', () => activateCounter(h), view.timing.priorityPlayer === view.viewerId && view.timing.window === 'chain-response' && !view.decision);
-    else add('Kích hoạt Bẫy', () => chooseAction('Chọn quái vừa triệu hồi', { type: 'activate-trap', cardHandle: h }, { targets: view.players.find(p => p.playerId !== view.viewerId).monsters.flatMap((c, i) => c ? [{ handle: c.handle, label: `Ô ${i + 1}: ${label(c)}` }] : []) }), view.timing.priorityPlayer === view.viewerId && ['summon-response', 'chain-response'].includes(view.timing.window) && !view.decision);
+    else add('Kích hoạt Bẫy', () => activateTrap(h), view.timing.priorityPlayer === view.viewerId && ['summon-response', 'chain-response'].includes(view.timing.window) && !view.decision);
   }
+}
+function activateTrap(handle) {
+  const base = { type: 'activate-trap', cardHandle: handle };
+  if (!matchingActions(base).length) return;
+  chooseAction('Chọn quái vừa triệu hồi', base, { targets: view.players.find(p => p.playerId !== view.viewerId).monsters.flatMap((c, i) => c ? [{ handle: c.handle, label: `Ô ${i + 1}: ${label(c)}` }] : []) });
 }
 function activateCounter(handle) {
   const plan = matchingActions({ type: 'activate-counter-trap', cardHandle: handle })[0];
@@ -456,9 +461,19 @@ function renderResult() {
   }));
   $('result-new-game').disabled = busy || !result;
 }
+function responseCards() {
+  if (view.result || view.decision || view.timing.priorityPlayer !== view.viewerId
+    || !['summon-response', 'chain-response'].includes(view.timing.window)) return [];
+  const plans = (view.availableActions || []).filter(a => ['activate-trap', 'activate-counter-trap'].includes(a.type));
+  return view.players.find(p => p.playerId === view.viewerId).spellsTraps.flatMap((card, slot) => {
+    const plan = card?.visibility === 'known' && plans.find(a => a.cardHandle === card.handle);
+    return plan ? [{ card, slot, type: plan.type }] : [];
+  });
+}
 function renderGuide() {
   let title = '', text = '', transfer = null;
   const priority = view.timing.priorityPlayer;
+  const responses = responseCards();
   if (view.result) {
     title = view.result.winner ? `${names[view.result.winner]} thắng` : 'Trận đấu hòa';
     text = `${resultReasons[view.result.reason] || 'Trận đấu đã kết thúc.'} Chọn Trận mới nếu muốn chơi tiếp.`;
@@ -475,7 +490,10 @@ function renderGuide() {
     title = 'Đang đề nghị chuyển phase'; text = 'Nếu không phản hồi, nhấn Pass để đồng ý chuyển phase. Lượt chơi vẫn tiếp tục theo thứ tự trên sân.';
   } else if (view.timing.window !== 'open') {
     title = view.chain.length ? `Bạn có quyền phản hồi · Chain ${view.chain.length}` : 'Bạn có quyền phản hồi';
-    text = 'Dùng bài phản hồi nếu đúng điều kiện, hoặc nhấn Pass. Khi hai bên nhường quyền liên tiếp, hiệu ứng hoặc bước đang chờ mới được xử lý.';
+    text = ['summon-response', 'chain-response'].includes(view.timing.window)
+      ? (responses.length ? `Có ${responses.length} lá có thể phản hồi. Chọn bên dưới để xem lựa chọn và xác nhận, hoặc nhấn Pass. ` : 'Bạn không có lá phản hồi hợp lệ lúc này. Nhấn Pass để nhường quyền. ')
+        + 'Khi hai bên nhường quyền liên tiếp, hiệu ứng hoặc bước đang chờ mới được xử lý.'
+      : 'Dùng bài phản hồi nếu đúng điều kiện, hoặc nhấn Pass. Khi hai bên nhường quyền liên tiếp, hiệu ứng hoặc bước đang chờ mới được xử lý.';
   } else if (view.turn.phase === 'battle') {
     title = 'Battle Phase · Chọn quái để tấn công'; text = 'Chọn quái ngửa tấn công của mình và mục tiêu. Khi đánh xong, chuyển MAIN 2 trong mục Điều khiển lượt.';
   } else if (['main1', 'main2'].includes(view.turn.phase)) {
@@ -485,6 +503,14 @@ function renderGuide() {
   }
   $('guide-title').textContent = busy ? 'Đang xử lý thao tác…' : title;
   $('guide-text').textContent = text;
+  $('response-options').hidden = !responses.length;
+  $('response-options').replaceChildren(...responses.map(({ card, slot, type }) => {
+    const b = button(`${type === 'activate-counter-trap' ? 'Phản hồi Phép' : 'Phản hồi triệu hồi'} · ${label(card)} · ô ${slot + 1}`, () => {
+      if (busy || !responseCards().some(r => r.card.handle === card.handle && r.type === type)) return;
+      if (type === 'activate-counter-trap') activateCounter(card.handle); else activateTrap(card.handle);
+    });
+    b.disabled = busy; b.dataset.responseHandle = card.handle; return b;
+  }));
   $('handoff-next').hidden = !transfer || busy;
   $('handoff-next').textContent = transfer ? `Chuyển cho ${names[transfer]}` : 'Chuyển máy';
   renderActivity();

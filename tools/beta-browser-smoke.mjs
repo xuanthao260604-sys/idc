@@ -14,6 +14,8 @@ import { goat200508Format } from '../dist/packages/card-data/src/formats/goat-20
 const read = async p => JSON.parse(await readFile(join(projectRoot, p), 'utf8'));
 const magicArg=process.argv.find(arg=>/^--magic-jammer=[ab]:(self|opponent):(damage|cost|pot|choice)$/.test(arg));
 const magicMode=magicArg?.split('=')[1].split(':')??null;
+const responseGuideArg = process.argv.find(arg => /^--response-guide=[ab]$/.test(arg));
+const responseGuide = responseGuideArg?.split('=')[1] ?? null;
 const magicInteractionsArg = process.argv.find(arg => /^--magic-jammer-interactions=[ab]$/.test(arg));
 const magicInteractions = magicInteractionsArg?.split('=')[1] ?? null;
 const lifePointsArg = process.argv.find(arg => /^--life-points=(normal|lethal)$/.test(arg));
@@ -44,10 +46,11 @@ const reincarnationMode = reincarnationArg?.split('=')[1] ?? null;
 const deckDraftGuard = process.argv.includes('--deck-draft-guard');
 const deckSaveCheck = process.argv.includes('--deck-save-check');
 const deckOverview = deckSaveCheck || deckDraftGuard || process.argv.includes('--deck-overview');
-const expanded = magicInteractions !== null || magicMode !== null || ookaziInteractions !== null || ookazi !== null || choiceIdentities || graveyardFilters || handSorting || faithBattle !== null || magicianFaith || deckOverview || earthquake || blockAttack || reincarnationMode !== null || tributeDoomed || hammerShot || smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
+const expanded = responseGuide !== null || magicInteractions !== null || magicMode !== null || ookaziInteractions !== null || ookazi !== null || choiceIdentities || graveyardFilters || handSorting || faithBattle !== null || magicianFaith || deckOverview || earthquake || blockAttack || reincarnationMode !== null || tributeDoomed || hammerShot || smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
 const r = expanded ? loadRuntimeCatalog().registry : createRegistry((await read('data/generated/pilot.json')).cards, goat200508Format, {},
   await read('data/reviews/pilot.spell-effects.json'), await read('data/reviews/pilot.flip-effects.json'), await read('data/reviews/pilot.trap-effects.json'));
 const deck = Object.keys(r.cards);
+if (responseGuide !== null) for (const name of ['Magic Jammer', 'Trap Hole']) deck.push(Object.values(r.cards).find(c => c.name === name).id);
 if (handSorting || graveyardFilters) deck.push(Object.values(r.cards).find(c=>c.name==='Battle Ox').id);
 if (choiceIdentities) for(const name of ['Battle Ox','Celtic Guardian','Hane-Hane','Fissure'])deck.push(Object.values(r.cards).find(c=>c.name===name).id);
 for (const c of Object.values(r.cards)) if (!expanded && c.legality.maxCopies >= 2) deck.push(c.id);
@@ -144,7 +147,7 @@ if (chainView) {
   move('Man-Eater Bug','b','monster',0,true);
   s.turn.number=3;s.turn.phase='main1';s.timing.window='open';s.timing.priorityPlayer='a';s.timing.consecutivePasses=0;
 }
-if (expanded && magicInteractions === null && magicMode === null && ookaziInteractions === null && !fullDuel && lifePointsMode === null && !smashingGround && !hammerShot && !tributeDoomed && !blockAttack && !earthquake && !magicianFaith && !faithBattle && !handSorting && !graveyardFilters && !choiceIdentities && !deckOverview && reincarnationMode === null) {
+if (expanded && responseGuide === null && magicInteractions === null && magicMode === null && ookaziInteractions === null && !fullDuel && lifePointsMode === null && !smashingGround && !hammerShot && !tributeDoomed && !blockAttack && !earthquake && !magicianFaith && !faithBattle && !handSorting && !graveyardFilters && !choiceIdentities && !deckOverview && reincarnationMode === null) {
   move('Gaia The Fierce Knight', 'a', 'hand');
   move('Battle Ox', 'a', 'monster', 0); move('Celtic Guardian', 'a', 'monster', 1, true);
   move('Curse of Dragon', 'a', 'hand');
@@ -187,6 +190,16 @@ if (smashingGround) {
   move('Mystical Elf', 'b', 'monster', 0); move('Giant Soldier of Stone', 'b', 'monster', 1);
   move('Battle Ox', 'b', 'monster', 2); move('Blue-Eyes White Dragon', 'b', 'monster', 3, true);
   s.turn.number = 3; s.turn.phase = 'main1'; s.timing.window = 'open'; s.timing.priorityPlayer = 'a'; s.timing.consecutivePasses = 0;
+}
+if (responseGuide !== null) {
+  const actor = responseGuide, other = actor === 'a' ? 'b' : 'a';
+  for (const p of s.players) for (const id of p.hand.splice(0)) { p.deck.push(id); s.cards[id].location = {kind:'deck',playerId:p.id}; }
+  for (const name of ['Battle Ox', 'Ookazi', 'Pot of Greed', 'Mystical Elf', 'Celtic Guardian']) move(name, actor, 'hand');
+  move('Skull Servant', other, 'hand'); move('Magic Jammer', actor, 'spell-trap', 4, true);
+  move('Trap Hole', other, 'spell-trap', 0, true); move('Trap Hole', other, 'spell-trap', 1, true);
+  move('Magic Jammer', other, 'spell-trap', 3, true); move('Magic Jammer', other, 'spell-trap', 4, true);
+  s.turn.number = actor === 'a' ? 3 : 4; s.turn.activePlayer = actor; s.turn.phase = 'main1';
+  s.timing.window = 'open'; s.timing.priorityPlayer = actor; s.timing.consecutivePasses = 0;
 }
 if (magicInteractions !== null) {
   const actor = magicInteractions, other = actor === 'a' ? 'b' : 'a';
@@ -1901,6 +1914,97 @@ try {
     assert.deepEqual(await evaluate('view.players.map(p=>p.lifePoints)'),[8000,8000]);
     assert.equal(errors.length,0);
     console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'smashing-ground',nonTargeting:true,tiedHighestDefenseChoice:true,ownAndHiddenExcluded:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
+  } else if (responseGuide !== null) {
+    const actor = responseGuide, other = actor === 'a' ? 'b' : 'a', saved = {};
+    for (const who of ['a','b']) { await seat(who); saved[who] = await evaluate(`api('/api/deck?seat='+view.viewerId).then(JSON.stringify)`); }
+    await seat(actor);
+    const own = `view.players.find(p=>p.playerId===${JSON.stringify(actor)})`, foe = `view.players.find(p=>p.playerId===${JSON.stringify(other)})`;
+    await evaluate(`window.guideCommandCount=0;window.guideOriginalFetch=window.fetch;window.fetch=(...args)=>{if(args[0]==='/api/command')window.guideCommandCount++;return window.guideOriginalFetch(...args);}`);
+    const options = async expected => {
+      const handles = await evaluate(`[...document.querySelectorAll('#response-options button')].map(b=>b.dataset.responseHandle)`);
+      const legal = await evaluate(`(view.availableActions||[]).filter(a=>a.type==='activate-trap'||a.type==='activate-counter-trap').map(a=>a.cardHandle)`);
+      assert.deepEqual([...handles].sort(),[...new Set(legal)].sort()); assert.equal(handles.length,expected);
+      assert.equal(await evaluate(`document.getElementById('response-options').hidden`),!expected);
+      return evaluate(`[...document.querySelectorAll('#response-options button')].map(b=>b.textContent)`);
+    };
+    const hiddenOptions = async () => {
+      await options(0); assert.equal(await evaluate(`document.getElementById('response-options').textContent`),'');
+      assert.equal(await evaluate(`document.getElementById('guide').textContent.includes('Magic Jammer')||document.getElementById('guide').textContent.includes('Trap Hole')`),false);
+    };
+    const settleUI = async () => { for(let n=0;await evaluate(`view.timing.window!=='open'`);n++){assert.ok(n<12);await pass(await evaluate('view.timing.priorityPlayer'));} };
+    const selectHand = async name => { await seat(actor); await click(`[...document.querySelectorAll('#hand .card')].find(e=>e.querySelector('.card-name')?.textContent===${JSON.stringify(name)})`); };
+    const cancelGuide = async (index, title, keyboard = false) => {
+      const before = await evaluate('JSON.stringify(view)'), calls = await evaluate('window.guideCommandCount');
+      const selector = `document.querySelectorAll('#response-options button')[${index}]`;
+      if(keyboard) {
+        await evaluate(`${selector}.focus()`);
+        await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Enter',code:'Enter',windowsVirtualKeyCode:13,text:'\r'});
+        await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Enter',code:'Enter',windowsVirtualKeyCode:13});
+      } else await click(selector);
+      await wait(`document.getElementById('action-dialog').open`); assert.equal(await evaluate(`document.getElementById('action-title').textContent`),title);
+      assert.equal(await evaluate('JSON.stringify(view)'),before); assert.equal(await evaluate('window.guideCommandCount'),calls);
+      await click(`document.getElementById('cancel-action')`); assert.equal(await evaluate('JSON.stringify(view)'),before); assert.equal(await evaluate('window.guideCommandCount'),calls);
+    };
+    await hiddenOptions();
+    await selectHand('Battle Ox'); await click(textButton('#actions button','Triệu hồi')); await confirm();
+    await hiddenOptions(); assert.match(await evaluate(`document.getElementById('guide-text').textContent`),/không có lá phản hồi hợp lệ/);
+    await pass(actor); await seat(other);
+    assert.deepEqual(await options(2),['Phản hồi triệu hồi · Trap Hole · ô 1','Phản hồi triệu hồi · Trap Hole · ô 2']);
+    assert.match(await evaluate(`document.getElementById('guide-text').textContent`),/Có 2 lá/);
+    for (const [label,width,height] of [['desktop',1440,1000],['narrow',390,844]]) {
+      await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
+      await evaluate(`document.getElementById('guide').scrollIntoView({block:'center'})`);
+      assert.equal(await evaluate(`document.documentElement.scrollWidth<=innerWidth+1&&[...document.querySelectorAll('#response-options button')].every(b=>{const r=b.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1&&b.scrollWidth<=b.clientWidth+1})`),true);
+      if(process.argv.includes('--screenshots')) { const directory=join(projectRoot,'artifacts','response-guide'); await mkdir(directory,{recursive:true}); const shot=await send('Page.captureScreenshot',{format:'png'}); await writeFile(join(directory,label+'.png'),Buffer.from(shot.data,'base64')); }
+    }
+    await send('Emulation.clearDeviceMetricsOverride'); await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
+    await cancelGuide(1,'Chọn quái vừa triệu hồi',true);
+    await click(`document.querySelectorAll('#response-options button')[1]`); await preview('target','Battle Ox'); await confirm();
+    assert.equal(await evaluate(`${foe}.spellsTraps[1].position`),'face-up'); assert.equal(await evaluate(`${foe}.spellsTraps[0].position`),'face-down');
+    await seat(actor); await hiddenOptions(); await seat(other); await hiddenOptions(); await pass(actor); await seat(other);
+    assert.deepEqual(await options(1),['Phản hồi triệu hồi · Trap Hole · ô 1']);
+    await click(`document.querySelector('#response-options button')`); await confirm(); assert.equal(await evaluate('view.chain.length'),2);
+    await pass(actor); await pass(other); await settleUI(); await seat(actor); await hiddenOptions();
+    assert.equal(await evaluate(`${own}.monsters[0]`),null);
+    await selectHand('Ookazi'); await click(textButton('#actions button','Kích hoạt')); await confirm(); await hiddenOptions();
+    await seat(other); assert.deepEqual(await options(2),['Phản hồi Phép · Magic Jammer · ô 4','Phản hồi Phép · Magic Jammer · ô 5']);
+    await cancelGuide(1,'Phủ nhận kích hoạt Phép'); await click(`document.querySelectorAll('#response-options button')[1]`); await preview('discard','Skull Servant'); await confirm();
+    assert.equal(await evaluate(`${foe}.spellsTraps[4].position`),'face-up'); assert.equal(await evaluate(`${foe}.spellsTraps[3].position`),'face-down');
+    await seat(actor); await hiddenOptions(); assert.match(await evaluate(`document.getElementById('guide-text').textContent`),/không có lá phản hồi hợp lệ/);
+    await pass(actor); await pass(other); await settleUI(); await seat(actor); await hiddenOptions();
+    assert.deepEqual(await evaluate('view.players.map(p=>p.lifePoints)'),[8000,8000]);
+    await selectHand('Pot of Greed'); await click(textButton('#actions button','Kích hoạt')); await confirm(); await seat(other);
+    await hiddenOptions(); assert.equal(await evaluate('view.selfHand.length'),0); assert.equal(await evaluate(`${foe}.spellsTraps[3].visibility`),'known');
+    assert.match(await evaluate(`document.getElementById('guide-text').textContent`),/không có lá phản hồi hợp lệ/);
+    await pass(other); await seat(actor);
+    assert.deepEqual(await options(1),['Phản hồi Phép · Magic Jammer · ô 5']);
+    assert.equal(await evaluate(`view.availableActions.filter(a=>a.type==='activate-counter-trap').length`),2);
+    const beforeRefresh=await evaluate('view.stateVersion'); await click(`document.getElementById('refresh')`); await wait(`!busy`);
+    assert.equal(await evaluate('view.stateVersion'),beforeRefresh); await options(1);
+    await cancelGuide(0,'Phủ nhận kích hoạt Phép'); await click(`document.querySelector('#response-options button')`);
+    await evaluate(`(()=>{const d=document.querySelector('#action-fields select[name="discard"]');d.value=[...d.options].find(o=>label(visibleCard(o.value))==='Mystical Elf').value;d.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+    await preview('discard','Mystical Elf');
+    const version=await evaluate('view.stateVersion'), calls=await evaluate('window.guideCommandCount');
+    await evaluate(`(()=>{const original=window.fetch;window.fetch=async(...args)=>{if(args[0]==='/api/command'){window.fetch=original;await new Promise(resolve=>window.releaseGuide=resolve);}return original(...args);};})()`);
+    await click(`document.querySelector('#action-form button[type="submit"]')`); await wait(`busy&&typeof window.releaseGuide==='function'`);
+    assert.equal(await evaluate(`document.querySelectorAll('#response-options button').length`),1);
+    assert.equal(await evaluate(`[...document.querySelectorAll('#response-options button')].every(b=>b.disabled)`),true);
+    await evaluate(`document.querySelector('#response-options button').click()`); assert.equal(await evaluate('window.guideCommandCount'),calls);
+    await evaluate('window.releaseGuide();delete window.releaseGuide'); await wait(`!busy&&view.stateVersion>${version}`);
+    assert.equal(await evaluate('window.guideCommandCount'),calls+1); await hiddenOptions();
+    await pass(other); await pass(actor); await settleUI(); await seat(actor); await hiddenOptions();
+    assert.deepEqual(await evaluate('view.players.map(p=>p.lifePoints)'),[8000,8000]);
+    const facts=await evaluate('view.activity.flatMap(e=>e.resolution||[])');
+    assert.equal(facts.filter(f=>f.kind==='spell-activation-negated').length,2);
+    assert.deepEqual(facts.filter(f=>f.kind==='discard-cost'),[{kind:'discard-cost',playerId:other,count:1},{kind:'discard-cost',playerId:actor,count:1}]);
+    assert.equal(facts.some(f=>f.kind==='draw'||f.kind==='effect-damage'),false);
+    for(const who of ['a','b']) { await seat(who); await hiddenOptions(); assert.equal(await evaluate(`api('/api/deck?seat='+view.viewerId).then(JSON.stringify)`),saved[who]); }
+    await evaluate('window.fetch=window.guideOriginalFetch;delete window.guideOriginalFetch'); assert.equal(errors.length,0);
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'response-guide-'+actor,catalog:111,
+      matchesServerActions:true,distinctCopiesBySlot:true,oneButtonPerCard:true,ownPriorityOnly:true,noOpponentSetDisclosure:true,
+      trapAndCounterFlows:true,selfSpellResponse:true,noCostHidesCounter:true,cancelReadOnly:true,keyboardOpensConfirmation:true,
+      refreshedHandlesWork:true,busyButtonsDisabled:true,singleCommandOnConfirm:true,clearsAfterResolution:true,
+      responsive:true,savedDecksUnchanged:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
   } else if (magicInteractions !== null) {
     const actor = magicInteractions, other = actor === 'a' ? 'b' : 'a', saved = {};
     for (const who of ['a','b']) { await seat(who); saved[who] = await evaluate(`api('/api/deck?seat='+view.viewerId).then(JSON.stringify)`); }

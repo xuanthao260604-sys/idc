@@ -86,3 +86,5 @@
 
 #seat-error{color:#edb9a0;overflow-wrap:anywhere}#seat-progress{overflow-wrap:anywhere}.seat-buttons{flex-wrap:wrap}
 .monster-activity{margin-top:14px;border-top:1px solid var(--line);padding-top:10px;font:12px/1.6 Segoe UI,sans-serif;overflow-wrap:anywhere}.monster-activity h3{margin:0;color:var(--gold);font-size:13px}.monster-activity dl{margin:8px 0}.monster-activity dt{color:var(--muted);margin-top:6px}.monster-activity dd{margin:0}
+
+.guide>div{min-width:0}.response-options{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.response-options[hidden]{display:none}.response-options button{max-width:100%;white-space:normal;text-align:left;overflow-wrap:anywhere}
