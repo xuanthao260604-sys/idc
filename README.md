@@ -15,7 +15,7 @@ Hinotama, Dian Keto the Cure Master, Smashing Ground, Hammer Shot, Tribute to Th
 Không coi việc cấu hình CI Windows hoặc chạy Linux là đã kiểm chứng Windows.
 
 1050/1050 test trong 41 file đạt trên Linux và Windows CI.
-60/60 bước validation và 50 browser report đạt, gồm bốn ca [Counter Trap Magic Jammer](docs/engine/magic-jammer.md) và hai ca [tương tác sau phủ nhận](docs/engine/magic-jammer-interaction-audit.md); Windows dùng Edge, tổng runtimeExceptions=0.
+62/62 bước validation và 52 browser report đạt, gồm bốn ca [Counter Trap Magic Jammer](docs/engine/magic-jammer.md), hai ca [tương tác sau phủ nhận](docs/engine/magic-jammer-interaction-audit.md) và hai ca [hướng dẫn phản hồi](docs/beta/response-guide.md); Windows dùng Edge, tổng runtimeExceptions=0.
 Dữ liệu nhập và catalog runtime đều 111 loại; trạng thái nhập vẫn tách riêng review/runtime.
 Browser regression tính riêng: xây/lưu deck, 5 hiệu ứng, xem Mộ, tạo trận A/B/ngẫu nhiên, bỏ bài,
 Pot với deck 0/1/2 lá, đầu hàng/hủy và tạo trận sau kết thúc, trận tự nhiên đầy đủ.
@@ -27,6 +27,8 @@ Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không 
 Đã mở [Counter Trap Magic Jammer](docs/engine/magic-jammer.md): bỏ một lá làm cost, phủ nhận activation của Phép đang phản hồi, giữ cost gốc và bỏ qua hiệu ứng Phép; chỉ pattern hai liên kết đã duyệt. [Review thiết kế](docs/rules/magic-jammer-review.md) giữ nguồn và ranh giới.
 
 Đã bổ sung [rà soát tương tác Magic Jammer](docs/engine/magic-jammer-interaction-audit.md): Faith lấy lại Phép bị phủ nhận để kích hoạt mới, trả chi phí mới, không hoàn cost cũ; bỏ quái FLIP làm cost không tự kích hoạt FLIP. Giữ nguyên engine, review và phạm vi hai liên kết.
+
+Đã thêm [danh sách bài phản hồi trong hướng dẫn lượt](docs/beta/response-guide.md): chỉ hiện Trap Hole/Magic Jammer đang hợp lệ của mình theo priority, phân biệt bản sao theo ô; mở lựa chọn rồi xác nhận, giữ kín bài úp đối thủ.
 
 Đã nhập riêng [Magic Jammer](docs/data/magic-jammer.md), giữ Counter Trap và văn bản nguồn; chuẩn bị cho nhánh phản hồi/phủ nhận Phép. Review runtime và kiểm thử được ghi riêng ở mốc triển khai.
 
@@ -164,7 +166,7 @@ hoặc mọi tương tác bài. Bài tự tạo giữ ở [kế hoạch mở r�
 
 `npm run validate:platform` chạy bộ kiểm chứng tổng hợp, ghi report JSON và log từng bước
 vào artifacts/platform-validation/ (Git bỏ qua). Lỗi dừng ngay, phần còn lại ghi chưa chạy.
-Windows CI đã chạy cùng lệnh, đạt 60/60 bước và giữ artifact; report Linux vẫn chỉ xác nhận Linux.
+Windows CI đã chạy cùng lệnh, đạt 62/62 bước và giữ artifact; report Linux vẫn chỉ xác nhận Linux.
 
 ## Kiểm thử giao diện
 

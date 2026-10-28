@@ -1,5 +1,7 @@
 # Hướng dẫn lượt và lịch sử công khai
 
+> Cập nhật 28/10/2026: đã thêm [bài phản hồi hợp lệ ngay trong hướng dẫn lượt](response-guide.md), gồm Trap Hole và Magic Jammer. Bằng chứng Linux/Windows CI hiện hành ghi tại tài liệu đó; số liệu bên dưới giữ mốc ban đầu.
+
 > Cập nhật: đã có [lọc lịch sử công khai](activity-filters.md), giữ Pass có kết quả và kiểm chứng trên Windows CI. Các số kiểm thử bên dưới ghi mốc hướng dẫn/activity ban đầu.
 
 Bàn đấu beta có bảng hướng dẫn ngay trên sân, cập nhật từ PlayerView:

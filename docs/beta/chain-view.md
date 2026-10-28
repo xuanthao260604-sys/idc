@@ -1,5 +1,7 @@
 # Bảng Chain đang chờ xử lý
 
+> Cập nhật 28/10/2026: đã mở [Magic Jammer trong phạm vi hai liên kết](../engine/magic-jammer.md) và [danh sách phản hồi hợp lệ](response-guide.md). Phạm vi và số liệu bên dưới giữ mốc bảng Chain ban đầu.
+
 Bàn đấu hiển thị bảng Chain khi có liên kết đang chờ, với số liên kết, người
 kích hoạt, tên lá nguồn, tốc độ và mục tiêu. Số lớn nhất nằm đầu danh sách theo
 thứ tự engine xử lý. Phép không target ghi Không chọn mục tiêu khi kích hoạt;
