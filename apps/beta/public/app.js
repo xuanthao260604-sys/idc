@@ -223,6 +223,9 @@ function resolutionText(fact) {
   const player = names[fact.playerId] || 'Người chơi';
   if (fact.kind === 'draw') return `${player} bốc ${fact.count} lá`;
   if (fact.kind === 'battle-damage') return `${player} nhận ${fact.amount} sát thương chiến đấu`;
+  if (fact.kind === 'lp-cost') return `${player} trả ${fact.amount} LP làm chi phí`;
+  if (fact.kind === 'trap-activation-negated') return `Kích hoạt ${fact.count} lá Bẫy của ${player} bị phủ nhận`;
+  if (fact.kind === 'trap-destroyed') return `${fact.count} lá Bẫy của ${player} bị phá bởi hiệu ứng`;
   if (fact.kind === 'effect-damage') return `${player} nhận ${fact.amount} sát thương hiệu ứng`;
   if (fact.kind === 'life-points-gained') return `${player} hồi ${fact.amount} LP`;
   if (fact.kind === 'effect-position-changed') return `${fact.count} quái chuyển sang phòng thủ bởi hiệu ứng`;
@@ -346,11 +349,12 @@ function cardSupport(d) {
   const statuses = [
     ['data', 'Đối chiếu dữ liệu', { verified: 'Đã kiểm tra', pending: 'Còn chờ đối chiếu' }[d.support?.dataVerification] || 'Chưa có thông tin'],
     ['text', 'Loại văn bản', { 'current-reference': 'Tham chiếu hiện hành', 'historical-reviewed': 'Đã đối chiếu lịch sử', custom: 'Bài tự tạo' }[d.support?.textBasis] || 'Chưa ghi loại văn bản'],
-    ['runtime', 'Khả năng đã mở', { 'normal-monster': 'Quái thường theo luật hiện có', spell: 'Hiệu ứng Phép trong phạm vi thử nghiệm', flip: 'Hiệu ứng FLIP trong phạm vi thử nghiệm', counter: 'Phản hồi và phủ nhận Phép trong phạm vi thử nghiệm', trap: 'Hiệu ứng Bẫy trong phạm vi thử nghiệm' }[d.support?.runtime] || 'Chưa có thông tin'],
+    ['runtime', 'Khả năng đã mở', { 'normal-monster': 'Quái thường theo luật hiện có', spell: 'Hiệu ứng Phép trong phạm vi thử nghiệm', flip: 'Hiệu ứng FLIP trong phạm vi thử nghiệm', counter: 'Phản hồi và phủ nhận Phép trong phạm vi thử nghiệm', 'lp-counter': 'Phản hồi và phủ nhận Bẫy trong phạm vi thử nghiệm', trap: 'Hiệu ứng Bẫy trong phạm vi thử nghiệm' }[d.support?.runtime] || 'Chưa có thông tin'],
   ];
   const list = node('dl');
   for (const [key, label, value] of statuses) { const description = node('dd', value); description.dataset.support = key; list.append(node('dt', label), description); }
   section.append(list, node('div', 'Dữ liệu và khả năng trong game được theo dõi riêng. Chưa hỗ trợ mọi tương tác trong Yu-Gi-Oh!', 'support-note'));
+  if (d.support?.runtime === 'lp-counter') section.append(node('div', 'Hiện chỉ phản hồi Trap Hole ở liên kết đầu tiên. Cần trên 1000 LP và đã úp từ lượt trước.', 'support-note'));
   return section;
 }
 function cardInfo(panel, card) {
@@ -384,7 +388,7 @@ function detail() {
   const canMain = view.turn.activePlayer === view.viewerId && ['main1', 'main2'].includes(view.turn.phase) && view.timing.window === 'open' && !view.decision;
   const canBattle = view.turn.activePlayer === view.viewerId && view.turn.phase === 'battle' && view.timing.window === 'open' && !view.decision;
   const h = card.handle, add = (text, fn, allowed = canMain) => {
-    const types = { 'Triệu hồi': 'normal-summon', 'Úp quái': 'set-monster', 'Úp bài': 'set-spell-trap', 'Kích hoạt': 'activate-spell', 'Flip Summon': 'flip-summon', 'Đổi tư thế': 'change-position', 'Tấn công': 'declare-attack', 'Phản hồi Phép': 'activate-counter-trap', 'Kích hoạt Bẫy': 'activate-trap' };
+    const types = { 'Triệu hồi': 'normal-summon', 'Úp quái': 'set-monster', 'Úp bài': 'set-spell-trap', 'Kích hoạt': 'activate-spell', 'Flip Summon': 'flip-summon', 'Đổi tư thế': 'change-position', 'Tấn công': 'declare-attack', 'Phản hồi Phép': 'activate-counter-trap', 'Phản hồi Bẫy': 'activate-lp-counter-trap', 'Kích hoạt Bẫy': 'activate-trap' };
     const base = text === 'Tấn công' ? { type: types[text], attackerHandle: h } : { type: types[text], cardHandle: h };
     const b = button(text, fn); b.disabled = busy || !allowed || !matchingActions(base).length; actions.append(b);
   };
@@ -409,7 +413,7 @@ function detail() {
   }
   if (zone === 'spell-trap' && card.position === 'face-down') {
     if (d.kind === 'spell') add('Kích hoạt', () => activateSpell(h, slot));
-    else if (d.subtype === 'counter') add('Phản hồi Phép', () => activateCounter(h), view.timing.priorityPlayer === view.viewerId && view.timing.window === 'chain-response' && !view.decision);
+    else if (d.subtype === 'counter') add(d.support?.runtime === 'lp-counter' ? 'Phản hồi Bẫy' : 'Phản hồi Phép', () => activateCounter(h, d.support?.runtime === 'lp-counter'), view.timing.priorityPlayer === view.viewerId && view.timing.window === 'chain-response' && !view.decision);
     else add('Kích hoạt Bẫy', () => activateTrap(h), view.timing.priorityPlayer === view.viewerId && ['summon-response', 'chain-response'].includes(view.timing.window) && !view.decision);
   }
 }
@@ -418,15 +422,17 @@ function activateTrap(handle) {
   if (!matchingActions(base).length) return;
   chooseAction('Chọn quái vừa triệu hồi', base, { targets: view.players.find(p => p.playerId !== view.viewerId).monsters.flatMap((c, i) => c ? [{ handle: c.handle, label: `Ô ${i + 1}: ${label(c)}` }] : []) });
 }
-function activateCounter(handle) {
-  const plan = matchingActions({ type: 'activate-counter-trap', cardHandle: handle })[0];
+function activateCounter(handle, lp = false) {
+  const type = lp ? 'activate-lp-counter-trap' : 'activate-counter-trap';
+  const plan = matchingActions({ type, cardHandle: handle })[0];
   if (!plan) return;
   const index = view.chain.findIndex(link => link.chainHandle === plan.chainHandle), link = view.chain[index];
   if (!link) return;
-  chooseAction('Phủ nhận kích hoạt Phép', { type: 'activate-counter-trap', cardHandle: handle, chainHandle: plan.chainHandle },
-    { discards: true, note: `Phản hồi liên kết ${index + 1}. Không chọn mục tiêu lá bài. Bỏ 1 lá làm chi phí khi xác nhận; phủ nhận khi Chain xử lý.` });
+  const beforeLP = view.players.find(p => p.playerId === view.viewerId).lifePoints;
+  chooseAction(lp ? 'Phủ nhận kích hoạt Bẫy' : 'Phủ nhận kích hoạt Phép', { type, cardHandle: handle, chainHandle: plan.chainHandle },
+    { discards: !lp, note: `Phản hồi liên kết ${index + 1}. Không chọn mục tiêu lá bài. ${lp ? `Trả 1000 LP làm chi phí khi xác nhận: ${beforeLP} → ${beforeLP - 1000} LP.` : 'Bỏ 1 lá làm chi phí khi xác nhận;'} Phủ nhận khi Chain xử lý.` });
   const section = node('section', undefined, 'choice-preview'); section.dataset.preview = 'response';
-  section.append(node('h3', 'Phép đang phản hồi'));
+  section.append(node('h3', lp ? 'Bẫy đang phản hồi' : 'Phép đang phản hồi'));
   const content = node('div'); cardInfo(content, visibleCard(link.sourceHandle)); section.append(content); $('action-fields').append(section);
 }
 function activateSpell(handle, slot) {
@@ -464,7 +470,7 @@ function renderResult() {
 function responseCards() {
   if (view.result || view.decision || view.timing.priorityPlayer !== view.viewerId
     || !['summon-response', 'chain-response'].includes(view.timing.window)) return [];
-  const plans = (view.availableActions || []).filter(a => ['activate-trap', 'activate-counter-trap'].includes(a.type));
+  const plans = (view.availableActions || []).filter(a => ['activate-trap', 'activate-counter-trap', 'activate-lp-counter-trap'].includes(a.type));
   return view.players.find(p => p.playerId === view.viewerId).spellsTraps.flatMap((card, slot) => {
     const plan = card?.visibility === 'known' && plans.find(a => a.cardHandle === card.handle);
     return plan ? [{ card, slot, type: plan.type }] : [];
@@ -505,9 +511,9 @@ function renderGuide() {
   $('guide-text').textContent = text;
   $('response-options').hidden = !responses.length;
   $('response-options').replaceChildren(...responses.map(({ card, slot, type }) => {
-    const b = button(`${type === 'activate-counter-trap' ? 'Phản hồi Phép' : 'Phản hồi triệu hồi'} · ${label(card)} · ô ${slot + 1}`, () => {
+    const b = button(`${type === 'activate-counter-trap' ? 'Phản hồi Phép' : type === 'activate-lp-counter-trap' ? 'Phản hồi Bẫy' : 'Phản hồi triệu hồi'} · ${label(card)} · ô ${slot + 1}`, () => {
       if (busy || !responseCards().some(r => r.card.handle === card.handle && r.type === type)) return;
-      if (type === 'activate-counter-trap') activateCounter(card.handle); else activateTrap(card.handle);
+      if (type === 'activate-counter-trap' || type === 'activate-lp-counter-trap') activateCounter(card.handle, type === 'activate-lp-counter-trap'); else activateTrap(card.handle);
     });
     b.disabled = busy; b.dataset.responseHandle = card.handle; return b;
   }));
@@ -522,7 +528,7 @@ function renderActivity() {
   if (activityContext !== context) {
     activityContext = context; $('activity-scope').value = 'all'; $('activity-hide-pass').checked = false;
   }
-  const actionNames = { 'normal-summon': 'Triệu hồi quái', 'set-monster': 'Úp quái', 'set-spell-trap': 'Úp Phép / Bẫy', 'change-position': 'Đổi tư thế', 'flip-summon': 'Flip Summon', 'declare-attack': 'Tuyên bố tấn công', 'activate-spell': 'Kích hoạt Phép', 'activate-counter-trap': 'Phản hồi Phép', 'activate-trap': 'Kích hoạt Bẫy', 'answer-decision': 'Xác nhận lựa chọn', pass: 'Nhường quyền', 'request-phase': 'Đề nghị chuyển phase', concede: 'Đầu hàng' };
+  const actionNames = { 'normal-summon': 'Triệu hồi quái', 'set-monster': 'Úp quái', 'set-spell-trap': 'Úp Phép / Bẫy', 'change-position': 'Đổi tư thế', 'flip-summon': 'Flip Summon', 'declare-attack': 'Tuyên bố tấn công', 'activate-spell': 'Kích hoạt Phép', 'activate-counter-trap': 'Phản hồi Phép', 'activate-lp-counter-trap': 'Phản hồi Bẫy', 'activate-trap': 'Kích hoạt Bẫy', 'answer-decision': 'Xác nhận lựa chọn', pass: 'Nhường quyền', 'request-phase': 'Đề nghị chuyển phase', concede: 'Đầu hàng' };
   const all = view.activity || [];
   const entries = all.filter(e => ($('activity-scope').value !== 'turn' || e.turn === view.turn.number)
     && (!$('activity-hide-pass').checked || e.action !== 'pass' || e.resolution?.length)).slice().reverse();

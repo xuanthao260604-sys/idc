@@ -70,10 +70,15 @@ export function availableActions(registry: Registry, state: DuelState, projectio
     if (!c || c.visibility !== 'known' || c.position !== 'face-down') continue;
     const id = own.spellsTraps[slot]!, def = registry.cards[state.cards[id]!.definition.id]!;
     if (def.kind === 'spell') offerSpell(c.handle, id, slot as Slot);
-    if (registry.counterTrapHandlers[def.id] && view.chain.length === 1) for (const discard of view.selfHand) {
+    if (registry.counterTrapHandlers[def.id] === 'discard-negate-normal-spell-activation' && view.chain.length === 1) for (const discard of view.selfHand) {
       const chainHandle = view.chain[0]!.chainHandle;
       offer({ type: 'activate-counter-trap', cardHandle: c.handle, discardHandle: discard.handle, chainHandle },
         { type: 'activate-counter-trap', instanceId: id, discardId: resolve(discard.handle), respondingToLinkId: projection.resolveChainHandle(chainHandle, state, actorId) });
+    }
+    if (registry.counterTrapHandlers[def.id] === 'pay-1000-negate-trap-hole-activation' && view.chain.length === 1) {
+      const chainHandle = view.chain[0]!.chainHandle;
+      offer({ type: 'activate-lp-counter-trap', cardHandle: c.handle, chainHandle },
+        { type: 'activate-lp-counter-trap', instanceId: id, respondingToLinkId: projection.resolveChainHandle(chainHandle, state, actorId) });
     }
     if (registry.trapHandlers[def.id]) for (const target of opponent.monsters) {
       if (!target || target.visibility !== 'known' || target.position === 'face-down-defense') continue;

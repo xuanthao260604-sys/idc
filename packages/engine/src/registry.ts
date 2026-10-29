@@ -6,6 +6,7 @@ import { FormatSchema } from '../../card-data/src/format.js';
 import type { FormatDefinition } from '../../card-data/src/format.js';
 
 import { CounterReviewsSchema } from './counter-review.js';
+import type { CounterHandler } from './counter-review.js';
 import { TrapReviewsSchema } from './trap-review.js';
 import { FlipReviewsSchema } from './flip-review.js';
 import type { FlipHandler } from './flip-review.js';
@@ -37,7 +38,7 @@ export interface Registry {
   readonly format: { readonly id: string; readonly revision: number };
   readonly revision: string;
   readonly cards: Readonly<Record<string, SupportedMonster | NormalSpell | NormalTrap>>;
-  readonly counterTrapHandlers: Readonly<Record<string, 'discard-negate-normal-spell-activation'>>;
+  readonly counterTrapHandlers: Readonly<Record<string, CounterHandler>>;
   readonly trapHandlers: Readonly<Record<string, 'destroy-opponent-normal-or-flip-summoned-1000'>>;
   readonly flipHandlers: Readonly<Record<string, FlipHandler>>;
   readonly spellHandlers: Readonly<Record<string, SpellHandler>>;
@@ -90,7 +91,7 @@ export function createRegistry(definitions: unknown, formatInput: FormatDefiniti
       || review.format.id !== format.id || review.format.revision !== format.revision
       || definitionFingerprint(card) !== review.definitionSha256) throw new Error(`Counter Trap review conflict: ${review.cardId}`);
   }
-  const counterTrapHandlers: Record<string, 'discard-negate-normal-spell-activation'> = {};
+  const counterTrapHandlers: Record<string, CounterHandler> = {};
   const trapHandlers: Record<string, 'destroy-opponent-normal-or-flip-summoned-1000'> = {};
   const flipHandlers: Record<string, FlipHandler> = {};
   const cards: Record<string, SupportedMonster | NormalSpell | NormalTrap> = {};
@@ -118,7 +119,7 @@ export function createRegistry(definitions: unknown, formatInput: FormatDefiniti
     if (supportedSpell) spellHandlers[card.id] = SpellHandlerSchema.parse(officialReview?.handler ?? binding);
   }
   const reference = { id: format.id, revision: format.revision };
-  const revision = createHash('sha256').update(JSON.stringify({ engineCapabilityVersion: 'normal-spell-counter-two-link-v1', format, rules, cards, spellHandlers, reviews, flipHandlers, flipReviews, trapHandlers, trapReviews, counterTrapHandlers, counterReviews })).digest('hex');
+  const revision = createHash('sha256').update(JSON.stringify({ engineCapabilityVersion: 'spell-or-trap-hole-counter-two-link-v1', format, rules, cards, spellHandlers, reviews, flipHandlers, flipReviews, trapHandlers, trapReviews, counterTrapHandlers, counterReviews })).digest('hex');
   return freeze({ format: reference, revision, cards, spellHandlers, flipHandlers, trapHandlers, counterTrapHandlers, unsupportedIds, rules });
 }
 

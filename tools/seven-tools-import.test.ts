@@ -51,15 +51,15 @@ describe('Seven Tools imported data, separate from runtime behavior', () => {
     expect(pool.toString('utf8')).toContain('Metal Raiders (MRD)'); expect(html.toString('utf8')).toContain('Counter Trap');
     expect(html.toString('utf8')).toMatch(/2002-06-26[\s\S]{0,350}MRD-129[\s\S]{0,250}METAL RAIDERS/);
   });
-  it('counts 112 imported cards but keeps the 111-card runtime and rejects Seven Tools even with all existing reviews', async () => {
+  it('counts 112 imported cards but requires a separate Seven Tools review while keeping import status unchanged', async () => {
     const bundles = (await readdir(join(projectRoot, 'data/generated'))).filter(name => name.endsWith('.json')).map(name => load(`data/generated/${name}`));
     expect(bundles).toHaveLength(19); expect(bundles.reduce((n, b) => n + b.summary.imported, 0)).toBe(112);
     expect(bundles.reduce((n, b) => n + b.summary.verifiedData, 0)).toBe(95); expect(bundles.reduce((n, b) => n + b.summary.historicalReviewPending, 0)).toBe(17);
-    expect(Object.keys(registry.cards)).toHaveLength(111); expect(registry.cards[seven]).toBeUndefined();
-    const probe = createRegistry([...runtime.cards, ...imported.cards], goat200508Format, {}, runtime.effectReviews.spells, runtime.effectReviews.flips, runtime.effectReviews.traps, runtime.effectReviews.counters);
-    expect(probe.unsupportedIds).toEqual([seven]); expect(probe.cards).toEqual(registry.cards);
+    expect(Object.keys(registry.cards)).toHaveLength(112); expect(registry.cards[seven]).toEqual(imported.cards[0]);
+    const probe = createRegistry([...runtime.cards.filter(c=>c.id!==seven), ...imported.cards], goat200508Format, {}, runtime.effectReviews.spells, runtime.effectReviews.flips, runtime.effectReviews.traps, runtime.effectReviews.counters.filter(r=>r.cardId!==seven));
+    expect(probe.unsupportedIds).toEqual([seven]); expect(Object.keys(probe.cards)).toHaveLength(111); expect(probe.cards[seven]).toBeUndefined();
     expect(probe.spellHandlers).toEqual(registry.spellHandlers); expect(probe.flipHandlers).toEqual(registry.flipHandlers);
-    expect(probe.trapHandlers).toEqual(registry.trapHandlers); expect(probe.counterTrapHandlers).toEqual(registry.counterTrapHandlers);
+    expect(probe.trapHandlers).toEqual(registry.trapHandlers); expect(probe.counterTrapHandlers).toEqual({ 'official:77414722': 'discard-negate-normal-spell-activation' });
     expect(probe.counterTrapHandlers[seven]).toBeUndefined(); expect(probe.counterTrapHandlers['official:77414722']).toBe('discard-negate-normal-spell-activation');
     expect(() => validateDeck(probe, [...createDeckStore(registry).defaults, seven])).toThrow('Unsupported');
     expect(createRegistry(imported.cards, goat200508Format).unsupportedIds).toEqual([seven]);

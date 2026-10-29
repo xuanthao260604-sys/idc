@@ -34,7 +34,7 @@ export function createCapabilityReport(root = projectRoot) {
       unsupportedIds: registry.unsupportedIds,
       scope: [...new Set(reviewedEffects.map(review => review.scope))].sort(),
       reviewedEffects,
-      limitations: ['only reviewed summon Traps, two-link Normal Spell activation Counter Trap or passes as responses', 'no general mixed Chain/negation', 'no general SEGOC/modifiers/replacements', 'no online multiplayer or persistent matches'],
+      limitations: ['only reviewed summon Traps, two-link reviewed Normal Spell or Trap Hole activation Counter Traps, or passes as responses', 'no general mixed Chain/negation', 'no general SEGOC/modifiers/replacements', 'no online multiplayer or persistent matches'],
     },
   };
 }

@@ -20,10 +20,13 @@ export function publicResolution(events: readonly EngineEvent[], after: DuelStat
     const count = new Set(event.affectedInstances).size;
     const playerId = event.details.playerId;
     if (event.kind === 'card-drawn' && count && player(playerId)) add({ kind: 'draw', playerId, count });
+    else if (event.kind === 'life-points-paid' && player(playerId) && event.details.reason === 'activation-cost'
+      && Number.isSafeInteger(event.details.amount) && typeof event.details.amount === 'number' && event.details.amount > 0)
+      add({ kind: 'lp-cost', playerId, amount: event.details.amount });
     else if ((event.kind === 'battle-damage' || event.kind === 'effect-damage' || event.kind === 'life-points-gained') && player(playerId) && typeof event.details.amount === 'number'
       && Number.isSafeInteger(event.details.amount) && event.details.amount > 0) add({ kind: event.kind, playerId, amount: event.details.amount });
     else if (event.kind === 'position-changed' && event.details.reason === 'effect' && count) add({ kind: 'effect-position-changed', count });
-    else if ((event.kind === 'spell-activation-negated' || event.kind === 'spell-destroyed') && count && player(playerId)) add({ kind: event.kind, playerId, count });
+    else if ((event.kind === 'spell-activation-negated' || event.kind === 'spell-destroyed' || event.kind === 'trap-activation-negated' || event.kind === 'trap-destroyed') && count && player(playerId)) add({ kind: event.kind, playerId, count });
     else if (event.kind === 'effect-destroyed' && count) add({ kind: 'effect-destroyed', count });
     else if (event.kind === 'battle-destroyed' && count) add({ kind: 'battle-destroyed', count });
     else if (event.kind === 'cards-discarded' && count && player(playerId)) add({ kind: event.details.reason === 'activation-cost' ? 'discard-cost' : 'discard', playerId, count });

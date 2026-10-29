@@ -17,7 +17,7 @@ type Mutable<T> = { -readonly [K in keyof T]: Mutable<T[K]> };
 const load = (p: string) => JSON.parse(readFileSync(new URL('../' + p, import.meta.url), 'utf8'));
 const runtime = loadRuntimeCatalog(), bundle = load('data/generated/magic-jammer.json'), reviews = load('data/reviews/magic-jammer.effects.json'), magic = 'official:77414722';
 // Works before and after catalog integration, without duplicate definitions/reviews.
-const cards = [...runtime.cards.filter(c => c.id !== magic), ...bundle.cards];
+const cards = [...runtime.cards.filter(c => c.id !== magic && c.id !== 'official:03819470'), ...bundle.cards];
 const registry = createRegistry(cards, goat200508Format, {}, runtime.effectReviews.spells, runtime.effectReviews.flips, runtime.effectReviews.traps, reviews);
 const spells = Object.keys(registry.spellHandlers);
 function fixture(spellId = 'official:19523799', actor = 'a', self = false, fromSet = false) {
@@ -116,7 +116,7 @@ describe('Magic Jammer two-link activation negation', () => {
   it('loads saved catalog-110 decks for A/B without changing their bytes or the starter', async () => {
     const directory = await mkdtemp(join(tmpdir(), 'YGO Counter old decks '));
     try {
-      const old = createRegistry(cards.filter(c => c.id !== magic), goat200508Format, {}, runtime.effectReviews.spells, runtime.effectReviews.flips, runtime.effectReviews.traps);
+      const old = createRegistry(cards.filter(c => c.id !== magic && c.id !== 'official:03819470'), goat200508Format, {}, runtime.effectReviews.spells, runtime.effectReviews.flips, runtime.effectReviews.traps);
       const store = createDeckStore(old, directory);
       for (const seat of ['a', 'b'] as const) expect((await store.save(seat, 0, seat === 'a' ? store.defaults : ['official:19523799', 'official:31560081', ...store.defaults].slice(0, 40))).ok).toBe(true);
       const before = await Promise.all(['a', 'b'].map(seat => readFile(join(directory, seat + '.json'))));

@@ -1,0 +1,136 @@
+[
+  {
+    "cardId": "official:03819470",
+    "definitionSha256": "2dbc5c07956ac97d58b2f449898bf2d73bd0488578b9c69c0fadd5e468accbc0",
+    "revision": 1,
+    "format": {
+      "id": "goat-2005-08-17",
+      "revision": 4
+    },
+    "status": "reviewed-for-supported-scope",
+    "scope": "counter-trap-trap-hole-activation-v1",
+    "handler": "pay-1000-negate-trap-hole-activation",
+    "evidence": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4863&request_locale=en",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "official-current",
+        "quotation": "When a Trap Card is activated: Pay 1000 LP; negate the activation, and if you do, destroy it.",
+        "historicalApplicability": "Current reference semantics. No original printed-text verification. Corroborate the activation/effect distinction with the curated Goat Seven Tools ruling."
+      },
+      {
+        "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "archive",
+        "quotation": "The effects are then resolved, starting at the top link and working down to the Chain Link 1 at the bottom.",
+        "historicalApplicability": "Period baseline for reverse resolution; does not establish every individual card ruling."
+      },
+      {
+        "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "archive",
+        "quotation": "the same player can play consecutive cards if their opponent does not respond",
+        "historicalApplicability": "Period baseline for responding to one’s own Trap after the opponent declines; response priority is still checked."
+      },
+      {
+        "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "archive",
+        "quotation": "Only another Spell Speed 3 card may be used against these cards.",
+        "historicalApplicability": "Counter Trap baseline. Speed alone does not satisfy a responding card activation condition. Counter-to-counter responses can be legal, but are outside the proposed first scope."
+      },
+      {
+        "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "archive",
+        "quotation": "These cards can be used against a card with a Spell Speed of 1 or 2.",
+        "historicalApplicability": "Normal Trap is listed in this section. Preserve the existing speed-2 Trap Hole behavior; do not allow it to respond to speed 3."
+      },
+      {
+        "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "archive",
+        "quotation": "Paying a cost means an action like discarding or sending a card to the Graveyard from your hand, or paying Life Points, in order to Summon a monster or activate an effect. You have to pay any costs before you declare the activation of the card.",
+        "historicalApplicability": "Period baseline that paying LP can be a cost; the specific fixed amount comes from Seven Tools current reference text."
+      },
+      {
+        "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "archive",
+        "quotation": "Even if the activation of the card is negated, you cannot get a refund of the cost that you have paid.",
+        "historicalApplicability": "Already paid costs remain paid. First scope does not implement a further Counter negating Seven Tools; no-refund remains a requirement for any later extension."
+      },
+      {
+        "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "archive",
+        "quotation": "Paying a cost or destroying a monster as a result of battle is not included in the effect of a card.",
+        "historicalApplicability": "LP payment must have a separate cost event/fact, not an effect-damage event; no damage or payment triggers are enabled."
+      },
+      {
+        "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "archive",
+        "quotation": "For an effect that targets a card, you select the target that you would like and then activate the effect.",
+        "historicalApplicability": "Baseline distinction between choosing a card target and recording the Chain link being answered. Seven Tools non-targeting design is a semantic reading of current reference text/direct-chain supplement, not a quotation explicitly stating that property."
+      },
+      {
+        "url": "https://www.yugioh-card.com/en/downloads/rulebook/SD_RuleBook_EN_10.pdf",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "official-current",
+        "quotation": "Before you can activate a Trap Card, you must Set it on the field first.",
+        "historicalApplicability": "Current common Trap baseline under the selected Goat policy. No hand-activation exception is enabled."
+      },
+      {
+        "url": "https://www.yugioh-card.com/en/downloads/rulebook/SD_RuleBook_EN_10.pdf",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "official-current",
+        "quotation": "You cannot activate a Trap in the same turn that you Set it, but you can activate it at any time after that",
+        "historicalApplicability": "Read together with each Trap condition and response priority; not permission to activate Seven Tools at arbitrary timing."
+      },
+      {
+        "url": "https://www.goatformat.com/basics.html",
+        "accessedOn": "2026-10-27",
+        "sourceKind": "community",
+        "quotation": "if a general rule is not explicitly listed here is being different in Goat Format, you can assume that it works the exact same way as it does in the current format.",
+        "historicalApplicability": "Existing community policy adopted by the project; retain its editorial caveat about recent rule changes."
+      },
+      {
+        "url": "https://www.goatformat.com/rulings4.html",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "community",
+        "quotation": "They cannot choose to pay if it would make their Life Points become 0.",
+        "historicalApplicability": "Community transcription of a period LP-payment rule. This is an Imperial Order example, not a Seven Tools-specific original bulletin; combine with the activation-cost example and Seven Tools fixed 1000 cost."
+      },
+      {
+        "url": "https://www.goatformat.com/rulings4.html",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "community",
+        "quotation": "“Injection Fairy Lily’s” effect may not be activated if the controller’s Life Points are at or below 2000.",
+        "historicalApplicability": "Period activation-cost example corroborating that an exact fixed LP cost cannot be paid down to zero. Derive Seven Tools minimum 1001 from its fixed 1000 cost; do not enable Lily or its battle effect."
+      },
+      {
+        "url": "https://www.goatformat.com/rulings7.html",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "community",
+        "quotation": "“Seven Tools of the Bandit” may not be activated in a chain to the use of an effect of a continuous Trap that has already been activated, like “Ultimate Offering.”",
+        "historicalApplicability": "Curated period distinction between Trap card activation and a previously active Continuous Trap effect. Ultimate Offering and Continuous Trap handling remain unsupported."
+      },
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=4&cid=4863&request_locale=ja",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "official-current",
+        "quotation": "■自分または相手の罠カードのカードの発動に直接チェーンして発動するカードです。（カードの発動を伴わない、罠カードの効果の発動にチェーンして発動することはできません。）",
+        "historicalApplicability": "Current OCG corroboration: directly chain to one’s own or the opponent’s Trap card activation, not an effect activation without card activation. Not asserted as original TCG 2005 wording."
+      },
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=4&cid=4863&request_locale=ja",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "official-current",
+        "quotation": "■ダメージステップでも発動できます。",
+        "historicalApplicability": "Current supplement permits Damage Step. Proposed first scope only answers Trap Hole following supported Main Phase Summons; this boundary is not a universal Damage Step prohibition on Seven Tools."
+      }
+    ],
+    "notes": "Reviewed first scope only: one Trap Hole activation followed by Seven Tools. Pay fixed 1000 LP at activation only with LP > 1000; no discard/card target, skip Trap Hole plan on resolution and preserve the successful Summon/quota. Earlier-Set/priority guards apply. No counter-to-counter, multiple Trap Hole prefix, Damage Step input, cost reducers or payment triggers. Source design record remains a historical review snapshot; imported historical wording/status stays pending."
+  }
+]

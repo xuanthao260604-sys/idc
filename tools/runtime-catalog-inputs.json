@@ -17,7 +17,8 @@
     "earthquake": "data/generated/earthquake.json",
     "magicianFaith": "data/generated/magician-faith.json",
     "ookazi": "data/generated/ookazi.json",
-    "magicJammer": "data/generated/magic-jammer.json"
+    "magicJammer": "data/generated/magic-jammer.json",
+    "sevenTools": "data/generated/seven-tools.json"
   },
   "reviews": {
     "spells": [
@@ -39,7 +40,8 @@
       "data/reviews/pilot.trap-effects.json"
     ],
     "counters": [
-      "data/reviews/magic-jammer.effects.json"
+      "data/reviews/magic-jammer.effects.json",
+      "data/reviews/seven-tools.effects.json"
     ]
   }
 }

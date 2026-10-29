@@ -10,6 +10,15 @@ const r = createRegistry(data.cards, goat200508Format), ids = Object.keys(r.card
 const state = createDuel(r, { duelId: 'feedback-test', players: [{ id: 'a', deck }, { id: 'b', deck }], firstPlayerId: 'a', seedHex: '12'.repeat(32) }).state;
 const event = (kind: string, affectedInstances: string[], details: EngineEvent['details'] = {}): EngineEvent => ({ sequence: 99, simultaneousGroup: 'internal-secret-group', kind, affectedInstances, details });
 describe('Public resolution allowlist', () => {
+  it('reports LP cost separately from damage without exposing cost journal fields', () => {
+    const facts = publicResolution([event('life-points-paid', [], {playerId:'b',amount:1000,beforeLP:1001,afterLP:1,reason:'activation-cost',source:'private'}),event('effect-damage',[],{playerId:'a',amount:800})],state);
+    expect(facts).toEqual([{kind:'lp-cost',playerId:'b',amount:1000},{kind:'effect-damage',playerId:'a',amount:800}]);
+    expect(publicResolution([event('life-points-paid',[],{playerId:'b',amount:1000}),event('life-points-paid',[],{playerId:'bad',amount:1000,reason:'activation-cost'}),event('life-points-paid',[],{playerId:'a',amount:NaN,reason:'activation-cost'})],state)).toEqual([]);
+  });
+  it('reports negated/destroyed Traps separately from monster destruction and Counter cleanup', () => {
+    expect(publicResolution([event('trap-activation-negated',['private-trap'],{playerId:'a'}),event('trap-destroyed',['private-trap'],{playerId:'a'}),event('sent-to-graveyard',['private-counter']),event('trap-destroyed',[],{playerId:'a'}),event('trap-destroyed',['bad'],{playerId:'unknown'})],state))
+      .toEqual([{kind:'trap-activation-negated',playerId:'a',count:1},{kind:'trap-destroyed',playerId:'a',count:1}]);
+  });
   it('keeps Spell negation/destruction separate from monsters, omitting private event fields', () => {
     const summary = publicResolution([event('spell-activation-negated', ['private-source'], { playerId: 'a', discard: 'private-cost' }), event('spell-destroyed', ['private-source'], { playerId: 'a' }), event('sent-to-graveyard', ['private-counter']), event('spell-destroyed', ['bad'], { playerId: 'unknown' }), event('spell-activation-negated', [], { playerId: 'a' })], state);
     expect(summary).toEqual([{ kind: 'spell-activation-negated', playerId: 'a', count: 1 }, { kind: 'spell-destroyed', playerId: 'a', count: 1 }]);
