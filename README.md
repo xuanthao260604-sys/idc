@@ -6,17 +6,17 @@ Game đấu bài hai người theo Goat Format Bắc Mỹ: cutoff 17/8/2005, ban
 
 ## Tiến độ hiện tại
 
-Đã có bàn đấu hotseat hai người thay phiên cùng máy, catalog 111 loại và deck mẫu hợp lệ 40 lá; deck A/B tự xây vẫn được giữ.
-Core hỗ trợ 95 quái thường; 16 hiệu ứng Pot of Greed, Fissure, Trap Hole, Hane-Hane, Man-Eater Bug,
-Hinotama, Dian Keto the Cure Master, Smashing Ground, Hammer Shot, Tribute to The Doomed, Monster Reincarnation, Block Attack, Earthquake, Magician of Faith, Ookazi và Magic Jammer được mở bằng hồ sơ review và kiểm thử trong scope giới hạn.
+Đã có bàn đấu hotseat hai người thay phiên cùng máy, catalog 112 loại và deck mẫu hợp lệ 40 lá; deck A/B tự xây vẫn được giữ.
+Core hỗ trợ 95 quái thường; 17 hiệu ứng Pot of Greed, Fissure, Trap Hole, Hane-Hane, Man-Eater Bug,
+Hinotama, Dian Keto the Cure Master, Smashing Ground, Hammer Shot, Tribute to The Doomed, Monster Reincarnation, Block Attack, Earthquake, Magician of Faith, Ookazi, Magic Jammer và Seven Tools được mở bằng hồ sơ review và kiểm thử trong scope giới hạn.
 
 Đã hoàn tất [hotseat nội bộ 20 lá](docs/milestones/hotseat-20.md) và [xây/lưu deck A/B](docs/beta/deck-builder.md) trong scope giới hạn.
 Đã kiểm chứng [hai Phép thay đổi LP](docs/engine/life-point-spells.md) trên Linux và Windows CI; còn ca Windows 11 desktop chưa chạy.
 Không coi việc cấu hình CI Windows hoặc chạy Linux là đã kiểm chứng Windows.
 
-1060/1060 test trong 42 file đạt trên Linux và Windows CI, gồm 10 ca nhập dữ liệu Seven Tools; chưa có kiểm thử hiệu ứng của lá này.
-62/62 bước validation và 52 browser report đạt, gồm bốn ca [Counter Trap Magic Jammer](docs/engine/magic-jammer.md), hai ca [tương tác sau phủ nhận](docs/engine/magic-jammer-interaction-audit.md) và hai ca [hướng dẫn phản hồi](docs/beta/response-guide.md); Windows dùng Edge, tổng runtimeExceptions=0.
-Dữ liệu đã nhập 112 loại; catalog runtime vẫn 111 loại. Seven Tools of the Bandit mới nhập dữ liệu, chưa mở hiệu ứng; trạng thái nhập tách riêng review/runtime.
+1138/1138 test trong 43 file đạt trên Linux và Windows CI, gồm 74 ca hiệu ứng Seven Tools và 10 ca nhập dữ liệu riêng.
+68/68 bước validation và 58 browser report đạt, gồm sáu ca [Seven Tools](docs/engine/seven-tools.md), bốn ca [Counter Trap Magic Jammer](docs/engine/magic-jammer.md), hai ca [tương tác sau phủ nhận](docs/engine/magic-jammer-interaction-audit.md) và hai ca [hướng dẫn phản hồi](docs/beta/response-guide.md); Windows dùng Edge, tổng runtimeExceptions=0.
+Dữ liệu đã nhập 112 loại; catalog runtime 112 loại với 17 hiệu ứng trong 13 scope. Trạng thái nhập tách riêng review/runtime; historical text pending không tự được nâng thành verified.
 Browser regression tính riêng: xây/lưu deck, 5 hiệu ứng, xem Mộ, tạo trận A/B/ngẫu nhiên, bỏ bài,
 Pot với deck 0/1/2 lá, đầu hàng/hủy và tạo trận sau kết thúc, trận tự nhiên đầy đủ.
 Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không phải game hoàn tất mọi luật Yu-Gi-Oh!.
@@ -24,13 +24,13 @@ Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không 
 Đã nhận bộ khung người dùng: [mặt sau chung](docs/beta/card-frames.md) được dùng cho bài úp của cả ba loại.
 Đã ghép [ba khung mặt trước](docs/beta/card-fronts.md), hàng sao và chỉ số lấy từ dữ liệu; ảnh minh họa từng lá sẽ bổ sung sau.
 
-Đã nhập riêng [Seven Tools of the Bandit](docs/data/seven-tools.md): giữ mã 03819470 và Counter Trap, đối chiếu nguồn/bản in; đã có [review thiết kế chi phí LP/phản hồi Bẫy](docs/rules/seven-tools-review.md). Phạm vi đầu là Trap Hole → Seven Tools, cần LP > 1000; chưa có review runtime/binding hoặc hiệu ứng hoạt động, chưa dùng trong deck đấu.
+Đã mở [Seven Tools of the Bandit](docs/engine/seven-tools.md) bằng review riêng: trả 1000 LP khi kích hoạt, cần LP > 1000, phản hồi Trap Hole trong Chain hai liên kết; phủ nhận activation Bẫy, giữ nguyên quái/Summon/quota. [Dữ liệu nhập](docs/data/seven-tools.md) và [review thiết kế nguồn](docs/rules/seven-tools-review.md) giữ trạng thái lịch sử. Chưa mở Counter-to-counter hoặc Chain hỗn hợp tổng quát.
 
 Đã mở [Counter Trap Magic Jammer](docs/engine/magic-jammer.md): bỏ một lá làm cost, phủ nhận activation của Phép đang phản hồi, giữ cost gốc và bỏ qua hiệu ứng Phép; chỉ pattern hai liên kết đã duyệt. [Review thiết kế](docs/rules/magic-jammer-review.md) giữ nguồn và ranh giới.
 
 Đã bổ sung [rà soát tương tác Magic Jammer](docs/engine/magic-jammer-interaction-audit.md): Faith lấy lại Phép bị phủ nhận để kích hoạt mới, trả chi phí mới, không hoàn cost cũ; bỏ quái FLIP làm cost không tự kích hoạt FLIP. Giữ nguyên engine, review và phạm vi hai liên kết.
 
-Đã thêm [danh sách bài phản hồi trong hướng dẫn lượt](docs/beta/response-guide.md): chỉ hiện Trap Hole/Magic Jammer đang hợp lệ của mình theo priority, phân biệt bản sao theo ô; mở lựa chọn rồi xác nhận, giữ kín bài úp đối thủ.
+Đã thêm [danh sách bài phản hồi trong hướng dẫn lượt](docs/beta/response-guide.md): hiện Trap Hole/Magic Jammer/Seven Tools đang hợp lệ của mình theo priority, phân biệt bản sao theo ô; mở lựa chọn rồi xác nhận, giữ kín bài úp đối thủ.
 
 Đã nhập riêng [Magic Jammer](docs/data/magic-jammer.md), giữ Counter Trap và văn bản nguồn; chuẩn bị cho nhánh phản hồi/phủ nhận Phép. Review runtime và kiểm thử được ghi riêng ở mốc triển khai.
 
@@ -44,11 +44,11 @@ Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không 
 
 Đã siết [bằng chứng kiểm thử trình duyệt](docs/platform/browser-evidence.md): exit 0 vẫn bị từ chối nếu thiếu/trùng report, sai nền tảng, thiếu phiên bản hoặc có lỗi runtime; đọc đủ UTF-8 và dòng cuối không newline.
 
-Đã sửa [kiểm tra đầu vào trước khởi động](docs/platform/catalog-preflight.md): dùng chung danh sách 18 bundle/13 file review với bộ nạp, phát hiện sáu file bị bỏ sót và từ chối thư mục đặt nhầm chỗ file; không tự sửa dữ liệu.
+Đã sửa [kiểm tra đầu vào trước khởi động](docs/platform/catalog-preflight.md): dùng chung danh sách 19 bundle/14 file review với bộ nạp, phát hiện sáu file bị bỏ sót và từ chối thư mục đặt nhầm chỗ file; không tự sửa dữ liệu.
 
 Đã thêm [giữ đúng ghế khi đọc deck](docs/beta/deck-read-guard.md): mở/kiểm tra/tải deck từ chối tại server khi cookie đổi ghế ở cửa sổ khác; lỗi giữ nguyên nháp và lịch sử.
 
-Đã sửa [báo cáo khả năng thực thi](docs/engine/capability-report.md): lấy phạm vi từ review đang hoạt động, ghi đủ 16 hiệu ứng/12 scope và giữ trạng thái nhập riêng.
+Đã sửa [báo cáo khả năng thực thi](docs/engine/capability-report.md): lấy phạm vi từ review đang hoạt động, ghi đủ 17 hiệu ứng/13 scope và giữ trạng thái nhập riêng.
 
 Đã thêm [trạng thái dữ liệu và hoạt động của từng lá](docs/beta/card-support.md): tách đối chiếu dữ liệu, loại văn bản và khả năng đang mở; chỉ hiện cho lá đã biết danh tính.
 
@@ -151,8 +151,8 @@ Người dùng chưa cần nhận beta hoặc tự kiểm thử ở thời đi�
 [Pipeline nhập](docs/data/pipeline.md) bảo vệ dữ liệu cũ khi nhập lại lỗi, giữ raw/evidence/overlay
 riêng. Hiện có 19 bundle với 112 định nghĩa: 95 verified data và 17 pending rà soát văn bản lịch sử.
 Các số implemented/tested/playable=0 trong snapshot nhập là metadata lần nhập;
-runtime mở riêng 95 quái thường và 16 lá hiệu ứng qua review/kiểm thử trong scope giới hạn từ 18 bundle;
-Magic Jammer chỉ được mở trong phạm vi hai liên kết đã duyệt; Seven Tools chưa đưa vào runtime. Reimport Ookazi/Magic Jammer/Seven Tools lỗi giữ cả 19 bundle và deck A/B nguyên byte. `cards:import` nhập offline,
+runtime mở riêng 95 quái thường và 17 lá hiệu ứng qua review/kiểm thử trong scope giới hạn từ 19 bundle;
+Magic Jammer và Seven Tools chỉ được mở trong hai pattern hai liên kết đã duyệt. Reimport Ookazi/Magic Jammer/Seven Tools lỗi giữ cả 19 bundle và deck A/B nguyên byte. `cards:import` nhập offline,
 `cards:fetch` chỉ dùng khi chủ động refresh nguồn.
 
 Xem [Phép](docs/engine/reviewed-spells.md), [FLIP](docs/engine/reviewed-flips.md),
@@ -168,7 +168,7 @@ hoặc mọi tương tác bài. Bài tự tạo giữ ở [kế hoạch mở r�
 
 `npm run validate:platform` chạy bộ kiểm chứng tổng hợp, ghi report JSON và log từng bước
 vào artifacts/platform-validation/ (Git bỏ qua). Lỗi dừng ngay, phần còn lại ghi chưa chạy.
-Windows CI đã chạy cùng lệnh, đạt 62/62 bước và giữ artifact; report Linux vẫn chỉ xác nhận Linux.
+Windows CI đã chạy cùng lệnh, đạt 68/68 bước và giữ artifact; report Linux vẫn chỉ xác nhận Linux.
 
 ## Kiểm thử giao diện
 
@@ -206,4 +206,4 @@ và dừng/khởi động lại process. Xem [điểm dừng phần chuẩn bị
 Xây deck lưu riêng cho A/B và dùng khi tạo trận mới; sửa deck không đổi trận đang chơi.
 Deck được lưu local qua restart, còn trận đấu vẫn chỉ trong bộ nhớ.
 
-Catalog runtime nạp 18 bundle đang hoạt động từ danh sách đầu vào chung; giữ nguyên định nghĩa/hồ sơ hiệu ứng cũ.
+Catalog runtime nạp 19 bundle đang hoạt động từ danh sách đầu vào chung; giữ nguyên định nghĩa/hồ sơ hiệu ứng cũ.

@@ -1,8 +1,8 @@
-# Seven Tools of the Bandit — nhập dữ liệu, chưa mở hiệu ứng — 29/10/2026
+# Seven Tools of the Bandit — mốc nhập dữ liệu — 29/10/2026
 
-Cập nhật 29/10: đã có [review thiết kế chi phí LP/phản hồi Bẫy](../rules/seven-tools-review.md).
-Nội dung dưới giữ mốc nhập dữ liệu; review runtime/binding và triển khai
-hiệu ứng vẫn chưa được mở.
+Cập nhật 29/10: đã có [review thiết kế chi phí LP/phản hồi Bẫy](../rules/seven-tools-review.md)
+và [triển khai runtime riêng](../engine/seven-tools.md). Nội dung dưới giữ
+trạng thái/kết quả tại mốc nhập dữ liệu, trước khi có binding và handler.
 
 Thêm batch seven-tools riêng để chuẩn bị nhánh phản hồi Bẫy. Tổng nhập
 tăng 111 → 112 loại trong 19 bundle: 95 verified data, 17 historical

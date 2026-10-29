@@ -1,5 +1,9 @@
 # Seven Tools — review thiết kế chi phí LP/phản hồi Bẫy — 29/10/2026
 
+Cập nhật: đã có [triển khai và kiểm thử runtime](../engine/seven-tools.md)
+bằng review hiệu ứng riêng. Nội dung bên dưới giữ trạng thái tại mốc
+thiết kế trước triển khai; các mục “chưa chạy” không thay báo cáo hiện hành.
+
 Đã đối chiếu nguồn và chốt phạm vi đầu tiên sau [mốc nhập](../data/seven-tools.md).
 Đây là đầu vào triển khai, chưa phải hiệu ứng hoạt động. Không đổi engine,
 giao thức, UI, profile format, review runtime hoặc deck. Tổng nhập giữ
