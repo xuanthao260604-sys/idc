@@ -49,13 +49,13 @@ describe('Magic Jammer imported data, separate from runtime behavior', () => {
     expect(html.toString('utf8')).toContain('Counter Trap');
     expect(html.toString('utf8')).toMatch(/2002-06-26[\s\S]{0,300}MRD-128[\s\S]{0,200}METAL RAIDERS/);
   });
-  it('counts 111 imported cards while runtime support still requires a separate validated review', async () => {
+  it('counts 112 imported cards while runtime support still requires a separate validated review', async () => {
     const files = await readdir(join(projectRoot, 'data/generated'));
     const bundles = files.filter(name => name.endsWith('.json')).map(name => load(`data/generated/${name}`));
-    expect(bundles).toHaveLength(18);
-    expect(bundles.reduce((n, b) => n + b.summary.imported, 0)).toBe(111);
+    expect(bundles).toHaveLength(19);
+    expect(bundles.reduce((n, b) => n + b.summary.imported, 0)).toBe(112);
     expect(bundles.reduce((n, b) => n + b.summary.verifiedData, 0)).toBe(95);
-    expect(bundles.reduce((n, b) => n + b.summary.historicalReviewPending, 0)).toBe(16);
+    expect(bundles.reduce((n, b) => n + b.summary.historicalReviewPending, 0)).toBe(17);
     expect(Object.keys(registry.cards)).toHaveLength(111); expect(registry.cards['official:77414722']).toEqual(imported.cards[0]);
     const runtime=loadRuntimeCatalog(),probe=createRegistry([...runtime.cards.filter(c=>c.id!=='official:77414722'),...imported.cards],goat200508Format,{},runtime.effectReviews.spells,runtime.effectReviews.flips,runtime.effectReviews.traps);
     expect(probe.unsupportedIds).toEqual(['official:77414722']);expect(probe.spellHandlers).toEqual(registry.spellHandlers);expect(probe.flipHandlers).toEqual(registry.flipHandlers);expect(probe.trapHandlers).toEqual(registry.trapHandlers);
@@ -63,7 +63,7 @@ describe('Magic Jammer imported data, separate from runtime behavior', () => {
     expect(Object.keys(registry.spellHandlers).length + Object.keys(registry.flipHandlers).length + Object.keys(registry.trapHandlers).length + Object.keys(registry.counterTrapHandlers).length).toBe(16);
     expect(createRegistry(imported.cards, goat200508Format).unsupportedIds).toEqual(['official:77414722']);
   });
-  it('reimports twice offline and checks all eighteen bundles and saved A/B decks without changing bytes', async () => {
+  it('reimports twice offline and checks all nineteen bundles and saved A/B decks without changing bytes', async () => {
     const f = await fixture();
     try {
       const before = await snapshot(f.root);
@@ -73,7 +73,7 @@ describe('Magic Jammer imported data, separate from runtime behavior', () => {
       const reloaded = createDeckStore(registry, f.directory); expect([reloaded.get('a'), reloaded.get('b')]).toEqual(f.decks);
     } finally { await rm(f.root, { recursive: true, force: true }); }
   });
-  it.each(['checksum', 'review', 'official facts', 'cutoff', 'unreviewed print'])('failed %s reimport preserves all eighteen bundles, inputs and valid deck files', async mode => {
+  it.each(['checksum', 'review', 'official facts', 'cutoff', 'unreviewed print'])('failed %s reimport preserves all nineteen bundles, inputs and valid deck files', async mode => {
     const f = await fixture();
     try {
       let message: string;

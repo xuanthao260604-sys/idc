@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "format": {
+    "id": "goat-2005-08-17",
+    "revision": 4
+  },
+  "provenance": {
+    "upstreamSha256": "324636d43dfe3ab4b010ff9880c84827a349660785e4728b34da2122e5709e95",
+    "manifestSha256": "f3743b0515de3ef6352f77bf5ac68b20f09acbe03456b2078026458336f379b1",
+    "reviewSha256": "f2fa8718e6cdea5b3163fe7afb1a1f47e7cf33d9358c64010f6734706f8e596b",
+    "officialEvidenceSha256": "cb9b10dd2a1d8f75c91692567b4bf00bbd7b19843934ec120b7bea41881fb0df"
+  },
+  "cards": [
+    {
+      "schemaVersion": 1,
+      "id": "official:03819470",
+      "origin": "official",
+      "revision": 1,
+      "name": "Seven Tools of the Bandit",
+      "passcode": "03819470",
+      "text": "When a Trap Card is activated: Pay 1000 LP; negate the activation, and if you do, destroy it.",
+      "textBasis": "current-reference",
+      "sources": [
+        {
+          "url": "https://db.ygoprodeck.com/api/v7/cardinfo.php?name=Seven%20Tools%20of%20the%20Bandit&misc=yes",
+          "accessedOn": "2026-10-29",
+          "scope": "identity",
+          "notes": "YGOPRODeck v7 snapshot: structured reference data, not proof of historical text/legality."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4863&request_locale=en",
+          "accessedOn": "2026-10-29",
+          "scope": "identity",
+          "notes": "Current Konami name/type/stats compared with frozen evidence; CID 4863."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4863&request_locale=en",
+          "accessedOn": "2026-10-29",
+          "scope": "text",
+          "notes": "Current official reference text; not represented as original 2005 wording."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4863&request_locale=en",
+          "accessedOn": "2026-10-29",
+          "scope": "text",
+          "notes": "Current official reference verified against frozen Card Text, not asserted as original 2005 printed wording."
+        }
+      ],
+      "verification": "pending",
+      "implementation": "not-started",
+      "testing": "not-run",
+      "effects": [],
+      "legality": {
+        "formatId": "goat-2005-08-17",
+        "status": "legal",
+        "maxCopies": 3,
+        "evidence": [
+          {
+            "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4863&request_locale=en",
+            "accessedOn": "2026-10-29",
+            "scope": "release",
+            "notes": "Reviewed North American print MRD-129, 2002-06-26, METAL RAIDERS; not inferred from API tcg_date."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-29",
+            "scope": "release",
+            "notes": "Reviewed Legal Sets explicitly include Metal Raiders (MRD), frozen HTML SHA-256 01e0626f198987b8daf60e00242cd33b7a692419f645adf4e7f826ed47eef98e. Original North American MRD-129 printing independently checked on Konami; historical printed wording remains pending."
+          },
+          {
+            "url": "https://www.goatformat.com/cardpool.html",
+            "accessedOn": "2026-10-15",
+            "scope": "restriction",
+            "notes": "Goat list reviewed: goat-tcg-2005-04 revision 1."
+          }
+        ]
+      },
+      "kind": "trap",
+      "subtype": "counter"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "official:03819470",
+      "fingerprint": "9b1e0f1ab3d3d715441af06d0ec542733a3cdfa22df70dbf12e38a3c58920dfa",
+      "historicalTextReview": "pending",
+      "upstreamText": "When a Trap Card is activated: Pay 1000 LP; negate the activation, and if you do, destroy it.",
+      "referenceText": "When a Trap Card is activated: Pay 1000 LP; negate the activation, and if you do, destroy it.",
+      "notes": "Current API and official Konami reference text agree. MRD-129 original North American printing verified separately; leading-zero passcode preserved. Historical printed wording remains pending. No runtime review, binding, LP activation cost or Trap activation negation enabled by this import.",
+      "printing": {
+        "date": "2002-06-26",
+        "setCode": "MRD-129",
+        "product": "METAL RAIDERS"
+      },
+      "upstreamTcgDate": "2002-06-26"
+    }
+  ],
+  "summary": {
+    "imported": 1,
+    "verifiedData": 0,
+    "historicalReviewPending": 1,
+    "implemented": 0,
+    "testedEffects": 0,
+    "playable": 0
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "formatId": "goat-2005-08-17",
+  "cards": [
+    {
+      "passcode": "03819470",
+      "expectedName": "Seven Tools of the Bandit",
+      "konamiId": 4863
+    }
+  ],
+  "eligibleSetPrefixes": [
+    "MRD"
+  ],
+  "eligibilitySource": {
+    "url": "https://www.goatformat.com/cardpool.html",
+    "accessedOn": "2026-10-29",
+    "scope": "release",
+    "notes": "Reviewed Legal Sets explicitly include Metal Raiders (MRD), frozen HTML SHA-256 01e0626f198987b8daf60e00242cd33b7a692419f645adf4e7f826ed47eef98e. Original North American MRD-129 printing independently checked on Konami; historical printed wording remains pending."
+  }
+}

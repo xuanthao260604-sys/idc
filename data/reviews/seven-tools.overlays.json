@@ -1,0 +1,18 @@
+[
+  {
+    "id": "official:03819470",
+    "baseFingerprint": "9b1e0f1ab3d3d715441af06d0ec542733a3cdfa22df70dbf12e38a3c58920dfa",
+    "revision": 1,
+    "patch": {},
+    "historicalTextReview": "pending",
+    "notes": "Current API and official Konami reference text agree. MRD-129 original North American printing verified separately; leading-zero passcode preserved. Historical printed wording remains pending. No runtime review, binding, LP activation cost or Trap activation negation enabled by this import.",
+    "sources": [
+      {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4863&request_locale=en",
+        "accessedOn": "2026-10-29",
+        "scope": "text",
+        "notes": "Current official reference verified against frozen Card Text, not asserted as original 2005 printed wording."
+      }
+    ]
+  }
+]

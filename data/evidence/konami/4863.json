@@ -1,0 +1,18 @@
+{
+  "passcode": "03819470",
+  "konamiId": 4863,
+  "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4863&request_locale=en",
+  "accessedOn": "2026-10-29",
+  "htmlSha256": "0fa7aeda482c7792e98dd9bca18bcef5f0ac675a1f7140b83dd530edd17d09da",
+  "currentFacts": {
+    "name": "Seven Tools of the Bandit",
+    "text": "When a Trap Card is activated: Pay 1000 LP; negate the activation, and if you do, destroy it.",
+    "kind": "trap",
+    "subtype": "counter"
+  },
+  "printing": {
+    "date": "2002-06-26",
+    "setCode": "MRD-129",
+    "product": "METAL RAIDERS"
+  }
+}
