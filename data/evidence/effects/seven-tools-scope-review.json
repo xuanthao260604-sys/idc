@@ -1,0 +1,402 @@
+{
+  "schemaVersion": 1,
+  "status": "design-reviewed-not-enabled",
+  "reviewedOn": "2026-10-29",
+  "cardId": "official:03819470",
+  "definitionSha256": "2dbc5c07956ac97d58b2f449898bf2d73bd0488578b9c69c0fadd5e468accbc0",
+  "format": {
+    "id": "goat-2005-08-17",
+    "revision": 4
+  },
+  "proposedScope": "counter-trap-trap-hole-activation-v1",
+  "historicalPrintedTextReview": "pending",
+  "runtimeEnabled": false,
+  "sources": [
+    {
+      "id": "card-text",
+      "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4863&request_locale=en",
+      "accessedOn": "2026-10-29",
+      "sourceKind": "official-current",
+      "sha256": "0fa7aeda482c7792e98dd9bca18bcef5f0ac675a1f7140b83dd530edd17d09da",
+      "bytes": 148891,
+      "notes": "Frozen reference from the completed import, reused without refetching or changing it. Historical printed wording remains pending.",
+      "rawPath": "data/raw/konami/0fa7aeda482c7792e98dd9bca18bcef5f0ac675a1f7140b83dd530edd17d09da.html"
+    },
+    {
+      "id": "v5",
+      "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+      "accessedOn": "2026-10-29",
+      "sourceKind": "archive",
+      "sha256": "d02c016334f65c98a9fe900ae0b2630a3de63f63e330426ab07c55d9466dc61a",
+      "bytes": 681725,
+      "notes": "Re-fetched archive matches the v5 SHA-256 reviewed previously; consistency evidence, not a publisher signature. PDF is not copied into repository."
+    },
+    {
+      "id": "current-book",
+      "url": "https://www.yugioh-card.com/en/downloads/rulebook/SD_RuleBook_EN_10.pdf",
+      "accessedOn": "2026-10-29",
+      "sourceKind": "official-current",
+      "sha256": "82be14641b2b7940467034a5b14b0d4037835831866537738d34fd9df5a0f444",
+      "bytes": 3415528,
+      "notes": "Current baseline under the selected Goat policy; not an original 2005 rulebook. PDF is not copied into repository."
+    },
+    {
+      "id": "goat-basics",
+      "url": "https://www.goatformat.com/basics.html",
+      "accessedOn": "2026-10-27",
+      "sourceKind": "community",
+      "sha256": "c4ce900ab808c269392a84a4a077970ec39ac30a4d937d63689ffc0cae3213d0",
+      "bytes": 136366,
+      "notes": "Previously frozen on 2026-10-27, reviewed locally on 2026-10-29. Preserve the source editorial caveat about recent rule changes; no claim of a new live fetch.",
+      "rawPath": "data/raw/goatformat/c4ce900ab808c269392a84a4a077970ec39ac30a4d937d63689ffc0cae3213d0.html"
+    },
+    {
+      "id": "goat-rulings4",
+      "url": "https://www.goatformat.com/rulings4.html",
+      "accessedOn": "2026-10-29",
+      "sourceKind": "community",
+      "sha256": "8966dc9f578cdc28ef09f653c73ebf955a58548698e5aa43d624552e43e1ddff",
+      "bytes": 147775,
+      "notes": "Imperial Order / Netrep Q&As attributes the zero-LP prohibition to Curtis Schultz, 2003-12-23; Injection Fairy Lily / Netrep Rulings supplies an activation-cost threshold example. Community transcription, not an authenticated UDE original. These example cards stay unsupported.",
+      "rawPath": "data/raw/goatformat/8966dc9f578cdc28ef09f653c73ebf955a58548698e5aa43d624552e43e1ddff.html"
+    },
+    {
+      "id": "goat-rulings7",
+      "url": "https://www.goatformat.com/rulings7.html",
+      "accessedOn": "2026-10-29",
+      "sourceKind": "community",
+      "sha256": "caf0bf7d4f89887a630d99caef888574d63253c5e2b67f3eb96131804e70ab62",
+      "bytes": 291636,
+      "notes": "Seven Tools subsection explicitly labelled Netrep Rulings; distinguishes Trap card activation from an already active Continuous Trap effect. Not an authenticated original UDE bulletin. Ultimate Offering stays unsupported.",
+      "rawPath": "data/raw/goatformat/caf0bf7d4f89887a630d99caef888574d63253c5e2b67f3eb96131804e70ab62.html"
+    },
+    {
+      "id": "current-faq",
+      "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=4&cid=4863&request_locale=ja",
+      "accessedOn": "2026-10-29",
+      "sourceKind": "official-current",
+      "sha256": "43cc4589b7f32d969d8b79c60cf1d8255b1c9d83ccc7f1f801191bf1cdb589dd",
+      "bytes": 90398,
+      "notes": "Official current OCG supplement; retain Japanese quotations and distinguish Vietnamese interpretation. Not original 2005 TCG wording. Do not import the modern-card Q&A examples.",
+      "rawPath": "data/raw/konami/43cc4589b7f32d969d8b79c60cf1d8255b1c9d83ccc7f1f801191bf1cdb589dd.html",
+      "displayedDate": "2017-09-28"
+    }
+  ],
+  "quotations": [
+    {
+      "id": "effect",
+      "sourceId": "card-text",
+      "locator": "Card Text",
+      "evidence": {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4863&request_locale=en",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "official-current",
+        "quotation": "When a Trap Card is activated: Pay 1000 LP; negate the activation, and if you do, destroy it.",
+        "historicalApplicability": "Current reference semantics. No original printed-text verification. Corroborate the activation/effect distinction with the curated Goat Seven Tools ruling."
+      }
+    },
+    {
+      "id": "lifo",
+      "sourceId": "v5",
+      "locator": "printed p.32, What is a Chain?",
+      "evidence": {
+        "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "archive",
+        "quotation": "The effects are then resolved, starting at the top link and working down to the Chain Link 1 at the bottom.",
+        "historicalApplicability": "Period baseline for reverse resolution; does not establish every individual card ruling."
+      }
+    },
+    {
+      "id": "own-response",
+      "sourceId": "v5",
+      "locator": "printed p.32, parenthetical text",
+      "evidence": {
+        "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "archive",
+        "quotation": "the same player can play consecutive cards if their opponent does not respond",
+        "historicalApplicability": "Period baseline for responding to one’s own Trap after the opponent declines; response priority is still checked."
+      }
+    },
+    {
+      "id": "speed3",
+      "sourceId": "v5",
+      "locator": "printed p.33, Spell Speed 3 / Counter Trap",
+      "evidence": {
+        "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "archive",
+        "quotation": "Only another Spell Speed 3 card may be used against these cards.",
+        "historicalApplicability": "Counter Trap baseline. Speed alone does not satisfy a responding card activation condition. Counter-to-counter responses can be legal, but are outside the proposed first scope."
+      }
+    },
+    {
+      "id": "speed2",
+      "sourceId": "v5",
+      "locator": "printed p.33, Spell Speed 2 / Normal Trap",
+      "evidence": {
+        "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "archive",
+        "quotation": "These cards can be used against a card with a Spell Speed of 1 or 2.",
+        "historicalApplicability": "Normal Trap is listed in this section. Preserve the existing speed-2 Trap Hole behavior; do not allow it to respond to speed 3."
+      }
+    },
+    {
+      "id": "cost-lp",
+      "sourceId": "v5",
+      "locator": "printed p.36, Pay a Cost",
+      "evidence": {
+        "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "archive",
+        "quotation": "Paying a cost means an action like discarding or sending a card to the Graveyard from your hand, or paying Life Points, in order to Summon a monster or activate an effect. You have to pay any costs before you declare the activation of the card.",
+        "historicalApplicability": "Period baseline that paying LP can be a cost; the specific fixed amount comes from Seven Tools current reference text."
+      }
+    },
+    {
+      "id": "cost-no-refund",
+      "sourceId": "v5",
+      "locator": "printed p.36, Pay a Cost",
+      "evidence": {
+        "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "archive",
+        "quotation": "Even if the activation of the card is negated, you cannot get a refund of the cost that you have paid.",
+        "historicalApplicability": "Already paid costs remain paid. First scope does not implement a further Counter negating Seven Tools; no-refund remains a requirement for any later extension."
+      }
+    },
+    {
+      "id": "cost-not-effect",
+      "sourceId": "v5",
+      "locator": "printed p.35, Effect of Cards",
+      "evidence": {
+        "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "archive",
+        "quotation": "Paying a cost or destroying a monster as a result of battle is not included in the effect of a card.",
+        "historicalApplicability": "LP payment must have a separate cost event/fact, not an effect-damage event; no damage or payment triggers are enabled."
+      }
+    },
+    {
+      "id": "target-definition",
+      "sourceId": "v5",
+      "locator": "printed p.35, Effects that Target a Card",
+      "evidence": {
+        "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "archive",
+        "quotation": "For an effect that targets a card, you select the target that you would like and then activate the effect.",
+        "historicalApplicability": "Baseline distinction between choosing a card target and recording the Chain link being answered. Seven Tools non-targeting design is a semantic reading of current reference text/direct-chain supplement, not a quotation explicitly stating that property."
+      }
+    },
+    {
+      "id": "trap-set",
+      "sourceId": "current-book",
+      "locator": "Normal Trap Cards / common Trap rules, printed p.30",
+      "evidence": {
+        "url": "https://www.yugioh-card.com/en/downloads/rulebook/SD_RuleBook_EN_10.pdf",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "official-current",
+        "quotation": "Before you can activate a Trap Card, you must Set it on the field first.",
+        "historicalApplicability": "Current common Trap baseline under the selected Goat policy. No hand-activation exception is enabled."
+      }
+    },
+    {
+      "id": "trap-wait",
+      "sourceId": "current-book",
+      "locator": "Normal Trap Cards / common Trap rules, printed p.30",
+      "evidence": {
+        "url": "https://www.yugioh-card.com/en/downloads/rulebook/SD_RuleBook_EN_10.pdf",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "official-current",
+        "quotation": "You cannot activate a Trap in the same turn that you Set it, but you can activate it at any time after that",
+        "historicalApplicability": "Read together with each Trap condition and response priority; not permission to activate Seven Tools at arbitrary timing."
+      }
+    },
+    {
+      "id": "baseline-policy",
+      "sourceId": "goat-basics",
+      "locator": "Basic Mechanics opening paragraph",
+      "evidence": {
+        "url": "https://www.goatformat.com/basics.html",
+        "accessedOn": "2026-10-27",
+        "sourceKind": "community",
+        "quotation": "if a general rule is not explicitly listed here is being different in Goat Format, you can assume that it works the exact same way as it does in the current format.",
+        "historicalApplicability": "Existing community policy adopted by the project; retain its editorial caveat about recent rule changes."
+      }
+    },
+    {
+      "id": "lp-zero",
+      "sourceId": "goat-rulings4",
+      "locator": "IMPERIAL ORDER / Netrep Q&As, attributed Curtis Schultz 12/23/2003",
+      "evidence": {
+        "url": "https://www.goatformat.com/rulings4.html",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "community",
+        "quotation": "They cannot choose to pay if it would make their Life Points become 0.",
+        "historicalApplicability": "Community transcription of a period LP-payment rule. This is an Imperial Order example, not a Seven Tools-specific original bulletin; combine with the activation-cost example and Seven Tools fixed 1000 cost."
+      }
+    },
+    {
+      "id": "lp-activation-floor",
+      "sourceId": "goat-rulings4",
+      "locator": "INJECTION FAIRY LILY / Netrep Rulings",
+      "evidence": {
+        "url": "https://www.goatformat.com/rulings4.html",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "community",
+        "quotation": "“Injection Fairy Lily’s” effect may not be activated if the controller’s Life Points are at or below 2000.",
+        "historicalApplicability": "Period activation-cost example corroborating that an exact fixed LP cost cannot be paid down to zero. Derive Seven Tools minimum 1001 from its fixed 1000 cost; do not enable Lily or its battle effect."
+      }
+    },
+    {
+      "id": "activation-not-effect",
+      "sourceId": "goat-rulings7",
+      "locator": "SEVEN TOOLS OF THE BANDIT / Netrep Rulings",
+      "evidence": {
+        "url": "https://www.goatformat.com/rulings7.html",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "community",
+        "quotation": "“Seven Tools of the Bandit” may not be activated in a chain to the use of an effect of a continuous Trap that has already been activated, like “Ultimate Offering.”",
+        "historicalApplicability": "Curated period distinction between Trap card activation and a previously active Continuous Trap effect. Ultimate Offering and Continuous Trap handling remain unsupported."
+      }
+    },
+    {
+      "id": "direct-self-or-other",
+      "sourceId": "current-faq",
+      "locator": "supplement displayed 2017-09-28",
+      "evidence": {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=4&cid=4863&request_locale=ja",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "official-current",
+        "quotation": "■自分または相手の罠カードのカードの発動に直接チェーンして発動するカードです。（カードの発動を伴わない、罠カードの効果の発動にチェーンして発動することはできません。）",
+        "historicalApplicability": "Current OCG corroboration: directly chain to one’s own or the opponent’s Trap card activation, not an effect activation without card activation. Not asserted as original TCG 2005 wording."
+      }
+    },
+    {
+      "id": "damage-step",
+      "sourceId": "current-faq",
+      "locator": "supplement displayed 2017-09-28",
+      "evidence": {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=4&cid=4863&request_locale=ja",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "official-current",
+        "quotation": "■ダメージステップでも発動できます。",
+        "historicalApplicability": "Current supplement permits Damage Step. Proposed first scope only answers Trap Hole following supported Main Phase Summons; this boundary is not a universal Damage Step prohibition on Seven Tools."
+      }
+    }
+  ],
+  "decisions": [
+    {
+      "id": "activation",
+      "value": {
+        "cardKind": "trap",
+        "subtype": "counter",
+        "spellSpeed": 3,
+        "mustBeSetOnEarlierTurn": true,
+        "requiresPriority": true,
+        "requiresNoPendingDecision": true,
+        "respondToLatestLink": true,
+        "originalTrapController": "self-or-opponent",
+        "cardTargeting": false,
+        "responseKind": "trap-card-activation"
+      },
+      "evidenceRefs": [
+        "effect",
+        "speed3",
+        "trap-set",
+        "trap-wait",
+        "direct-self-or-other",
+        "own-response",
+        "target-definition"
+      ],
+      "notes": "No card-target choice is described by current text; direct-chain response uses a link reference, not a card target. This property is a documented semantic reading, not a fabricated direct quotation."
+    },
+    {
+      "id": "cost",
+      "value": {
+        "amountLP": 1000,
+        "minimumLPBeforePayment": 1001,
+        "paidAtActivation": true,
+        "validateAllBeforePaying": true,
+        "effectDamage": false,
+        "requiresHandDiscard": false,
+        "refundOnResolution": false,
+        "normalSummonQuotaConsumed": false
+      },
+      "evidenceRefs": [
+        "effect",
+        "cost-lp",
+        "cost-not-effect",
+        "cost-no-refund",
+        "lp-zero",
+        "lp-activation-floor"
+      ],
+      "notes": "1001 is derived from fixed 1000 LP plus the sourced no-zero-payment baseline, not a quotation of a Seven Tools-specific threshold. Atomic rejection, server-owned amount and no quota mutation are implementation requirements. No cost reducers, upkeep or payment/damage triggers are enabled."
+    },
+    {
+      "id": "limited-chain",
+      "value": {
+        "pattern": [
+          "reviewed-trap-hole-activation",
+          "seven-tools"
+        ],
+        "maxLinks": 2,
+        "phase": [
+          "main1",
+          "main2"
+        ],
+        "originalSummonMethods": [
+          "normal",
+          "tribute",
+          "flip"
+        ],
+        "sevenToolsController": "either-player-after-priority",
+        "resolutionOrder": "last-in-first-out",
+        "otherResponsesInThisScope": "pass-only",
+        "clientCommandsDuringResolution": false
+      },
+      "evidenceRefs": [
+        "lifo",
+        "speed2",
+        "speed3",
+        "activation-not-effect",
+        "direct-self-or-other",
+        "own-response"
+      ],
+      "notes": "Two-link/Trap-Hole-only is a project boundary, not a Yu-Gi-Oh! limit. Spell -> Magic Jammer -> Seven Tools and Trap Hole -> Seven Tools -> Seven Tools can be legal when all conditions hold, but remain unsupported in this first scope."
+    },
+    {
+      "id": "resolution",
+      "value": {
+        "negate": "trap-card-activation",
+        "skipOriginalTrapHolePlan": true,
+        "destroyOriginalTrap": true,
+        "summonedMonsterPreserved": true,
+        "retainPaidLPCost": true,
+        "cleanupCounterOnce": true,
+        "negateSummon": false,
+        "refundSummonQuota": false
+      },
+      "evidenceRefs": [
+        "effect",
+        "lifo",
+        "cost-no-refund"
+      ],
+      "notes": "The Summon has already succeeded; only Trap Hole activation is negated. In the restricted pool Trap Hole remains face-up on the field with no protection/replacement. No generic card-left-field outcome is inferred."
+    }
+  ],
+  "notCovered": [
+    "Counter-to-counter chains, including Seven Tools answering Magic Jammer or Seven Tools",
+    "multiple Trap Hole links before Seven Tools",
+    "general mixed Chain, activation/effect negation and SEGOC",
+    "Continuous Trap effect activation",
+    "Damage Step Trap activation",
+    "LP cost reducers, replacement, protection or immunity",
+    "payment/damage/upkeep triggers",
+    "online or persistent-match command recovery"
+  ],
+  "implementationAndEffectTests": "not-started"
+}

@@ -1,5 +1,9 @@
 # Seven Tools of the Bandit — nhập dữ liệu, chưa mở hiệu ứng — 29/10/2026
 
+Cập nhật 29/10: đã có [review thiết kế chi phí LP/phản hồi Bẫy](../rules/seven-tools-review.md).
+Nội dung dưới giữ mốc nhập dữ liệu; review runtime/binding và triển khai
+hiệu ứng vẫn chưa được mở.
+
 Thêm batch seven-tools riêng để chuẩn bị nhánh phản hồi Bẫy. Tổng nhập
 tăng 111 → 112 loại trong 19 bundle: 95 verified data, 17 historical
 pending. Runtime vẫn 111 loại/16 hiệu ứng/12 scope qua 18 bundle đang

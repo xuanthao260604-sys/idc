@@ -24,7 +24,7 @@ Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không 
 Đã nhận bộ khung người dùng: [mặt sau chung](docs/beta/card-frames.md) được dùng cho bài úp của cả ba loại.
 Đã ghép [ba khung mặt trước](docs/beta/card-fronts.md), hàng sao và chỉ số lấy từ dữ liệu; ảnh minh họa từng lá sẽ bổ sung sau.
 
-Đã nhập riêng [Seven Tools of the Bandit](docs/data/seven-tools.md): giữ mã 03819470 và Counter Trap, đối chiếu nguồn/bản in; chưa có review hoặc triển khai hiệu ứng trả LP/phủ nhận Bẫy, chưa dùng trong deck đấu.
+Đã nhập riêng [Seven Tools of the Bandit](docs/data/seven-tools.md): giữ mã 03819470 và Counter Trap, đối chiếu nguồn/bản in; đã có [review thiết kế chi phí LP/phản hồi Bẫy](docs/rules/seven-tools-review.md). Phạm vi đầu là Trap Hole → Seven Tools, cần LP > 1000; chưa có review runtime/binding hoặc hiệu ứng hoạt động, chưa dùng trong deck đấu.
 
 Đã mở [Counter Trap Magic Jammer](docs/engine/magic-jammer.md): bỏ một lá làm cost, phủ nhận activation của Phép đang phản hồi, giữ cost gốc và bỏ qua hiệu ứng Phép; chỉ pattern hai liên kết đã duyệt. [Review thiết kế](docs/rules/magic-jammer-review.md) giữ nguồn và ranh giới.
 
