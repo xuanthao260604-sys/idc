@@ -1,3 +1,5 @@
+> Cập nhật 29/10/2026: đã nhập [Seven Tools of the Bandit](seven-tools.md) thành batch riêng; tổng nhập 112 loại/19 bundle, runtime giữ 111 loại/18 bundle. Lá mới chưa có review hoặc hiệu ứng hoạt động. Các mốc và số liệu bên dưới giữ lịch sử; kết quả hiện hành ghi tại tài liệu mới.
+
 > Mốc hiện tại: [báo cáo khả năng từ review đang hoạt động](../engine/capability-report.md), catalog 109 không đổi; đủ 14 effect record và 11 scope, nhập/runtime riêng, không suy hỗ trợ từ dữ liệu chưa có review. Linux và Windows CI đạt 805 test, 47 bước, 37 browser report. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
 
 > Mốc trước: [trạng thái dữ liệu và hoạt động của từng lá](../beta/card-support.md), catalog 109 không đổi; tách đối chiếu dữ liệu, loại văn bản và khả năng đã mở, không hiện cho lá úp. Linux và Windows CI đạt 800 test, 47 bước, 37 browser report. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.

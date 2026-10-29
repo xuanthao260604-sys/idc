@@ -14,15 +14,17 @@ Hinotama, Dian Keto the Cure Master, Smashing Ground, Hammer Shot, Tribute to Th
 Đã kiểm chứng [hai Phép thay đổi LP](docs/engine/life-point-spells.md) trên Linux và Windows CI; còn ca Windows 11 desktop chưa chạy.
 Không coi việc cấu hình CI Windows hoặc chạy Linux là đã kiểm chứng Windows.
 
-1050/1050 test trong 41 file đạt trên Linux và Windows CI.
+1060/1060 test trong 42 file đạt trên Linux và Windows CI, gồm 10 ca nhập dữ liệu Seven Tools; chưa có kiểm thử hiệu ứng của lá này.
 62/62 bước validation và 52 browser report đạt, gồm bốn ca [Counter Trap Magic Jammer](docs/engine/magic-jammer.md), hai ca [tương tác sau phủ nhận](docs/engine/magic-jammer-interaction-audit.md) và hai ca [hướng dẫn phản hồi](docs/beta/response-guide.md); Windows dùng Edge, tổng runtimeExceptions=0.
-Dữ liệu nhập và catalog runtime đều 111 loại; trạng thái nhập vẫn tách riêng review/runtime.
+Dữ liệu đã nhập 112 loại; catalog runtime vẫn 111 loại. Seven Tools of the Bandit mới nhập dữ liệu, chưa mở hiệu ứng; trạng thái nhập tách riêng review/runtime.
 Browser regression tính riêng: xây/lưu deck, 5 hiệu ứng, xem Mộ, tạo trận A/B/ngẫu nhiên, bỏ bài,
 Pot với deck 0/1/2 lá, đầu hàng/hủy và tạo trận sau kết thúc, trận tự nhiên đầy đủ.
 Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không phải game hoàn tất mọi luật Yu-Gi-Oh!.
 
 Đã nhận bộ khung người dùng: [mặt sau chung](docs/beta/card-frames.md) được dùng cho bài úp của cả ba loại.
 Đã ghép [ba khung mặt trước](docs/beta/card-fronts.md), hàng sao và chỉ số lấy từ dữ liệu; ảnh minh họa từng lá sẽ bổ sung sau.
+
+Đã nhập riêng [Seven Tools of the Bandit](docs/data/seven-tools.md): giữ mã 03819470 và Counter Trap, đối chiếu nguồn/bản in; chưa có review hoặc triển khai hiệu ứng trả LP/phủ nhận Bẫy, chưa dùng trong deck đấu.
 
 Đã mở [Counter Trap Magic Jammer](docs/engine/magic-jammer.md): bỏ một lá làm cost, phủ nhận activation của Phép đang phản hồi, giữ cost gốc và bỏ qua hiệu ứng Phép; chỉ pattern hai liên kết đã duyệt. [Review thiết kế](docs/rules/magic-jammer-review.md) giữ nguồn và ranh giới.
 
@@ -147,10 +149,10 @@ Người dùng chưa cần nhận beta hoặc tự kiểm thử ở thời đi�
 ## Phạm vi và dữ liệu
 
 [Pipeline nhập](docs/data/pipeline.md) bảo vệ dữ liệu cũ khi nhập lại lỗi, giữ raw/evidence/overlay
-riêng. Hiện có 18 bundle với 111 định nghĩa: 95 verified data và 16 pending rà soát văn bản lịch sử.
+riêng. Hiện có 19 bundle với 112 định nghĩa: 95 verified data và 17 pending rà soát văn bản lịch sử.
 Các số implemented/tested/playable=0 trong snapshot nhập là metadata lần nhập;
 runtime mở riêng 95 quái thường và 16 lá hiệu ứng qua review/kiểm thử trong scope giới hạn từ 18 bundle;
-Magic Jammer chỉ được mở trong phạm vi hai liên kết đã duyệt. Reimport Ookazi/Magic Jammer lỗi giữ cả 18 bundle và deck A/B nguyên byte. `cards:import` nhập offline,
+Magic Jammer chỉ được mở trong phạm vi hai liên kết đã duyệt; Seven Tools chưa đưa vào runtime. Reimport Ookazi/Magic Jammer/Seven Tools lỗi giữ cả 19 bundle và deck A/B nguyên byte. `cards:import` nhập offline,
 `cards:fetch` chỉ dùng khi chủ động refresh nguồn.
 
 Xem [Phép](docs/engine/reviewed-spells.md), [FLIP](docs/engine/reviewed-flips.md),
