@@ -213,7 +213,9 @@ async function command(action) {
     if (data.view.viewerId !== context.seat) throw new Error('Người chơi đã thay đổi. Hãy chọn lại người chơi trước khi thao tác.');
     view = data.view; selected = null; const entry = view.activity?.find(e => e.stateVersion === data.outcome.stateVersion);
     const feedback = entry?.resolution?.map(resolutionText).filter(Boolean).join(' · ');
-    message = data.outcome.accepted ? (feedback || 'Đã thực hiện.') : (reasonNames[data.outcome.reason] || 'Thao tác không hợp lệ.');
+    message = data.outcome.accepted ? (feedback || 'Đã thực hiện.')
+      : action.type === 'activate-lp-counter-trap' && data.outcome.reason === 'unpayable-cost' ? 'Cần trên 1000 LP để trả chi phí.'
+      : (reasonNames[data.outcome.reason] || 'Thao tác không hợp lệ.');
   } catch (e) { message = action.type === 'answer-decision'
     ? 'Chưa xác nhận lựa chọn. Các ô đã chọn được giữ lại. Hãy cập nhật bàn đấu nếu không rõ kết quả trước khi thử lại. ' + e.message
     : e.message; }
