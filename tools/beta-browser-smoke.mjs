@@ -287,7 +287,7 @@ try {
   async function evaluate(expression) { const r = await send('Runtime.evaluate', { expression, awaitPromise: true, returnByValue: true }); if (r.exceptionDetails) throw new Error(JSON.stringify(r.exceptionDetails)); return r.result.value; }
   async function wait(condition) { for (let n = 0; n < 100; n++) { if (await evaluate(condition)) return; await delay(40); } throw new Error(`Browser wait failed: ${condition}`); }
   async function click(expression) {
-    const point = await evaluate(`(()=>{const e=(${expression});if(!e || e.disabled)throw new Error('Missing/disabled control');e.scrollIntoView({block:'center'});const r=e.getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2}})()`);
+    const point = await evaluate(`(async()=>{const e=(${expression});if(!e || e.disabled)throw new Error('Missing/disabled control');e.scrollIntoView({block:'center'});await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));if(!e.isConnected||e.disabled)throw new Error('Control changed before click');const r=e.getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2}})()`);
     await send('Input.dispatchMouseEvent', { type: 'mousePressed', ...point, button: 'left', clickCount: 1 });
     await send('Input.dispatchMouseEvent', { type: 'mouseReleased', ...point, button: 'left', clickCount: 1 });
   }
