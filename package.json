@@ -97,7 +97,8 @@
     "beta:browser-response-guide": "npm run build && node tools/beta-browser-smoke.mjs --response-guide=a && node tools/beta-browser-smoke.mjs --response-guide=b",
     "cards:seven-tools-fetch": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js fetch seven-tools",
     "cards:seven-tools-import": "npm run build && node --use-env-proxy dist/tools/card-import/src/cli.js import seven-tools",
-    "beta:browser-seven-tools": "npm run build && node tools/beta-browser-smoke.mjs --seven-tools=a:opponent:8000 && node tools/beta-browser-smoke.mjs --seven-tools=b:self:1001 && node tools/beta-browser-smoke.mjs --seven-tools=a:self:8000 && node tools/beta-browser-smoke.mjs --seven-tools=b:opponent:1001 && node tools/beta-browser-smoke.mjs --seven-tools=a:opponent:1000 && node tools/beta-browser-smoke.mjs --seven-tools=b:self:999"
+    "beta:browser-seven-tools": "npm run build && node tools/beta-browser-smoke.mjs --seven-tools=a:opponent:8000 && node tools/beta-browser-smoke.mjs --seven-tools=b:self:1001 && node tools/beta-browser-smoke.mjs --seven-tools=a:self:8000 && node tools/beta-browser-smoke.mjs --seven-tools=b:opponent:1001 && node tools/beta-browser-smoke.mjs --seven-tools=a:opponent:1000 && node tools/beta-browser-smoke.mjs --seven-tools=b:self:999",
+    "beta:browser-seven-tools-interactions": "npm run build && node tools/beta-browser-smoke.mjs --seven-tools-interactions=a && node tools/beta-browser-smoke.mjs --seven-tools-interactions=b"
   },
   "devDependencies": {
     "@types/node": "24.19.2",

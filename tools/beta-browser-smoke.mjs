@@ -16,6 +16,8 @@ const magicArg=process.argv.find(arg=>/^--magic-jammer=[ab]:(self|opponent):(dam
 const magicMode=magicArg?.split('=')[1].split(':')??null;
 const sevenArg = process.argv.find(arg => /^--seven-tools=[ab]:(self|opponent):(8000|1001|1000|999)$/.test(arg));
 const sevenMode = sevenArg?.split('=')[1].split(':') ?? null;
+const sevenInteractionsArg = process.argv.find(arg => /^--seven-tools-interactions=[ab]$/.test(arg));
+const sevenInteractions = sevenInteractionsArg?.split('=')[1] ?? null;
 const responseGuideArg = process.argv.find(arg => /^--response-guide=[ab]$/.test(arg));
 const responseGuide = responseGuideArg?.split('=')[1] ?? null;
 const magicInteractionsArg = process.argv.find(arg => /^--magic-jammer-interactions=[ab]$/.test(arg));
@@ -48,10 +50,11 @@ const reincarnationMode = reincarnationArg?.split('=')[1] ?? null;
 const deckDraftGuard = process.argv.includes('--deck-draft-guard');
 const deckSaveCheck = process.argv.includes('--deck-save-check');
 const deckOverview = deckSaveCheck || deckDraftGuard || process.argv.includes('--deck-overview');
-const expanded = sevenMode !== null || responseGuide !== null || magicInteractions !== null || magicMode !== null || ookaziInteractions !== null || ookazi !== null || choiceIdentities || graveyardFilters || handSorting || faithBattle !== null || magicianFaith || deckOverview || earthquake || blockAttack || reincarnationMode !== null || tributeDoomed || hammerShot || smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
+const expanded = sevenInteractions !== null || sevenMode !== null || responseGuide !== null || magicInteractions !== null || magicMode !== null || ookaziInteractions !== null || ookazi !== null || choiceIdentities || graveyardFilters || handSorting || faithBattle !== null || magicianFaith || deckOverview || earthquake || blockAttack || reincarnationMode !== null || tributeDoomed || hammerShot || smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
 const r = expanded ? loadRuntimeCatalog().registry : createRegistry((await read('data/generated/pilot.json')).cards, goat200508Format, {},
   await read('data/reviews/pilot.spell-effects.json'), await read('data/reviews/pilot.flip-effects.json'), await read('data/reviews/pilot.trap-effects.json'));
 const deck = Object.keys(r.cards);
+if (sevenInteractions !== null) for (const name of ['Seven Tools of the Bandit', 'Trap Hole']) deck.push(Object.values(r.cards).find(c => c.name === name).id);
 if (responseGuide !== null) for (const name of ['Magic Jammer', 'Trap Hole']) deck.push(Object.values(r.cards).find(c => c.name === name).id);
 if (handSorting || graveyardFilters) deck.push(Object.values(r.cards).find(c=>c.name==='Battle Ox').id);
 if (choiceIdentities) for(const name of ['Battle Ox','Celtic Guardian','Hane-Hane','Fissure'])deck.push(Object.values(r.cards).find(c=>c.name===name).id);
@@ -149,7 +152,7 @@ if (chainView) {
   move('Man-Eater Bug','b','monster',0,true);
   s.turn.number=3;s.turn.phase='main1';s.timing.window='open';s.timing.priorityPlayer='a';s.timing.consecutivePasses=0;
 }
-if (expanded && sevenMode === null && responseGuide === null && magicInteractions === null && magicMode === null && ookaziInteractions === null && !fullDuel && lifePointsMode === null && !smashingGround && !hammerShot && !tributeDoomed && !blockAttack && !earthquake && !magicianFaith && !faithBattle && !handSorting && !graveyardFilters && !choiceIdentities && !deckOverview && reincarnationMode === null) {
+if (expanded && sevenInteractions === null && sevenMode === null && responseGuide === null && magicInteractions === null && magicMode === null && ookaziInteractions === null && !fullDuel && lifePointsMode === null && !smashingGround && !hammerShot && !tributeDoomed && !blockAttack && !earthquake && !magicianFaith && !faithBattle && !handSorting && !graveyardFilters && !choiceIdentities && !deckOverview && reincarnationMode === null) {
   move('Gaia The Fierce Knight', 'a', 'hand');
   move('Battle Ox', 'a', 'monster', 0); move('Celtic Guardian', 'a', 'monster', 1, true);
   move('Curse of Dragon', 'a', 'hand');
@@ -192,6 +195,18 @@ if (smashingGround) {
   move('Mystical Elf', 'b', 'monster', 0); move('Giant Soldier of Stone', 'b', 'monster', 1);
   move('Battle Ox', 'b', 'monster', 2); move('Blue-Eyes White Dragon', 'b', 'monster', 3, true);
   s.turn.number = 3; s.turn.phase = 'main1'; s.timing.window = 'open'; s.timing.priorityPlayer = 'a'; s.timing.consecutivePasses = 0;
+}
+if (sevenInteractions !== null) {
+  const actor = sevenInteractions, other = actor === 'a' ? 'b' : 'a';
+  for (const p of s.players) for (const id of p.hand.splice(0)) { p.deck.push(id); s.cards[id].location = { kind: 'deck', playerId: p.id }; }
+  for (const name of ['Battle Ox', 'Dian Keto the Cure Master', 'Hinotama', 'Man-Eater Bug']) move(name, actor, 'hand');
+  move('Celtic Guardian', actor, 'monster', 1, true); move('Ookazi', other, 'hand');
+  move('Seven Tools of the Bandit', actor, 'spell-trap', 4, true); move('Seven Tools of the Bandit', actor, 'spell-trap', 2, true);
+  move('Magic Jammer', actor, 'spell-trap', 3, true);
+  move('Trap Hole', other, 'spell-trap', 0, true); move('Trap Hole', other, 'spell-trap', 1, true);
+  s.players.find(p => p.id === actor).lifePoints = 1001;
+  s.turn.number = actor === 'a' ? 3 : 4; s.turn.activePlayer = actor; s.turn.phase = 'main1';
+  s.timing.window = 'open'; s.timing.priorityPlayer = actor; s.timing.consecutivePasses = 0;
 }
 if (sevenMode !== null) {
   const [actor,side,lp]=sevenMode,other=actor==='a'?'b':'a',owner=side==='self'?other:actor;
@@ -1928,6 +1943,90 @@ try {
     assert.deepEqual(await evaluate('view.players.map(p=>p.lifePoints)'),[8000,8000]);
     assert.equal(errors.length,0);
     console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'smashing-ground',nonTargeting:true,tiedHighestDefenseChoice:true,ownAndHiddenExcluded:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
+  } else if (sevenInteractions !== null) {
+    const actor = sevenInteractions, other = actor === 'a' ? 'b' : 'a', saved = {};
+    const own = `view.players.find(p=>p.playerId===${JSON.stringify(actor)})`, foe = `view.players.find(p=>p.playerId===${JSON.stringify(other)})`;
+    for (const who of ['a','b']) { await seat(who); saved[who] = await evaluate(`api('/api/deck?seat='+view.viewerId).then(JSON.stringify)`); }
+    const settleUI = async () => { for (let n=0; await evaluate(`view.timing.window!=='open'&&!view.result`); n++) { assert.ok(n<12); assert.equal(await evaluate('view.decision'),null); await pass(await evaluate('view.timing.priorityPlayer')); } };
+    const selectHand = async (who,name) => { await seat(who); await click(`[...document.querySelectorAll('#hand .card')].find(e=>e.querySelector('.card-name')?.textContent===${JSON.stringify(name)})`); };
+    const selectSlot = async (who,row,slot) => { await seat(who); await click(`document.querySelector('#self .zone-row:nth-child(${row}) .slot:nth-child(${slot+1}) .card')`); };
+    const activateSpell = async (who,name) => { await selectHand(who,name); await click(textButton('#actions button','Kích hoạt')); await confirm(); };
+    const graveCount = async (who,name) => evaluate(`view.players.find(p=>p.playerId===${JSON.stringify(who)}).graveyard.filter(c=>catalog.get(c.definition.id).name===${JSON.stringify(name)}).length`);
+    const actorLP = async expected => assert.equal(await evaluate(`${own}.lifePoints`),expected);
+    const omitHandle = value => JSON.stringify(value,(key,v)=>key==='handle'?undefined:v);
+    await seat(actor); assert.equal(await evaluate('catalog.size'),112);
+    const initialDecks = await evaluate('view.players.map(p=>p.deckCount)');
+    const negateTrap = async second => {
+      if (second) { await selectSlot(actor,2,1); await actionClick(textButton('#actions button','Flip Summon')); }
+      else { await selectHand(actor,'Battle Ox'); await click(textButton('#actions button','Triệu hồi')); await confirm(); }
+      const before = await evaluate(`${own}.monsters`);
+      assert.equal(await evaluate('view.normalSummonQuota.remaining'),0);
+      await pass(actor); await selectSlot(other,3,second?1:0); await click(textButton('#actions button','Kích hoạt Bẫy'));
+      const name = second ? 'Celtic Guardian' : 'Battle Ox';
+      await evaluate(`(()=>{const t=document.querySelector('#action-fields select[name="target"]');t.value=[...t.options].find(o=>label(visibleCard(o.value))===${JSON.stringify(name)}).value;t.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+      await preview('target',name); await confirm(); await actorLP(1001);
+      await selectSlot(actor,3,second?2:4); await click(textButton('#actions button','Phản hồi Bẫy'));
+      assert.match(await evaluate(`document.getElementById('action-fields').textContent`),/1001 → 1 LP/);
+      assert.equal(await evaluate(`document.querySelectorAll('#action-fields select[name="discard"],#action-fields select[name="target"]').length`),0);
+      if (second) {
+        const version = await evaluate('view.stateVersion'); await click(`document.getElementById('cancel-action')`); await actorLP(1001);
+        assert.equal(await evaluate('view.stateVersion'),version); await click(textButton('#actions button','Phản hồi Bẫy'));
+      }
+      await confirm(); await actorLP(1); assert.equal(await evaluate('view.result'),null);
+      assert.deepEqual(await evaluate('view.chain.map(l=>l.spellSpeed)'),[2,3]);
+      assert.equal(await evaluate(`view.availableActions.some(a=>a.type==='activate-lp-counter-trap'||a.type==='activate-counter-trap')`),false);
+      await pass(other); assert.equal(await evaluate('view.chain.length'),2); await actorLP(1);
+      await pass(actor); await settleUI(); await seat(actor); await actorLP(1);
+      assert.equal(omitHandle(await evaluate(`${own}.monsters`)),omitHandle(before));
+      assert.equal(await evaluate('view.normalSummonQuota.remaining'),0); assert.equal(await evaluate('view.result'),null);
+      assert.equal(await graveCount(actor,'Seven Tools of the Bandit'),second?2:1); assert.equal(await graveCount(other,'Trap Hole'),second?2:1);
+    };
+    await negateTrap(false);
+    await activateSpell(actor,'Dian Keto the Cure Master'); await actorLP(1); assert.equal(await evaluate('view.chain.length'),1);
+    await pass(other); await actorLP(1); await pass(actor); await settleUI(); await actorLP(1001);
+    await negateTrap(true);
+    await activateSpell(actor,'Hinotama'); await actorLP(1); await pass(other); await selectSlot(actor,3,3);
+    await click(textButton('#actions button','Phản hồi Phép'));
+    assert.equal(await evaluate(`document.querySelector('[data-preview="response"] h2').textContent`),'Hinotama');
+    await evaluate(`(()=>{const d=document.querySelector('#action-fields select[name="discard"]');d.value=[...d.options].find(o=>label(visibleCard(o.value))==='Man-Eater Bug').value;d.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+    await preview('discard','Man-Eater Bug'); await confirm(); await actorLP(1);
+    assert.deepEqual(await evaluate('view.chain.map(l=>l.spellSpeed)'),[1,3]); assert.equal(await evaluate('view.decision'),null);
+    await pass(other); await pass(actor); await settleUI(); await actorLP(1);
+    assert.equal(await evaluate(`${foe}.lifePoints`),8000); assert.equal(await evaluate('view.decision'),null);
+    assert.equal(await evaluate('view.normalSummonQuota.remaining'),0);
+    assert.deepEqual(await evaluate('view.players.map(p=>p.deckCount)'),initialDecks);
+    const priorFacts = await evaluate('view.activity.flatMap(e=>e.resolution||[])');
+    assert.equal(priorFacts.some(f=>f.kind==='effect-damage'||f.kind==='effect-destroyed'),false);
+    const priorTurn = await evaluate('view.turn.number');
+    const advance = async text => { await seat(await evaluate('view.turn.activePlayer')); await actionClick(textButton('#turn-actions button',text)); await settleUI(); };
+    await advance('KẾT THÚC');
+    if (await evaluate('view.turn.number')===priorTurn) await advance('Sang lượt đối thủ');
+    await advance('CHUẨN BỊ'); await advance('MAIN 1');
+    assert.equal(await evaluate('view.turn.activePlayer'),other); await actorLP(1);
+    await activateSpell(other,'Ookazi'); assert.equal(await evaluate('view.result'),null); await actorLP(1);
+    await pass(actor); assert.equal(await evaluate('view.result'),null); await actorLP(1);
+    await pass(other); await actorLP(0); assert.deepEqual(await evaluate('view.result'),{winner:other,reason:'life-points'});
+    assert.equal(await evaluate('view.chain.length'),0);
+    const facts = await evaluate('view.activity.flatMap(e=>e.resolution||[])');
+    assert.deepEqual(facts.filter(f=>f.kind==='lp-cost'),[{kind:'lp-cost',playerId:actor,amount:1000},{kind:'lp-cost',playerId:actor,amount:1000}]);
+    assert.deepEqual(facts.filter(f=>f.kind==='life-points-gained'),[{kind:'life-points-gained',playerId:actor,amount:1000}]);
+    assert.deepEqual(facts.filter(f=>f.kind==='discard-cost'),[{kind:'discard-cost',playerId:actor,count:1}]);
+    for (const kind of ['trap-activation-negated','trap-destroyed']) assert.deepEqual(facts.filter(f=>f.kind===kind),[{kind,playerId:other,count:1},{kind,playerId:other,count:1}]);
+    for (const kind of ['spell-activation-negated','spell-destroyed']) assert.deepEqual(facts.filter(f=>f.kind===kind),[{kind,playerId:actor,count:1}]);
+    assert.deepEqual(facts.filter(f=>f.kind==='effect-damage'),[{kind:'effect-damage',playerId:actor,amount:800}]);
+    assert.equal(facts.some(f=>f.kind==='effect-destroyed'),false);
+    for (const name of ['Man-Eater Bug','Dian Keto the Cure Master','Hinotama','Magic Jammer']) assert.equal(await graveCount(actor,name),1);
+    assert.equal(await graveCount(other,'Ookazi'),1);
+    for (const who of ['a','b']) {
+      await seat(who); assert.deepEqual(await evaluate('view.activity.flatMap(e=>e.resolution||[])'),facts);
+      assert.equal(await evaluate(`api('/api/deck?seat='+view.viewerId).then(JSON.stringify)`),saved[who]);
+      assert.deepEqual(await evaluate('view.result'),{winner:other,reason:'life-points'});
+    }
+    assert.equal(errors.length,0);
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'seven-tools-interactions-'+actor,catalog:112,
+      lifePointTimeline:[1001,1,1001,1,0],sequentialChainLengths:[2,1,2,2,1],healingOnlyOnResolution:true,secondCostPaidOnce:true,
+      bothSummonsPreserved:true,normalQuotaRetained:true,cancelAfterHealingReadOnly:true,independentMagicJammer:true,discardDoesNotFlip:true,
+      paymentIsNotDamage:true,laterDamageEndsDuel:true,samePublicFactsAcrossSeats:true,savedDecksUnchanged:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
   } else if (sevenMode !== null) {
     const [actor,side,lpText]=sevenMode,lp=Number(lpText),other=actor==='a'?'b':'a',owner=side==='self'?other:actor,saved={};
     for(const who of ['a','b']){await seat(who);saved[who]=await evaluate(`api('/api/deck?seat='+view.viewerId).then(JSON.stringify)`);}
