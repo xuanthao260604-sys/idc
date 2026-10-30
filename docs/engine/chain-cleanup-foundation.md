@@ -1,5 +1,9 @@
 # Bộ cleanup cuối Chain phía server — 30/10/2026
 
+Cập nhật: [context và hộp chọn thứ tự](trap-cleanup-order.md) đã được nối
+vào Chain chỉ gồm nhiều Trap Hole. Nội dung dưới đây giữ kết quả mốc xây
+bộ nền ban đầu; chuỗi Phép → Magic Jammer → Seven Tools vẫn chưa mở.
+
 Đã triển khai bộ xử lý chuyển các nguồn Spell/Trap còn lại vào Mộ như
 một batch, dựa trên [kết luận nguồn về quyền chọn thứ tự](../rules/chain-cleanup-order-review.md).
 Đây là phần nền của [thiết kế Counter ba liên kết](../rules/counter-to-counter-review.md).

@@ -1,5 +1,10 @@
 # Trap Hole — phản hồi triệu hồi trong pilot
 
+Cập nhật 30/10/2026: [cleanup nhiều Trap Hole có lựa chọn thứ tự](trap-cleanup-order.md)
+đã thay thứ tự Mộ cố định sau LIFO bằng quyết định của owner. Hiệu ứng,
+điều kiện kích hoạt và review gốc bên dưới giữ nguyên; số test/nền tảng ở
+đây là kết quả của mốc pilot cũ.
+
 Hồ sơ `data/reviews/pilot.trap-effects.json` mở lá cuối cùng của pilot qua tham số thứ sáu:
 
 ```ts

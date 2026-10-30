@@ -1,9 +1,9 @@
 # Chốt thứ tự cleanup ở cuối Chain — 30/10/2026
 
 Cập nhật triển khai: đã có [bộ cleanup phía server](../engine/chain-cleanup-foundation.md)
-với kiểm thử độc lập và tích hợp một nguồn vào các luồng cũ. Hồ sơ nguồn
-dưới đây giữ kết quả của mốc review; chuỗi ba link và hộp chọn thứ tự trong
-game vẫn chưa mở.
+với kiểm thử độc lập và [tích hợp lựa chọn vào Chain nhiều Trap Hole](../engine/trap-cleanup-order.md).
+Hồ sơ nguồn dưới đây giữ kết quả của mốc review; chuỗi Phép → Magic Jammer
+→ Seven Tools vẫn chưa mở.
 
 Đã giải quyết điểm nguồn còn mở trong [thiết kế ba liên kết](counter-to-counter-review.md).
 **Các nguồn còn lại được gửi vào Mộ đồng thời ở cuối Chain, gom theo chủ
