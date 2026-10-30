@@ -1,5 +1,9 @@
 # Context Phép tạm dừng — bước đầu cho chuỗi ba liên kết
 
+Cập nhật: đã chuẩn bị [journal Counter độc lập](counter-continuation-journal.md)
+cho bước sau. Journal chưa được game gọi tới; context đang hoạt động và
+kết quả kiểm chứng bên dưới vẫn thuộc mốc Phép một liên kết.
+
 Mốc 30/10/2026: đã thêm frame server cho Phép một liên kết đang chờ
 lựa chọn khi xử lý Fissure, Smashing Ground hoặc Hammer Shot. Frame
 được tạo trong hành động Pass thứ hai và tồn tại qua lựa chọn riêng

@@ -6,8 +6,9 @@ nội dung dưới đây giữ trạng thái của mốc rà soát đầu, khôn
 bổ sung. Đã có [bộ cleanup phía server](../engine/chain-cleanup-foundation.md)
 và [lựa chọn thứ tự cho Chain nhiều Trap Hole](../engine/trap-cleanup-order.md).
 Đã nối [context Phép một liên kết tạm dừng](../engine/paused-spell-resolution.md)
-vào luồng cũ; frame có Counter đã xử lý và chuỗi ba liên kết ở hồ sơ này
-vẫn chưa được mở.
+vào luồng cũ và chuẩn bị [journal Counter độc lập](../engine/counter-continuation-journal.md).
+Biến thể parent frame có Counter đã xử lý và chuỗi ba liên kết ở hồ sơ
+này vẫn chưa được mở.
 
 Đã đối chiếu luật chính và đề xuất thiết kế cho phạm vi tiếp theo sau
 [rà soát Seven Tools](../engine/seven-tools-interaction-audit.md):
