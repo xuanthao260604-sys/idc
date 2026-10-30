@@ -55,7 +55,8 @@ export function prepareChainCleanup(registry: Registry, state: DuelState, source
   rule(!state.pendingDecision && !state.pendingTriggers.length, 'illegal-timing', 'Finish effect decisions before cleanup');
   rule(mode === 'live'
     ? !state.result && state.timing.window === 'resolving' && state.timing.priorityPlayer === null
-    : mode === 'terminal-single-source' && state.result !== null && sourceIds.length === 1,
+    : mode === 'terminal-single-source' && state.result !== null
+      && ['life-points', 'failed-draw'].includes(state.result.reason) && sourceIds.length === 1,
   'illegal-timing', 'Unsupported cleanup timing');
   rule(ids.safeParse(sourceIds).success && new Set(sourceIds).size === sourceIds.length,
     'invalid-target', 'Cleanup requires distinct remaining sources');
@@ -113,7 +114,8 @@ export function orderChainCleanup(registry: Registry, state: DuelState, frame: C
   const decision = chainCleanupDecision(registry, state, frame);
   rule(decision && decision.playerId === actorId && exactPermutation(order, decision.optionIds),
     'invalid-choice', 'Choose every source of your cleanup batch exactly once');
-  return freeze({ ...frame, batches: frame.batches.map(batch => batch.ownerId === actorId
+  const next = structuredClone(frame);
+  return freeze({ ...next, batches: next.batches.map(batch => batch.ownerId === actorId
     ? { ...batch, order: [...order] } : batch) });
 }
 

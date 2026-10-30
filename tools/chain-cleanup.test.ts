@@ -194,6 +194,20 @@ describe('server Chain cleanup primitive; multi-source runtime integration remai
     const live = fixture(); expect(() => prepareChainCleanup(registry, live.state, [live.spell], 'terminal-single-source')).toThrow();
   });
 
+  it.each(['concession', 'effect', 'simultaneous-loss'] as const)('does not invent cleanup bookkeeping for terminal reason %s', reason => {
+    const f = fixture(); f.state.result = { winner: reason === 'simultaneous-loss' ? null : 'b', reason };
+    f.state.timing.window = 'open';
+    expect(() => unchanged(f.state, null, () => prepareChainCleanup(registry, f.state, [f.spell], 'terminal-single-source'))).toThrow();
+  });
+
+  it('does not freeze a caller-owned deserialized frame while recording an order', () => {
+    const f = fixture(), frame = structuredClone(prepareChainCleanup(registry, f.state, [f.spell, f.seven]));
+    const ordered = choose(f.state, frame, 'a', [f.seven, f.spell]);
+    expect(Object.isFrozen(frame)).toBe(false); expect(Object.isFrozen(frame.sourceIds)).toBe(false);
+    expect(Object.isFrozen(frame.batches[0])).toBe(false); expect(Object.isFrozen(ordered)).toBe(true);
+    expect(Object.isFrozen(ordered.sourceIds)).toBe(true);
+  });
+
   it('accepts all 120 permutations of five remaining sources while preserving the entire old Graveyard prefix', () => {
     const f = fixture(), sources = [f.spell, f.seven, f.take('Fissure', 'a', 'a', 1),
       f.take('Ookazi', 'a', 'a', 2), f.take('Earthquake', 'a', 'a', 3)];
