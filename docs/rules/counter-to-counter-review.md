@@ -1,5 +1,10 @@
 # Review Counter phản hồi Counter — 30/10/2026
 
+Cập nhật: [review bổ sung về thứ tự cleanup](chain-cleanup-order-review.md)
+đã chốt quyết định bằng tổng hợp nguồn. Phần pending trong hồ sơ JSON và
+nội dung dưới đây giữ trạng thái của mốc rà soát đầu, không thay kết luận
+bổ sung. Chuỗi ba liên kết và lựa chọn cleanup vẫn chưa triển khai.
+
 Đã đối chiếu luật chính và đề xuất thiết kế cho phạm vi tiếp theo sau
 [rà soát Seven Tools](../engine/seven-tools-interaction-audit.md):
 **Normal Spell → Magic Jammer → Seven Tools**. Đây là review thiết kế;

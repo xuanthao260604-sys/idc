@@ -1,0 +1,328 @@
+{
+  "schemaVersion": 1,
+  "status": "design-reviewed-not-enabled",
+  "reviewedOn": "2026-10-30",
+  "format": {
+    "id": "goat-2005-08-17",
+    "revision": 4
+  },
+  "runtimeEnabled": false,
+  "implementationAndEffectTests": "not-started",
+  "resolves": {
+    "reviewPath": "data/evidence/effects/counter-to-counter-scope-review.json",
+    "openCheckId": "same-owner-chain-end-graveyard-order",
+    "disposition": "resolved-by-source-synthesis",
+    "historicalTCG2005Original": "not-authenticated"
+  },
+  "sources": [
+    {
+      "id": "konami-206",
+      "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=5&fid=206&request_locale=ja",
+      "accessedOn": "2026-10-30",
+      "sourceKind": "official-current",
+      "sha256": "ea4cdb39493bfbb62f0a91905f214a4a778c0d3e2adb5ef29664f190585f1488",
+      "bytes": 86268,
+      "rawPath": "data/raw/konami/ea4cdb39493bfbb62f0a91905f214a4a778c0d3e2adb5ef29664f190585f1488.html",
+      "notes": "Basic-rule Q&A displayed 2017-03-24. The question explicitly concerns simultaneous sending by one effect. Use that bounded statement for the ownership principle; do not claim it directly addresses Chain-end cleanup."
+    },
+    {
+      "id": "konami-11538",
+      "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=5&fid=11538&request_locale=ja",
+      "accessedOn": "2026-10-30",
+      "sourceKind": "official-current",
+      "sha256": "85f33be424da2515ef002286919a050c16ac8ab25ddc854b578eb274b2020bdb",
+      "bytes": 85049,
+      "rawPath": "data/raw/konami/85f33be424da2515ef002286919a050c16ac8ab25ddc854b578eb274b2020bdb.html",
+      "notes": "Current OCG basic-rule Q&A displayed 2017-03-24: preserve order after placement; not an authenticated original TCG 2005 ruling."
+    },
+    {
+      "id": "konami-6880",
+      "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=5&fid=6880&request_locale=ja",
+      "accessedOn": "2026-10-30",
+      "sourceKind": "official-current",
+      "sha256": "f91430de01f0eb9f833918786fc30063c977fcd4f1f47cc195dc1616a8fd9b2c",
+      "bytes": 89557,
+      "rawPath": "data/raw/konami/f91430de01f0eb9f833918786fc30063c977fcd4f1f47cc195dc1616a8fd9b2c.html",
+      "notes": "Current OCG example displayed 2017-09-28: used Counter Traps stay out of the GY until Chain completion, while a negated/destroyed Counter already leaves. Minerva, Divine Punishment, Forcefield and other example cards remain unsupported; their trigger behavior is not adopted."
+    },
+    {
+      "id": "c-labo",
+      "url": "https://www.c-labo.jp/blog/176900/",
+      "accessedOn": "2026-10-30",
+      "sourceKind": "community",
+      "sha256": "1bf862db248a13b92dded48a711401c971ffe84af5ec573993a50e7a4edfe63f",
+      "bytes": 77134,
+      "rawPath": "data/raw/c-labo/1bf862db248a13b92dded48a711401c971ffe84af5ec573993a50e7a4edfe63f.html",
+      "notes": "Retailer/community Chain explanation explicitly describes used Spell/Trap cards sent simultaneously by rules at Chain end. Not a Konami ruling or an authenticated period TCG source. Use with the archived Goat cleanup statement and official Counter example, not alone."
+    },
+    {
+      "id": "wiki-graveyard",
+      "url": "https://yugioh-wiki.net/index.php?%CA%E8%C3%CF",
+      "accessedOn": "2026-10-30",
+      "sourceKind": "community",
+      "sha256": "22ba33b040c0f7e8384d97ea6d8e46cf3fb6d5ab28c682a01640a95c31627545",
+      "bytes": 80386,
+      "rawPath": "data/raw/yugioh-wiki/22ba33b040c0f7e8384d97ea6d8e46cf3fb6d5ab28c682a01640a95c31627545.html",
+      "notes": "Current community wiki. Its FAQ annotates the general owner-order statement (10/01/07); that date is a community annotation, not independently authenticated historical publication. Only the general ownership statement is used; modern Xyz/equip/game-software examples are excluded."
+    },
+    {
+      "id": "goat-basics",
+      "url": "https://www.goatformat.com/basics.html",
+      "accessedOn": "2026-10-27",
+      "sourceKind": "community",
+      "sha256": "c4ce900ab808c269392a84a4a077970ec39ac30a4d937d63689ffc0cae3213d0",
+      "bytes": 136366,
+      "notes": "Previously frozen on 2026-10-27, reviewed locally on 2026-10-29. Preserve the source editorial caveat about recent rule changes; no claim of a new live fetch. Re-reviewed locally on 2026-10-30 for the three-link design; prior retrieval date retained. Re-read locally on 2026-10-30 for the cleanup-order addendum; original retrieval date preserved.",
+      "rawPath": "data/raw/goatformat/c4ce900ab808c269392a84a4a077970ec39ac30a4d937d63689ffc0cae3213d0.html"
+    },
+    {
+      "id": "goat-rulings7",
+      "url": "https://www.goatformat.com/rulings7.html",
+      "accessedOn": "2026-10-29",
+      "sourceKind": "community",
+      "sha256": "caf0bf7d4f89887a630d99caef888574d63253c5e2b67f3eb96131804e70ab62",
+      "bytes": 291636,
+      "notes": "Seven Tools subsection explicitly labelled Netrep Rulings; distinguishes Trap card activation from an already active Continuous Trap effect. Not an authenticated original UDE bulletin. Ultimate Offering stays unsupported. Re-reviewed locally on 2026-10-30 for the three-link design; prior retrieval date retained. Re-read locally on 2026-10-30 for the cleanup-order addendum; original retrieval date preserved.",
+      "rawPath": "data/raw/goatformat/caf0bf7d4f89887a630d99caef888574d63253c5e2b67f3eb96131804e70ab62.html"
+    }
+  ],
+  "quotations": [
+    {
+      "id": "owner-selects-order-in-effect",
+      "sourceId": "konami-206",
+      "locator": "Answer, paragraph 1",
+      "evidence": {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=5&fid=206&request_locale=ja",
+        "accessedOn": "2026-10-30",
+        "sourceKind": "official-current",
+        "quotation": "一つの効果処理にて、一度に複数のカードが同時に墓地へ送られる事になる場合、それらのカードを墓地へ置く順番は、その墓地へ送られるカードの持ち主が選ぶ事ができます。",
+        "historicalApplicability": "Official ownership/ordering principle for simultaneous cards sent by one effect. Chain-end cleanup is a rules action, so its application there is a synthesis with the general community rule and simultaneous-cleanup sources, not a direct quotation about cleanup."
+      }
+    },
+    {
+      "id": "single-effect-source-later",
+      "sourceId": "konami-206",
+      "locator": "Answer, paragraph 2, opening clause",
+      "evidence": {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=5&fid=206&request_locale=ja",
+        "accessedOn": "2026-10-30",
+        "sourceKind": "official-current",
+        "quotation": "なお、その効果処理を行ったカードは一番最後に墓地へ送られる事になりますので、",
+        "historicalApplicability": "Example distinguishes effect-destroyed monsters from the effect source sent after processing. Do not extrapolate that the root Spell must be last among all surviving Spell/Trap sources in a multi-link Chain."
+      }
+    },
+    {
+      "id": "no-graveyard-reordering",
+      "sourceId": "konami-11538",
+      "locator": "Answer, first sentence",
+      "evidence": {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=5&fid=11538&request_locale=ja",
+        "accessedOn": "2026-10-30",
+        "sourceKind": "official-current",
+        "quotation": "デュエル中に墓地へ送られたカードの順番を、プレイヤーが任意に入れ替える事はできません。",
+        "historicalApplicability": "Current baseline: ordering newly sent cards does not authorize rearranging cards already in the GY."
+      }
+    },
+    {
+      "id": "keep-sent-order",
+      "sourceId": "konami-11538",
+      "locator": "Answer, second sentence",
+      "evidence": {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=5&fid=11538&request_locale=ja",
+        "accessedOn": "2026-10-30",
+        "sourceKind": "official-current",
+        "quotation": "墓地に送られたカードは、墓地に送られた順番のままでデュエルを進行します。",
+        "historicalApplicability": "Preserve established GY order. Previously paid discard, destroyed Magic Jammer and root-effect victims are outside the later cleanup batch."
+      }
+    },
+    {
+      "id": "counter-cleanup-at-end",
+      "sourceId": "konami-6880",
+      "locator": "Answer, final paragraph",
+      "evidence": {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=5&fid=6880&request_locale=ja",
+        "accessedOn": "2026-10-30",
+        "sourceKind": "official-current",
+        "quotation": "最後にチェーン処理が終了し、発動した「フォースフィールド」と「神罰」は墓地へ送られる事になります。",
+        "historicalApplicability": "Official Counter example corroborates deferred cleanup. No Minerva/Counter-trigger support, fourth link or example-card import is enabled."
+      }
+    },
+    {
+      "id": "cleanup-is-simultaneous",
+      "sourceId": "c-labo",
+      "locator": "Chain explanation, paragraph after the three-link example",
+      "evidence": {
+        "url": "https://www.c-labo.jp/blog/176900/",
+        "accessedOn": "2026-10-30",
+        "sourceKind": "community",
+        "quotation": "また、その一連のチェーンが全て終了したタイミングで、ルールによって全て同時に墓地へ送られるので、「チェーン処理の最中は魔法＆罠ゾーンにこれらの使用済みカードは存在し続けている」ことになります。",
+        "historicalApplicability": "Community statement explicitly supplies simultaneity of normal Chain-end cleanup. Apply only to sources that remain to be cleaned up; a source already destroyed in the Chain is excluded."
+      }
+    },
+    {
+      "id": "general-owner-order",
+      "sourceId": "wiki-graveyard",
+      "locator": "FAQ, first answer, community annotation 10/01/07",
+      "evidence": {
+        "url": "https://yugioh-wiki.net/index.php?%CA%E8%C3%CF",
+        "accessedOn": "2026-10-30",
+        "sourceKind": "community",
+        "quotation": "複数枚のカードが同時に墓地へ送られる場合、カードの持ち主が墓地に置く順番を決定します。",
+        "historicalApplicability": "General community formulation for simultaneous sends, corroborated for a specific effect by official FAQ 206. Not represented as an authenticated TCG 2005 bulletin."
+      }
+    },
+    {
+      "id": "owner-not-effect-controller",
+      "sourceId": "wiki-graveyard",
+      "locator": "FAQ, first answer, second sentence",
+      "evidence": {
+        "url": "https://yugioh-wiki.net/index.php?%CA%E8%C3%CF",
+        "accessedOn": "2026-10-30",
+        "sourceKind": "community",
+        "quotation": "また、自分で発動したカードでも、相手が発動したカードでも、墓地に置く順番を決定するプレイヤーは、墓地へ送られるカードの持ち主になります。",
+        "historicalApplicability": "Order within one GY belongs to the card owner. Do not give a counter/effect controller permission to reorder another player’s batch."
+      }
+    },
+    {
+      "id": "baseline-policy",
+      "sourceId": "goat-basics",
+      "locator": "Basic Mechanics opening paragraph",
+      "evidence": {
+        "url": "https://www.goatformat.com/basics.html",
+        "accessedOn": "2026-10-27",
+        "sourceKind": "community",
+        "quotation": "if a general rule is not explicitly listed here is being different in Goat Format, you can assume that it works the exact same way as it does in the current format.",
+        "historicalApplicability": "Existing community policy adopted by the project; retain its editorial caveat about recent rule changes."
+      }
+    },
+    {
+      "id": "period-cleanup",
+      "sourceId": "goat-rulings7",
+      "locator": "STAMPING DESTRUCTION / Individual Card FAQs",
+      "evidence": {
+        "url": "https://www.goatformat.com/rulings7.html",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "community",
+        "quotation": "Spell and Trap Cards remain on the field until the entire chain resolves, unless destroyed by a card effect during the chain.",
+        "historicalApplicability": "Community transcription of a period FAQ, not an authenticated original UDE bulletin. Distinguishes normal Chain-end cleanup from Magic Jammer destroyed immediately by Seven Tools. Stamping Destruction remains unsupported."
+      }
+    }
+  ],
+  "decisions": [
+    {
+      "status": "verified",
+      "proposedValue": {
+        "cleanupBatch": "remaining-nonpersistent-Spell-Trap-sources-at-chain-end",
+        "groupBy": "owner",
+        "withinOwner": "owner-selected-permutation",
+        "existingGraveyard": "append-only-preserve-order",
+        "differentOwners": "independent-graveyards",
+        "alreadyDestroyedSources": "exclude-from-cleanup-batch"
+      },
+      "rationale": "Project-reviewed synthesis under the already selected Goat current-baseline policy: period curated cleanup timing, current official Counter cleanup example, community simultaneity/general ownership statements and official effect-specific owner-order corroboration. No single cited official answer directly names the proposed Spell/Magic Jammer/Seven Tools cleanup order; no original TCG 2005 confirmation is claimed.",
+      "evidence": [
+        {
+          "url": "https://www.goatformat.com/rulings7.html",
+          "accessedOn": "2026-10-29",
+          "sourceKind": "community",
+          "quotation": "Spell and Trap Cards remain on the field until the entire chain resolves, unless destroyed by a card effect during the chain.",
+          "historicalApplicability": "Community transcription of a period FAQ, not an authenticated original UDE bulletin. Distinguishes normal Chain-end cleanup from Magic Jammer destroyed immediately by Seven Tools. Stamping Destruction remains unsupported."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=5&fid=6880&request_locale=ja",
+          "accessedOn": "2026-10-30",
+          "sourceKind": "official-current",
+          "quotation": "最後にチェーン処理が終了し、発動した「フォースフィールド」と「神罰」は墓地へ送られる事になります。",
+          "historicalApplicability": "Official Counter example corroborates deferred cleanup. No Minerva/Counter-trigger support, fourth link or example-card import is enabled."
+        },
+        {
+          "url": "https://www.c-labo.jp/blog/176900/",
+          "accessedOn": "2026-10-30",
+          "sourceKind": "community",
+          "quotation": "また、その一連のチェーンが全て終了したタイミングで、ルールによって全て同時に墓地へ送られるので、「チェーン処理の最中は魔法＆罠ゾーンにこれらの使用済みカードは存在し続けている」ことになります。",
+          "historicalApplicability": "Community statement explicitly supplies simultaneity of normal Chain-end cleanup. Apply only to sources that remain to be cleaned up; a source already destroyed in the Chain is excluded."
+        },
+        {
+          "url": "https://yugioh-wiki.net/index.php?%CA%E8%C3%CF",
+          "accessedOn": "2026-10-30",
+          "sourceKind": "community",
+          "quotation": "複数枚のカードが同時に墓地へ送られる場合、カードの持ち主が墓地に置く順番を決定します。",
+          "historicalApplicability": "General community formulation for simultaneous sends, corroborated for a specific effect by official FAQ 206. Not represented as an authenticated TCG 2005 bulletin."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=5&fid=206&request_locale=ja",
+          "accessedOn": "2026-10-30",
+          "sourceKind": "official-current",
+          "quotation": "一つの効果処理にて、一度に複数のカードが同時に墓地へ送られる事になる場合、それらのカードを墓地へ置く順番は、その墓地へ送られるカードの持ち主が選ぶ事ができます。",
+          "historicalApplicability": "Official ownership/ordering principle for simultaneous cards sent by one effect. Chain-end cleanup is a rules action, so its application there is a synthesis with the general community rule and simultaneous-cleanup sources, not a direct quotation about cleanup."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=5&fid=11538&request_locale=ja",
+          "accessedOn": "2026-10-30",
+          "sourceKind": "official-current",
+          "quotation": "デュエル中に墓地へ送られたカードの順番を、プレイヤーが任意に入れ替える事はできません。",
+          "historicalApplicability": "Current baseline: ordering newly sent cards does not authorize rearranging cards already in the GY."
+        },
+        {
+          "url": "https://www.goatformat.com/basics.html",
+          "accessedOn": "2026-10-27",
+          "sourceKind": "community",
+          "quotation": "if a general rule is not explicitly listed here is being different in Goat Format, you can assume that it works the exact same way as it does in the current format.",
+          "historicalApplicability": "Existing community policy adopted by the project; retain its editorial caveat about recent rule changes."
+        }
+      ]
+    },
+    {
+      "status": "verified",
+      "proposedValue": {
+        "magicJammerDestroyedAtLink3": "move-immediately-before-root",
+        "cleanupDoesNotDestroySources": true,
+        "noRefundOrReactivation": true,
+        "noLiveChoiceAfterDuelEnds": true,
+        "terminalBookkeeping": "explicit-implementation-policy-not-universal-rule"
+      },
+      "rationale": "The new ordering decision does not move previously sent cards or turn normal cleanup into effect destruction. The cited source-last statement concerns a one-effect example, not a universal root-last policy. Terminal handling must be implemented/tested separately without inventing gameplay after the Duel ends.",
+      "evidence": [
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=5&fid=11538&request_locale=ja",
+          "accessedOn": "2026-10-30",
+          "sourceKind": "official-current",
+          "quotation": "墓地に送られたカードは、墓地に送られた順番のままでデュエルを進行します。",
+          "historicalApplicability": "Preserve established GY order. Previously paid discard, destroyed Magic Jammer and root-effect victims are outside the later cleanup batch."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=5&fid=206&request_locale=ja",
+          "accessedOn": "2026-10-30",
+          "sourceKind": "official-current",
+          "quotation": "なお、その効果処理を行ったカードは一番最後に墓地へ送られる事になりますので、",
+          "historicalApplicability": "Example distinguishes effect-destroyed monsters from the effect source sent after processing. Do not extrapolate that the root Spell must be last among all surviving Spell/Trap sources in a multi-link Chain."
+        },
+        {
+          "url": "https://www.goatformat.com/rulings7.html",
+          "accessedOn": "2026-10-29",
+          "sourceKind": "community",
+          "quotation": "Spell and Trap Cards remain on the field until the entire chain resolves, unless destroyed by a card effect during the chain.",
+          "historicalApplicability": "Community transcription of a period FAQ, not an authenticated original UDE bulletin. Distinguishes normal Chain-end cleanup from Magic Jammer destroyed immediately by Seven Tools. Stamping Destruction remains unsupported."
+        }
+      ]
+    }
+  ],
+  "implementationContract": {
+    "scope": "the bounded three-link Normal Spell -> Magic Jammer -> Seven Tools design only; do not silently change other handlers",
+    "sameOwnerTwoSources": "require a genuine order choice with both permutations; source/instance identity, not card name",
+    "splitOwners": "one source per owner needs no order-choice UI; preserve each independent GY order",
+    "earlierSends": "paid discard, Magic Jammer destroyed by Seven Tools and root-effect victims remain in chronological positions below the later batch",
+    "choiceTiming": "after all link effects/mandatory root effect-choice complete; before cleanup/post-chain response. No new Chain responses while ordering",
+    "protocol": "server-owned cleanup context; strict ordered-permutation validation and opaque current-viewer/state-version handles. Existing answer-decision optionIds can carry order but current UI/decision kinds must be extended before use",
+    "privateView": "owner gets only their batch/order controls; do not serialize raw frame, raw IDs or unrelated hidden cards",
+    "idempotency": "receipt retry must neither append sources again nor recreate/reorder a completed batch",
+    "terminal": "no pending ordering decision after LP defeat/failed draw/concession; explicitly reconcile with the project terminal-state policy in implementation, do not claim that internal cleanup bookkeeping is an additional game action"
+  },
+  "notImplemented": [
+    "Three-link Counter activation/resolution",
+    "Ordered cleanup decision/context/UI",
+    "Any new card/effect/source override",
+    "General mixed Chains, triggers, replacements, fourth Counter link",
+    "Global graveyard reorder, opponent-batch control, custom cards or beta packaging"
+  ]
+}
