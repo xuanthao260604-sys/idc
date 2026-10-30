@@ -2195,7 +2195,12 @@ try {
       await options(0); assert.equal(await evaluate(`document.getElementById('response-options').textContent`),'');
       assert.equal(await evaluate(`document.getElementById('guide').textContent.includes('Magic Jammer')||document.getElementById('guide').textContent.includes('Trap Hole')`),false);
     };
-    const settleUI = async () => { for(let n=0;await evaluate(`view.timing.window!=='open'`);n++){assert.ok(n<12);await pass(await evaluate('view.timing.priorityPlayer'));} };
+    const settleUI = async () => { for(let n=0;await evaluate(`view.timing.window!=='open'`);n++){
+      assert.ok(n<12); const priority=await evaluate('view.timing.priorityPlayer');
+      if(priority) await pass(priority);
+      else { await seat(other); assert.equal(await evaluate('view.decision.kind'),'cleanup-order');
+        await actionClick(`document.querySelector('#decision-form button[type="submit"]')`); }
+    } };
     const selectHand = async name => { await seat(actor); await click(`[...document.querySelectorAll('#hand .card')].find(e=>e.querySelector('.card-name')?.textContent===${JSON.stringify(name)})`); };
     const cancelGuide = async (index, title, keyboard = false) => {
       const before = await evaluate('JSON.stringify(view)'), calls = await evaluate('window.guideCommandCount');
