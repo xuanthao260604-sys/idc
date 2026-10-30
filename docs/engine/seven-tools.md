@@ -1,5 +1,8 @@
 # Seven Tools — trả LP và phủ nhận Trap Hole — 29/10/2026
 
+Cập nhật 30/10: đã có [rà soát tương tác LP và các Chain kế tiếp](seven-tools-interaction-audit.md).
+Nội dung/kết quả dưới đây giữ mốc triển khai ban đầu; scope không đổi.
+
 Đã triển khai theo [review thiết kế](../rules/seven-tools-review.md).
 Runtime tăng 111 → 112 loại: 95 quái thường và 17 lá hiệu ứng (11 Phép,
 3 FLIP, Trap Hole, Magic Jammer, Seven Tools). Dữ liệu nhập vẫn 112 loại

@@ -14,8 +14,8 @@ Hinotama, Dian Keto the Cure Master, Smashing Ground, Hammer Shot, Tribute to Th
 Đã kiểm chứng [hai Phép thay đổi LP](docs/engine/life-point-spells.md) trên Linux và Windows CI; còn ca Windows 11 desktop chưa chạy.
 Không coi việc cấu hình CI Windows hoặc chạy Linux là đã kiểm chứng Windows.
 
-1138/1138 test trong 43 file đạt trên Linux và Windows CI, gồm 74 ca hiệu ứng Seven Tools và 10 ca nhập dữ liệu riêng.
-68/68 bước validation và 58 browser report đạt, gồm sáu ca [Seven Tools](docs/engine/seven-tools.md), bốn ca [Counter Trap Magic Jammer](docs/engine/magic-jammer.md), hai ca [tương tác sau phủ nhận](docs/engine/magic-jammer-interaction-audit.md) và hai ca [hướng dẫn phản hồi](docs/beta/response-guide.md); Windows dùng Edge, tổng runtimeExceptions=0.
+1154/1154 test trong 44 file đạt trên Linux và Windows CI, gồm 74 ca hiệu ứng Seven Tools gốc, 16 ca tương tác và 10 ca nhập dữ liệu riêng.
+70/70 bước validation và 60 browser report đạt, gồm hai ca [tương tác Seven Tools](docs/engine/seven-tools-interaction-audit.md), sáu ca [Seven Tools](docs/engine/seven-tools.md), bốn ca [Counter Trap Magic Jammer](docs/engine/magic-jammer.md), hai ca [tương tác sau phủ nhận](docs/engine/magic-jammer-interaction-audit.md) và hai ca [hướng dẫn phản hồi](docs/beta/response-guide.md); Windows dùng Edge, tổng runtimeExceptions=0.
 Dữ liệu đã nhập 112 loại; catalog runtime 112 loại với 17 hiệu ứng trong 13 scope. Trạng thái nhập tách riêng review/runtime; historical text pending không tự được nâng thành verified.
 Browser regression tính riêng: xây/lưu deck, 5 hiệu ứng, xem Mộ, tạo trận A/B/ngẫu nhiên, bỏ bài,
 Pot với deck 0/1/2 lá, đầu hàng/hủy và tạo trận sau kết thúc, trận tự nhiên đầy đủ.
@@ -25,6 +25,8 @@ Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không 
 Đã ghép [ba khung mặt trước](docs/beta/card-fronts.md), hàng sao và chỉ số lấy từ dữ liệu; ảnh minh họa từng lá sẽ bổ sung sau.
 
 Đã mở [Seven Tools of the Bandit](docs/engine/seven-tools.md) bằng review riêng: trả 1000 LP khi kích hoạt, cần LP > 1000, phản hồi Trap Hole trong Chain hai liên kết; phủ nhận activation Bẫy, giữ nguyên quái/Summon/quota. [Dữ liệu nhập](docs/data/seven-tools.md) và [review thiết kế nguồn](docs/rules/seven-tools-review.md) giữ trạng thái lịch sử. Chưa mở Counter-to-counter hoặc Chain hỗn hợp tổng quát.
+
+Đã bổ sung [rà soát tương tác Seven Tools](docs/engine/seven-tools-interaction-audit.md): hồi LP rồi trả chi phí cho Chain mới, phủ nhận Phép hồi, Magic Jammer dùng độc lập ở 1 LP, Faith lấy lại Phép và sát thương thật ở lượt sau; giữ nguyên engine/review/phạm vi hiện có.
 
 Đã mở [Counter Trap Magic Jammer](docs/engine/magic-jammer.md): bỏ một lá làm cost, phủ nhận activation của Phép đang phản hồi, giữ cost gốc và bỏ qua hiệu ứng Phép; chỉ pattern hai liên kết đã duyệt. [Review thiết kế](docs/rules/magic-jammer-review.md) giữ nguồn và ranh giới.
 
@@ -168,7 +170,7 @@ hoặc mọi tương tác bài. Bài tự tạo giữ ở [kế hoạch mở r�
 
 `npm run validate:platform` chạy bộ kiểm chứng tổng hợp, ghi report JSON và log từng bước
 vào artifacts/platform-validation/ (Git bỏ qua). Lỗi dừng ngay, phần còn lại ghi chưa chạy.
-Windows CI đã chạy cùng lệnh, đạt 68/68 bước và giữ artifact; report Linux vẫn chỉ xác nhận Linux.
+Windows CI đã chạy cùng lệnh, đạt 70/70 bước và giữ artifact; report Linux vẫn chỉ xác nhận Linux.
 
 ## Kiểm thử giao diện
 
