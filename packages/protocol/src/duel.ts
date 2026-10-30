@@ -83,6 +83,20 @@ export interface Modifier {
   dependency: 'source-face-up' | 'independent-after-resolution' | 'reviewed-special';
   expiresAt: { turn: number; phase: Phase; boundary: 'during' | 'end' } | null;
 }
+/** Server-only cleanup context. Never include this frame or its raw IDs in PlayerView. */
+export interface ChainCleanupFrame {
+  readonly version: 1;
+  readonly mode: 'live' | 'terminal-single-source';
+  readonly duelId: string;
+  readonly registryRevision: string;
+  readonly boardFingerprint: string;
+  readonly sourceIds: readonly string[];
+  readonly batches: readonly {
+    readonly ownerId: string;
+    readonly sourceIds: readonly string[];
+    readonly order: readonly string[] | null;
+  }[];
+}
 export interface DuelState {
   id: string;
   format: DefinitionRef;
@@ -93,6 +107,7 @@ export interface DuelState {
   players: readonly [PlayerState, PlayerState];
   cards: Readonly<Record<InstanceId, CardInstance>>;
   chain: readonly ChainLink[];
+  chainCleanup: ChainCleanupFrame | null; // Resolved Trap links stay in chain until their batch commits.
   pendingTriggers: readonly PendingTrigger[];
   modifiers: readonly Modifier[];
   timing: {
@@ -112,7 +127,7 @@ export interface DuelState {
     replayPending: boolean;
   } | null;
   pendingDecision: {
-    id: string; playerId: PlayerId; kind: 'cost' | 'target' | 'trigger-order' | 'effect-choice' | 'discard';
+    id: string; playerId: PlayerId; kind: 'cost' | 'target' | 'trigger-order' | 'effect-choice' | 'discard' | 'cleanup-order';
     optionIds: readonly string[]; min: number; max: number;
   } | null;
   rng: { algorithm: string; privateState: string }; // Never include in a player view.

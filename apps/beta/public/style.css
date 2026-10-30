@@ -58,6 +58,7 @@
 
 .decision-option{display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line)}
 .decision-option label{flex:1;min-width:0;overflow-wrap:anywhere}.decision-option button{flex-shrink:0;padding:7px}
+#cleanup-order-list{list-style:none;padding:0}.cleanup-order-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px;border-bottom:1px solid var(--line);padding:9px 0}.cleanup-order-row>span{flex:1 1 100%;overflow-wrap:anywhere}.cleanup-order-row:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 #decision-card-dialog{max-height:90vh;overflow:auto}#decision-card-detail{overflow-wrap:anywhere}
 #decision-card-detail p{white-space:pre-wrap}
 

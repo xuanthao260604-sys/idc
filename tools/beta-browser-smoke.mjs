@@ -12,6 +12,8 @@ import { createRegistry } from '../dist/packages/engine/src/registry.js';
 import { createDuel, assertDuelInvariants } from '../dist/packages/engine/src/duel.js';
 import { goat200508Format } from '../dist/packages/card-data/src/formats/goat-2005-08-17.js';
 const read = async p => JSON.parse(await readFile(join(projectRoot, p), 'utf8'));
+const cleanupOrderArg = process.argv.find(arg => /^--cleanup-order=[ab]$/.test(arg));
+const cleanupOrder = cleanupOrderArg?.split('=')[1] ?? null;
 const magicArg=process.argv.find(arg=>/^--magic-jammer=[ab]:(self|opponent):(damage|cost|pot|choice)$/.test(arg));
 const magicMode=magicArg?.split('=')[1].split(':')??null;
 const sevenArg = process.argv.find(arg => /^--seven-tools=[ab]:(self|opponent):(8000|1001|1000|999)$/.test(arg));
@@ -50,10 +52,11 @@ const reincarnationMode = reincarnationArg?.split('=')[1] ?? null;
 const deckDraftGuard = process.argv.includes('--deck-draft-guard');
 const deckSaveCheck = process.argv.includes('--deck-save-check');
 const deckOverview = deckSaveCheck || deckDraftGuard || process.argv.includes('--deck-overview');
-const expanded = sevenInteractions !== null || sevenMode !== null || responseGuide !== null || magicInteractions !== null || magicMode !== null || ookaziInteractions !== null || ookazi !== null || choiceIdentities || graveyardFilters || handSorting || faithBattle !== null || magicianFaith || deckOverview || earthquake || blockAttack || reincarnationMode !== null || tributeDoomed || hammerShot || smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
+const expanded = cleanupOrder !== null || sevenInteractions !== null || sevenMode !== null || responseGuide !== null || magicInteractions !== null || magicMode !== null || ookaziInteractions !== null || ookazi !== null || choiceIdentities || graveyardFilters || handSorting || faithBattle !== null || magicianFaith || deckOverview || earthquake || blockAttack || reincarnationMode !== null || tributeDoomed || hammerShot || smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
 const r = expanded ? loadRuntimeCatalog().registry : createRegistry((await read('data/generated/pilot.json')).cards, goat200508Format, {},
   await read('data/reviews/pilot.spell-effects.json'), await read('data/reviews/pilot.flip-effects.json'), await read('data/reviews/pilot.trap-effects.json'));
 const deck = Object.keys(r.cards);
+if (cleanupOrder !== null) deck.push(Object.values(r.cards).find(c => c.name === 'Trap Hole').id);
 if (sevenInteractions !== null) for (const name of ['Seven Tools of the Bandit', 'Trap Hole']) deck.push(Object.values(r.cards).find(c => c.name === name).id);
 if (responseGuide !== null) for (const name of ['Magic Jammer', 'Trap Hole']) deck.push(Object.values(r.cards).find(c => c.name === name).id);
 if (handSorting || graveyardFilters) deck.push(Object.values(r.cards).find(c=>c.name==='Battle Ox').id);
@@ -79,6 +82,15 @@ function move(name, owner, zone, slot = 0, down = false) {
   (zone === 'monster' ? p.monsters : p.spellsTraps)[slot] = c.id;
   c.location = { kind: zone, playerId: owner, slot }; c.position = down ? zone === 'monster' ? 'face-down-defense' : 'face-down' : 'face-up-attack';
   if (down) c.markers.setOnTurn = 2;
+}
+if (cleanupOrder !== null) {
+  const actor = cleanupOrder, owner = actor === 'a' ? 'b' : 'a';
+  move('Battle Ox', actor, 'hand'); move('Man-Eater Bug', actor, 'monster', 3, true);
+  move('Seven Tools of the Bandit', actor, 'spell-trap', 4, true);
+  move('Trap Hole', owner, 'spell-trap', 0, true); move('Trap Hole', owner, 'spell-trap', 2, true);
+  move('Skull Servant', owner, 'graveyard'); move('Mystical Elf', owner, 'graveyard');
+  s.turn.number = 3; s.turn.activePlayer = actor; s.turn.phase = 'main1';
+  s.timing.window = 'open'; s.timing.priorityPlayer = actor; s.timing.consecutivePasses = 0;
 }
 if (!fullDuel && !newGame && !discard && !concede && !seatGuard && !monsterActivity && !deckBuilder && !chainView && !decisionCards && !fieldKeyboard && !expanded && deckOut === null) {
 move('Pot of Greed', 'a', 'hand'); move('Fissure', 'a', 'hand'); move('Battle Ox', 'a', 'hand');
@@ -152,7 +164,7 @@ if (chainView) {
   move('Man-Eater Bug','b','monster',0,true);
   s.turn.number=3;s.turn.phase='main1';s.timing.window='open';s.timing.priorityPlayer='a';s.timing.consecutivePasses=0;
 }
-if (expanded && sevenInteractions === null && sevenMode === null && responseGuide === null && magicInteractions === null && magicMode === null && ookaziInteractions === null && !fullDuel && lifePointsMode === null && !smashingGround && !hammerShot && !tributeDoomed && !blockAttack && !earthquake && !magicianFaith && !faithBattle && !handSorting && !graveyardFilters && !choiceIdentities && !deckOverview && reincarnationMode === null) {
+if (expanded && cleanupOrder === null && sevenInteractions === null && sevenMode === null && responseGuide === null && magicInteractions === null && magicMode === null && ookaziInteractions === null && !fullDuel && lifePointsMode === null && !smashingGround && !hammerShot && !tributeDoomed && !blockAttack && !earthquake && !magicianFaith && !faithBattle && !handSorting && !graveyardFilters && !choiceIdentities && !deckOverview && reincarnationMode === null) {
   move('Gaia The Fierce Knight', 'a', 'hand');
   move('Battle Ox', 'a', 'monster', 0); move('Celtic Guardian', 'a', 'monster', 1, true);
   move('Curse of Dragon', 'a', 'hand');
@@ -644,7 +656,83 @@ try {
   await send('Runtime.enable'); await send('Page.enable'); await send('Page.navigate', { url: `http://127.0.0.1:${server.address().port}` });
   await wait(`document.getElementById('seat-dialog')?.open`); await seat('a');
   await verifyResultSummary();
-  if (monsterActivity) {
+  if (cleanupOrder !== null) {
+    const actor = cleanupOrder, owner = actor === 'a' ? 'b' : 'a', saved = {};
+    const own = `view.players.find(p=>p.playerId===${JSON.stringify(owner)})`;
+    const summoner = `view.players.find(p=>p.playerId===${JSON.stringify(actor)})`;
+    for (const who of ['a', 'b']) { await seat(who); saved[who] = await evaluate(`api('/api/deck?seat='+view.viewerId).then(JSON.stringify)`); }
+    await seat(actor);
+    assert.ok(await evaluate(`view.selfHand.some(c=>c.visibility==='known'&&catalog.get(c.definition.id).name==='Battle Ox')`), JSON.stringify(await evaluate(`({turn:view.turn,hand:view.selfHand.map(c=>catalog.get(c.definition?.id)?.name),cards:[...document.querySelectorAll('#hand .card')].map(c=>({name:c.querySelector('.card-name')?.textContent,disabled:c.disabled}))})`)));
+    await click(`[...document.querySelectorAll('#hand .card')].find(e=>e.querySelector('.card-name')?.textContent==='Battle Ox')`);
+    await click(textButton('#actions button', 'Triệu hồi')); await confirm(); await pass(actor);
+    const trap = async slot => {
+      await seat(owner); await click(`document.querySelector('#self .zone-row:nth-child(3) .slot:nth-child(${slot + 1}) .card')`);
+      await click(textButton('#actions button', 'Kích hoạt Bẫy')); await confirm();
+    };
+    await trap(0); await pass(actor); await trap(2); await pass(actor); await pass(owner);
+    assert.equal(await evaluate('view.decision.kind'), 'cleanup-order');
+    assert.equal(await evaluate(`${summoner}.monsters[0]`), null);
+    assert.equal(await evaluate(`${own}.graveyard.length`), 2);
+    for (const slot of [0,2]) assert.equal(await evaluate(`${own}.spellsTraps[${slot}].position`), 'face-up');
+    const before = await evaluate('JSON.stringify(view)'), initial = await evaluate('[...decisionDraft.optionIds]');
+    assert.equal(await evaluate(`document.querySelectorAll('#decision-form input').length`), 0);
+    assert.equal(await evaluate(`document.getElementById('pass').disabled`), true);
+    assert.match(await evaluate(`document.getElementById('guide-title').textContent`), /thứ tự vào Mộ/);
+    await click(`document.querySelector('#cleanup-order-list li:first-child [data-order-move="1"]')`);
+    assert.deepEqual(await evaluate('[...decisionDraft.optionIds]'), [...initial].reverse());
+    assert.equal(await evaluate('JSON.stringify(view)'), before);
+    await send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'ArrowUp', code: 'ArrowUp', modifiers: 1, windowsVirtualKeyCode: 38 });
+    await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'ArrowUp', code: 'ArrowUp', modifiers: 1, windowsVirtualKeyCode: 38 });
+    assert.deepEqual(await evaluate('[...decisionDraft.optionIds]'), initial);
+    assert.equal(await evaluate('JSON.stringify(view)'), before);
+    await click(`document.querySelector('#cleanup-order-list [data-inspect]')`);
+    await wait(`document.getElementById('decision-card-dialog').open`);
+    assert.equal(await evaluate(`document.querySelector('#decision-card-detail h2').textContent`), 'Trap Hole');
+    await click(`document.getElementById('close-decision-card')`);
+    assert.equal(await evaluate('JSON.stringify(view)'), before);
+    for (const [width,height] of [[1440,1000],[390,844]]) {
+      await send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile: false });
+      assert.equal(await evaluate(`(()=>{const e=document.getElementById('decision-form'),r=e.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1&&e.scrollWidth<=e.clientWidth+1})()`), true);
+    }
+    await send('Emulation.clearDeviceMetricsOverride'); await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
+    await click(`document.querySelector('#cleanup-order-list li:first-child [data-order-move="1"]')`);
+    const draft = await evaluate('[...decisionDraft.optionIds]');
+    await evaluate(`(()=>{const original=window.fetch;window.fetch=async(...args)=>{if(args[0]==='/api/command'){window.fetch=original;throw new Error('Lỗi mạng trước khi gửi');}return original(...args);};})()`);
+    await click(`document.querySelector('#decision-form button[type="submit"]')`); await wait('!busy');
+    assert.equal(await evaluate('JSON.stringify(view)'), before); assert.deepEqual(await evaluate('[...decisionDraft.optionIds]'), draft);
+    await seat(actor); assert.equal(await evaluate('view.decision'), null); assert.equal(await evaluate('decisionDraft'), null);
+    assert.equal(await evaluate(`document.querySelectorAll('#cleanup-order-list').length`), 0);
+    assert.equal(await evaluate(`view.availableActions.some(a=>a.type!=='concede')`), false);
+    const publicView = await evaluate('JSON.stringify(view)');
+    for (const key of ['chainCleanup','boardFingerprint','sourceAtActivation']) assert.equal(publicView.includes(key), false);
+    await seat(owner); assert.equal(await evaluate(`${summoner}.monsters[3].visibility`), 'hidden');
+    // Switching seats discards the private draft; returning starts with the offered order.
+    assert.deepEqual(await evaluate('[...decisionDraft.optionIds]'), await evaluate('[...view.decision.optionIds]'));
+    if (actor === 'a') await click(`document.querySelector('#cleanup-order-list li:first-child [data-order-move="1"]')`);
+    const selected = await evaluate('[...decisionDraft.optionIds]');
+    const expectedSlots = await evaluate(`decisionDraft.optionIds.map(h=>${own}.spellsTraps.findIndex(c=>c?.handle===h))`);
+    // Capture and retry the exact accepted command to prove receipt deduplication.
+    await evaluate(`(()=>{const original=window.fetch;window.fetch=async(...args)=>{if(args[0]==='/api/command'){window.fetch=original;window.cleanupRequest=JSON.parse(args[1].body);const response=await original(...args);window.cleanupReceipt=await response.clone().json();return response;}return original(...args);};})()`);
+    await actionClick(`document.querySelector('#decision-form button[type="submit"]')`);
+    assert.deepEqual(await evaluate('cleanupRequest.action.optionIds'), selected);
+    assert.equal(await evaluate('view.decision'), null); assert.equal(await evaluate('view.chain.length'), 0);
+    assert.equal(await evaluate(`${own}.graveyard.length`), 4);
+    assert.deepEqual(await evaluate(`${own}.graveyard.slice(0,2).map(c=>catalog.get(c.definition.id).name)`), ['Skull Servant','Mystical Elf']);
+    assert.deepEqual(expectedSlots, actor === 'a' ? [0,2] : [2,0]);
+    assert.deepEqual(await evaluate(`${own}.graveyard.slice(-2).map(c=>c.definition.id)`), [r.cards[Object.keys(r.trapHandlers)[0]].id,r.cards[Object.keys(r.trapHandlers)[0]].id]);
+    const finished = await evaluate('JSON.stringify(view)');
+    assert.deepEqual(await evaluate(`api('/api/command',cleanupRequest).then(d=>d.outcome)`), await evaluate('cleanupReceipt.outcome'));
+    assert.equal(await evaluate('JSON.stringify(view)'), finished);
+    assert.deepEqual(await evaluate('view.activity.flatMap(a=>a.resolution||[])'), [{kind:'effect-destroyed',count:1}]);
+    const facts = await evaluate('JSON.stringify(view.activity)');
+    await seat(actor); assert.equal(await evaluate('JSON.stringify(view.activity)'), facts);
+    for (const who of ['a','b']) { await seat(who); assert.equal(await evaluate(`api('/api/deck?seat='+view.viewerId).then(JSON.stringify)`), saved[who]); }
+    assert.equal(errors.length, 0);
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'cleanup-order-'+actor,catalog:112,
+      realTrapChain:true,effectsBeforeCleanup:true,ownerOnly:true,prefixPreserved:true,mouseAndKeyboardOrder:true,explicitConfirm:true,
+      networkFailurePreservesOrder:true,seatClearsDraft:true,singleCleanup:true,receiptRetryReadOnly:true,noPrivateFrameInView:true,
+      responsive:true,savedDecksUnchanged:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
+  } else if (monsterActivity) {
     const settleUI=async()=>{for(let n=0;n<12;n++){const v=await evaluate('view');if(v.timing.window==='open')return;assert.ok(v.timing.priorityPlayer);await pass(v.timing.priorityPlayer);}throw new Error('Unresolved activity test window');};
     const saved={};for(const who of ['a','b']){await seat(who);saved[who]=await evaluate(`api('/api/deck').then(data=>JSON.stringify(data))`);}await seat('a');
     const select=(side,slot)=>click(`document.querySelector('#${side} .zone-row:nth-child(${side==='self'?2:3}) .slot:nth-child(${slot+1}) button')`);
@@ -1747,6 +1835,9 @@ try {
     }
     await send('Emulation.clearDeviceMetricsOverride');await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
     await pass('a');assert.equal(await evaluate('view.chain.length'),2);await pass('b');
+    assert.equal(await evaluate('view.decision.kind'),'cleanup-order');
+    assert.equal(await evaluate('view.chain.length'),2);
+    await actionClick(`document.querySelector('#decision-form button[type="submit"]')`);
     assert.equal(await evaluate('view.chain.length'),0);assert.equal(await evaluate(`document.getElementById('chain-panel').hidden`),true);
     assert.equal(await evaluate(`document.getElementById('chain-links').textContent`),'');
     assert.equal(await evaluate(`view.players[0].graveyard.filter(c=>catalog.get(c.definition.id).name==='Battle Ox').length`),1);

@@ -68,9 +68,12 @@ describe('Reviewed summon-response Normal Trap', () => {
     let linked = run(pass(state), 'b', { type: 'activate-trap', instanceId: first, targetId: target }).state;
     linked = run(pass(linked), 'b', { type: 'activate-trap', instanceId: second, targetId: target }).state;
     linked = pass(linked);
-    const done = run(linked, 'b', { type: 'pass' });
-    expect(done.events.filter(e => e.kind === 'chain-link-resolving').map(e => e.affectedInstances[0])).toEqual([second, first]);
-    expect(done.events.filter(e => e.kind === 'effect-destroyed')).toHaveLength(1);
+    const waiting = run(linked, 'b', { type: 'pass' });
+    expect(waiting.events.filter(e => e.kind === 'chain-link-resolving').map(e => e.affectedInstances[0])).toEqual([second, first]);
+    expect(waiting.events.filter(e => e.kind === 'effect-destroyed')).toHaveLength(1);
+    expect(waiting.state.players[1].graveyard).toEqual([]);
+    expect(waiting.state.pendingDecision).toMatchObject({ kind: 'cleanup-order', optionIds: [second, first], min: 2, max: 2 });
+    const done = run(waiting.state, 'b', { type: 'answer-decision', decisionId: waiting.state.pendingDecision!.id, optionIds: [second, first] });
     expect(done.state.players[1].graveyard).toEqual([second, first]);
   });
   it('rejects activation in the Set turn', () => {

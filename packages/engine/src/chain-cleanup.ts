@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { z } from 'zod';
-import type { DuelState } from '../../protocol/src/duel.js';
+import type { DuelState, ChainCleanupFrame } from '../../protocol/src/duel.js';
+export type { ChainCleanupFrame } from '../../protocol/src/duel.js';
 import { requireRule as rule } from './actions.js';
 import { freeze } from './registry.js';
 import type { Registry } from './registry.js';
@@ -17,20 +18,6 @@ const FrameSchema = z.strictObject({
   sourceIds: ids,
   batches: z.array(z.strictObject({ ownerId: z.string().min(1), sourceIds: ids, order: ids.nullable() })).min(1).max(2),
 });
-export interface ChainCleanupFrame {
-  readonly version: 1;
-  readonly mode: 'live' | 'terminal-single-source';
-  readonly duelId: string;
-  readonly registryRevision: string;
-  readonly boardFingerprint: string;
-  readonly sourceIds: readonly string[];
-  readonly batches: readonly {
-    readonly ownerId: string;
-    readonly sourceIds: readonly string[];
-    readonly order: readonly string[] | null;
-  }[];
-}
-
 // Server context only. This digest detects a changed board; it is NOT an authentication
 // token and neither this frame nor raw source IDs are a client command/projection.
 function fingerprint(state: DuelState) {

@@ -5,7 +5,7 @@ import type { EngineRequest, RejectionCode } from './actions.js';
 import { createRandom } from './random.js';
 import { freeze, validateDeck } from './registry.js';
 import { planResolution } from './effect-plans.js';
-import { prepareChainCleanup, commitChainCleanup } from './chain-cleanup.js';
+import { prepareChainCleanup, chainCleanupDecision, orderChainCleanup, commitChainCleanup } from './chain-cleanup.js';
 import type { SupportedMonster, Registry } from './registry.js';
 
 type Mutable<T> = { -readonly [K in keyof T]: Mutable<T[K]> };
@@ -42,6 +42,7 @@ function response(c: Context, window: 'action-response' | 'summon-response') {
 function endDuel(c: Context, winner: string | null, reason: NonNullable<DuelState['result']>['reason']) {
   c.state.result = { winner, reason };
   c.state.pendingDecision = null;
+  c.state.chainCleanup = null;
   open(c); c.state.timing.priorityPlayer = null;
   emit(c, 'duel-ended', [], { winner: winner ?? 'draw', reason });
 }
@@ -125,7 +126,34 @@ export function assertDuelInvariants(state: DuelState, registry: Registry) {
   if (!state.players.some(p => p.id === state.turn.activePlayer)) throw new Error('Invalid active player');
   if (!Number.isSafeInteger(state.stateVersion) || state.stateVersion < 0 || !Number.isSafeInteger(state.eventSequence)) throw new Error('Invalid version/sequence');
   if (state.chain.length > 5 || state.pendingTriggers.length > 1 || state.modifiers.length) throw new Error('Unsupported effect state');
-  if (state.timing.window === 'resolving' && (state.chain.length !== 1 || state.pendingDecision?.kind !== 'effect-choice')) throw new Error('Invalid paused resolution');
+  if (state.chainCleanup === undefined) throw new Error('Missing cleanup context field');
+  if (state.chainCleanup !== null) {
+    const frame = state.chainCleanup, first = state.chain[0], targetId = first?.targetRefs[0]?.instanceId;
+    const target = targetId && state.cards[targetId], targetDef = target && registry.cards[target.definition.id];
+    if (frame.mode !== 'live' || state.result || state.timing.window !== 'resolving' || state.timing.priorityPlayer !== null
+      || state.chain.length < 2 || state.chain.length > 5 || state.pendingTriggers.length
+      || state.pendingDecision?.kind !== 'cleanup-order'
+      || JSON.stringify(frame.sourceIds) !== JSON.stringify([...state.chain].reverse().map(link => link.source))
+      || !target || target.location.kind !== 'graveyard' || !targetDef
+      || !['normal-monster', 'effect-monster'].includes(targetDef.kind)
+      || !('attack' in targetDef) || targetDef.attack < 1000
+      || !state.chain.every(link => {
+        const card = state.cards[link.source], ref = link.targetRefs[0];
+        return card && registry.trapHandlers[card.definition.id] === 'destroy-opponent-normal-or-flip-summoned-1000'
+          && link.controllerId !== state.turn.activePlayer && link.targetRefs.length === 1
+          && ref?.instanceId === targetId && ref.locationAtSelection.kind === 'monster'
+          && ref.locationAtSelection.playerId === state.turn.activePlayer
+          && JSON.stringify(ref.locationAtSelection) === JSON.stringify(first!.targetRefs[0]!.locationAtSelection)
+          && JSON.stringify(link.sourceAtActivation) === JSON.stringify(card)
+          && card.markers.setOnTurn !== null && card.markers.setOnTurn < state.turn.number;
+      })) throw new Error('Invalid paused Trap cleanup');
+    const pending = chainCleanupDecision(registry, { ...state, pendingDecision: null }, frame);
+    const decision = state.pendingDecision;
+    if (!pending || decision.id !== `${first!.id}:cleanup:${pending.playerId}` || decision.playerId !== pending.playerId
+      || decision.min !== pending.min || decision.max !== pending.max
+      || JSON.stringify(decision.optionIds) !== JSON.stringify(pending.optionIds)) throw new Error('Invalid cleanup decision');
+  } else if (state.pendingDecision?.kind === 'cleanup-order'
+    || (state.timing.window === 'resolving' && (state.chain.length !== 1 || state.pendingDecision?.kind !== 'effect-choice'))) throw new Error('Invalid paused resolution');
   if (state.pendingTriggers.length && (state.chain.length || state.pendingDecision?.kind !== 'target' || state.timing.window !== 'trigger-order')) throw new Error('Invalid pending FLIP');
   if (state.timing.window === 'chain-response' && state.chain.length < 1) throw new Error('Missing Chain link');
   const seen = new Set<string>();
@@ -250,7 +278,7 @@ export function createDuel(registry: Registry, input: z.input<typeof StartSchema
   const players: [Mutable<PlayerState>, Mutable<PlayerState>] = [makePlayer(options.players[0], 0), makePlayer(options.players[1], 1)];
   const state: State = { id: options.duelId, format: { ...registry.format }, cardRegistryRevision: registry.revision,
     stateVersion: 0, eventSequence: 0, turn: { number: 1, activePlayer: active, phase: 'draw' }, players, cards,
-    chain: [], pendingTriggers: [], modifiers: [], timing: { window: 'open', priorityPlayer: active, consecutivePasses: 0, lastRelevantEvents: [], requestedPhase: null },
+    chain: [], chainCleanup: null, pendingTriggers: [], modifiers: [], timing: { window: 'open', priorityPlayer: active, consecutivePasses: 0, lastRelevantEvents: [], requestedPhase: null },
     battle: null, pendingDecision: null, rng: rng.state(), result: null };
   const c: Context = { state, registry, events: [] };
   emit(c, 'duel-started');
@@ -536,8 +564,9 @@ function resolveCounterChain(c: Context) {
 }
 function resolveTraps(c: Context) {
   const cleanup: string[] = [];
-  while (c.state.chain.length) {
-    const link = c.state.chain.pop()!, ref = link.targetRefs[0]!, target = c.state.cards[ref.instanceId];
+  c.state.timing.window = 'resolving'; c.state.timing.priorityPlayer = null;
+  for (const link of [...c.state.chain].reverse()) {
+    const ref = link.targetRefs[0]!, target = c.state.cards[ref.instanceId];
     emit(c, 'chain-link-resolving', [link.source], {}, false);
     if (target?.location.kind === 'monster' && target.position !== 'face-down-defense'
       && JSON.stringify(target.location) === JSON.stringify(ref.locationAtSelection) && monsterDefinition(c, target.id).attack >= 1000) {
@@ -545,8 +574,21 @@ function resolveTraps(c: Context) {
     }
     cleanup.push(link.source);
   }
-  for (const id of cleanup) sendToGraveyard(c, id);
-  emit(c, 'sent-to-graveyard', cleanup, { reason: 'trap-cleanup' });
+  c.state.chainCleanup = prepareChainCleanup(c.registry, c.state, cleanup) as State['chainCleanup'];
+  continueTrapCleanup(c);
+}
+
+function continueTrapCleanup(c: Context) {
+  const frame = c.state.chainCleanup!;
+  const decision = chainCleanupDecision(c.registry, c.state, frame);
+  if (decision) {
+    c.state.pendingDecision = { id: `${c.state.chain[0]!.id}:cleanup:${decision.playerId}`, kind: 'cleanup-order',
+      playerId: decision.playerId, optionIds: [...decision.optionIds], min: decision.min, max: decision.max }; return;
+  }
+  Object.assign(c.state, commitChainCleanup(c.registry, c.state, frame));
+  const sourceIds = [...frame.sourceIds];
+  c.state.chain = []; c.state.chainCleanup = null;
+  emit(c, 'sent-to-graveyard', sourceIds, { reason: 'trap-cleanup' });
   emit(c, 'chain-resolved', [], {}, false); response(c, 'action-response');
 }
 
@@ -684,6 +726,13 @@ function pass(c: Context, actorId: string) {
 }
 function answer(c: Context, actorId: string, decisionId: string, ids: string[]) {
   const decision = c.state.pendingDecision;
+  if (decision?.kind === 'cleanup-order') {
+    rule(decision.id === decisionId && decision.playerId === actorId && c.state.chainCleanup,
+      'invalid-choice', 'Not your cleanup ordering decision');
+    const next = orderChainCleanup(c.registry, { ...c.state, pendingDecision: null }, c.state.chainCleanup, actorId, ids);
+    c.state.pendingDecision = null; c.state.chainCleanup = next as State['chainCleanup'];
+    continueTrapCleanup(c); return;
+  }
   if (decision?.kind === 'target') {
     rule(decision.id === decisionId && decision.playerId === actorId && ids.length === 1 && decision.optionIds.includes(ids[0]!), 'invalid-choice', 'Not your FLIP target choice');
     c.state.pendingDecision = null; activateFlip(c, ids[0]!); return;

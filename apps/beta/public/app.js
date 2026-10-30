@@ -66,7 +66,7 @@ function cardButton(card, zone, player, slot, onSelect) {
   }), `card ${d?.kind === 'spell' ? 'spell' : d?.kind === 'trap' ? 'trap' : ''} ${!d ? 'back' : ''} ${selected?.card.handle === card.handle ? 'selected' : ''}`);
   b.setAttribute('aria-label', `${label(card)}${zone === 'hand' ? ' trên tay' : zone === 'graveyard' ? ` trong Mộ, vị trí ${slot + 1} từ trên xuống` : ` · ${names[player]} · ${zone === 'monster' ? 'Quái' : 'Phép / Bẫy'} ô ${slot + 1}`}`);
   if (zone === 'hand') { b.title = optionLabel(card.handle); b.setAttribute('aria-label', b.title); }
-  if (['hand', 'monster', 'spell-trap'].includes(zone) && view.decision?.optionIds.includes(card.handle)) {
+  if (['hand', 'monster', 'spell-trap'].includes(zone) && view.decision?.kind !== 'cleanup-order' && view.decision?.optionIds.includes(card.handle)) {
     b.dataset.decisionHandle = card.handle; b.dataset.decisionLabel = b.getAttribute('aria-label');
     b.classList.add('decision-choice');
     const hint = node('span', 'Chọn cho quyết định', 'decision-card-hint'); hint.setAttribute('aria-hidden', 'true'); b.append(hint);
@@ -217,7 +217,7 @@ async function command(action) {
       : action.type === 'activate-lp-counter-trap' && data.outcome.reason === 'unpayable-cost' ? 'Cần trên 1000 LP để trả chi phí.'
       : (reasonNames[data.outcome.reason] || 'Thao tác không hợp lệ.');
   } catch (e) { message = action.type === 'answer-decision'
-    ? 'Chưa xác nhận lựa chọn. Các ô đã chọn được giữ lại. Hãy cập nhật bàn đấu nếu không rõ kết quả trước khi thử lại. ' + e.message
+    ? 'Chưa xác nhận lựa chọn. ' + (view.decision?.kind === 'cleanup-order' ? 'Thứ tự đã xếp được giữ lại.' : 'Các ô đã chọn được giữ lại.') + ' Hãy cập nhật bàn đấu nếu không rõ kết quả trước khi thử lại. ' + e.message
     : e.message; }
   finally { busy = false; render(); }
 }
@@ -486,8 +486,10 @@ function renderGuide() {
     title = view.result.winner ? `${names[view.result.winner]} thắng` : 'Trận đấu hòa';
     text = `${resultReasons[view.result.reason] || 'Trận đấu đã kết thúc.'} Chọn Trận mới nếu muốn chơi tiếp.`;
   } else if (view.decision) {
-    title = view.decision.kind === 'discard' ? 'Bạn cần bỏ bài cuối lượt' : 'Bạn cần chọn bài';
-    text = `Chọn ${view.decision.min === view.decision.max ? view.decision.min : view.decision.min + '–' + view.decision.max} lá trong mục Lựa chọn bắt buộc, rồi xác nhận. Chưa thể chuyển phase hoặc pass lúc này.`;
+    title = view.decision.kind === 'cleanup-order' ? 'Bạn cần chọn thứ tự vào Mộ' : view.decision.kind === 'discard' ? 'Bạn cần bỏ bài cuối lượt' : 'Bạn cần chọn bài';
+    text = view.decision.kind === 'cleanup-order'
+      ? 'Các hiệu ứng đã xử lý xong. Sắp thứ tự những lá của mình trong mục Lựa chọn bắt buộc, rồi xác nhận. Các lá vẫn trên sân cho đến khi hoàn tất lựa chọn.'
+      : `Chọn ${view.decision.min === view.decision.max ? view.decision.min : view.decision.min + '–' + view.decision.max} lá trong mục Lựa chọn bắt buộc, rồi xác nhận. Chưa thể chuyển phase hoặc pass lúc này.`;
   } else if (priority && priority !== view.viewerId) {
     title = `Chờ ${names[priority]} phản hồi`;
     text = 'Chuyển máy để người có quyền thao tác xem góc nhìn của mình. Pass là nhường quyền phản hồi, không phải tự kết thúc lượt.'; transfer = priority;
@@ -572,8 +574,10 @@ function render() {
   // A draft belongs to this exact projection, never a different seat/duel/decision or rotated handles.
   const decisionKey = view.decision ? JSON.stringify([view.duelId, view.viewerId, view.stateVersion, view.decision]) : null;
   if (!decisionKey) decisionDraft = null;
-  else if (decisionDraft?.key !== decisionKey) decisionDraft = { key: decisionKey, optionIds: [] };
+  else if (decisionDraft?.key !== decisionKey) decisionDraft = { key: decisionKey,
+    optionIds: view.decision.kind === 'cleanup-order' ? [...view.decision.optionIds] : [] };
   if (view.decision) {
+    if (view.decision.kind === 'cleanup-order') { renderCleanupOrder(form, view.decision); return; }
     const d = view.decision; form.append(node('p', `Chọn ${d.min === d.max ? d.min : d.min + '–' + d.max} lá${d.kind === 'discard' ? ' để bỏ xuống Mộ' : ' để xử lý hiệu ứng'}.`));
     if (document.querySelector('main button[data-decision-handle]')) form.append(node('p', 'Có thể nhấn lá được đánh dấu trên tay/sân để chọn. Chỉ gửi lựa chọn khi xác nhận.'));
     d.optionIds.forEach(h => {
@@ -603,6 +607,48 @@ function render() {
     form.onchange = updateSelection; updateSelection();
     form.onsubmit = e => { e.preventDefault(); if (busy) return; const optionIds = [...form.querySelectorAll('input:checked')].map(i => i.value); if (optionIds.length < d.min || optionIds.length > d.max) { message = 'Hãy chọn đúng số lá.'; $('status').textContent = message; return; } command({ type: 'answer-decision', decisionId: d.id, optionIds }); };
   }
+}
+function renderCleanupOrder(form, decision) {
+  form.replaceChildren(node('p', 'Chọn thứ tự thêm các lá của mình vào Mộ. Lá cuối danh sách sẽ nằm trên cùng; các lá đã có trong Mộ giữ nguyên vị trí.'));
+  form.append(node('p', 'Dùng nút Lên / Xuống, hoặc Alt + ↑ / ↓ khi ở một dòng. Chỉ gửi thứ tự khi nhấn Xác nhận.'));
+  const list = node('ol'); list.id = 'cleanup-order-list';
+  const move = (handle, delta) => {
+    if (busy) return;
+    const order = decisionDraft.optionIds, from = order.indexOf(handle), to = from + delta;
+    if (from < 0 || to < 0 || to >= order.length) return;
+    [order[from], order[to]] = [order[to], order[from]];
+    renderCleanupOrder(form, decision);
+    [...form.querySelectorAll('[data-order-handle]')].find(row => row.dataset.orderHandle === handle)?.focus({ preventScroll: true });
+  };
+  decisionDraft.optionIds.forEach((handle, index, order) => {
+    const row = node('li', undefined, 'cleanup-order-row'); row.dataset.orderHandle = handle; row.tabIndex = 0;
+    row.append(node('span', `${index + 1}. ${optionLabel(handle)}${index === order.length - 1 ? ' · Trên cùng sau khi gửi' : ''}`));
+    for (const [delta, text] of [[-1, 'Lên'], [1, 'Xuống']]) {
+      const b = button(text, () => move(handle, delta)); b.dataset.orderMove = String(delta);
+      b.disabled = busy || index + delta < 0 || index + delta >= order.length;
+      b.setAttribute('aria-label', `${text}: ${optionLabel(handle)}`); row.append(b);
+    }
+    const read = button('Xem bài', () => {
+      if (busy) return; const card = visibleCard(handle); if (!card) return;
+      cardInfo($('decision-card-detail'), card); $('decision-card-location').textContent = optionLabel(handle);
+      $('decision-card-dialog').showModal();
+    }); read.dataset.inspect = handle; read.disabled = busy; row.append(read);
+    row.onkeydown = event => {
+      if (!event.altKey || event.ctrlKey || event.metaKey || !['ArrowUp', 'ArrowDown'].includes(event.key)) return;
+      event.preventDefault(); move(handle, event.key === 'ArrowUp' ? -1 : 1);
+    };
+    list.append(row);
+  });
+  form.append(list);
+  const submit = node('button', 'Xác nhận thứ tự vào Mộ', 'primary'); submit.type = 'submit'; submit.disabled = busy; form.append(submit);
+  const progress = node('p', `Đã xếp đủ ${decisionDraft.optionIds.length} lá. Chưa gửi vào Mộ.`);
+  progress.id = 'decision-progress'; progress.setAttribute('aria-live', 'polite'); form.append(progress);
+  form.onsubmit = event => {
+    event.preventDefault(); if (busy) return;
+    const order = [...decisionDraft.optionIds];
+    if (order.length !== decision.optionIds.length || new Set(order).size !== order.length || !order.every(h => decision.optionIds.includes(h))) return;
+    command({ type: 'answer-decision', decisionId: decision.id, optionIds: order });
+  };
 }
 function syncDecisionCards() {
   const chosen = new Set(decisionDraft?.optionIds || []);
