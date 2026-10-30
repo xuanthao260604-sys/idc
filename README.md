@@ -14,7 +14,7 @@ Hinotama, Dian Keto the Cure Master, Smashing Ground, Hammer Shot, Tribute to Th
 Đã kiểm chứng [hai Phép thay đổi LP](docs/engine/life-point-spells.md) trên Linux và Windows CI; còn ca Windows 11 desktop chưa chạy.
 Không coi việc cấu hình CI Windows hoặc chạy Linux là đã kiểm chứng Windows.
 
-1258/1258 test trong 46 file đạt trên Linux và Windows CI, gồm 51 ca [chọn thứ tự cleanup Trap Hole](docs/engine/trap-cleanup-order.md), 53 ca [bộ cleanup cuối Chain](docs/engine/chain-cleanup-foundation.md), 74 ca hiệu ứng Seven Tools gốc, 16 ca tương tác và 10 ca nhập dữ liệu riêng. Chuỗi ba liên kết vẫn chưa được mở trong game.
+1325/1325 test trong 47 file đạt trên Linux và Windows CI, gồm 67 ca [context Phép tạm dừng](docs/engine/paused-spell-resolution.md), 51 ca [chọn thứ tự cleanup Trap Hole](docs/engine/trap-cleanup-order.md), 53 ca [bộ cleanup cuối Chain](docs/engine/chain-cleanup-foundation.md), 74 ca hiệu ứng Seven Tools gốc, 16 ca tương tác và 10 ca nhập dữ liệu riêng. Chuỗi ba liên kết vẫn chưa được mở trong game.
 72/72 bước validation và 62 browser report đạt, gồm hai ca cleanup A/B, hai ca [tương tác Seven Tools](docs/engine/seven-tools-interaction-audit.md), sáu ca [Seven Tools](docs/engine/seven-tools.md), bốn ca [Counter Trap Magic Jammer](docs/engine/magic-jammer.md), hai ca [tương tác sau phủ nhận](docs/engine/magic-jammer-interaction-audit.md) và hai ca [hướng dẫn phản hồi](docs/beta/response-guide.md); Windows dùng Edge, tổng runtimeExceptions=0.
 Dữ liệu đã nhập 112 loại; catalog runtime 112 loại với 17 hiệu ứng trong 13 scope. Trạng thái nhập tách riêng review/runtime; historical text pending không tự được nâng thành verified.
 Browser regression tính riêng: xây/lưu deck, 5 hiệu ứng, xem Mộ, tạo trận A/B/ngẫu nhiên, bỏ bài,
@@ -30,7 +30,9 @@ Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không 
 
 Đã có [review thiết kế Counter phản hồi Counter](docs/rules/counter-to-counter-review.md) cho Phép → Magic Jammer → Seven Tools và [kết luận về thứ tự cleanup](docs/rules/chain-cleanup-order-review.md): chủ sở hữu chọn thứ tự batch gửi đồng thời, giữ nguyên Mộ cũ. Quyết định dựa trên tổng hợp nguồn có ghi giới hạn tin cậy; chuỗi ba liên kết vẫn chưa được mở.
 
-Đã triển khai [bộ cleanup cuối Chain phía server](docs/engine/chain-cleanup-foundation.md) và [context/hộp chọn thứ tự cho Chain nhiều Trap Hole](docs/engine/trap-cleanup-order.md): hiệu ứng xử lý LIFO, nguồn giữ trên sân đến khi owner xác nhận thứ tự, Mộ cũ giữ nguyên. Có chuột/bàn phím, quyết định riêng theo ghế và chống retry. Luồng Phép và hai Counter cũ vẫn dùng cleanup một nguồn. Context qua lựa chọn Phép gốc và resolver ba liên kết còn là phần tiếp theo; chưa có lưu trận qua restart.
+Đã triển khai [bộ cleanup cuối Chain phía server](docs/engine/chain-cleanup-foundation.md) và [context/hộp chọn thứ tự cho Chain nhiều Trap Hole](docs/engine/trap-cleanup-order.md): hiệu ứng xử lý LIFO, nguồn giữ trên sân đến khi owner xác nhận thứ tự, Mộ cũ giữ nguyên. Có chuột/bàn phím, quyết định riêng theo ghế và chống retry. Luồng Phép và hai Counter cũ vẫn dùng cleanup một nguồn; resolver ba liên kết còn là phần tiếp theo, chưa có lưu trận qua restart.
+
+Đã thêm [context Phép một liên kết tạm dừng](docs/engine/paused-spell-resolution.md) cho Fissure, Smashing Ground và Hammer Shot: pin nguồn/lựa chọn/board, tiếp tục đúng một lần, xóa context khi xử lý xong hoặc đầu hàng. Đây là bước đầu của phần chuỗi; frame giữ Counter đã xử lý cùng Phép gốc và resolver ba liên kết vẫn chưa mở.
 
 Đã mở [Counter Trap Magic Jammer](docs/engine/magic-jammer.md): bỏ một lá làm cost, phủ nhận activation của Phép đang phản hồi, giữ cost gốc và bỏ qua hiệu ứng Phép; chỉ pattern hai liên kết đã duyệt. [Review thiết kế](docs/rules/magic-jammer-review.md) giữ nguồn và ranh giới.
 

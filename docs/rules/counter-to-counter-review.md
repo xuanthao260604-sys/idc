@@ -5,7 +5,9 @@ Cập nhật: [review bổ sung về thứ tự cleanup](chain-cleanup-order-rev
 nội dung dưới đây giữ trạng thái của mốc rà soát đầu, không thay kết luận
 bổ sung. Đã có [bộ cleanup phía server](../engine/chain-cleanup-foundation.md)
 và [lựa chọn thứ tự cho Chain nhiều Trap Hole](../engine/trap-cleanup-order.md).
-Chuỗi ba liên kết ở hồ sơ này vẫn chưa được mở.
+Đã nối [context Phép một liên kết tạm dừng](../engine/paused-spell-resolution.md)
+vào luồng cũ; frame có Counter đã xử lý và chuỗi ba liên kết ở hồ sơ này
+vẫn chưa được mở.
 
 Đã đối chiếu luật chính và đề xuất thiết kế cho phạm vi tiếp theo sau
 [rà soát Seven Tools](../engine/seven-tools-interaction-audit.md):
