@@ -97,6 +97,19 @@ export interface ChainCleanupFrame {
     readonly order: readonly string[] | null;
   }[];
 }
+/** A paused supported Normal Spell. A future Counter frame needs its own reviewed variant. */
+export interface SpellResolutionFrame {
+  readonly version: 1;
+  readonly kind: 'normal-spell-single-link-v1';
+  readonly stage: 'effect-choice';
+  readonly duelId: string;
+  readonly registryRevision: string;
+  readonly rootLinkId: string;
+  readonly rootSourceId: InstanceId;
+  readonly cleanupSourceIds: readonly [InstanceId];
+  readonly boardFingerprint: string;
+  readonly choice: { readonly playerId: PlayerId; readonly optionIds: readonly InstanceId[] };
+}
 export interface DuelState {
   id: string;
   format: DefinitionRef;
@@ -108,6 +121,7 @@ export interface DuelState {
   cards: Readonly<Record<InstanceId, CardInstance>>;
   chain: readonly ChainLink[];
   chainCleanup: ChainCleanupFrame | null; // Resolved Trap links stay in chain until their batch commits.
+  spellResolution: SpellResolutionFrame | null; // Server-only; never spread into a player view.
   pendingTriggers: readonly PendingTrigger[];
   modifiers: readonly Modifier[];
   timing: {

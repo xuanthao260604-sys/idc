@@ -6,6 +6,7 @@ import { createRandom } from './random.js';
 import { freeze, validateDeck } from './registry.js';
 import { planResolution } from './effect-plans.js';
 import { prepareChainCleanup, chainCleanupDecision, orderChainCleanup, commitChainCleanup } from './chain-cleanup.js';
+import { spellResolutionBoard, prepareSpellResolution, assertSpellResolution } from './spell-resolution.js';
 import type { SupportedMonster, Registry } from './registry.js';
 
 type Mutable<T> = { -readonly [K in keyof T]: Mutable<T[K]> };
@@ -43,6 +44,7 @@ function endDuel(c: Context, winner: string | null, reason: NonNullable<DuelStat
   c.state.result = { winner, reason };
   c.state.pendingDecision = null;
   c.state.chainCleanup = null;
+  c.state.spellResolution = null;
   open(c); c.state.timing.priorityPlayer = null;
   emit(c, 'duel-ended', [], { winner: winner ?? 'draw', reason });
 }
@@ -78,9 +80,7 @@ function sendToGraveyard(c: Context, id: string) {
   card.controllerId = owner.id; card.position = 'face-up';
 }
 
-/** Only unambiguous single-source cleanup is wired to live handlers for now.
- * Multi-source owner choices need a persisted resolution frame and private UI.
- */
+/** Spell/Counter handlers still have single-source cleanup; Trap-only batches use their own context. */
 function cleanupSingleSource(c: Context, id: string, reason: string) {
   const frame = prepareChainCleanup(c.registry, c.state, [id], c.state.result ? 'terminal-single-source' : 'live');
   Object.assign(c.state, commitChainCleanup(c.registry, c.state, frame));
@@ -127,6 +127,9 @@ export function assertDuelInvariants(state: DuelState, registry: Registry) {
   if (!Number.isSafeInteger(state.stateVersion) || state.stateVersion < 0 || !Number.isSafeInteger(state.eventSequence)) throw new Error('Invalid version/sequence');
   if (state.chain.length > 5 || state.pendingTriggers.length > 1 || state.modifiers.length) throw new Error('Unsupported effect state');
   if (state.chainCleanup === undefined) throw new Error('Missing cleanup context field');
+  if (state.spellResolution === undefined) throw new Error('Missing Spell resolution context field');
+  if (state.spellResolution !== null) assertSpellResolution(registry, state);
+  else if (state.pendingDecision?.kind === 'effect-choice') throw new Error('Missing paused Spell resolution frame');
   if (state.chainCleanup !== null) {
     const frame = state.chainCleanup, first = state.chain[0], targetId = first?.targetRefs[0]?.instanceId;
     const target = targetId && state.cards[targetId], targetDef = target && registry.cards[target.definition.id];
@@ -278,7 +281,7 @@ export function createDuel(registry: Registry, input: z.input<typeof StartSchema
   const players: [Mutable<PlayerState>, Mutable<PlayerState>] = [makePlayer(options.players[0], 0), makePlayer(options.players[1], 1)];
   const state: State = { id: options.duelId, format: { ...registry.format }, cardRegistryRevision: registry.revision,
     stateVersion: 0, eventSequence: 0, turn: { number: 1, activePlayer: active, phase: 'draw' }, players, cards,
-    chain: [], chainCleanup: null, pendingTriggers: [], modifiers: [], timing: { window: 'open', priorityPlayer: active, consecutivePasses: 0, lastRelevantEvents: [], requestedPhase: null },
+    chain: [], chainCleanup: null, spellResolution: null, pendingTriggers: [], modifiers: [], timing: { window: 'open', priorityPlayer: active, consecutivePasses: 0, lastRelevantEvents: [], requestedPhase: null },
     battle: null, pendingDecision: null, rng: rng.state(), result: null };
   const c: Context = { state, registry, events: [] };
   emit(c, 'duel-started');
@@ -593,9 +596,7 @@ function continueTrapCleanup(c: Context) {
 }
 
 function resolutionBoard(c: Context, controllerId: string) {
-  return { controllerId, monsters: c.state.players.flatMap(p => p.monsters.filter((id): id is string => id !== null).map(id => ({
-    instanceId: id, controllerId: p.id, faceUp: c.state.cards[id]!.position !== 'face-down-defense', position: c.state.cards[id]!.position, attack: monsterDefinition(c, id).attack, defense: monsterDefinition(c, id).defense,
-  }))) };
+  return spellResolutionBoard(c.registry, c.state, controllerId);
 }
 function spell(c: Context, actorId: string, action: Extract<EngineRequest['action'], { type: 'activate-spell' | 'set-spell' }>) {
   requireMain(c, actorId);
@@ -652,7 +653,11 @@ function spell(c: Context, actorId: string, action: Extract<EngineRequest['actio
   c.state.timing.window = 'chain-response'; c.state.timing.priorityPlayer = other(c.state, actorId).id; c.state.timing.consecutivePasses = 0;
 }
 function finishSpell(c: Context) {
-  const link = c.state.chain.pop()!;
+  const link = c.state.chain[0]!;
+  rule(c.state.chain.length === 1 && link?.effectId === 'normal-spell'
+    && (!c.state.spellResolution || (c.state.spellResolution.rootLinkId === link.id
+      && c.state.spellResolution.rootSourceId === link.source)), 'illegal-timing', 'Finish the original supported Spell link');
+  c.state.chain.shift(); c.state.spellResolution = null;
   cleanupSingleSource(c, link.source, 'spell-cleanup');
   emit(c, 'chain-resolved', [], {}, false);
   if (!c.state.result) response(c, 'action-response');
@@ -662,7 +667,8 @@ function resolveSpell(c: Context) {
   c.state.timing.window = 'resolving'; c.state.timing.priorityPlayer = null;
   const plan = planResolution(c.registry.spellHandlers[c.state.cards[link.source]!.definition.id], resolutionBoard(c, link.controllerId));
   if (plan.kind === 'choose-destruction') {
-    c.state.pendingDecision = { id: `${link.id}:choice`, playerId: plan.playerId, kind: 'effect-choice', optionIds: [...plan.optionIds], min: 1, max: 1 }; return;
+    const frame = prepareSpellResolution(c.registry, c.state); c.state.spellResolution = frame as State['spellResolution'];
+    c.state.pendingDecision = { id: `${link.id}:choice`, playerId: frame.choice.playerId, kind: 'effect-choice', optionIds: [...frame.choice.optionIds], min: 1, max: 1 }; return;
   }
   if (plan.kind === 'draw') for (let i = 0; i < plan.count && !c.state.result; i++) draw(c, plan.playerId);
   if (plan.kind === 'effect-damage') {

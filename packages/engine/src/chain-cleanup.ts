@@ -1,10 +1,10 @@
-import { createHash } from 'node:crypto';
 import { z } from 'zod';
 import type { DuelState, ChainCleanupFrame } from '../../protocol/src/duel.js';
 export type { ChainCleanupFrame } from '../../protocol/src/duel.js';
 import { requireRule as rule } from './actions.js';
 import { freeze } from './registry.js';
 import type { Registry } from './registry.js';
+import { resolutionFingerprint as fingerprint } from './resolution-fingerprint.js';
 
 type Mutable<T> = { -readonly [K in keyof T]: Mutable<T[K]> };
 
@@ -18,13 +18,6 @@ const FrameSchema = z.strictObject({
   sourceIds: ids,
   batches: z.array(z.strictObject({ ownerId: z.string().min(1), sourceIds: ids, order: ids.nullable() })).min(1).max(2),
 });
-// Server context only. This digest detects a changed board; it is NOT an authentication
-// token and neither this frame nor raw source IDs are a client command/projection.
-function fingerprint(state: DuelState) {
-  return createHash('sha256').update(JSON.stringify({ id: state.id, format: state.format,
-    registryRevision: state.cardRegistryRevision, turn: state.turn, result: state.result,
-    chain: state.chain, battle: state.battle, players: state.players, cards: state.cards })).digest('hex');
-}
 function exactPermutation(order: readonly string[], expected: readonly string[]) {
   return order.length === expected.length && new Set(order).size === order.length
     && order.every(id => expected.includes(id));
