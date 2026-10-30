@@ -28,6 +28,8 @@ Kết quả tổng hợp và giới hạn tại tài liệu mốc; đây không 
 
 Đã bổ sung [rà soát tương tác Seven Tools](docs/engine/seven-tools-interaction-audit.md): hồi LP rồi trả chi phí cho Chain mới, phủ nhận Phép hồi, Magic Jammer dùng độc lập ở 1 LP, Faith lấy lại Phép và sát thương thật ở lượt sau; giữ nguyên engine/review/phạm vi hiện có.
 
+Đã có [review thiết kế Counter phản hồi Counter](docs/rules/counter-to-counter-review.md) cho Phép → Magic Jammer → Seven Tools: đối chiếu LIFO/cost/cleanup và bản đồ 11 resolver gốc. Chưa mở Chain ba liên kết; thứ tự cleanup cùng chủ còn cần nguồn xác nhận trước triển khai.
+
 Đã mở [Counter Trap Magic Jammer](docs/engine/magic-jammer.md): bỏ một lá làm cost, phủ nhận activation của Phép đang phản hồi, giữ cost gốc và bỏ qua hiệu ứng Phép; chỉ pattern hai liên kết đã duyệt. [Review thiết kế](docs/rules/magic-jammer-review.md) giữ nguồn và ranh giới.
 
 Đã bổ sung [rà soát tương tác Magic Jammer](docs/engine/magic-jammer-interaction-audit.md): Faith lấy lại Phép bị phủ nhận để kích hoạt mới, trả chi phí mới, không hoàn cost cũ; bỏ quái FLIP làm cost không tự kích hoạt FLIP. Giữ nguyên engine, review và phạm vi hai liên kết.

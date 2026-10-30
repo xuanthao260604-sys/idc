@@ -1,5 +1,8 @@
 # Rà soát tương tác Seven Tools — 30/10/2026
 
+Công việc tiếp theo đã có [review thiết kế chuỗi Counter ba liên kết](../rules/counter-to-counter-review.md).
+Review mới chưa mở runtime; kết quả triển khai và kiểm thử dưới đây giữ nguyên.
+
 Bổ sung kiểm thử sau [mốc mở Seven Tools](seven-tools.md). Giữ nguyên
 engine, protocol, giao diện sản phẩm và dữ liệu: runtime 112 loại gồm
 95 quái thường/17 lá hiệu ứng, 13 scope, 19 snapshot. Mục này kiểm việc

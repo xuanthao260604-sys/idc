@@ -1,0 +1,718 @@
+{
+  "schemaVersion": 1,
+  "status": "design-reviewed-not-enabled",
+  "reviewedOn": "2026-10-30",
+  "format": {
+    "id": "goat-2005-08-17",
+    "revision": 4
+  },
+  "proposedScope": "counter-trap-normal-spell-magic-jammer-seven-tools-three-link-v1",
+  "runtimeEnabled": false,
+  "implementationAndEffectTests": "not-started",
+  "cardPins": {
+    "sevenTools": {
+      "cardId": "official:03819470",
+      "definitionSha256": "2dbc5c07956ac97d58b2f449898bf2d73bd0488578b9c69c0fadd5e468accbc0",
+      "revision": 1,
+      "scope": "counter-trap-trap-hole-activation-v1",
+      "handler": "pay-1000-negate-trap-hole-activation",
+      "activeReviewPath": "data/reviews/seven-tools.effects.json"
+    },
+    "magicJammer": {
+      "cardId": "official:77414722",
+      "definitionSha256": "dcbfa15ffcecc32dd594e2794ab516642bc5ede743942717406b95f955e946bf",
+      "revision": 1,
+      "scope": "counter-trap-normal-spell-activation-v1",
+      "handler": "discard-negate-normal-spell-activation",
+      "activeReviewPath": "data/reviews/magic-jammer.effects.json"
+    }
+  },
+  "historicalPrintedTextReview": "pending",
+  "sources": [
+    {
+      "id": "seven-text",
+      "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4863&request_locale=en",
+      "accessedOn": "2026-10-29",
+      "sourceKind": "official-current",
+      "sha256": "0fa7aeda482c7792e98dd9bca18bcef5f0ac675a1f7140b83dd530edd17d09da",
+      "bytes": 148891,
+      "notes": "Frozen reference from the completed import, reused without refetching or changing it. Historical printed wording remains pending. Re-reviewed locally on 2026-10-30 for the three-link design; prior retrieval date retained.",
+      "rawPath": "data/raw/konami/0fa7aeda482c7792e98dd9bca18bcef5f0ac675a1f7140b83dd530edd17d09da.html"
+    },
+    {
+      "id": "v5",
+      "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+      "accessedOn": "2026-10-30",
+      "sourceKind": "archive",
+      "sha256": "d02c016334f65c98a9fe900ae0b2630a3de63f63e330426ab07c55d9466dc61a",
+      "bytes": 681725,
+      "notes": "Re-fetched on 2026-10-30: exact byte/hash match to the previously reviewed PDF. Consistency evidence, not publisher authentication. PDF retained only in temporary workspace."
+    },
+    {
+      "id": "current-book",
+      "url": "https://www.yugioh-card.com/en/downloads/rulebook/SD_RuleBook_EN_10.pdf",
+      "accessedOn": "2026-10-30",
+      "sourceKind": "official-current",
+      "sha256": "82be14641b2b7940467034a5b14b0d4037835831866537738d34fd9df5a0f444",
+      "bytes": 3415528,
+      "notes": "Re-fetched on 2026-10-30: exact byte/hash match to the previously reviewed PDF. Consistency evidence, not publisher authentication. PDF retained only in temporary workspace."
+    },
+    {
+      "id": "goat-basics",
+      "url": "https://www.goatformat.com/basics.html",
+      "accessedOn": "2026-10-27",
+      "sourceKind": "community",
+      "sha256": "c4ce900ab808c269392a84a4a077970ec39ac30a4d937d63689ffc0cae3213d0",
+      "bytes": 136366,
+      "notes": "Previously frozen on 2026-10-27, reviewed locally on 2026-10-29. Preserve the source editorial caveat about recent rule changes; no claim of a new live fetch. Re-reviewed locally on 2026-10-30 for the three-link design; prior retrieval date retained.",
+      "rawPath": "data/raw/goatformat/c4ce900ab808c269392a84a4a077970ec39ac30a4d937d63689ffc0cae3213d0.html"
+    },
+    {
+      "id": "goat-rulings4",
+      "url": "https://www.goatformat.com/rulings4.html",
+      "accessedOn": "2026-10-29",
+      "sourceKind": "community",
+      "sha256": "8966dc9f578cdc28ef09f653c73ebf955a58548698e5aa43d624552e43e1ddff",
+      "bytes": 147775,
+      "notes": "Imperial Order / Netrep Q&As attributes the zero-LP prohibition to Curtis Schultz, 2003-12-23; Injection Fairy Lily / Netrep Rulings supplies an activation-cost threshold example. Community transcription, not an authenticated UDE original. These example cards stay unsupported. Re-reviewed locally on 2026-10-30 for the three-link design; prior retrieval date retained.",
+      "rawPath": "data/raw/goatformat/8966dc9f578cdc28ef09f653c73ebf955a58548698e5aa43d624552e43e1ddff.html"
+    },
+    {
+      "id": "goat-rulings7",
+      "url": "https://www.goatformat.com/rulings7.html",
+      "accessedOn": "2026-10-29",
+      "sourceKind": "community",
+      "sha256": "caf0bf7d4f89887a630d99caef888574d63253c5e2b67f3eb96131804e70ab62",
+      "bytes": 291636,
+      "notes": "Seven Tools subsection explicitly labelled Netrep Rulings; distinguishes Trap card activation from an already active Continuous Trap effect. Not an authenticated original UDE bulletin. Ultimate Offering stays unsupported. Re-reviewed locally on 2026-10-30 for the three-link design; prior retrieval date retained.",
+      "rawPath": "data/raw/goatformat/caf0bf7d4f89887a630d99caef888574d63253c5e2b67f3eb96131804e70ab62.html"
+    },
+    {
+      "id": "seven-faq",
+      "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=4&cid=4863&request_locale=ja",
+      "accessedOn": "2026-10-30",
+      "sourceKind": "official-current",
+      "sha256": "545a051cce1558bf400d50d9cbb1c4588528ad99d371059bc93e037eb72bbdbd",
+      "bytes": 90399,
+      "notes": "Fresh current OCG supplement; displayed 2017-09-28, not original TCG 2005 wording. Direct response to own/opponent Trap card activation. New hash stored separately; old snapshot retained.",
+      "rawPath": "data/raw/konami/545a051cce1558bf400d50d9cbb1c4588528ad99d371059bc93e037eb72bbdbd.html",
+      "displayedDate": "2017-09-28"
+    },
+    {
+      "id": "magic-text",
+      "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4862&request_locale=en",
+      "accessedOn": "2026-10-27",
+      "sourceKind": "official-current",
+      "sha256": "c845de6762ad7f9dce7f1f229a3af767c313b6a1d5e455f9ebc01be5a8220ab3",
+      "bytes": 147299,
+      "notes": "Frozen English card reference from the completed import; original printed wording remains pending. Re-reviewed locally 2026-10-30; not claimed as a fresh retrieval.",
+      "rawPath": "data/raw/konami/c845de6762ad7f9dce7f1f229a3af767c313b6a1d5e455f9ebc01be5a8220ab3.html"
+    },
+    {
+      "id": "current-japanese-book",
+      "url": "https://www.yugioh-card.com/japan/howto/data/rulebook_masterrule20200401_ver1.0.pdf",
+      "accessedOn": "2026-10-30",
+      "sourceKind": "official-current",
+      "sha256": "d8fd0165bc5aa92880f934993de8b472b426dcb07b3588f3bbf2ddceaae0e8d6",
+      "bytes": 16797779,
+      "notes": "Official Japanese Master Rule 2020 rulebook. Printed page 61 explicitly shows Mystical Space Typhoon -> Magic Jammer -> Seven Tools, and the original Spell resolving. Current OCG supplement, not original TCG 2005 evidence. Page is raster content, inspected visually after rendering PDF page 31; PDF stays temporary. Mystical Space Typhoon remains outside runtime."
+    }
+  ],
+  "quotations": [
+    {
+      "id": "seven-effect",
+      "sourceId": "seven-text",
+      "locator": "Card Text",
+      "evidence": {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4863&request_locale=en",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "official-current",
+        "quotation": "When a Trap Card is activated: Pay 1000 LP; negate the activation, and if you do, destroy it.",
+        "historicalApplicability": "Current reference semantics. No original printed-text verification. Corroborate the activation/effect distinction with the curated Goat Seven Tools ruling."
+      }
+    },
+    {
+      "id": "seven-lifo",
+      "sourceId": "v5",
+      "locator": "printed p.32, What is a Chain?",
+      "evidence": {
+        "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+        "accessedOn": "2026-10-30",
+        "sourceKind": "archive",
+        "quotation": "The effects are then resolved, starting at the top link and working down to the Chain Link 1 at the bottom.",
+        "historicalApplicability": "Period baseline for reverse resolution; does not establish every individual card ruling."
+      }
+    },
+    {
+      "id": "seven-own-response",
+      "sourceId": "v5",
+      "locator": "printed p.32, parenthetical text",
+      "evidence": {
+        "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+        "accessedOn": "2026-10-30",
+        "sourceKind": "archive",
+        "quotation": "the same player can play consecutive cards if their opponent does not respond",
+        "historicalApplicability": "Period baseline for responding to one’s own Trap after the opponent declines; response priority is still checked."
+      }
+    },
+    {
+      "id": "seven-speed3",
+      "sourceId": "v5",
+      "locator": "printed p.33, Spell Speed 3 / Counter Trap",
+      "evidence": {
+        "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+        "accessedOn": "2026-10-30",
+        "sourceKind": "archive",
+        "quotation": "Only another Spell Speed 3 card may be used against these cards.",
+        "historicalApplicability": "Archived Counter Trap speed baseline. Seven Tools must also meet its direct Trap card activation condition; speed alone does not authorize Magic Jammer to answer a Trap."
+      }
+    },
+    {
+      "id": "seven-cost-lp",
+      "sourceId": "v5",
+      "locator": "printed p.36, Pay a Cost",
+      "evidence": {
+        "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+        "accessedOn": "2026-10-30",
+        "sourceKind": "archive",
+        "quotation": "Paying a cost means an action like discarding or sending a card to the Graveyard from your hand, or paying Life Points, in order to Summon a monster or activate an effect. You have to pay any costs before you declare the activation of the card.",
+        "historicalApplicability": "Period baseline that paying LP can be a cost; the specific fixed amount comes from Seven Tools current reference text."
+      }
+    },
+    {
+      "id": "seven-cost-no-refund",
+      "sourceId": "v5",
+      "locator": "printed p.36, Pay a Cost",
+      "evidence": {
+        "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+        "accessedOn": "2026-10-30",
+        "sourceKind": "archive",
+        "quotation": "Even if the activation of the card is negated, you cannot get a refund of the cost that you have paid.",
+        "historicalApplicability": "Period rule explicitly covers negated activations. Magic Jammer discard and any original Spell cost stay paid when Seven Tools negates Magic Jammer."
+      }
+    },
+    {
+      "id": "seven-cost-not-effect",
+      "sourceId": "v5",
+      "locator": "printed p.35, Effect of Cards",
+      "evidence": {
+        "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+        "accessedOn": "2026-10-30",
+        "sourceKind": "archive",
+        "quotation": "Paying a cost or destroying a monster as a result of battle is not included in the effect of a card.",
+        "historicalApplicability": "LP payment must have a separate cost event/fact, not an effect-damage event; no damage or payment triggers are enabled."
+      }
+    },
+    {
+      "id": "seven-trap-set",
+      "sourceId": "current-book",
+      "locator": "Normal Trap Cards / common Trap rules, printed p.30",
+      "evidence": {
+        "url": "https://www.yugioh-card.com/en/downloads/rulebook/SD_RuleBook_EN_10.pdf",
+        "accessedOn": "2026-10-30",
+        "sourceKind": "official-current",
+        "quotation": "Before you can activate a Trap Card, you must Set it on the field first.",
+        "historicalApplicability": "Current common Trap baseline under the selected Goat policy. No hand-activation exception is enabled."
+      }
+    },
+    {
+      "id": "seven-trap-wait",
+      "sourceId": "current-book",
+      "locator": "Normal Trap Cards / common Trap rules, printed p.30",
+      "evidence": {
+        "url": "https://www.yugioh-card.com/en/downloads/rulebook/SD_RuleBook_EN_10.pdf",
+        "accessedOn": "2026-10-30",
+        "sourceKind": "official-current",
+        "quotation": "You cannot activate a Trap in the same turn that you Set it, but you can activate it at any time after that",
+        "historicalApplicability": "Read together with each Trap condition and response priority; not permission to activate Seven Tools at arbitrary timing."
+      }
+    },
+    {
+      "id": "seven-baseline-policy",
+      "sourceId": "goat-basics",
+      "locator": "Basic Mechanics opening paragraph",
+      "evidence": {
+        "url": "https://www.goatformat.com/basics.html",
+        "accessedOn": "2026-10-27",
+        "sourceKind": "community",
+        "quotation": "if a general rule is not explicitly listed here is being different in Goat Format, you can assume that it works the exact same way as it does in the current format.",
+        "historicalApplicability": "Existing community policy adopted by the project; retain its editorial caveat about recent rule changes."
+      }
+    },
+    {
+      "id": "seven-lp-zero",
+      "sourceId": "goat-rulings4",
+      "locator": "IMPERIAL ORDER / Netrep Q&As, attributed Curtis Schultz 12/23/2003",
+      "evidence": {
+        "url": "https://www.goatformat.com/rulings4.html",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "community",
+        "quotation": "They cannot choose to pay if it would make their Life Points become 0.",
+        "historicalApplicability": "Community transcription of a period LP-payment rule. This is an Imperial Order example, not a Seven Tools-specific original bulletin; combine with the activation-cost example and Seven Tools fixed 1000 cost."
+      }
+    },
+    {
+      "id": "seven-lp-activation-floor",
+      "sourceId": "goat-rulings4",
+      "locator": "INJECTION FAIRY LILY / Netrep Rulings",
+      "evidence": {
+        "url": "https://www.goatformat.com/rulings4.html",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "community",
+        "quotation": "“Injection Fairy Lily’s” effect may not be activated if the controller’s Life Points are at or below 2000.",
+        "historicalApplicability": "Period activation-cost example corroborating that an exact fixed LP cost cannot be paid down to zero. Derive Seven Tools minimum 1001 from its fixed 1000 cost; do not enable Lily or its battle effect."
+      }
+    },
+    {
+      "id": "seven-activation-not-effect",
+      "sourceId": "goat-rulings7",
+      "locator": "SEVEN TOOLS OF THE BANDIT / Netrep Rulings",
+      "evidence": {
+        "url": "https://www.goatformat.com/rulings7.html",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "community",
+        "quotation": "“Seven Tools of the Bandit” may not be activated in a chain to the use of an effect of a continuous Trap that has already been activated, like “Ultimate Offering.”",
+        "historicalApplicability": "Curated period distinction between Trap card activation and a previously active Continuous Trap effect. Ultimate Offering and Continuous Trap handling remain unsupported."
+      }
+    },
+    {
+      "id": "seven-direct-self-or-other",
+      "sourceId": "seven-faq",
+      "locator": "supplement displayed 2017-09-28",
+      "evidence": {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=4&cid=4863&request_locale=ja",
+        "accessedOn": "2026-10-30",
+        "sourceKind": "official-current",
+        "quotation": "■自分または相手の罠カードのカードの発動に直接チェーンして発動するカードです。（カードの発動を伴わない、罠カードの効果の発動にチェーンして発動することはできません。）",
+        "historicalApplicability": "Current OCG corroboration: directly chain to one’s own or the opponent’s Trap card activation, not an effect activation without card activation. Not asserted as original TCG 2005 wording."
+      }
+    },
+    {
+      "id": "magic-effect",
+      "sourceId": "magic-text",
+      "locator": "Card Text",
+      "evidence": {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4862&request_locale=en",
+        "accessedOn": "2026-10-27",
+        "sourceKind": "official-current",
+        "quotation": "When a Spell Card is activated: Discard 1 card; negate the activation, and if you do, destroy it.",
+        "historicalApplicability": "Current reference semantics, cross-checked with the curated Goat Magic Jammer entries. Not an original printed-text verification."
+      }
+    },
+    {
+      "id": "v5-counter-response-diagram",
+      "sourceId": "v5",
+      "locator": "printed page 32, Chain Link 4 diagram",
+      "evidence": {
+        "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+        "accessedOn": "2026-10-30",
+        "sourceKind": "archive",
+        "quotation": "Counter trap used against Chain Link 3.",
+        "historicalApplicability": "Period example explicitly includes a Counter Trap responding to a previous Counter Trap. It does not itself identify Seven Tools or prove every speed-3 response is legal."
+      }
+    },
+    {
+      "id": "chain-end-cleanup",
+      "sourceId": "goat-rulings7",
+      "locator": "STAMPING DESTRUCTION / Individual Card FAQs",
+      "evidence": {
+        "url": "https://www.goatformat.com/rulings7.html",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "community",
+        "quotation": "Spell and Trap Cards remain on the field until the entire chain resolves, unless destroyed by a card effect during the chain.",
+        "historicalApplicability": "Community transcription of a period FAQ, not an authenticated original UDE bulletin. Distinguishes normal Chain-end cleanup from Magic Jammer destroyed immediately by Seven Tools. Stamping Destruction remains unsupported."
+      }
+    },
+    {
+      "id": "unnegated-root-continues",
+      "sourceId": "current-book",
+      "locator": "printed page 47, Heavy Storm / Threatening Roar / Seven Tools example",
+      "evidence": {
+        "url": "https://www.yugioh-card.com/en/downloads/rulebook/SD_RuleBook_EN_10.pdf",
+        "accessedOn": "2026-10-30",
+        "sourceKind": "official-current",
+        "quotation": "Then the effect of “Heavy Storm” (Chain Link 1) is resolved successfully, destroying all Spell and Trap Cards on the field,",
+        "historicalApplicability": "Current official three-link example corroborates that negating link 2 does not negate link 1. The example uses a Normal Trap, not Magic Jammer; counter-to-counter applicability is derived with the archived speed diagram and Seven Tools Trap activation condition. Example cards remain outside runtime."
+      }
+    },
+    {
+      "id": "preserve-graveyard-order",
+      "sourceId": "current-book",
+      "locator": "printed page 4, Graveyard zone",
+      "evidence": {
+        "url": "https://www.yugioh-card.com/en/downloads/rulebook/SD_RuleBook_EN_10.pdf",
+        "accessedOn": "2026-10-30",
+        "sourceKind": "official-current",
+        "quotation": "The order of the cards in the Graveyard should not be changed.",
+        "historicalApplicability": "Current official baseline for preserving Graveyard order. This statement does not specify the relative order of multiple Spell/Trap sources placed in the Graveyard at Chain end; that implementation check remains pending."
+      }
+    },
+    {
+      "id": "japanese-counter-example",
+      "sourceId": "current-japanese-book",
+      "locator": "printed page 61, left page; PDF sheet 31, Chain 3 Seven Tools row",
+      "evidence": {
+        "url": "https://www.yugioh-card.com/japan/howto/data/rulebook_masterrule20200401_ver1.0.pdf",
+        "accessedOn": "2026-10-30",
+        "sourceKind": "official-current",
+        "quotation": "「マジック・ジャマー」の発動を無効にする。",
+        "historicalApplicability": "Verbatim text in the Seven Tools row of the official three-link example. It explicitly negates Magic Jammer; the surrounding example then resolves Mystical Space Typhoon. Current OCG corroboration only. The root in this example is a Quick-Play Spell, not a newly supported Normal Spell."
+      },
+      "verification": {
+        "method": "manual-visual",
+        "pdfSheet": 31,
+        "printedPage": 61,
+        "renderedPngSha256": "eb825170bb0cbc81601850808b08424bf0b2a669b27fda36eac23f0a194a6f9a",
+        "notes": "Rendered page read directly; not claimed as a quotation located by PDF text extraction or OCR."
+      }
+    }
+  ],
+  "decisions": [
+    {
+      "status": "verified",
+      "proposedValue": {
+        "pattern": "reviewed-normal-spell -> magic-jammer -> seven-tools",
+        "maximumLinksForNewPattern": 3,
+        "existingTrapHoleSevenToolsTwoLinkPreserved": true
+      },
+      "rationale": "First implementation candidate is exactly this three-link pattern in supported Main Phase Spell windows. This is a project boundary, not a Yu-Gi-Oh Chain-length or card-text restriction. Current Japanese rulebook provides this Counter pair explicitly, with a Quick-Play root; supported Normal Spell roots remain constrained by their existing reviews.",
+      "evidence": [
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4863&request_locale=en",
+          "accessedOn": "2026-10-29",
+          "sourceKind": "official-current",
+          "quotation": "When a Trap Card is activated: Pay 1000 LP; negate the activation, and if you do, destroy it.",
+          "historicalApplicability": "Current reference semantics. No original printed-text verification. Corroborate the activation/effect distinction with the curated Goat Seven Tools ruling."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4862&request_locale=en",
+          "accessedOn": "2026-10-27",
+          "sourceKind": "official-current",
+          "quotation": "When a Spell Card is activated: Discard 1 card; negate the activation, and if you do, destroy it.",
+          "historicalApplicability": "Current reference semantics, cross-checked with the curated Goat Magic Jammer entries. Not an original printed-text verification."
+        },
+        {
+          "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+          "accessedOn": "2026-10-30",
+          "sourceKind": "archive",
+          "quotation": "Only another Spell Speed 3 card may be used against these cards.",
+          "historicalApplicability": "Archived Counter Trap speed baseline. Seven Tools must also meet its direct Trap card activation condition; speed alone does not authorize Magic Jammer to answer a Trap."
+        },
+        {
+          "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+          "accessedOn": "2026-10-30",
+          "sourceKind": "archive",
+          "quotation": "Counter trap used against Chain Link 3.",
+          "historicalApplicability": "Period example explicitly includes a Counter Trap responding to a previous Counter Trap. It does not itself identify Seven Tools or prove every speed-3 response is legal."
+        },
+        {
+          "url": "https://www.yugioh-card.com/japan/howto/data/rulebook_masterrule20200401_ver1.0.pdf",
+          "accessedOn": "2026-10-30",
+          "sourceKind": "official-current",
+          "quotation": "「マジック・ジャマー」の発動を無効にする。",
+          "historicalApplicability": "Verbatim text in the Seven Tools row of the official three-link example. It explicitly negates Magic Jammer; the surrounding example then resolves Mystical Space Typhoon. Current OCG corroboration only. The root in this example is a Quick-Play Spell, not a newly supported Normal Spell."
+        }
+      ]
+    },
+    {
+      "status": "verified",
+      "proposedValue": {
+        "resolutionOrder": [
+          3,
+          2,
+          1
+        ],
+        "link2": "activation-negated-and-destroyed",
+        "link1": "resolve-existing-plan-once",
+        "refundAnyCost": false,
+        "reactivateRoot": false
+      },
+      "rationale": "Seven Tools negates the Trap activation of Magic Jammer, not the original Normal Spell. Skip only the negated activation. Previously paid discard/Spell/LP costs are retained; no new activation or cost payment for the root.",
+      "evidence": [
+        {
+          "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+          "accessedOn": "2026-10-30",
+          "sourceKind": "archive",
+          "quotation": "The effects are then resolved, starting at the top link and working down to the Chain Link 1 at the bottom.",
+          "historicalApplicability": "Period baseline for reverse resolution; does not establish every individual card ruling."
+        },
+        {
+          "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+          "accessedOn": "2026-10-30",
+          "sourceKind": "archive",
+          "quotation": "Even if the activation of the card is negated, you cannot get a refund of the cost that you have paid.",
+          "historicalApplicability": "Period rule explicitly covers negated activations. Magic Jammer discard and any original Spell cost stay paid when Seven Tools negates Magic Jammer."
+        },
+        {
+          "url": "https://www.yugioh-card.com/en/downloads/rulebook/SD_RuleBook_EN_10.pdf",
+          "accessedOn": "2026-10-30",
+          "sourceKind": "official-current",
+          "quotation": "Then the effect of “Heavy Storm” (Chain Link 1) is resolved successfully, destroying all Spell and Trap Cards on the field,",
+          "historicalApplicability": "Current official three-link example corroborates that negating link 2 does not negate link 1. The example uses a Normal Trap, not Magic Jammer; counter-to-counter applicability is derived with the archived speed diagram and Seven Tools Trap activation condition. Example cards remain outside runtime."
+        }
+      ]
+    },
+    {
+      "status": "verified",
+      "proposedValue": {
+        "opponentFirstResponse": true,
+        "selfResponseAfterOpponentPass": true,
+        "sevenToolsMinimumLP": 1001,
+        "noCardTarget": true
+      },
+      "rationale": "Apply the existing reviewed priority, earlier-Set, fixed LP cost and direct-chain condition to the last eligible Trap activation. Linking to a Chain activation is not a card target; this is a semantic conclusion, not a quote expressly stating Seven Tools is non-targeting.",
+      "evidence": [
+        {
+          "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+          "accessedOn": "2026-10-30",
+          "sourceKind": "archive",
+          "quotation": "the same player can play consecutive cards if their opponent does not respond",
+          "historicalApplicability": "Period baseline for responding to one’s own Trap after the opponent declines; response priority is still checked."
+        },
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=4&cid=4863&request_locale=ja",
+          "accessedOn": "2026-10-30",
+          "sourceKind": "official-current",
+          "quotation": "■自分または相手の罠カードのカードの発動に直接チェーンして発動するカードです。（カードの発動を伴わない、罠カードの効果の発動にチェーンして発動することはできません。）",
+          "historicalApplicability": "Current OCG corroboration: directly chain to one’s own or the opponent’s Trap card activation, not an effect activation without card activation. Not asserted as original TCG 2005 wording."
+        },
+        {
+          "url": "https://www.goatformat.com/rulings4.html",
+          "accessedOn": "2026-10-29",
+          "sourceKind": "community",
+          "quotation": "They cannot choose to pay if it would make their Life Points become 0.",
+          "historicalApplicability": "Community transcription of a period LP-payment rule. This is an Imperial Order example, not a Seven Tools-specific original bulletin; combine with the activation-cost example and Seven Tools fixed 1000 cost."
+        },
+        {
+          "url": "https://www.goatformat.com/rulings4.html",
+          "accessedOn": "2026-10-29",
+          "sourceKind": "community",
+          "quotation": "“Injection Fairy Lily’s” effect may not be activated if the controller’s Life Points are at or below 2000.",
+          "historicalApplicability": "Period activation-cost example corroborating that an exact fixed LP cost cannot be paid down to zero. Derive Seven Tools minimum 1001 from its fixed 1000 cost; do not enable Lily or its battle effect."
+        }
+      ]
+    },
+    {
+      "status": "verified",
+      "proposedValue": {
+        "destroyMagicAtLink3": true,
+        "sevenToolsCleanup": "after-entire-chain",
+        "retainFaceUpSevenDuringRootEffectChoice": true,
+        "costFactsDistinctFromDamage": true
+      },
+      "rationale": "Destroying the negated Magic Jammer is an effect at link 3. Sending Seven Tools away normally is deferred until the entire Chain resolves, including any root effect-choice. A trusted server-only resolution frame is a proposed implementation mechanism, not a rulebook-defined object.",
+      "evidence": [
+        {
+          "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4863&request_locale=en",
+          "accessedOn": "2026-10-29",
+          "sourceKind": "official-current",
+          "quotation": "When a Trap Card is activated: Pay 1000 LP; negate the activation, and if you do, destroy it.",
+          "historicalApplicability": "Current reference semantics. No original printed-text verification. Corroborate the activation/effect distinction with the curated Goat Seven Tools ruling."
+        },
+        {
+          "url": "https://www.goatformat.com/rulings7.html",
+          "accessedOn": "2026-10-29",
+          "sourceKind": "community",
+          "quotation": "Spell and Trap Cards remain on the field until the entire chain resolves, unless destroyed by a card effect during the chain.",
+          "historicalApplicability": "Community transcription of a period FAQ, not an authenticated original UDE bulletin. Distinguishes normal Chain-end cleanup from Magic Jammer destroyed immediately by Seven Tools. Stamping Destruction remains unsupported."
+        },
+        {
+          "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+          "accessedOn": "2026-10-30",
+          "sourceKind": "archive",
+          "quotation": "Paying a cost or destroying a monster as a result of battle is not included in the effect of a card.",
+          "historicalApplicability": "LP payment must have a separate cost event/fact, not an effect-damage event; no damage or payment triggers are enabled."
+        }
+      ]
+    }
+  ],
+  "implementationContract": {
+    "root": "one of the 11 currently reviewed Normal Spells, from hand or Set, current Main Phase and target/cost guards",
+    "lastResponse": "Magic Jammer at link 2 only, exact link handle and valid existing prefix",
+    "sevenTools": "earlier-Set own source, correct priority, fixed 1000 LP only with LP > 1000, no discard/card target",
+    "rootCost": "paid once at original activation; never recreated when its plan resumes",
+    "pause": "if the root creates effect-choice, retain server-only completed-link/cleanup context; no new responses during resolution",
+    "terminalPolicy": "explicitly reconcile resolution context with existing failed-draw/LP/concession/restart behavior; never resolve further effects or fabricate refunds on concession",
+    "activeReviewMigration": "append a versioned Seven Tools review covering the old two-link pattern plus this exact three-link pattern; keep old review bytes, select only one active review per card; bind expansion to the new reviewed scope and registry revision",
+    "publicProjection": "allowlist only; never serialize the server resolution frame, raw journals or hidden card identities",
+    "rollback": "old runtime manifest/review retains current two-link behavior",
+    "graveyardOrdering": "Before implementation, verify the ordering rule when the root Spell and Seven Tools share an owner and are sent at Chain end; do not silently label a deterministic engine order as a reviewed Yu-Gi-Oh rule."
+  },
+  "notCovered": [
+    "Trap Hole -> Seven Tools -> Seven Tools (potentially legal, deferred; same-player multiple LP payments need journal reconciliation)",
+    "Fourth or later Counter links, or several Trap Hole links before a Counter",
+    "Magic Jammer replying to a Trap activation (does not satisfy its Spell condition)",
+    "Other Trap cards or arbitrary mixed Chains",
+    "Damage Step inputs, Continuous Trap effect activations, cost reducers or LP/discard triggers",
+    "SEGOC, protection/replacement, custom cards, online or beta packaging"
+  ],
+  "currentRootSpellPins": [
+    {
+      "cardId": "official:19523799",
+      "name": "Ookazi",
+      "kind": "normal-spell",
+      "scope": "normal-spell-life-points-single-link-v1",
+      "reviewStatus": "reviewed-for-supported-scope",
+      "reviewRevision": 1,
+      "definitionSha256": "834b4eee8335d5e15da679820bd89d728327b5b7f2dee1dd9be895a7e0180bac",
+      "importedStatus": {
+        "verification": "pending",
+        "implementation": "not-started",
+        "testing": "not-run"
+      }
+    },
+    {
+      "cardId": "official:25880422",
+      "name": "Block Attack",
+      "kind": "normal-spell",
+      "scope": "normal-spell-target-position-single-link-v1",
+      "reviewStatus": "reviewed-for-supported-scope",
+      "reviewRevision": 1,
+      "definitionSha256": "93aa075ddd05f9f30b3e03f045c8720aa065ff3684a2b7d0590987d02912a3d5",
+      "importedStatus": {
+        "verification": "pending",
+        "implementation": "not-started",
+        "testing": "not-run"
+      }
+    },
+    {
+      "cardId": "official:26412047",
+      "name": "Hammer Shot",
+      "kind": "normal-spell",
+      "scope": "normal-spell-highest-attack-position-single-link-v1",
+      "reviewStatus": "reviewed-for-supported-scope",
+      "reviewRevision": 1,
+      "definitionSha256": "e99e146fddebbfb918c468a94b3bb6608ac00c0cc75770602018ce331de14c5e",
+      "importedStatus": {
+        "verification": "pending",
+        "implementation": "not-started",
+        "testing": "not-run"
+      }
+    },
+    {
+      "cardId": "official:46130346",
+      "name": "Hinotama",
+      "kind": "normal-spell",
+      "scope": "normal-spell-life-points-single-link-v1",
+      "reviewStatus": "reviewed-for-supported-scope",
+      "reviewRevision": 1,
+      "definitionSha256": "7db0e22ab9c746643d0e9191e45f84f8f76b6b2cdd9999016194be4e4b06b459",
+      "importedStatus": {
+        "verification": "pending",
+        "implementation": "not-started",
+        "testing": "not-run"
+      }
+    },
+    {
+      "cardId": "official:55144522",
+      "name": "Pot of Greed",
+      "kind": "normal-spell",
+      "scope": "normal-spell-single-link-vanilla-v1",
+      "reviewStatus": "reviewed-for-supported-scope",
+      "reviewRevision": 1,
+      "definitionSha256": "e267b070ff9477b340042761d189b221e471910a10cf9571ce4a770db22e7909",
+      "importedStatus": {
+        "verification": "pending",
+        "implementation": "not-started",
+        "testing": "not-run"
+      }
+    },
+    {
+      "cardId": "official:66788016",
+      "name": "Fissure",
+      "kind": "normal-spell",
+      "scope": "normal-spell-single-link-vanilla-v1",
+      "reviewStatus": "reviewed-for-supported-scope",
+      "reviewRevision": 1,
+      "definitionSha256": "73cf26b24c8c287ab9c2c87c881e8b52f9cf4d821c405b55cbefe8941b8e77f0",
+      "importedStatus": {
+        "verification": "pending",
+        "implementation": "not-started",
+        "testing": "not-run"
+      }
+    },
+    {
+      "cardId": "official:74848038",
+      "name": "Monster Reincarnation",
+      "kind": "normal-spell",
+      "scope": "normal-spell-discard-graveyard-single-link-v1",
+      "reviewStatus": "reviewed-for-supported-scope",
+      "reviewRevision": 1,
+      "definitionSha256": "655ceb62f07b6e19eb30a85ac5c6aac097af16e68bd7fb25175118d2da496f15",
+      "importedStatus": {
+        "verification": "pending",
+        "implementation": "not-started",
+        "testing": "not-run"
+      }
+    },
+    {
+      "cardId": "official:79759861",
+      "name": "Tribute to The Doomed",
+      "kind": "normal-spell",
+      "scope": "normal-spell-discard-target-single-link-v1",
+      "reviewStatus": "reviewed-for-supported-scope",
+      "reviewRevision": 1,
+      "definitionSha256": "788c8981799ec84ae6e5837e6933cfb3b650df4f7031ee666aa70908bc283604",
+      "importedStatus": {
+        "verification": "pending",
+        "implementation": "not-started",
+        "testing": "not-run"
+      }
+    },
+    {
+      "cardId": "official:82828051",
+      "name": "Earthquake",
+      "kind": "normal-spell",
+      "scope": "normal-spell-all-position-single-link-v1",
+      "reviewStatus": "reviewed-for-supported-scope",
+      "reviewRevision": 1,
+      "definitionSha256": "6dafa3956a9454679c400e0b7e086ccc74599bc6f16ddb964de86a6af5f58c01",
+      "importedStatus": {
+        "verification": "pending",
+        "implementation": "not-started",
+        "testing": "not-run"
+      }
+    },
+    {
+      "cardId": "official:84257639",
+      "name": "Dian Keto the Cure Master",
+      "kind": "normal-spell",
+      "scope": "normal-spell-life-points-single-link-v1",
+      "reviewStatus": "reviewed-for-supported-scope",
+      "reviewRevision": 1,
+      "definitionSha256": "e9fafe2761bde56cd0a75bd820de9bbcbe173a944e92254cf6380e8fbf97fdbb",
+      "importedStatus": {
+        "verification": "pending",
+        "implementation": "not-started",
+        "testing": "not-run"
+      }
+    },
+    {
+      "cardId": "official:97169186",
+      "name": "Smashing Ground",
+      "kind": "normal-spell",
+      "scope": "normal-spell-highest-defense-single-link-v1",
+      "reviewStatus": "reviewed-for-supported-scope",
+      "reviewRevision": 1,
+      "definitionSha256": "7743be5806f0fc8b856f8061701ffffe77e47831f1752da6ca604fe8201c450c",
+      "importedStatus": {
+        "verification": "pending",
+        "implementation": "not-started",
+        "testing": "not-run"
+      }
+    }
+  ],
+  "openImplementationChecks": [
+    {
+      "id": "same-owner-chain-end-graveyard-order",
+      "status": "pending-source-review",
+      "question": "When the root Normal Spell and Seven Tools belong to the same player, verify which ordering/choice is required when both go to the Graveyard at Chain end. The cited cleanup timing rule does not itself establish their relative order.",
+      "constraint": "Do not infer a universal order from the current engine cleanup loop or claim that this source check has passed.",
+      "knownEvidenceIds": [
+        "chain-end-cleanup",
+        "preserve-graveyard-order"
+      ]
+    }
+  ],
+  "implementationReadiness": "pending-graveyard-order-source-review"
+}
