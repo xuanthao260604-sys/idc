@@ -5,6 +5,7 @@ import type { EngineRequest, RejectionCode } from './actions.js';
 import { createRandom } from './random.js';
 import { freeze, validateDeck } from './registry.js';
 import { planResolution } from './effect-plans.js';
+import { prepareChainCleanup, commitChainCleanup } from './chain-cleanup.js';
 import type { SupportedMonster, Registry } from './registry.js';
 
 type Mutable<T> = { -readonly [K in keyof T]: Mutable<T[K]> };
@@ -74,6 +75,15 @@ function sendToGraveyard(c: Context, id: string) {
   const owner = mutablePlayer(c.state, card.ownerId);
   owner.graveyard.push(id); card.location = { kind: 'graveyard', playerId: owner.id };
   card.controllerId = owner.id; card.position = 'face-up';
+}
+
+/** Only unambiguous single-source cleanup is wired to live handlers for now.
+ * Multi-source owner choices need a persisted resolution frame and private UI.
+ */
+function cleanupSingleSource(c: Context, id: string, reason: string) {
+  const frame = prepareChainCleanup(c.registry, c.state, [id], c.state.result ? 'terminal-single-source' : 'live');
+  Object.assign(c.state, commitChainCleanup(c.registry, c.state, frame));
+  emit(c, 'sent-to-graveyard', [id], { reason });
 }
 
 function returnToOwnerHand(c: Context, id: string) {
@@ -521,7 +531,7 @@ function resolveCounterChain(c: Context) {
   emit(c, lpCounter ? 'trap-activation-negated' : 'spell-activation-negated', [original.source], { playerId: original.controllerId });
   sendToGraveyard(c, original.source); emit(c, lpCounter ? 'trap-destroyed' : 'spell-destroyed', [original.source], { playerId: original.controllerId });
   emit(c, 'chain-link-negated-skipped', [original.source], {}, false);
-  sendToGraveyard(c, counter.source); emit(c, 'sent-to-graveyard', [counter.source], { reason: 'counter-trap-cleanup' });
+  cleanupSingleSource(c, counter.source, 'counter-trap-cleanup');
   emit(c, 'chain-resolved', [], {}, false); response(c, 'action-response');
 }
 function resolveTraps(c: Context) {
@@ -601,7 +611,7 @@ function spell(c: Context, actorId: string, action: Extract<EngineRequest['actio
 }
 function finishSpell(c: Context) {
   const link = c.state.chain.pop()!;
-  sendToGraveyard(c, link.source); emit(c, 'sent-to-graveyard', [link.source], { reason: 'spell-cleanup' });
+  cleanupSingleSource(c, link.source, 'spell-cleanup');
   emit(c, 'chain-resolved', [], {}, false);
   if (!c.state.result) response(c, 'action-response');
 }
