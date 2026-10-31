@@ -1,5 +1,8 @@
 # Phép thường → Magic Jammer → Seven Tools
 
+**Mốc tiếp nối 31/10:** đã bổ sung [audit phục hồi/tái kích hoạt](three-link-interaction-audit.md)
+qua nhiều lượt. Nội dung và kết quả dưới đây giữ mốc mở pattern đầu tiên.
+
 Mốc 31/10/2026: đã nối activation, review, discovery, resolver và UI cho
 **đúng pattern ba liên kết này**. Các lệnh kích hoạt chạy qua engine và adapter.
 Hai pattern hai liên kết Phép → Magic Jammer và Trap Hole → Seven vẫn giữ.
