@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { DuelState, EventRef, Phase, PlayerState, Slot } from '../../protocol/src/duel.js';
+import type { DuelState, EventRef, Phase, PlayerState, Slot, CounterResolutionFrame } from '../../protocol/src/duel.js';
 import { RequestSchema, RuleError, requireRule as rule } from './actions.js';
 import type { EngineRequest, RejectionCode } from './actions.js';
 import { createRandom } from './random.js';
@@ -7,6 +7,7 @@ import { freeze, validateDeck } from './registry.js';
 import { planResolution } from './effect-plans.js';
 import { prepareChainCleanup, chainCleanupDecision, orderChainCleanup, commitChainCleanup } from './chain-cleanup.js';
 import { spellResolutionBoard, prepareSpellResolution, assertSpellResolution } from './spell-resolution.js';
+import { prepareCounterContinuation, checkpointCounterContinuation, assertCounterResolutionFrame } from './counter-continuation.js';
 import type { SupportedMonster, Registry } from './registry.js';
 
 type Mutable<T> = { -readonly [K in keyof T]: Mutable<T[K]> };
@@ -45,6 +46,7 @@ function endDuel(c: Context, winner: string | null, reason: NonNullable<DuelStat
   c.state.pendingDecision = null;
   c.state.chainCleanup = null;
   c.state.spellResolution = null;
+  c.state.counterResolution = null;
   open(c); c.state.timing.priorityPlayer = null;
   emit(c, 'duel-ended', [], { winner: winner ?? 'draw', reason });
 }
@@ -128,9 +130,11 @@ export function assertDuelInvariants(state: DuelState, registry: Registry) {
   if (state.chain.length > 5 || state.pendingTriggers.length > 1 || state.modifiers.length) throw new Error('Unsupported effect state');
   if (state.chainCleanup === undefined) throw new Error('Missing cleanup context field');
   if (state.spellResolution === undefined) throw new Error('Missing Spell resolution context field');
+  if (state.counterResolution === undefined) throw new Error('Missing Counter resolution context field');
+  if (state.counterResolution !== null) assertCounterResolutionFrame(registry, state);
   if (state.spellResolution !== null) assertSpellResolution(registry, state);
-  else if (state.pendingDecision?.kind === 'effect-choice') throw new Error('Missing paused Spell resolution frame');
-  if (state.chainCleanup !== null) {
+  else if (state.pendingDecision?.kind === 'effect-choice' && !state.counterResolution) throw new Error('Missing paused Spell resolution frame');
+  if (state.chainCleanup !== null && !state.counterResolution) {
     const frame = state.chainCleanup, first = state.chain[0], targetId = first?.targetRefs[0]?.instanceId;
     const target = targetId && state.cards[targetId], targetDef = target && registry.cards[target.definition.id];
     if (frame.mode !== 'live' || state.result || state.timing.window !== 'resolving' || state.timing.priorityPlayer !== null
@@ -155,8 +159,8 @@ export function assertDuelInvariants(state: DuelState, registry: Registry) {
     if (!pending || decision.id !== `${first!.id}:cleanup:${pending.playerId}` || decision.playerId !== pending.playerId
       || decision.min !== pending.min || decision.max !== pending.max
       || JSON.stringify(decision.optionIds) !== JSON.stringify(pending.optionIds)) throw new Error('Invalid cleanup decision');
-  } else if (state.pendingDecision?.kind === 'cleanup-order'
-    || (state.timing.window === 'resolving' && (state.chain.length !== 1 || state.pendingDecision?.kind !== 'effect-choice'))) throw new Error('Invalid paused resolution');
+  } else if (!state.counterResolution && (state.pendingDecision?.kind === 'cleanup-order'
+    || (state.timing.window === 'resolving' && (state.chain.length !== 1 || state.pendingDecision?.kind !== 'effect-choice')))) throw new Error('Invalid paused resolution');
   if (state.pendingTriggers.length && (state.chain.length || state.pendingDecision?.kind !== 'target' || state.timing.window !== 'trigger-order')) throw new Error('Invalid pending FLIP');
   if (state.timing.window === 'chain-response' && state.chain.length < 1) throw new Error('Missing Chain link');
   const seen = new Set<string>();
@@ -196,6 +200,7 @@ export function assertDuelInvariants(state: DuelState, registry: Registry) {
   } else if (state.chain.length > 1 && !state.chain.every(link => link.effectId === 'destroy-opponent-normal-or-flip-summoned-1000')) throw new Error('Unsupported mixed Chain');
   if (new Set(state.chain.map(link => link.id)).size !== state.chain.length || new Set(state.chain.map(link => link.source)).size !== state.chain.length) throw new Error('Duplicate Chain identity');
   for (const link of state.chain) {
+    const rootFinished = state.counterResolution?.stage === 'cleanup';
     const card = state.cards[link.source];
     const flip = card && registry.flipHandlers[card.definition.id];
     const counter = card && registry.counterTrapHandlers[card.definition.id];
@@ -221,7 +226,7 @@ export function assertDuelInvariants(state: DuelState, registry: Registry) {
       : discardTarget || counter
       ? link.costEvents.length === 1 && cost!.kind === 'cards-discarded' && cost!.details?.reason === 'activation-cost'
         && cost!.details?.playerId === link.controllerId && cost!.affectedInstances.length === 1
-        && paid && paid.ownerId === link.controllerId && paid.location.kind === 'graveyard'
+        && paid && paid.ownerId === link.controllerId && (rootFinished || paid.location.kind === 'graveyard')
         && Number.isSafeInteger(cost!.sequence) && cost!.sequence > 0 && cost!.sequence < state.eventSequence
       : link.costEvents.length === 0;
     const validSource = card && (counter
@@ -238,8 +243,8 @@ export function assertDuelInvariants(state: DuelState, registry: Registry) {
       : registry.spellHandlers[card.definition.id] && card.location.kind === 'spell-trap' && card.position === 'face-up' && link.effectId === 'normal-spell'
         && (discardTarget ? link.targetRefs.length === 1 && validDiscardTarget : positionTarget
           ? link.targetRefs.length === 1 && ref?.locationAtSelection.kind === 'monster' && ref.locationAtSelection.playerId !== link.controllerId
-            && target?.location.kind === 'monster' && target.controllerId !== link.controllerId && target.position === 'face-up-attack'
-            && JSON.stringify(target.location) === JSON.stringify(ref.locationAtSelection)
+            && (rootFinished || (target?.location.kind === 'monster' && target.controllerId !== link.controllerId && target.position === 'face-up-attack'
+            && JSON.stringify(target.location) === JSON.stringify(ref.locationAtSelection)))
           : !link.targetRefs.length));
     if (!validSource || link.controllerId !== card!.controllerId || link.spellSpeed !== (counter ? 3 : trap ? 2 : 1) || !validCosts || (!counter && link.respondingToLinkId !== undefined)
       || link.activationNegated || link.effectNegated || !['chain-response', 'resolving'].includes(state.timing.window)) throw new Error('Invalid supported Chain');
@@ -281,7 +286,7 @@ export function createDuel(registry: Registry, input: z.input<typeof StartSchema
   const players: [Mutable<PlayerState>, Mutable<PlayerState>] = [makePlayer(options.players[0], 0), makePlayer(options.players[1], 1)];
   const state: State = { id: options.duelId, format: { ...registry.format }, cardRegistryRevision: registry.revision,
     stateVersion: 0, eventSequence: 0, turn: { number: 1, activePlayer: active, phase: 'draw' }, players, cards,
-    chain: [], chainCleanup: null, spellResolution: null, pendingTriggers: [], modifiers: [], timing: { window: 'open', priorityPlayer: active, consecutivePasses: 0, lastRelevantEvents: [], requestedPhase: null },
+    chain: [], chainCleanup: null, spellResolution: null, counterResolution: null, pendingTriggers: [], modifiers: [], timing: { window: 'open', priorityPlayer: active, consecutivePasses: 0, lastRelevantEvents: [], requestedPhase: null },
     battle: null, pendingDecision: null, rng: rng.state(), result: null };
   const c: Context = { state, registry, events: [] };
   emit(c, 'duel-started');
@@ -578,10 +583,10 @@ function resolveTraps(c: Context) {
     cleanup.push(link.source);
   }
   c.state.chainCleanup = prepareChainCleanup(c.registry, c.state, cleanup) as State['chainCleanup'];
-  continueTrapCleanup(c);
+  continueChainCleanup(c);
 }
 
-function continueTrapCleanup(c: Context) {
+function continueChainCleanup(c: Context) {
   const frame = c.state.chainCleanup!;
   const decision = chainCleanupDecision(c.registry, c.state, frame);
   if (decision) {
@@ -590,8 +595,9 @@ function continueTrapCleanup(c: Context) {
   }
   Object.assign(c.state, commitChainCleanup(c.registry, c.state, frame));
   const sourceIds = [...frame.sourceIds];
-  c.state.chain = []; c.state.chainCleanup = null;
-  emit(c, 'sent-to-graveyard', sourceIds, { reason: 'trap-cleanup' });
+  const reason = c.state.counterResolution ? 'counter-chain-cleanup' : 'trap-cleanup';
+  c.state.chain = []; c.state.chainCleanup = null; c.state.counterResolution = null;
+  emit(c, 'sent-to-graveyard', sourceIds, { reason });
   emit(c, 'chain-resolved', [], {}, false); response(c, 'action-response');
 }
 
@@ -652,11 +658,20 @@ function spell(c: Context, actorId: string, action: Extract<EngineRequest['actio
   emit(c, 'spell-activated', [card.id]);
   c.state.timing.window = 'chain-response'; c.state.timing.priorityPlayer = other(c.state, actorId).id; c.state.timing.consecutivePasses = 0;
 }
-function finishSpell(c: Context) {
+function finishSpell(c: Context, continuation: CounterResolutionFrame | null = c.state.counterResolution) {
   const link = c.state.chain[0]!;
   rule(c.state.chain.length === 1 && link?.effectId === 'normal-spell'
     && (!c.state.spellResolution || (c.state.spellResolution.rootLinkId === link.id
       && c.state.spellResolution.rootSourceId === link.source)), 'illegal-timing', 'Finish the original supported Spell link');
+  if (continuation) {
+    rule(continuation.root.id === link.id && continuation.root.source === link.source, 'illegal-timing', 'Continue the original Counter root');
+    // The game ended during the root (LP or required draw). Do not ask a post-game
+    // owner choice or fabricate an order for two remaining sources. Keep that board.
+    if (c.state.result) { c.state.chain = []; c.state.counterResolution = null; return; }
+    c.state.counterResolution = checkpointCounterContinuation(c.registry, c.state, continuation, 'cleanup') as State['counterResolution'];
+    c.state.chainCleanup = prepareChainCleanup(c.registry, c.state, continuation.cleanupSourceIds) as State['chainCleanup'];
+    continueChainCleanup(c); return;
+  }
   c.state.chain.shift(); c.state.spellResolution = null;
   cleanupSingleSource(c, link.source, 'spell-cleanup');
   emit(c, 'chain-resolved', [], {}, false);
@@ -664,9 +679,14 @@ function finishSpell(c: Context) {
 }
 function resolveSpell(c: Context) {
   const link = c.state.chain[0]!;
+  const continuation = c.state.counterResolution;
   c.state.timing.window = 'resolving'; c.state.timing.priorityPlayer = null;
   const plan = planResolution(c.registry.spellHandlers[c.state.cards[link.source]!.definition.id], resolutionBoard(c, link.controllerId));
   if (plan.kind === 'choose-destruction') {
+    if (continuation) {
+      c.state.pendingDecision = { id: `${link.id}:choice`, playerId: plan.playerId, kind: 'effect-choice', optionIds: [...plan.optionIds], min: 1, max: 1 };
+      c.state.counterResolution = checkpointCounterContinuation(c.registry, c.state, continuation, 'root-choice') as State['counterResolution']; return;
+    }
     const frame = prepareSpellResolution(c.registry, c.state); c.state.spellResolution = frame as State['spellResolution'];
     c.state.pendingDecision = { id: `${link.id}:choice`, playerId: frame.choice.playerId, kind: 'effect-choice', optionIds: [...frame.choice.optionIds], min: 1, max: 1 }; return;
   }
@@ -708,7 +728,32 @@ function resolveSpell(c: Context) {
     }
   }
   if (plan.kind === 'destroy') { sendToGraveyard(c, plan.instanceId); emit(c, 'effect-destroyed', [plan.instanceId]); }
-  finishSpell(c);
+  finishSpell(c, continuation);
+}
+
+/** Trusted candidate integration seam, NOT a command/activation API. No server route
+ * calls this until the separate three-link review and activation gate are completed.
+ * Costs have already been paid. The input three-link state is deliberately not a
+ * stable gameplay state yet; the output IS invariant-checked and can resume choices
+ * using the normal engine/adapter. Caller must never supply client state/receipts.
+ */
+export function resolveCandidateCounterContinuation(registry: Registry, state: DuelState): { state: DuelState; events: readonly EngineEvent[] } {
+  const prepared = prepareCounterContinuation(registry, state);
+  // Validate the entire board plus the original activation before applying any effect.
+  // The two candidate Counter receipts were checked separately by prepare above.
+  assertDuelInvariants({ ...state, chain: [state.chain[0]!], timing: { ...state.timing, window: 'chain-response',
+    priorityPlayer: state.turn.activePlayer, consecutivePasses: 0 } }, registry);
+  const c: Context = { registry, events: [], state: structuredClone({ ...state, ...prepared.board,
+    chain: [prepared.activeRoot], counterResolution: prepared.journal }) as State };
+  emit(c, 'chain-link-resolving', [prepared.journal.seven.source], {}, false);
+  emit(c, 'trap-activation-negated', [prepared.journal.magic.source], { playerId: prepared.journal.magic.controllerId });
+  emit(c, 'trap-destroyed', [prepared.journal.magic.source], { playerId: prepared.journal.magic.controllerId });
+  emit(c, 'chain-link-negated-skipped', [prepared.journal.magic.source], {}, false);
+  emit(c, 'chain-link-resolving', [prepared.activeRoot.source], {}, false);
+  resolveSpell(c);
+  c.state.stateVersion++;
+  assertDuelInvariants(c.state, registry);
+  return { state: freeze(c.state), events: freeze(c.events) };
 }
 
 function pass(c: Context, actorId: string) {
@@ -737,7 +782,7 @@ function answer(c: Context, actorId: string, decisionId: string, ids: string[]) 
       'invalid-choice', 'Not your cleanup ordering decision');
     const next = orderChainCleanup(c.registry, { ...c.state, pendingDecision: null }, c.state.chainCleanup, actorId, ids);
     c.state.pendingDecision = null; c.state.chainCleanup = next as State['chainCleanup'];
-    continueTrapCleanup(c); return;
+    continueChainCleanup(c); return;
   }
   if (decision?.kind === 'target') {
     rule(decision.id === decisionId && decision.playerId === actorId && ids.length === 1 && decision.optionIds.includes(ids[0]!), 'invalid-choice', 'Not your FLIP target choice');

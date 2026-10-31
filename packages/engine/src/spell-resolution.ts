@@ -26,7 +26,7 @@ export function spellResolutionBoard(registry: Registry, state: DuelState, contr
 function pausedRoot(registry: Registry, state: DuelState) {
   const link = state.chain[0], source = link && state.cards[link.source], def = source && registry.cards[source.definition.id];
   if (state.cardRegistryRevision !== registry.revision || state.format.id !== registry.format.id || state.format.revision !== registry.format.revision
-    || state.result || state.chainCleanup !== null || state.pendingTriggers.length || state.chain.length !== 1
+    || state.result || state.chainCleanup !== null || state.counterResolution !== null || state.pendingTriggers.length || state.chain.length !== 1
     || state.timing.window !== 'resolving' || state.timing.priorityPlayer !== null
     || state.timing.consecutivePasses !== 2 || state.timing.requestedPhase !== null
     || !link || link.effectId !== 'normal-spell' || link.spellSpeed !== 1 || link.activationNegated || link.effectNegated

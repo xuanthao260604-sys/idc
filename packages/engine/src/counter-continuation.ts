@@ -1,15 +1,17 @@
 import { createHash } from 'node:crypto';
 import { z } from 'zod';
-import type { ChainLink, DuelState } from '../../protocol/src/duel.js';
+import type { ChainLink, DuelState, CounterResolutionFrame } from '../../protocol/src/duel.js';
 import { definitionFingerprint } from './spell-review.js';
 import { resolutionFingerprint } from './resolution-fingerprint.js';
 import { spellResolutionBoard } from './spell-resolution.js';
 import { planResolution } from './effect-plans.js';
+import { chainCleanupDecision } from './chain-cleanup.js';
 import { freeze } from './registry.js';
 import type { Registry } from './registry.js';
 
 // Candidate design pins from counter-to-counter-scope-review.json. NOT an active review
-// or activation permission. This module is not called by applyAction/availableActions.
+// or activation permission. applyAction only resumes a trusted candidate parent frame;
+// no activation route or availableActions creates the three-link input.
 export const COUNTER_CONTINUATION_PINS: Readonly<Record<string, string>> = freeze({
   'official:19523799': '834b4eee8335d5e15da679820bd89d728327b5b7f2dee1dd9be895a7e0180bac',
   'official:25880422': '93aa075ddd05f9f30b3e03f045c8720aa065ff3684a2b7d0590987d02912a3d5',
@@ -44,12 +46,12 @@ const link = z.strictObject({ id, controllerId: id, source: id, sourceAtActivati
   ]) })).max(1), respondingToLinkId: id.optional(), activationNegated: z.boolean(), effectNegated: z.boolean() });
 const JournalSchema = z.strictObject({ version: z.literal(1), kind: z.literal('normal-spell-magic-jammer-seven-tools-v1'),
   stage: z.enum(['before-root','root-choice','cleanup']), duelId:id, registryRevision:id,
-  turn: z.strictObject({number:integer.positive(),activePlayer:id,phase:z.enum(['main1','main2'])}), capturedSequence:integer.positive(),
+  turn: z.strictObject({number:integer.positive(),activePlayer:id,phase:z.enum(['main1','main2'])}), capturedSequence:integer.positive(), capturedStateVersion:integer,
   root:link, magic:link, seven:link, cleanupSourceIds:z.tuple([id,id]),
   magicResult:z.literal('activation-negated-destroyed-skipped'), sevenResult:z.literal('resolved-awaiting-cleanup'),
   entryFingerprint:id, boardFingerprint:id, integritySha256:z.string().regex(/^[a-f0-9]{64}$/),
 });
-export type CounterContinuationJournal = Readonly<z.infer<typeof JournalSchema>>;
+export type CounterContinuationJournal = CounterResolutionFrame;
 type Mutable<T> = { -readonly [K in keyof T]: Mutable<T[K]> };
 const same = (a: unknown,b: unknown) => JSON.stringify(a) === JSON.stringify(b);
 const check = (value: unknown, message: string): void => { if(!value) throw new Error(message); };
@@ -101,7 +103,7 @@ function assertJournal(registry:Registry,journal:CounterContinuationJournal) {
 export function prepareCounterContinuation(registry:Registry,state:DuelState) {
   check(state.cardRegistryRevision===registry.revision&&state.format.id===registry.format.id&&state.format.revision===registry.format.revision
     &&registry.format.id==='goat-2005-08-17'&&registry.format.revision===4&&!state.result&&!state.pendingDecision&&!state.pendingTriggers.length
-    &&state.chainCleanup===null&&state.spellResolution===null&&state.chain.length===3&&state.timing.window==='resolving'
+    &&state.chainCleanup===null&&state.spellResolution===null&&state.counterResolution===null&&state.chain.length===3&&state.timing.window==='resolving'
     &&state.timing.priorityPlayer===null&&state.timing.consecutivePasses===2&&state.timing.requestedPhase===null
     &&state.players.length===2&&state.players[0].id!==state.players[1].id&&state.players.some(p=>p.id===state.turn.activePlayer)
     &&state.players.every(p=>Number.isSafeInteger(p.lifePoints)&&p.lifePoints>0)&&['main1','main2'].includes(state.turn.phase),'Invalid candidate Counter resolution input');
@@ -128,7 +130,7 @@ export function prepareCounterContinuation(registry:Registry,state:DuelState) {
   const activeRoot=structuredClone(root),spentMagic={...structuredClone(magic),activationNegated:true};
   const patch={players,cards};
   const journal=seal({version:1,kind:'normal-spell-magic-jammer-seven-tools-v1',stage:'before-root',duelId:state.id,registryRevision:registry.revision,
-    turn,capturedSequence:state.eventSequence,root:activeRoot as z.infer<typeof link>,magic:spentMagic as z.infer<typeof link>,seven:structuredClone(seven) as z.infer<typeof link>,
+    turn,capturedSequence:state.eventSequence,capturedStateVersion:state.stateVersion,root:activeRoot,magic:spentMagic,seven:structuredClone(seven),
     cleanupSourceIds:[root.source,seven.source],magicResult:'activation-negated-destroyed-skipped',sevenResult:'resolved-awaiting-cleanup',
     entryFingerprint:resolutionFingerprint(state),boardFingerprint:resolutionFingerprint({...state,...patch,chain:[activeRoot]})});
   assertJournal(registry,journal);
@@ -141,6 +143,8 @@ export function prepareCounterContinuation(registry:Registry,state:DuelState) {
 export function assertCounterContinuation(registry:Registry,state:DuelState,journal:CounterContinuationJournal) {
   assertJournal(registry,journal);
   check(state.id===journal.duelId&&state.cardRegistryRevision===journal.registryRevision&&same(state.turn,journal.turn)&&!state.result
+    &&Number.isSafeInteger(state.eventSequence)&&state.eventSequence>=journal.capturedSequence
+    &&Number.isSafeInteger(state.stateVersion)&&state.stateVersion>=journal.capturedStateVersion
     &&state.timing.window==='resolving'&&state.timing.priorityPlayer===null&&state.timing.consecutivePasses===2&&state.timing.requestedPhase===null
     &&!state.pendingTriggers.length&&state.players.every(p=>Number.isSafeInteger(p.lifePoints)&&p.lifePoints>0)
     &&state.chain.length===1&&same(state.chain[0],journal.root)&&resolutionFingerprint(state)===journal.boardFingerprint,'Counter continuation board changed');
@@ -150,6 +154,30 @@ export function assertCounterContinuation(registry:Registry,state:DuelState,jour
   check(magic?.location.kind==='graveyard'&&magic.location.playerId===journal.magic.sourceAtActivation.ownerId
     &&state.players.find(p=>p.id===magic.ownerId)?.graveyard.includes(magic.id)&&same(magic,expectedMagic)&&same(seven,journal.seven.sourceAtActivation)
     &&same(root,journal.root.sourceAtActivation),'Counter continuation source lifecycle changed');
+}
+
+/** Stable server states have either the root's exact choice, or the final owner order.
+ * before-root is internal work within one transition and must never reach an adapter.
+ */
+export function assertCounterResolutionFrame(registry: Registry, state: DuelState) {
+  const frame = state.counterResolution;
+  check(frame && state.spellResolution === null, 'Missing or overlapping Counter resolution frame');
+  assertCounterContinuation(registry, state, frame!);
+  check(state.stateVersion > frame!.capturedStateVersion && state.eventSequence > frame!.capturedSequence, 'Counter continuation clock did not advance');
+  const decision = state.pendingDecision;
+  if (frame!.stage === 'root-choice') {
+    const plan = planResolution(registry.spellHandlers[frame!.root.sourceAtActivation.definition.id], spellResolutionBoard(registry, state, frame!.root.controllerId));
+    check(state.chainCleanup === null && plan.kind === 'choose-destruction' && decision?.kind === 'effect-choice'
+      && decision.id === `${frame!.root.id}:choice` && decision.playerId === plan.playerId
+      && decision.min === 1 && decision.max === 1 && same(decision.optionIds, plan.optionIds), 'Invalid Counter root choice');
+  } else {
+    check(frame!.stage === 'cleanup' && state.chainCleanup?.mode === 'live'
+      && same(state.chainCleanup.sourceIds, frame!.cleanupSourceIds), 'Invalid Counter cleanup context');
+    const pending = chainCleanupDecision(registry, { ...state, pendingDecision: null }, state.chainCleanup!);
+    check(pending && decision?.kind === 'cleanup-order' && decision.id === `${frame!.root.id}:cleanup:${pending.playerId}`
+      && decision.playerId === pending.playerId && decision.min === pending.min && decision.max === pending.max
+      && same(decision.optionIds, pending.optionIds), 'Invalid Counter cleanup decision');
+  }
 }
 
 /** Trusted root resolver checkpoints its own completed work; NOT validation that an

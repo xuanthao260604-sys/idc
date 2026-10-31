@@ -119,7 +119,7 @@ export function createRegistry(definitions: unknown, formatInput: FormatDefiniti
     if (supportedSpell) spellHandlers[card.id] = SpellHandlerSchema.parse(officialReview?.handler ?? binding);
   }
   const reference = { id: format.id, revision: format.revision };
-  const revision = createHash('sha256').update(JSON.stringify({ engineCapabilityVersion: 'two-link-counters-paused-spell-and-trap-cleanup-v3', format, rules, cards, spellHandlers, reviews, flipHandlers, flipReviews, trapHandlers, trapReviews, counterTrapHandlers, counterReviews })).digest('hex');
+  const revision = createHash('sha256').update(JSON.stringify({ engineCapabilityVersion: 'two-link-counters-candidate-root-continuation-v4', format, rules, cards, spellHandlers, reviews, flipHandlers, flipReviews, trapHandlers, trapReviews, counterTrapHandlers, counterReviews })).digest('hex');
   return freeze({ format: reference, revision, cards, spellHandlers, flipHandlers, trapHandlers, counterTrapHandlers, unsupportedIds, rules });
 }
 

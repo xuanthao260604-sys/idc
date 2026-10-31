@@ -97,7 +97,7 @@ export interface ChainCleanupFrame {
     readonly order: readonly string[] | null;
   }[];
 }
-/** A paused supported Normal Spell. A future Counter frame needs its own reviewed variant. */
+/** Paused single-link Normal Spell; multi-source continuation has a separate frame. */
 export interface SpellResolutionFrame {
   readonly version: 1;
   readonly kind: 'normal-spell-single-link-v1';
@@ -109,6 +109,28 @@ export interface SpellResolutionFrame {
   readonly cleanupSourceIds: readonly [InstanceId];
   readonly boardFingerprint: string;
   readonly choice: { readonly playerId: PlayerId; readonly optionIds: readonly InstanceId[] };
+}
+/** Server-owned continuation of the specific candidate three-link pattern.
+ * Receipt costs are historical, not a demand to pay them again. Never project this.
+ */
+export interface CounterResolutionFrame {
+  readonly version: 1;
+  readonly kind: 'normal-spell-magic-jammer-seven-tools-v1';
+  readonly stage: 'before-root' | 'root-choice' | 'cleanup';
+  readonly duelId: string;
+  readonly registryRevision: string;
+  readonly turn: { number: number; activePlayer: PlayerId; phase: 'main1' | 'main2' };
+  readonly capturedSequence: number;
+  readonly capturedStateVersion: number;
+  readonly root: ChainLink;
+  readonly magic: ChainLink;
+  readonly seven: ChainLink;
+  readonly cleanupSourceIds: readonly [InstanceId, InstanceId];
+  readonly magicResult: 'activation-negated-destroyed-skipped';
+  readonly sevenResult: 'resolved-awaiting-cleanup';
+  readonly entryFingerprint: string;
+  readonly boardFingerprint: string;
+  readonly integritySha256: string;
 }
 export interface DuelState {
   id: string;
@@ -122,6 +144,7 @@ export interface DuelState {
   chain: readonly ChainLink[];
   chainCleanup: ChainCleanupFrame | null; // Resolved Trap links stay in chain until their batch commits.
   spellResolution: SpellResolutionFrame | null; // Server-only; never spread into a player view.
+  counterResolution: CounterResolutionFrame | null; // Candidate resolver context; activation remains gated.
   pendingTriggers: readonly PendingTrigger[];
   modifiers: readonly Modifier[];
   timing: {
