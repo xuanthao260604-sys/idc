@@ -1,5 +1,10 @@
 # Bản ghi nhiều lần trả LP của Seven Tools — thành phần nội bộ
 
+**Mốc tiếp nối 31/10:** ledger đã được game gọi trong đúng
+[Trap Hole → Seven → Seven](seven-response.md), qua review v3. Nội dung và
+kết quả dưới đây là lịch sử mốc chuẩn bị độc lập; các fixture hai Seven cũ
+vẫn kiểm bằng gate v2, không đổi thành bằng chứng activation v3.
+
 Mốc 31/10/2026: chuẩn bị packages/engine/src/seven-lp-cost-ledger.ts cho
 phần Chain tiếp theo. **Chưa được gọi từ game.** Không thêm activation,
 review đang hoạt động, DuelState field, UI hoặc kiểu phản hồi mới.

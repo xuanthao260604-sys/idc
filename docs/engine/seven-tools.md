@@ -1,5 +1,8 @@
 # Seven Tools — trả LP và phủ nhận Trap Hole — 29/10/2026
 
+**Review hiện hành:** [v3 thêm Trap Hole → Seven → Seven](seven-response.md),
+giữ pattern Phép → Magic → Seven. Các mốc v1/v2 dưới đây giữ để đối chiếu.
+
 **Mốc mới 31/10:** đã [mở pattern ba liên kết](three-link-counter.md) qua activation thật
 và review Seven v2. Nội dung/kết quả bên dưới giữ mốc triển khai trước đó.
 

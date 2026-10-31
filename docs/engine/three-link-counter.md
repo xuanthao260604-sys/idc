@@ -1,5 +1,8 @@
 # Phép thường → Magic Jammer → Seven Tools
 
+**Review hiện hành:** [v3 thêm Trap Hole → Seven → Seven](seven-response.md)
+và giữ nguyên pattern Phép này. Nội dung v2 dưới đây là lịch sử mốc mở đầu.
+
 **Mốc tiếp nối 31/10:** đã bổ sung [audit phục hồi/tái kích hoạt](three-link-interaction-audit.md)
 qua nhiều lượt. Nội dung và kết quả dưới đây giữ mốc mở pattern đầu tiên.
 
