@@ -1,5 +1,10 @@
 # Journal Counter đã xử lý — thành phần độc lập
 
+**Cập nhật 31/10:** đã [nối parent resolver](counter-root-resolution.md) để xử lý
+root và tiếp tục choice/cleanup qua engine/adapter. Chưa mở activation link 3.
+Các mô tả “chưa được game gọi” bên dưới ghi scope tại mốc 30/10 ban đầu.
+Journal nay có thêm capturedStateVersion; parent kiểm đồng hồ/version.
+
 Mốc 30/10/2026: thêm packages/engine/src/counter-continuation.ts cho
 phần tiếp theo của [chuỗi ba liên kết](../rules/counter-to-counter-review.md).
 Thành phần này giữ receipt của Magic Jammer bị phủ nhận/phá, Seven Tools

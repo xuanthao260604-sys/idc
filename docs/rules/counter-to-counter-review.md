@@ -1,5 +1,8 @@
 # Review Counter phản hồi Counter — 30/10/2026
 
+**Cập nhật 31/10:** [parent resolver ứng viên](../engine/counter-root-resolution.md)
+đã nối journal với Phép gốc và cleanup; activation link 3 vẫn chưa mở.
+
 Cập nhật: [review bổ sung về thứ tự cleanup](chain-cleanup-order-review.md)
 đã chốt quyết định bằng tổng hợp nguồn. Phần pending trong hồ sơ JSON và
 nội dung dưới đây giữ trạng thái của mốc rà soát đầu, không thay kết luận
