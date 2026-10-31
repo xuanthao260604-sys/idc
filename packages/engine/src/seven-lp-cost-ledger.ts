@@ -63,7 +63,7 @@ function readPayments(registry:Registry,state:DuelState) {
     &&state.cardRegistryRevision===registry.revision&&state.format.id===registry.format.id&&state.format.revision===registry.format.revision
     &&registry.format.id==='goat-2005-08-17'&&registry.format.revision===4&&!state.result&&!state.pendingDecision&&!state.pendingTriggers.length
     &&state.chainCleanup===null&&state.spellResolution===null&&state.counterResolution===null
-    &&state.trapCounterResolution===null
+    &&state.trapCounterResolution===null&&state.fourLinkCounterResolution===null
     &&state.timing.requestedPhase===null&&['main1','main2'].includes(state.turn.phase)
     &&((state.timing.window==='chain-response'&&state.players.some(p=>p.id===state.timing.priorityPlayer)&&state.timing.consecutivePasses<2)
       ||(state.timing.window==='resolving'&&state.timing.priorityPlayer===null&&state.timing.consecutivePasses===2))

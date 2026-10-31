@@ -8,7 +8,7 @@ type Mutable<T>={-readonly[K in keyof T]:Mutable<T[K]>};
 /** Three real accepted activations; link four is explicitly rejected, then modeled
  * solely as a candidate receipt. This helper is never imported by the beta product.
  */
-export function setupFourLinkCounterCandidate(registry:Registry,rootDef='official:66788016',actor='a',selfMagic=false,selfFirst=true,selfTop=false,phase:'main1'|'main2'='main1',fromSet=false,largeLP=false,deckRemaining?:0|1){
+export function setupFourLinkBoard(registry:Registry,rootDef='official:66788016',actor='a',selfMagic=false,selfFirst=true,selfTop=false,phase:'main1'|'main2'='main1',fromSet=false,largeLP=false,deckRemaining?:0|1,initialLP?:number){
   const other=actor==='a'?'b':'a',magicOwner=selfMagic?actor:other,firstOwner=selfFirst?actor:other,topOwner=selfTop?actor:other;
   const deck=[...Object.keys(registry.cards),'official:03819470','official:05053103'];
   const initial=structuredClone(createDuel(registry,{duelId:'four-link-candidate',players:[{id:'a',deck},{id:'b',deck}],firstPlayerId:actor,seedHex:'d6'.repeat(32)}).state) as Mutable<DuelState>;
@@ -25,10 +25,16 @@ export function setupFourLinkCounterCandidate(registry:Registry,rootDef='officia
   const first=move('official:03819470',firstOwner,'spell-trap',4),top=move('official:03819470',topOwner,'spell-trap',3);
   const targets=[move('official:05053103',other,'monster',0),move('official:05053103',other,'monster',1)];
   const handler=registry.spellHandlers[rootDef]!.handler,hasCost=['discard-destroy-target-monster','discard-return-own-graveyard-monster'].includes(handler);
-  const rootCost=hasCost?move('official:32274490',actor,'hand'):null,magicCost=move('official:15025844',magicOwner,'hand');
-  for(const p of initial.players)if(p.id===firstOwner||p.id===topOwner)p.lifePoints=largeLP?8000:firstOwner===topOwner?2001:1001;
+  const rootCost=hasCost?move('official:32274490',actor,'hand'):null,magicCost=move('official:54652250',magicOwner,'hand');
+  for(const p of initial.players)if(p.id===firstOwner||p.id===topOwner)p.lifePoints=initialLP??(largeLP?8000:firstOwner===topOwner?2001:1001);
   if(deckRemaining!==undefined){const p=initial.players.find(p=>p.id===actor)!;for(const id of p.deck.splice(deckRemaining)){p.hand.push(id);initial.cards[id]!.location={kind:'hand',playerId:actor};}}
-  let accepted:DuelState=initial;
+  return{state:initial,rootDef,phase,fromSet,handler,hasCost,actor,other,magicOwner,firstOwner,topOwner,root,magic,first,top,targets,rootCost,magicCost};
+}
+export function setupFourLinkPrefix(...args:Parameters<typeof setupFourLinkBoard>){
+  const [registry]=args,f=setupFourLinkBoard(...args);
+  const {actor,other,magicOwner,firstOwner,topOwner,root,magic,first,top,targets,rootCost,magicCost,fromSet,handler,hasCost}=f;
+  let accepted:DuelState=f.state;
+
   const act=(who:string,action:EngineAction)=>{const r=applyAction(registry,accepted,{actorId:who,expectedStateVersion:accepted.stateVersion,action});if(!r.accepted)throw new Error(r.message);assertDuelInvariants(r.state,registry);accepted=r.state;};
   if(fromSet){act(actor,{type:'set-spell',instanceId:root,slot:0});while(accepted.timing.window!=='open')act(accepted.timing.priorityPlayer!,{type:'pass'});}
   act(actor,{type:'activate-spell',instanceId:root,slot:0,...(rootCost?{discardId:rootCost}:{}),...(hasCost||handler==='target-opposing-attack-to-defense'?{targetId:handler==='discard-return-own-graveyard-monster'?rootCost!:targets[0]!}:{})});
@@ -37,6 +43,11 @@ export function setupFourLinkCounterCandidate(registry:Registry,rootDef='officia
   if(accepted.timing.priorityPlayer!==firstOwner)act(accepted.timing.priorityPlayer!,{type:'pass'});
   act(firstOwner,{type:'activate-lp-counter-trap',instanceId:first,respondingToLinkId:accepted.chain[1]!.id});
   if(accepted.timing.priorityPlayer!==topOwner)act(accepted.timing.priorityPlayer!,{type:'pass'});
+  return{state:accepted,actor,other,magicOwner,firstOwner,topOwner,root,magic,first,top,targets,rootCost,magicCost};
+}
+export function setupFourLinkCounterCandidate(...args:Parameters<typeof setupFourLinkPrefix>){
+  const [registry]=args,f=setupFourLinkPrefix(...args);
+  const {state:accepted,actor,other,magicOwner,firstOwner,topOwner,root,magic,first,top,targets,rootCost,magicCost}=f;
   const denied=applyAction(registry,accepted,{actorId:topOwner,expectedStateVersion:accepted.stateVersion,action:{type:'activate-lp-counter-trap',instanceId:top,respondingToLinkId:accepted.chain[2]!.id}});
   if(denied.accepted||denied.state!==accepted)throw new Error('The fourth link must remain blocked in gameplay');
   const state=structuredClone(accepted) as Mutable<DuelState>,p=state.players.find(p=>p.id===topOwner)!,beforeLP=p.lifePoints,seq=state.eventSequence+1;

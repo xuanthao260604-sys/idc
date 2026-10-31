@@ -75,7 +75,7 @@ export function availableActions(registry: Registry, state: DuelState, projectio
       offer({ type: 'activate-counter-trap', cardHandle: c.handle, discardHandle: discard.handle, chainHandle },
         { type: 'activate-counter-trap', instanceId: id, discardId: resolve(discard.handle), respondingToLinkId: projection.resolveChainHandle(chainHandle, state, actorId) });
     }
-    if (registry.counterTrapHandlers[def.id] === 'pay-1000-negate-trap-hole-activation' && [1,2].includes(view.chain.length)) {
+    if (registry.counterTrapHandlers[def.id] === 'pay-1000-negate-trap-hole-activation' && [1,2,3].includes(view.chain.length)) {
       const chainHandle = view.chain.at(-1)!.chainHandle;
       offer({ type: 'activate-lp-counter-trap', cardHandle: c.handle, chainHandle },
         { type: 'activate-lp-counter-trap', instanceId: id, respondingToLinkId: projection.resolveChainHandle(chainHandle, state, actorId) });

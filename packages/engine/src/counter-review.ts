@@ -7,18 +7,18 @@ export const CounterReviewsSchema = z.array(z.strictObject({
   revision: z.number().int().positive(),
   format: z.strictObject({ id: z.string().min(1), revision: z.number().int().positive() }),
   status: z.literal('reviewed-for-supported-scope'),
-  scope: z.enum(['counter-trap-normal-spell-activation-v1', 'counter-trap-trap-hole-activation-v1', 'counter-trap-trap-hole-or-magic-jammer-v2', 'counter-trap-reviewed-three-link-patterns-v3']),
+  scope: z.enum(['counter-trap-normal-spell-activation-v1', 'counter-trap-trap-hole-activation-v1', 'counter-trap-trap-hole-or-magic-jammer-v2', 'counter-trap-reviewed-three-link-patterns-v3', 'counter-trap-reviewed-four-link-patterns-v4']),
   handler: z.enum(['discard-negate-normal-spell-activation', 'pay-1000-negate-trap-hole-activation']),
-  continuation: z.enum(['normal-spell-magic-jammer-seven-tools-v1','reviewed-three-link-counter-patterns-v3']).optional(),
+  continuation: z.enum(['normal-spell-magic-jammer-seven-tools-v1','reviewed-three-link-counter-patterns-v3','reviewed-four-link-counter-patterns-v4']).optional(),
   evidence: z.array(EvidenceSchema).min(1), notes: z.string().min(1),
 })).superRefine((reviews, ctx) => {
   if (new Set(reviews.map(r => r.cardId)).size !== reviews.length) ctx.addIssue({ code: 'custom', message: 'Duplicate Counter Trap review' });
   for (const r of reviews) {
-    const v3=r.scope==='counter-trap-reviewed-three-link-patterns-v3', extended = v3||r.scope === 'counter-trap-trap-hole-or-magic-jammer-v2';
+    const v4=r.scope==='counter-trap-reviewed-four-link-patterns-v4',v3=r.scope==='counter-trap-reviewed-three-link-patterns-v3', extended = v4||v3||r.scope === 'counter-trap-trap-hole-or-magic-jammer-v2';
     if ((r.scope !== 'counter-trap-normal-spell-activation-v1') !== (r.handler === 'pay-1000-negate-trap-hole-activation')
       || extended !== (r.continuation !== undefined)
-      || (extended && (r.cardId !== 'official:03819470' || r.revision < (v3?3:2)
-        ||r.continuation!==(v3?'reviewed-three-link-counter-patterns-v3':'normal-spell-magic-jammer-seven-tools-v1'))))
+      || (extended && (r.cardId !== 'official:03819470' || r.revision < (v4?4:v3?3:2)
+        ||r.continuation!==(v4?'reviewed-four-link-counter-patterns-v4':v3?'reviewed-three-link-counter-patterns-v3':'normal-spell-magic-jammer-seven-tools-v1'))))
       ctx.addIssue({ code: 'custom', message: 'Counter Trap handler/continuation requires its reviewed scope' });
   }
 });

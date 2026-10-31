@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { z } from 'zod';
-import type { ChainLink, DuelState } from '../../protocol/src/duel.js';
+import type { ChainLink, DuelState, FourLinkCounterJournal } from '../../protocol/src/duel.js';
 import { assertCounterContinuationGraph, COUNTER_CONTINUATION_PINS, FieldActivationLinkSchema, SEVEN_MAGIC_EFFECT_ID } from './counter-continuation.js';
 import { captureSevenLPCosts, assertSevenLPCostHistory } from './seven-lp-cost-ledger.js';
 import type { SevenLPCostLedger } from './seven-lp-cost-ledger.js';
@@ -11,20 +11,15 @@ import type { Registry } from './registry.js';
 
 // Candidate accounting/resolution ONLY. No active review or activation gate uses this ID.
 export const FOUR_LINK_CANDIDATE_EFFECT_ID='pay-1000-negate-seven-tools-after-magic-jammer-candidate-v1';
+export const FOUR_LINK_EFFECT_ID='pay-1000-negate-seven-tools-after-magic-jammer-v1';
+export const FOUR_LINK_REVIEW='reviewed-four-link-counter-patterns-v4';
 const SEVEN='official:03819470';
 const id=z.string().min(1),integer=z.number().int().nonnegative().safe(),sha=z.string().regex(/^[a-f0-9]{64}$/);
-const Schema=z.strictObject({version:z.literal(1),kind:z.literal('normal-spell-magic-seven-seven-candidate-v1'),duelId:id,registryRevision:id,
+const Schema=z.strictObject({version:z.literal(1),kind:z.enum(['normal-spell-magic-seven-seven-candidate-v1','normal-spell-magic-seven-seven-v1']),duelId:id,registryRevision:id,
   turn:z.strictObject({number:integer.positive(),activePlayer:id,phase:z.enum(['main1','main2'])}),capturedStateVersion:integer,capturedSequence:integer.positive(),
   root:FieldActivationLinkSchema,magic:FieldActivationLinkSchema,seven:FieldActivationLinkSchema,top:FieldActivationLinkSchema,
   lpCosts:z.unknown(),cleanupSourceIds:z.tuple([id,id]),entryFingerprint:sha,boardFingerprint:sha,integritySha256:sha});
-export interface FourLinkCounterCandidateJournal {
-  readonly version:1;readonly kind:'normal-spell-magic-seven-seven-candidate-v1';readonly duelId:string;readonly registryRevision:string;
-  readonly turn:{readonly number:number;readonly activePlayer:string;readonly phase:'main1'|'main2'};
-  readonly capturedStateVersion:number;readonly capturedSequence:number;
-  readonly root:ChainLink;readonly magic:ChainLink;readonly seven:ChainLink;readonly top:ChainLink;
-  readonly lpCosts:SevenLPCostLedger;readonly cleanupSourceIds:readonly[string,string];
-  readonly entryFingerprint:string;readonly boardFingerprint:string;readonly integritySha256:string;
-}
+export type FourLinkCounterCandidateJournal = FourLinkCounterJournal;
 type Mutable<T>={-readonly[K in keyof T]:Mutable<T[K]>};
 function check(v:unknown,m:string):asserts v {if(!v)throw new Error(m);}
 const same=(a:unknown,b:unknown)=>JSON.stringify(a)===JSON.stringify(b);
@@ -47,7 +42,7 @@ function zones(registry:Registry,state:DuelState){
   }
   check(seen.size===Object.keys(state.cards).length,'Unreferenced candidate card');
 }
-function graph(registry:Registry,root:ChainLink,magic:ChainLink,seven:ChainLink,top:ChainLink,turn:FourLinkCounterCandidateJournal['turn'],seq:number,spent:boolean){
+function graph(registry:Registry,root:ChainLink,magic:ChainLink,seven:ChainLink,top:ChainLink,turn:FourLinkCounterCandidateJournal['turn'],seq:number,spent:boolean,reviewed=false){
   // Validate the historical activation graph, while separately requiring the exact
   // two negations produced by the candidate. No LP is reconstructed or paid here.
   check(root.activationNegated===spent&&seven.activationNegated===spent,'Invalid candidate spent flags');
@@ -57,7 +52,7 @@ function graph(registry:Registry,root:ChainLink,magic:ChainLink,seven:ChainLink,
     &&definitionFingerprint(registry.cards[SEVEN]!)===COUNTER_CONTINUATION_PINS[SEVEN]
     &&top.source===top.sourceAtActivation.id&&top.controllerId===top.sourceAtActivation.controllerId
     &&top.sourceAtActivation.location.playerId===top.controllerId&&top.spellSpeed===3
-    &&top.effectId===FOUR_LINK_CANDIDATE_EFFECT_ID&&top.respondingToLinkId===seven.id&&!top.activationNegated&&!top.effectNegated&&!top.targetRefs.length
+    &&top.effectId===(reviewed?FOUR_LINK_EFFECT_ID:FOUR_LINK_CANDIDATE_EFFECT_ID)&&top.respondingToLinkId===seven.id&&!top.activationNegated&&!top.effectNegated&&!top.targetRefs.length
     &&top.sourceAtActivation.markers.setOnTurn!==null&&top.sourceAtActivation.markers.setOnTurn<turn.number,'Invalid fourth candidate link');
   check(new Set([root,magic,seven,top].map(l=>l.id)).size===4&&new Set([root,magic,seven,top].map(l=>l.source)).size===4,'Duplicate four-link identity');
 }
@@ -79,17 +74,18 @@ function rootTargets(registry:Registry,state:DuelState,root:ChainLink){
     if(handler==='target-opposing-attack-to-defense')check(c.controllerId!==root.controllerId&&c.position==='face-up-attack','Invalid candidate position target');}
 }
 
-/** Trusted isolated preparation. All activation costs must ALREADY be present. The live
- * engine still rejects link four. Does not emit game events, pay, resolve root effects,
- * create a stable DuelState, or enable an activation/review/cleanup UI.
+/** Shared atomic work for candidate and reviewed entry points. All costs are already
+ * paid. Does not emit events, pay, resolve root effects or itself create a stable
+ * DuelState. Only the separate live engine gate may authorize an activation.
  */
-export function prepareFourLinkCounterCandidate(registry:Registry,state:DuelState){
+function prepare(registry:Registry,state:DuelState,reviewed:boolean){
+  if(reviewed)check(registry.counterContinuations[SEVEN]===FOUR_LINK_REVIEW,'Unreviewed four-link resolution');
   check(state.chain.length===4&&state.timing.window==='resolving'&&state.timing.priorityPlayer===null&&state.timing.consecutivePasses===2
     &&state.timing.requestedPhase===null&&!state.result&&!state.pendingDecision&&!state.pendingTriggers.length
-    &&state.chainCleanup===null&&state.spellResolution===null&&state.counterResolution===null&&state.trapCounterResolution===null,'Invalid four-link candidate context');
+    &&state.chainCleanup===null&&state.spellResolution===null&&state.counterResolution===null&&state.trapCounterResolution===null&&state.fourLinkCounterResolution===null,'Invalid four-link candidate context');
   const [root,magic,seven,top]=state.chain as readonly[ChainLink,ChainLink,ChainLink,ChainLink];
   const turn={...state.turn,phase:state.turn.phase as 'main1'|'main2'};
-  graph(registry,root,magic,seven,top,turn,state.eventSequence,false);zones(registry,state);costsStillPaid(state,root,magic);rootTargets(registry,state,root);
+  graph(registry,root,magic,seven,top,turn,state.eventSequence,false,reviewed);zones(registry,state);costsStillPaid(state,root,magic);rootTargets(registry,state,root);
   for(const l of [root,magic,seven,top])check(same(state.cards[l.source],l.sourceAtActivation),'Candidate source no longer matches activation');
   const lpCosts=captureSevenLPCosts(registry,state);check(lpCosts.payments.length===2,'Two candidate Seven payments required');
   const players=structuredClone(state.players) as Mutable<DuelState['players']>,cards=structuredClone(state.cards);
@@ -99,28 +95,30 @@ export function prepareFourLinkCounterCandidate(registry:Registry,state:DuelStat
   };
   destroy(seven.source);destroy(root.source);
   const board={players,cards},remainingChain=[structuredClone(magic)];
-  const body:Omit<FourLinkCounterCandidateJournal,'integritySha256'>={version:1,kind:'normal-spell-magic-seven-seven-candidate-v1',duelId:state.id,registryRevision:registry.revision,turn,
+  const body:Omit<FourLinkCounterCandidateJournal,'integritySha256'>={version:1,kind:reviewed?'normal-spell-magic-seven-seven-v1':'normal-spell-magic-seven-seven-candidate-v1',duelId:state.id,registryRevision:registry.revision,turn,
     capturedStateVersion:state.stateVersion,capturedSequence:state.eventSequence,root:{...structuredClone(root),activationNegated:true},magic:structuredClone(magic),
     seven:{...structuredClone(seven),activationNegated:true},top:structuredClone(top),lpCosts,cleanupSourceIds:[magic.source,top.source],
     entryFingerprint:resolutionFingerprint(state),boardFingerprint:resolutionFingerprint({...state,...board,chain:remainingChain})};
   const journal=freeze({...body,integritySha256:digest(body)});
-  assertFourLinkCounterCandidate(registry,{...state,...board,chain:remainingChain},journal);
+  assertCheckpoint(registry,{...state,...board,chain:remainingChain},journal,reviewed);
   return freeze({board,remainingChain,journal,steps:[{resolver:top.source,negatedDestroyedSkipped:seven.source},{resolver:magic.source,negatedDestroyedSkipped:root.source}]});
 }
 
-/** Validate a server-owned candidate checkpoint. Hashes detect drift, not authenticity.
- * A future parent still needs an active review, legal activation and private state/UI.
+/** Shared server-owned checkpoint validation. Hashes detect drift, not authenticity.
+ * The live parent separately owns the review gate, activation and private cleanup pause.
  */
-export function assertFourLinkCounterCandidate(registry:Registry,state:DuelState,j:FourLinkCounterCandidateJournal){
+function assertCheckpoint(registry:Registry,state:DuelState,j:FourLinkCounterCandidateJournal,reviewed:boolean){
+  check(j.kind===(reviewed?'normal-spell-magic-seven-seven-v1':'normal-spell-magic-seven-seven-candidate-v1'),'Wrong four-link checkpoint kind');
+  if(reviewed)check(registry.counterContinuations[SEVEN]===FOUR_LINK_REVIEW,'Unreviewed four-link checkpoint');
   check(Schema.safeParse(j).success,'Malformed four-link candidate journal');const {integritySha256,...body}=j;
   check(integritySha256===digest(body),'Four-link candidate journal changed');assertSevenLPCostHistory(j.lpCosts);
   check(state.format.id===registry.format.id&&state.format.revision===registry.format.revision&&registry.format.id==='goat-2005-08-17'&&registry.format.revision===4
     &&state.id===j.duelId&&state.cardRegistryRevision===j.registryRevision&&registry.revision===j.registryRevision&&same(state.turn,j.turn)
     &&Number.isSafeInteger(state.stateVersion)&&state.stateVersion>=j.capturedStateVersion&&Number.isSafeInteger(state.eventSequence)&&state.eventSequence>=j.capturedSequence
     &&state.timing.window==='resolving'&&state.timing.priorityPlayer===null&&state.timing.consecutivePasses===2&&state.timing.requestedPhase===null
-    &&!state.result&&!state.pendingDecision&&!state.pendingTriggers.length&&state.chainCleanup===null&&state.spellResolution===null&&state.counterResolution===null&&state.trapCounterResolution===null
+    &&!state.result&&!state.pendingDecision&&!state.pendingTriggers.length&&state.chainCleanup===null&&state.spellResolution===null&&state.counterResolution===null&&state.trapCounterResolution===null&&state.fourLinkCounterResolution===null
     &&same(state.chain,[j.magic])&&same(j.cleanupSourceIds,[j.magic.source,j.top.source])&&resolutionFingerprint(state)===j.boardFingerprint,'Four-link candidate checkpoint drift');
-  graph(registry,j.root,j.magic,j.seven,j.top,j.turn,j.capturedSequence,true);zones(registry,state);costsStillPaid(state,j.root,j.magic);rootTargets(registry,state,j.root);
+  graph(registry,j.root,j.magic,j.seven,j.top,j.turn,j.capturedSequence,true,reviewed);zones(registry,state);costsStillPaid(state,j.root,j.magic);rootTargets(registry,state,j.root);
   check(j.lpCosts.duelId===state.id&&j.lpCosts.registryRevision===registry.revision&&same(j.lpCosts.turn,state.turn)
     &&same(j.lpCosts.playerIds,state.players.map(p=>p.id))&&j.lpCosts.capturedStateVersion===j.capturedStateVersion&&j.lpCosts.capturedSequence===j.capturedSequence,'Candidate LP context drift');
   check(same(j.lpCosts.payments,[j.seven,j.top].map(l=>{const e=l.costEvents[0]!,d=e.details!;return{linkId:l.id,sourceId:l.source,playerId:l.controllerId,sequence:e.sequence,simultaneousGroup:e.simultaneousGroup,amount:d.amount,beforeLP:d.beforeLP,afterLP:d.afterLP};})),'Candidate LP receipts changed');
@@ -128,3 +126,10 @@ export function assertFourLinkCounterCandidate(registry:Registry,state:DuelState
   for(const l of [j.magic,j.top])check(same(state.cards[l.source],l.sourceAtActivation),'Candidate surviving source changed');
   for(const l of [j.root,j.seven])check(same(state.cards[l.source],{...l.sourceAtActivation,location:{kind:'graveyard',playerId:l.sourceAtActivation.ownerId},controllerId:l.sourceAtActivation.ownerId,position:'face-up'}),'Candidate destroyed source changed');
 }
+
+/** Frozen candidate API: old effect ID and no activation permission. */
+export const prepareFourLinkCounterCandidate=(registry:Registry,state:DuelState)=>prepare(registry,state,false);
+export const assertFourLinkCounterCandidate=(registry:Registry,state:DuelState,j:FourLinkCounterCandidateJournal)=>assertCheckpoint(registry,state,j,false);
+/** Live gate remains separate; these entry points additionally demand the active v4 review. */
+export const prepareFourLinkCounterResolution=(registry:Registry,state:DuelState)=>prepare(registry,state,true);
+export const assertFourLinkCounterResolution=(registry:Registry,state:DuelState,j:FourLinkCounterJournal)=>assertCheckpoint(registry,state,j,true);

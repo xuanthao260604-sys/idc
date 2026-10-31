@@ -154,6 +154,15 @@ export interface TrapCounterResolutionFrame {
   readonly occurrence:EventRef; readonly lpCosts:SevenLPCostLedger;
   readonly cleanupSourceIds:readonly[string,string]; readonly boardFingerprint:string; readonly integritySha256:string;
 }
+/** Private checkpoint of the exact four-link Spell/Counter pattern; never project. */
+export interface FourLinkCounterJournal {
+  readonly version:1;readonly kind:'normal-spell-magic-seven-seven-candidate-v1'|'normal-spell-magic-seven-seven-v1';readonly duelId:string;readonly registryRevision:string;
+  readonly turn:{readonly number:number;readonly activePlayer:string;readonly phase:'main1'|'main2'};
+  readonly capturedStateVersion:number;readonly capturedSequence:number;
+  readonly root:ChainLink;readonly magic:ChainLink;readonly seven:ChainLink;readonly top:ChainLink;
+  readonly lpCosts:SevenLPCostLedger;readonly cleanupSourceIds:readonly[string,string];
+  readonly entryFingerprint:string;readonly boardFingerprint:string;readonly integritySha256:string;
+}
 export interface DuelState {
   id: string;
   format: DefinitionRef;
@@ -168,6 +177,7 @@ export interface DuelState {
   spellResolution: SpellResolutionFrame | null; // Server-only; never spread into a player view.
   counterResolution: CounterResolutionFrame | null; // Candidate resolver context; activation remains gated.
   trapCounterResolution: TrapCounterResolutionFrame | null;
+  fourLinkCounterResolution: FourLinkCounterJournal | null;
   pendingTriggers: readonly PendingTrigger[];
   modifiers: readonly Modifier[];
   timing: {

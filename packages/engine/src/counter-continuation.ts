@@ -27,7 +27,7 @@ export const COUNTER_CONTINUATION_PINS: Readonly<Record<string, string>> = freez
   'official:77414722': 'dcbfa15ffcecc32dd594e2794ab516642bc5ede743942717406b95f955e946bf',
 });
 const MAGIC = 'official:77414722', SEVEN = 'official:03819470';
-export const supportsSpellCounterContinuation=(registry:Registry,id:string)=>['normal-spell-magic-jammer-seven-tools-v1','reviewed-three-link-counter-patterns-v3'].includes(registry.counterContinuations[id]??'');
+export const supportsSpellCounterContinuation=(registry:Registry,id:string)=>['normal-spell-magic-jammer-seven-tools-v1','reviewed-three-link-counter-patterns-v3','reviewed-four-link-counter-patterns-v4'].includes(registry.counterContinuations[id]??'');
 /** Additional reviewed prefix, never permission inferred from Spell Speed alone. */
 export function normalSpellMagicPrefix(registry: Registry, state: DuelState): boolean {
   const [root, magic] = state.chain;
@@ -117,7 +117,7 @@ function assertJournal(registry:Registry,journal:CounterContinuationJournal) {
 export function prepareCounterContinuation(registry:Registry,state:DuelState) {
   check(state.cardRegistryRevision===registry.revision&&state.format.id===registry.format.id&&state.format.revision===registry.format.revision
     &&registry.format.id==='goat-2005-08-17'&&registry.format.revision===4&&!state.result&&!state.pendingDecision&&!state.pendingTriggers.length
-    &&state.chainCleanup===null&&state.spellResolution===null&&state.counterResolution===null&&state.trapCounterResolution===null&&state.chain.length===3&&state.timing.window==='resolving'
+    &&state.chainCleanup===null&&state.spellResolution===null&&state.counterResolution===null&&state.trapCounterResolution===null&&state.fourLinkCounterResolution===null&&state.chain.length===3&&state.timing.window==='resolving'
     &&state.timing.priorityPlayer===null&&state.timing.consecutivePasses===2&&state.timing.requestedPhase===null
     &&state.players.length===2&&state.players[0].id!==state.players[1].id&&state.players.some(p=>p.id===state.turn.activePlayer)
     &&state.players.every(p=>Number.isSafeInteger(p.lifePoints)&&p.lifePoints>0)&&['main1','main2'].includes(state.turn.phase),'Invalid candidate Counter resolution input');
@@ -156,7 +156,7 @@ export function prepareCounterContinuation(registry:Registry,state:DuelState) {
  */
 export function assertCounterContinuation(registry:Registry,state:DuelState,journal:CounterContinuationJournal) {
   assertJournal(registry,journal);
-  check(state.id===journal.duelId&&state.cardRegistryRevision===journal.registryRevision&&same(state.turn,journal.turn)&&!state.result
+  check(state.fourLinkCounterResolution===null&&state.id===journal.duelId&&state.cardRegistryRevision===journal.registryRevision&&same(state.turn,journal.turn)&&!state.result
     &&Number.isSafeInteger(state.eventSequence)&&state.eventSequence>=journal.capturedSequence
     &&Number.isSafeInteger(state.stateVersion)&&state.stateVersion>=journal.capturedStateVersion
     &&state.timing.window==='resolving'&&state.timing.priorityPlayer===null&&state.timing.consecutivePasses===2&&state.timing.requestedPhase===null

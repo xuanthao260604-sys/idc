@@ -92,7 +92,7 @@ describe('reviewed three-link activation and actual Pass resolver',()=>{
     const v1=createRegistry(runtime.cards,goat200508Format,{},runtime.effectReviews.spells,runtime.effectReviews.flips,runtime.effectReviews.traps,[...runtime.effectReviews.counters.filter(r=>r.cardId!==sevenId),...old]);
     const f=setupCounterPrefix(v1),r=applyAction(v1,f.state,{actorId:f.sevenOwner,expectedStateVersion:f.state.stateVersion,action:{type:'activate-lp-counter-trap',instanceId:f.seven,respondingToLinkId:f.state.chain[1]!.id}});
     expect(r.accepted).toBe(false);expect(r.state).toBe(f.state);expect(v1.counterContinuations).toEqual({});
-    expect(registry.counterContinuations[sevenId]).toBe('reviewed-three-link-counter-patterns-v3');
+    expect(registry.counterContinuations[sevenId]).toBe('reviewed-four-link-counter-patterns-v4');
     expect(runtime.effectReviews.counters.filter(r=>r.cardId===sevenId)).toHaveLength(1);
     expect(()=>createRegistry(runtime.cards,goat200508Format,{},runtime.effectReviews.spells,runtime.effectReviews.flips,runtime.effectReviews.traps,[...runtime.effectReviews.counters,...old])).toThrow();
   });
@@ -102,13 +102,13 @@ describe('reviewed three-link activation and actual Pass resolver',()=>{
     if(mode==='format')rs[0].format.revision++;if(mode==='definition')rs[0].definitionSha256='0'.repeat(64);
     expect(()=>createRegistry(runtime.cards,goat200508Format,{},runtime.effectReviews.spells,runtime.effectReviews.flips,runtime.effectReviews.traps,rs)).toThrow();
   });
-  it('blocks a fourth Seven and Magic responding to a Trap without touching either cost',()=>{
+  it('permits reviewed fourth Seven while blocking Magic responding to a Trap',()=>{
     const f=setupCounterPrefix(registry),paid=pay(f),s=structuredClone(paid.state) as Mutable<DuelState>,who=s.timing.priorityPlayer!,p=s.players.find(p=>p.id===who)!;
     const id=p.deck.find(id=>s.cards[id]!.definition.id===sevenId)!;p.deck.splice(p.deck.indexOf(id),1);p.spellsTraps[3]=id;s.cards[id]!.location={kind:'spell-trap',playerId:who,slot:3};s.cards[id]!.position='face-down';s.cards[id]!.markers.setOnTurn=2;
-    for(const action of [{type:'activate-lp-counter-trap',instanceId:id,respondingToLinkId:s.chain[2]!.id},{type:'activate-counter-trap',instanceId:f.magic,discardId:f.magicCost,respondingToLinkId:s.chain[2]!.id}]){
-      const before=structuredClone(s),r=applyAction(registry,s,{actorId:who,expectedStateVersion:s.stateVersion,action});expect(r.accepted).toBe(false);expect(s).toEqual(before);
+    for(const [i,action] of ([{type:'activate-lp-counter-trap',instanceId:id,respondingToLinkId:s.chain[2]!.id},{type:'activate-counter-trap',instanceId:f.magic,discardId:f.magicCost,respondingToLinkId:s.chain[2]!.id}]as const).entries()){
+      const before=structuredClone(s),r=applyAction(registry,s,{actorId:who,expectedStateVersion:s.stateVersion,action});expect(r.accepted).toBe(i===0);expect(s).toEqual(before);
     }
-    expect(createCommandAdapter(registry,s).getView(who,true).availableActions!.filter(a=>a.type.includes('counter-trap'))).toEqual([]);
+    expect(createCommandAdapter(registry,s).getView(who,true).availableActions!.filter(a=>a.type.includes('counter-trap')).map(a=>a.type)).toEqual(['activate-lp-counter-trap']);
   });
   it.each(['a','b'])('uses latest-link handles, actual activation, refresh and receipts for %s',actor=>{
     const f=setupCounterPrefix(registry,'official:66788016',actor),room=createCommandAdapter(registry,f.state);let serial=0;

@@ -1,4 +1,7 @@
 import { describe,expect,it } from 'vitest';
+import {readFileSync} from 'node:fs';
+import {createRegistry} from '../packages/engine/src/registry.js';
+import {goat200508Format} from '../packages/card-data/src/formats/goat-2005-08-17.js';
 import { createHash } from 'node:crypto';
 import { loadRuntimeCatalog } from './runtime-catalog.js';
 import { setupFourLinkCounterCandidate } from './fixtures/four-link-counter-candidate.js';
@@ -8,7 +11,8 @@ import { createCommandAdapter } from '../packages/engine/src/command-adapter.js'
 import { prepareChainCleanup,chainCleanupDecision,orderChainCleanup,commitChainCleanup } from '../packages/engine/src/chain-cleanup.js';
 import type { DuelState } from '../packages/protocol/src/duel.js';
 type Mutable<T>={-readonly[K in keyof T]:Mutable<T[K]>};
-const {registry}=loadRuntimeCatalog();
+const runtime=loadRuntimeCatalog();
+const registry=createRegistry(runtime.cards,goat200508Format,{},runtime.effectReviews.spells,runtime.effectReviews.flips,runtime.effectReviews.traps,[...runtime.effectReviews.counters.filter(r=>r.cardId!=='official:03819470'),...JSON.parse(readFileSync('data/reviews/seven-tools-v3.effects.json','utf8'))]);
 const roots=Object.keys(registry.spellHandlers);
 function prepare(f:ReturnType<typeof setupFourLinkCounterCandidate>){const before=structuredClone(f.state),p=prepareFourLinkCounterCandidate(registry,f.state);expect(f.state).toEqual(before);expect(Object.isFrozen(f.state.cards[f.root])).toBe(false);return p;}
 describe('isolated four-link Spell Magic Seven Seven candidate, not enabled gameplay',()=>{

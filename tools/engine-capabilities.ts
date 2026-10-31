@@ -35,7 +35,7 @@ export function createCapabilityReport(root = projectRoot) {
       unsupportedIds: registry.unsupportedIds,
       scope: [...new Set(reviewedEffects.map(review => review.scope))].sort(),
       reviewedEffects,
-      limitations: ['only reviewed summon Traps, reviewed two-link Counters and the two reviewed three-link Counter patterns, or passes as responses', 'no general mixed Chain/negation', 'no general SEGOC/modifiers/replacements', 'no online multiplayer or persistent matches'],
+      limitations: ['only reviewed summon Traps, reviewed two-link and three-link Counters, and pinned Normal Spell -> Magic Jammer -> Seven -> Seven, or passes as responses', 'no general mixed Chain/negation', 'no general SEGOC/modifiers/replacements', 'no online multiplayer or persistent matches'],
     },
   };
 }
