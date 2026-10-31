@@ -96,7 +96,7 @@ describe('Seven Tools reviewed two-link Trap Hole activation negation',()=>{
     const set=act(f.state,f.owner,{type:'set-trap',instanceId:f.counter,slot:4});expect(set.state.cards[f.counter]!.markers.setOnTurn).toBe(f.state.turn.number);
     const s=trapChain(f,settle(set.state));expect(reject(s,f.owner,action(f,s))).toMatchObject({code:'illegal-timing'});
   });
-  it('does not start on a Summon alone, negate a Spell/Magic Jammer, or respond to a second Trap Hole or another Seven Tools',()=>{
+  it('rejects unreviewed prefixes while accepting the v2 Magic Jammer prefix',()=>{
     const f=fixture(),trap2=f.move('Trap Hole',f.other,'spell-trap',2),counter2=f.move('Seven Tools of the Bandit',f.other,'spell-trap',4),magic=f.move('Magic Jammer',f.other,'spell-trap',3),burn=f.move('Ookazi',f.actor,'hand'),cost=f.move('Skull Servant',f.other,'hand');
     reject(f.state,f.actor,{type:'activate-lp-counter-trap',instanceId:f.counter,respondingToLinkId:'no-chain'});
     const summoned=act(f.state,f.actor,f.summon).state;reject(summoned,f.actor,{type:'activate-lp-counter-trap',instanceId:f.counter,respondingToLinkId:'no-chain'});
@@ -105,7 +105,7 @@ describe('Seven Tools reviewed two-link Trap Hole activation negation',()=>{
     let two=act(s,f.actor,{type:'pass'}).state;two=act(two,f.other,{type:'activate-trap',instanceId:trap2,targetId:f.target}).state;reject(two,f.actor,action(f,two));
     const spellState=act(f.state,f.actor,{type:'activate-spell',instanceId:burn,slot:0}).state;
     reject(spellState,f.other,{type:'activate-lp-counter-trap',instanceId:counter2,respondingToLinkId:spellState.chain[0]!.id});
-    const mc=act(spellState,f.other,{type:'activate-counter-trap',instanceId:magic,discardId:cost,respondingToLinkId:spellState.chain[0]!.id}).state;reject(mc,f.actor,{type:'activate-lp-counter-trap',instanceId:f.counter,respondingToLinkId:mc.chain[1]!.id});
+    const mc=act(spellState,f.other,{type:'activate-counter-trap',instanceId:magic,discardId:cost,respondingToLinkId:spellState.chain[0]!.id}).state;expect(act(mc,f.actor,{type:'activate-lp-counter-trap',instanceId:f.counter,respondingToLinkId:mc.chain[1]!.id}).state.chain).toHaveLength(3);
   });
   it('Pass without Seven Tools still destroys the monster; resolved Counter does not reopen the old Summon timing',()=>{
     const f=fixture(),trap2=f.move('Trap Hole',f.other,'spell-trap',2),s=trapChain(f);

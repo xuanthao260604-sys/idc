@@ -7,7 +7,7 @@ import { freeze, validateDeck } from './registry.js';
 import { planResolution } from './effect-plans.js';
 import { prepareChainCleanup, chainCleanupDecision, orderChainCleanup, commitChainCleanup } from './chain-cleanup.js';
 import { spellResolutionBoard, prepareSpellResolution, assertSpellResolution } from './spell-resolution.js';
-import { prepareCounterContinuation, checkpointCounterContinuation, assertCounterResolutionFrame } from './counter-continuation.js';
+import { prepareCounterContinuation, checkpointCounterContinuation, assertCounterResolutionFrame, normalSpellMagicPrefix, SEVEN_MAGIC_EFFECT_ID } from './counter-continuation.js';
 import type { SupportedMonster, Registry } from './registry.js';
 
 type Mutable<T> = { -readonly [K in keyof T]: Mutable<T[K]> };
@@ -191,7 +191,15 @@ export function assertDuelInvariants(state: DuelState, registry: Registry) {
     p.monsters.forEach((id, slot) => { if (id !== null) visit(id, p, 'monster', slot as Slot); });
   }
   const counterLinks = state.chain.filter(link => registry.counterTrapHandlers[state.cards[link.source]?.definition.id ?? '']);
-  if (counterLinks.length) {
+  const threeLink = state.chain.length === 3 && state.chain[2]!.effectId === SEVEN_MAGIC_EFFECT_ID;
+  if (threeLink) {
+    if (registry.counterContinuations[state.chain[2]!.sourceAtActivation.definition.id] !== 'normal-spell-magic-jammer-seven-tools-v1'
+      || state.timing.window !== 'chain-response' || state.timing.priorityPlayer === null
+      || state.timing.consecutivePasses > 1 || state.timing.requestedPhase !== null) throw new Error('Unreviewed three-link Counter Chain');
+    // Reuse strict graph, full pins, paid-cost and source validation without moving
+    // anything in the live state. Resolving is only a local validation snapshot.
+    prepareCounterContinuation(registry, { ...state, timing: { ...state.timing, window: 'resolving', priorityPlayer: null, consecutivePasses: 2 } });
+  } else if (counterLinks.length) {
     const lpCounter = registry.counterTrapHandlers[state.cards[counterLinks[0]!.source]!.definition.id] === 'pay-1000-negate-trap-hole-activation';
     if (counterLinks.length !== 1 || state.chain.length !== 2 || counterLinks[0] !== state.chain[1]
       || state.chain[1]!.respondingToLinkId !== state.chain[0]!.id
@@ -199,7 +207,7 @@ export function assertDuelInvariants(state: DuelState, registry: Registry) {
         || state.turn.activePlayer !== state.chain[0]!.controllerId || registry.cards[state.cards[state.chain[0]!.source]?.definition.id ?? '']?.origin !== 'official' || !['main1', 'main2'].includes(state.turn.phase))) throw new Error('Invalid supported Counter Chain');
   } else if (state.chain.length > 1 && !state.chain.every(link => link.effectId === 'destroy-opponent-normal-or-flip-summoned-1000')) throw new Error('Unsupported mixed Chain');
   if (new Set(state.chain.map(link => link.id)).size !== state.chain.length || new Set(state.chain.map(link => link.source)).size !== state.chain.length) throw new Error('Duplicate Chain identity');
-  for (const link of state.chain) {
+  for (const link of threeLink ? state.chain.slice(0, 2) : state.chain) {
     const rootFinished = state.counterResolution?.stage === 'cleanup';
     const card = state.cards[link.source];
     const flip = card && registry.flipHandlers[card.definition.id];
@@ -537,8 +545,10 @@ function activateCounterTrap(c: Context, actorId: string, id: string, discardId:
 }
 function activateLPCounterTrap(c: Context, actorId: string, id: string, respondingToLinkId: string) {
   rule(!c.state.pendingDecision && c.state.timing.priorityPlayer === actorId, 'not-your-action', 'Wait for response priority');
-  rule(c.state.timing.window === 'chain-response' && c.state.chain.length === 1 && trapHolePrefix(c.state, c.registry)
-    && c.state.chain[0]!.id === respondingToLinkId, 'illegal-timing', 'Respond directly to the supported Trap Hole activation');
+  const extended = c.registry.counterContinuations[c.state.cards[id]?.definition.id ?? ''] === 'normal-spell-magic-jammer-seven-tools-v1'
+    && normalSpellMagicPrefix(c.registry, c.state);
+  rule(c.state.timing.window === 'chain-response' && ((c.state.chain.length === 1 && trapHolePrefix(c.state, c.registry)) || extended)
+    && c.state.chain.at(-1)!.id === respondingToLinkId, 'illegal-timing', 'Respond directly to a reviewed Trap activation');
   const p = mutablePlayer(c.state, actorId), card = c.state.cards[id];
   rule(card && c.registry.counterTrapHandlers[card.definition.id] === 'pay-1000-negate-trap-hole-activation'
     && card.controllerId === actorId && card.location.kind === 'spell-trap' && card.location.playerId === actorId
@@ -551,7 +561,7 @@ function activateLPCounterTrap(c: Context, actorId: string, id: string, respondi
   emit(c, 'life-points-paid', [], { playerId: actorId, amount: 1000, beforeLP, afterLP: p.lifePoints, reason: 'activation-cost' }, false);
   const cost = c.events.at(-1)!; card.position = 'face-up';
   c.state.chain.push({ id: `${c.state.id}:lp-counter-link:${c.state.eventSequence + 1}`, controllerId: actorId, source: id,
-    sourceAtActivation: structuredClone(card), effectId: 'pay-1000-negate-trap-hole-activation', spellSpeed: 3,
+    sourceAtActivation: structuredClone(card), effectId: extended ? SEVEN_MAGIC_EFFECT_ID : 'pay-1000-negate-trap-hole-activation', spellSpeed: 3,
     costEvents: [{ ...cost, affectedInstances: [], details: { ...cost.details } }], targetRefs: [], respondingToLinkId,
     activationNegated: false, effectNegated: false });
   emit(c, 'counter-trap-activated', [id], {}, false);
@@ -731,26 +741,29 @@ function resolveSpell(c: Context) {
   finishSpell(c, continuation);
 }
 
-/** Trusted candidate integration seam, NOT a command/activation API. No server route
- * calls this until the separate three-link review and activation gate are completed.
- * Costs have already been paid. The input three-link state is deliberately not a
- * stable gameplay state yet; the output IS invariant-checked and can resume choices
- * using the normal engine/adapter. Caller must never supply client state/receipts.
+/** Resolve the reviewed three-link pattern within the current action. Activation and
+ * building-state invariants have already gated it; this never pays costs again.
  */
-export function resolveCandidateCounterContinuation(registry: Registry, state: DuelState): { state: DuelState; events: readonly EngineEvent[] } {
-  const prepared = prepareCounterContinuation(registry, state);
+function resolveThreeLinkCounter(c: Context) {
+  const { registry, state } = c, prepared = prepareCounterContinuation(registry, state);
   // Validate the entire board plus the original activation before applying any effect.
-  // The two candidate Counter receipts were checked separately by prepare above.
+  // The two Counter receipts were checked separately by prepare above.
   assertDuelInvariants({ ...state, chain: [state.chain[0]!], timing: { ...state.timing, window: 'chain-response',
     priorityPlayer: state.turn.activePlayer, consecutivePasses: 0 } }, registry);
-  const c: Context = { registry, events: [], state: structuredClone({ ...state, ...prepared.board,
-    chain: [prepared.activeRoot], counterResolution: prepared.journal }) as State };
+  c.state = structuredClone({ ...state, ...prepared.board, chain: [prepared.activeRoot], counterResolution: prepared.journal }) as State;
   emit(c, 'chain-link-resolving', [prepared.journal.seven.source], {}, false);
   emit(c, 'trap-activation-negated', [prepared.journal.magic.source], { playerId: prepared.journal.magic.controllerId });
   emit(c, 'trap-destroyed', [prepared.journal.magic.source], { playerId: prepared.journal.magic.controllerId });
   emit(c, 'chain-link-negated-skipped', [prepared.journal.magic.source], {}, false);
   emit(c, 'chain-link-resolving', [prepared.activeRoot.source], {}, false);
   resolveSpell(c);
+}
+/** Isolated trusted seam retained for component tests; gameplay uses the same resolver
+ * inside the second Pass transition, with one version increment and one receipt.
+ */
+export function resolveCandidateCounterContinuation(registry: Registry, state: DuelState): { state: DuelState; events: readonly EngineEvent[] } {
+  const c: Context = { registry, events: [], state: structuredClone(state) as State };
+  resolveThreeLinkCounter(c);
   c.state.stateVersion++;
   assertDuelInvariants(c.state, registry);
   return { state: freeze(c.state), events: freeze(c.events) };
@@ -767,7 +780,9 @@ function pass(c: Context, actorId: string) {
   }
   const phase = c.state.timing.requestedPhase;
   if (c.state.chain.length) {
-    if (c.state.chain.length === 2 && c.registry.counterTrapHandlers[c.state.cards[c.state.chain[1]!.source]!.definition.id]) resolveCounterChain(c);
+    if (c.state.chain.length === 3 && c.state.chain[2]!.effectId === SEVEN_MAGIC_EFFECT_ID) {
+      c.state.timing.window = 'resolving'; c.state.timing.priorityPlayer = null; resolveThreeLinkCounter(c);
+    } else if (c.state.chain.length === 2 && c.registry.counterTrapHandlers[c.state.cards[c.state.chain[1]!.source]!.definition.id]) resolveCounterChain(c);
     else if (c.registry.trapHandlers[c.state.cards[c.state.chain[0]!.source]!.definition.id]) resolveTraps(c);
     else if (c.state.chain[0]!.effectId === 'normal-spell') resolveSpell(c); else resolveFlip(c);
   }

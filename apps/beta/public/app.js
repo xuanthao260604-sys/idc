@@ -111,7 +111,7 @@ function renderChain() {
   $('chain-links').replaceChildren(...links.map((link, index) => {
     const item = node('li');
     item.append(node('strong', `Liên kết ${index + 1} · ${names[link.controllerId]} · ${label(visibleCard(link.sourceHandle))}`));
-    item.append(node('p', `Tốc độ ${link.spellSpeed} · ${link.targetHandles.length ? 'Mục tiêu: ' + link.targetHandles.map(optionLabel).join('; ') : 'Không chọn mục tiêu khi kích hoạt.'}`));
+    item.append(node('p', link.resolved ? 'Hiệu ứng đã xử lý; chờ cleanup.' : `Tốc độ ${link.spellSpeed} · ${link.targetHandles.length ? 'Mục tiêu: ' + link.targetHandles.map(optionLabel).join('; ') : 'Không chọn mục tiêu khi kích hoạt.'}`));
     if (link.respondingToChainHandle) item.append(node('p', `Phản hồi liên kết ${links.findIndex(l => l.chainHandle === link.respondingToChainHandle) + 1} · Không chọn mục tiêu lá bài.`));
     const controls = node('div', undefined, 'chain-card-controls');
     const source = button('Đọc lá nguồn', () => showChainCard(link.sourceHandle, `Liên kết ${index + 1} · Lá nguồn · ${optionLabel(link.sourceHandle)}`));
@@ -356,7 +356,7 @@ function cardSupport(d) {
   const list = node('dl');
   for (const [key, label, value] of statuses) { const description = node('dd', value); description.dataset.support = key; list.append(node('dt', label), description); }
   section.append(list, node('div', 'Dữ liệu và khả năng trong game được theo dõi riêng. Chưa hỗ trợ mọi tương tác trong Yu-Gi-Oh!', 'support-note'));
-  if (d.support?.runtime === 'lp-counter') section.append(node('div', 'Hiện chỉ phản hồi Trap Hole ở liên kết đầu tiên. Cần trên 1000 LP và đã úp từ lượt trước.', 'support-note'));
+  if (d.support?.runtime === 'lp-counter') section.append(node('div', 'Phản hồi Trap Hole ở liên kết đầu, hoặc Magic Jammer ở liên kết 2 sau một Phép thường đã hỗ trợ. Cần trên 1000 LP và đã úp từ lượt trước.', 'support-note'));
   return section;
 }
 function cardInfo(panel, card) {

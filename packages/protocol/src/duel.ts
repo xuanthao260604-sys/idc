@@ -186,7 +186,7 @@ export interface PlayerView {
   ownMonsterActivity: readonly { cardHandle: string; summonedOrSetThisTurn: boolean; positionChangedThisTurn: boolean; attackDeclaredThisTurn: boolean }[];
   /** Response priority is suspended (null) while a mandatory decision is pending. */
   timing: { window: DuelState['timing']['window']; priorityPlayer: PlayerId | null };
-  chain: readonly { chainHandle: string; respondingToChainHandle?: string; controllerId: PlayerId; sourceHandle: string; targetHandles: readonly string[]; spellSpeed: 1 | 2 | 3 }[];
+  chain: readonly { chainHandle: string; respondingToChainHandle?: string; controllerId: PlayerId; sourceHandle: string; targetHandles: readonly string[]; spellSpeed: 1 | 2 | 3; resolved?: true }[];
   battle: { step: NonNullable<DuelState['battle']>['step']; damageTiming: DamageTiming | null; attackerHandle: string | null; targetHandle: string | 'direct' | null } | null;
   selfHand: readonly VisibleCard[];
   opponentHandCount: number;

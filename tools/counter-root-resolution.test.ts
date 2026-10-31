@@ -1,3 +1,6 @@
+import { readFileSync } from 'node:fs';
+import { createRegistry } from '../packages/engine/src/registry.js';
+import { goat200508Format } from '../packages/card-data/src/formats/goat-2005-08-17.js';
 import { describe, expect, it } from 'vitest';
 import { loadRuntimeCatalog } from './runtime-catalog.js';
 import { createDuel, applyAction, assertDuelInvariants, resolveCandidateCounterContinuation } from '../packages/engine/src/duel.js';
@@ -7,7 +10,11 @@ import type { DuelState, Slot } from '../packages/protocol/src/duel.js';
 import type { EngineAction } from '../packages/engine/src/actions.js';
 import type { DuelAction } from '../packages/protocol/src/commands.js';
 type Mutable<T> = { -readonly [K in keyof T]: Mutable<T[K]> };
-const { registry } = loadRuntimeCatalog();
+const oldRuntime = loadRuntimeCatalog();
+// Preserve the candidate-only boundary test under the historical v1 review.
+const registry = createRegistry(oldRuntime.cards, goat200508Format, {}, oldRuntime.effectReviews.spells, oldRuntime.effectReviews.flips, oldRuntime.effectReviews.traps, [
+  ...oldRuntime.effectReviews.counters.filter(r=>r.cardId!=='official:03819470'), ...JSON.parse(readFileSync('data/reviews/seven-tools.effects.json','utf8')),
+]);
 const roots = Object.keys(registry.spellHandlers);
 function act(state: DuelState, actorId: string, action: EngineAction) {
   const before = structuredClone(state), r = applyAction(registry, state, { actorId, expectedStateVersion: state.stateVersion, action });

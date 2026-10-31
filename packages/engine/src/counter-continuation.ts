@@ -9,9 +9,8 @@ import { chainCleanupDecision } from './chain-cleanup.js';
 import { freeze } from './registry.js';
 import type { Registry } from './registry.js';
 
-// Candidate design pins from counter-to-counter-scope-review.json. NOT an active review
-// or activation permission. applyAction only resumes a trusted candidate parent frame;
-// no activation route or availableActions creates the three-link input.
+// Definition pins from the frozen design. Activation separately requires the active
+// v2 review continuation gate; speed/subtype alone never enables this pattern.
 export const COUNTER_CONTINUATION_PINS: Readonly<Record<string, string>> = freeze({
   'official:19523799': '834b4eee8335d5e15da679820bd89d728327b5b7f2dee1dd9be895a7e0180bac',
   'official:25880422': '93aa075ddd05f9f30b3e03f045c8720aa065ff3684a2b7d0590987d02912a3d5',
@@ -28,8 +27,21 @@ export const COUNTER_CONTINUATION_PINS: Readonly<Record<string, string>> = freez
   'official:77414722': 'dcbfa15ffcecc32dd594e2794ab516642bc5ede743942717406b95f955e946bf',
 });
 const MAGIC = 'official:77414722', SEVEN = 'official:03819470';
-/** Proposed receipt identity; deliberately not the live Trap Hole-only handler. */
-export const CANDIDATE_SEVEN_EFFECT_ID = 'pay-1000-negate-magic-jammer-activation-v1';
+/** Additional reviewed prefix, never permission inferred from Spell Speed alone. */
+export function normalSpellMagicPrefix(registry: Registry, state: DuelState): boolean {
+  const [root, magic] = state.chain;
+  return state.chain.length === 2 && !!root && !!magic && root.effectId === 'normal-spell' && root.spellSpeed === 1
+    && root.controllerId === state.turn.activePlayer && ['main1','main2'].includes(state.turn.phase)
+    && magic.effectId === 'discard-negate-normal-spell-activation' && magic.spellSpeed === 3 && magic.respondingToLinkId === root.id
+    && [root,magic].every(l => {
+      const def = registry.cards[l.sourceAtActivation.definition.id];
+      return !!def && definitionFingerprint(def) === COUNTER_CONTINUATION_PINS[def.id];
+    }) && magic.sourceAtActivation.definition.id === MAGIC;
+}
+/** Distinct receipt identity from the retained Trap Hole-only base handler. */
+export const SEVEN_MAGIC_EFFECT_ID = 'pay-1000-negate-magic-jammer-activation-v1';
+/** Compatibility alias for the original isolated component tests. */
+export const CANDIDATE_SEVEN_EFFECT_ID = SEVEN_MAGIC_EFFECT_ID;
 const id = z.string().min(1), integer = z.number().int().nonnegative().safe();
 const ref = z.strictObject({ id, revision: integer });
 const fieldLocation = z.strictObject({ kind: z.literal('spell-trap'), playerId: id, slot: integer.max(4) });
@@ -96,9 +108,9 @@ function assertJournal(registry:Registry,journal:CounterContinuationJournal) {
   check(same(journal.cleanupSourceIds,[journal.root.source,journal.seven.source]),'Invalid continuation cleanup sources');
 }
 
-/** Candidate resolver component only. Trusted input has three activation receipts with
+/** Trusted resolver component. Input has three activation receipts with
  * costs ALREADY paid. Returns an atomic board patch and spent-link journal, not a stable
- * DuelState, activation API, or a new gameplay capability. No LP/discard payment occurs.
+ * DuelState or activation API. No LP/discard payment occurs; activation gates live in duel.ts.
  */
 export function prepareCounterContinuation(registry:Registry,state:DuelState) {
   check(state.cardRegistryRevision===registry.revision&&state.format.id===registry.format.id&&state.format.revision===registry.format.revision

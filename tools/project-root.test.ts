@@ -68,7 +68,7 @@ describe('Cross-platform project resource paths', () => {
     fixture.expectPreserved();
   });
   it.each([
-    'data/generated/seven-tools.json', 'data/reviews/seven-tools.effects.json',
+    'data/generated/seven-tools.json', 'data/reviews/seven-tools-v2.effects.json',
     'data/generated/magic-jammer.json', 'data/reviews/magic-jammer.effects.json',
     'data/generated/ookazi.json', 'data/reviews/ookazi.effects.json',
     'data/generated/block-attack.json', 'data/reviews/block-attack.effects.json',

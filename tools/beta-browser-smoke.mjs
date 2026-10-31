@@ -12,6 +12,8 @@ import { createRegistry } from '../dist/packages/engine/src/registry.js';
 import { createDuel, assertDuelInvariants } from '../dist/packages/engine/src/duel.js';
 import { goat200508Format } from '../dist/packages/card-data/src/formats/goat-2005-08-17.js';
 const read = async p => JSON.parse(await readFile(join(projectRoot, p), 'utf8'));
+const threeLinkArg = process.argv.find(arg=>/^--three-link=[ab]:(choice|heal|cost|lethal|draw)$/.test(arg));
+const threeLink = threeLinkArg?.split('=')[1].split(':') ?? null;
 const cleanupOrderArg = process.argv.find(arg => /^--cleanup-order=[ab]$/.test(arg));
 const cleanupOrder = cleanupOrderArg?.split('=')[1] ?? null;
 const magicArg=process.argv.find(arg=>/^--magic-jammer=[ab]:(self|opponent):(damage|cost|pot|choice)$/.test(arg));
@@ -52,10 +54,11 @@ const reincarnationMode = reincarnationArg?.split('=')[1] ?? null;
 const deckDraftGuard = process.argv.includes('--deck-draft-guard');
 const deckSaveCheck = process.argv.includes('--deck-save-check');
 const deckOverview = deckSaveCheck || deckDraftGuard || process.argv.includes('--deck-overview');
-const expanded = cleanupOrder !== null || sevenInteractions !== null || sevenMode !== null || responseGuide !== null || magicInteractions !== null || magicMode !== null || ookaziInteractions !== null || ookazi !== null || choiceIdentities || graveyardFilters || handSorting || faithBattle !== null || magicianFaith || deckOverview || earthquake || blockAttack || reincarnationMode !== null || tributeDoomed || hammerShot || smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
+const expanded = threeLink !== null || cleanupOrder !== null || sevenInteractions !== null || sevenMode !== null || responseGuide !== null || magicInteractions !== null || magicMode !== null || ookaziInteractions !== null || ookazi !== null || choiceIdentities || graveyardFilters || handSorting || faithBattle !== null || magicianFaith || deckOverview || earthquake || blockAttack || reincarnationMode !== null || tributeDoomed || hammerShot || smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
 const r = expanded ? loadRuntimeCatalog().registry : createRegistry((await read('data/generated/pilot.json')).cards, goat200508Format, {},
   await read('data/reviews/pilot.spell-effects.json'), await read('data/reviews/pilot.flip-effects.json'), await read('data/reviews/pilot.trap-effects.json'));
 const deck = Object.keys(r.cards);
+if (threeLink !== null) deck.push('official:05053103');
 if (cleanupOrder !== null) deck.push(Object.values(r.cards).find(c => c.name === 'Trap Hole').id);
 if (sevenInteractions !== null) for (const name of ['Seven Tools of the Bandit', 'Trap Hole']) deck.push(Object.values(r.cards).find(c => c.name === name).id);
 if (responseGuide !== null) for (const name of ['Magic Jammer', 'Trap Hole']) deck.push(Object.values(r.cards).find(c => c.name === name).id);
@@ -82,6 +85,18 @@ function move(name, owner, zone, slot = 0, down = false) {
   (zone === 'monster' ? p.monsters : p.spellsTraps)[slot] = c.id;
   c.location = { kind: zone, playerId: owner, slot }; c.position = down ? zone === 'monster' ? 'face-down-defense' : 'face-down' : 'face-up-attack';
   if (down) c.markers.setOnTurn = 2;
+}
+if (threeLink !== null) {
+  const [actor,kind]=threeLink,other=actor==='a'?'b':'a',sevenOwner=kind==='lethal'?other:actor;
+  for(const p of s.players)for(const id of p.hand.splice(0)){p.deck.push(id);s.cards[id].location={kind:'deck',playerId:p.id};}
+  const name={choice:'Fissure',heal:'Dian Keto the Cure Master',cost:'Monster Reincarnation',lethal:'Ookazi',draw:'Pot of Greed'}[kind];
+  move(name,actor,'hand');move('Magic Jammer',other,'spell-trap',2,true);move('Seven Tools of the Bandit',sevenOwner,'spell-trap',4,true);
+  move('Mystical Elf',other,'hand');if(kind==='cost')move('Skull Servant',actor,'hand');
+  move('Battle Ox',other,'monster',0);move('Battle Ox',other,'monster',1);
+  for(const who of ['a','b'])move('Celtic Guardian',who,'graveyard');
+  s.players.find(p=>p.id===sevenOwner).lifePoints=1001;
+  if(kind==='draw'){const p=s.players.find(p=>p.id===actor);for(const id of p.deck.splice(1)){p.hand.push(id);s.cards[id].location={kind:'hand',playerId:actor};}}
+  s.turn.number=3;s.turn.activePlayer=actor;s.turn.phase=actor==='a'?'main1':'main2';s.timing.window='open';s.timing.priorityPlayer=actor;s.timing.consecutivePasses=0;
 }
 if (cleanupOrder !== null) {
   const actor = cleanupOrder, owner = actor === 'a' ? 'b' : 'a';
@@ -164,7 +179,7 @@ if (chainView) {
   move('Man-Eater Bug','b','monster',0,true);
   s.turn.number=3;s.turn.phase='main1';s.timing.window='open';s.timing.priorityPlayer='a';s.timing.consecutivePasses=0;
 }
-if (expanded && cleanupOrder === null && sevenInteractions === null && sevenMode === null && responseGuide === null && magicInteractions === null && magicMode === null && ookaziInteractions === null && !fullDuel && lifePointsMode === null && !smashingGround && !hammerShot && !tributeDoomed && !blockAttack && !earthquake && !magicianFaith && !faithBattle && !handSorting && !graveyardFilters && !choiceIdentities && !deckOverview && reincarnationMode === null) {
+if (expanded && threeLink === null && cleanupOrder === null && sevenInteractions === null && sevenMode === null && responseGuide === null && magicInteractions === null && magicMode === null && ookaziInteractions === null && !fullDuel && lifePointsMode === null && !smashingGround && !hammerShot && !tributeDoomed && !blockAttack && !earthquake && !magicianFaith && !faithBattle && !handSorting && !graveyardFilters && !choiceIdentities && !deckOverview && reincarnationMode === null) {
   move('Gaia The Fierce Knight', 'a', 'hand');
   move('Battle Ox', 'a', 'monster', 0); move('Celtic Guardian', 'a', 'monster', 1, true);
   move('Curse of Dragon', 'a', 'hand');
@@ -656,7 +671,72 @@ try {
   await send('Runtime.enable'); await send('Page.enable'); await send('Page.navigate', { url: `http://127.0.0.1:${server.address().port}` });
   await wait(`document.getElementById('seat-dialog')?.open`); await seat('a');
   await verifyResultSummary();
-  if (cleanupOrder !== null) {
+  if (threeLink !== null) {
+    const [actor,kind]=threeLink,other=actor==='a'?'b':'a',sevenOwner=kind==='lethal'?other:actor;
+    const name={choice:'Fissure',heal:'Dian Keto the Cure Master',cost:'Monster Reincarnation',lethal:'Ookazi',draw:'Pot of Greed'}[kind],saved={};
+    const board=who=>`view.players.find(p=>p.playerId===${JSON.stringify(who)})`;
+    const count=(who,n)=>evaluate(`${board(who)}.graveyard.filter(c=>catalog.get(c.definition.id).name===${JSON.stringify(n)}).length`);
+    const slot=async(who,n)=>{await seat(who);await click(`document.querySelector('#self .zone-row:nth-child(3) .slot:nth-child(${n+1}) .card')`);};
+    for(const who of ['a','b']){await seat(who);saved[who]=await evaluate(`api('/api/deck?seat='+view.viewerId).then(JSON.stringify)`);}
+    await seat(actor);await click(`[...document.querySelectorAll('#hand .card')].find(e=>e.querySelector('.card-name')?.textContent===${JSON.stringify(name)})`);
+    await click(textButton('#actions button','Kích hoạt'));
+    if(kind==='cost')await evaluate(`(()=>{const f=document.getElementById('action-fields'),d=f.querySelector('select[name="discard"]'),t=f.querySelector('select[name="target"]');d.value=[...d.options].find(o=>label(visibleCard(o.value))==='Skull Servant').value;t.value=d.value;f.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+    await confirm();assert.equal(await evaluate('view.chain.length'),1);
+    await slot(other,2);await click(textButton('#actions button','Phản hồi Phép'));
+    assert.equal(await evaluate(`document.querySelector('[data-preview="response"] h2').textContent`),name);
+    await evaluate(`(()=>{const d=document.querySelector('#action-fields select[name="discard"]');d.value=[...d.options].find(o=>label(visibleCard(o.value))==='Mystical Elf').value;d.dispatchEvent(new Event('change',{bubbles:true}));})()`);
+    await confirm();assert.equal(await evaluate('view.chain.length'),2);assert.equal(await count(other,'Mystical Elf'),1);
+    if(sevenOwner===other)await pass(actor);await slot(sevenOwner,4);
+    const before=await evaluate('JSON.stringify(view)');await click(textButton('#actions button','Phản hồi Bẫy'));
+    assert.match(await evaluate(`document.getElementById('action-fields').textContent`),/Phản hồi liên kết 2/);
+    assert.match(await evaluate(`document.getElementById('action-fields').textContent`),/1001 → 1 LP/);
+    assert.equal(await evaluate(`document.querySelector('[data-preview="response"] h2').textContent`),'Magic Jammer');
+    assert.equal(await evaluate(`document.querySelectorAll('#action-fields select[name="target"],#action-fields select[name="discard"]').length`),0);
+    for(const [width,height]of [[1440,1000],[390,844]]){
+      await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
+      assert.equal(await evaluate(`(()=>{const e=document.getElementById('action-dialog'),r=e.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1&&e.scrollWidth<=e.clientWidth+1})()`),true);
+    }
+    await send('Emulation.clearDeviceMetricsOverride');await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
+    await click(`document.getElementById('cancel-action')`);assert.equal(await evaluate('JSON.stringify(view)'),before);
+    await click(textButton('#actions button','Phản hồi Bẫy'));
+    await evaluate(`(()=>{const original=window.fetch;window.fetch=async(...args)=>{if(args[0]==='/api/command'){window.fetch=original;window.threeRequest=JSON.parse(args[1].body);const response=await original(...args);window.threeReceipt=await response.clone().json();return response;}return original(...args);};})()`);
+    await confirm();assert.deepEqual(await evaluate('view.chain.map(l=>l.spellSpeed)'),[1,3,3]);
+    assert.equal(await evaluate(`${board(sevenOwner)}.lifePoints`),1);const paid=await evaluate('JSON.stringify(view)');
+    assert.deepEqual(await evaluate(`api('/api/command',threeRequest).then(r=>r.outcome)`),await evaluate('threeReceipt.outcome'));assert.equal(await evaluate('JSON.stringify(view)'),paid);
+    assert.equal(await evaluate(`view.availableActions.some(a=>a.type==='activate-counter-trap'||a.type==='activate-lp-counter-trap')`),false);
+    await pass(await evaluate('view.timing.priorityPlayer'));assert.equal(await evaluate('view.chain.length'),3);
+    await pass(await evaluate('view.timing.priorityPlayer'));assert.equal(await count(other,'Magic Jammer'),1);
+    if(kind==='lethal'||kind==='draw'){
+      assert.equal(await evaluate('view.result.reason'),kind==='lethal'?'life-points':'failed-draw');assert.equal(await evaluate('view.decision'),null);
+      for(const [who,n]of [[actor,0],[sevenOwner,4]])assert.equal(await evaluate(`${board(who)}.spellsTraps[${n}].position`),'face-up');
+      assert.equal(await count(actor,name),0);assert.equal(await count(sevenOwner,'Seven Tools of the Bandit'),0);
+    }else{
+      if(kind==='choice'){
+        await seat(other);assert.equal(await evaluate('view.decision'),null);await seat(actor);assert.equal(await evaluate('view.decision.kind'),'effect-choice');
+        assert.equal(await evaluate(`${board(actor)}.spellsTraps[4].position`),'face-up');assert.equal(await evaluate(`${board(other)}.monsters.filter(Boolean).length`),2);
+        await click(`document.querySelectorAll('#decision-form input')[1]`);await actionClick(`document.querySelector('#decision-form button[type="submit"]')`);
+        assert.equal(await evaluate(`${board(other)}.monsters.filter(Boolean).length`),1);
+      }
+      await seat(actor);assert.equal(await evaluate('view.decision.kind'),'cleanup-order');assert.equal(await count(actor,name),0);
+      assert.equal(await evaluate(`${board(actor)}.lifePoints`),kind==='heal'?1001:1);
+      if(kind==='cost'){assert.equal(await evaluate(`view.selfHand.some(c=>catalog.get(c.definition.id).name==='Skull Servant')`),true);assert.equal(await count(actor,'Skull Servant'),0);}
+      const publicView=await evaluate('JSON.stringify(view)');for(const key of ['counterResolution','integritySha256','capturedStateVersion','boardFingerprint'])assert.equal(publicView.includes(key),false);
+      await seat(other);assert.equal(await evaluate('view.decision'),null);await seat(actor);
+      if(actor==='a')await click(`document.querySelector('#cleanup-order-list li:first-child [data-order-move="1"]')`);
+      const expected=actor==='a'?['Seven Tools of the Bandit',name]:[name,'Seven Tools of the Bandit'];
+      await actionClick(`document.querySelector('#decision-form button[type="submit"]')`);
+      assert.deepEqual(await evaluate(`${board(actor)}.graveyard.slice(-2).map(c=>catalog.get(c.definition.id).name)`),expected);
+      assert.equal(await evaluate(`${board(actor)}.graveyard[0].definition.id`),'official:91152256');assert.equal(await count(actor,name),1);assert.equal(await count(actor,'Seven Tools of the Bandit'),1);
+    }
+    assert.equal(await evaluate('view.chain.length'),0);assert.equal(await evaluate('view.decision'),null);
+    assert.equal(await count(other,'Mystical Elf'),1);const facts=await evaluate('JSON.stringify(view.activity)');
+    for(const who of ['a','b']){await seat(who);assert.equal(await evaluate('JSON.stringify(view.activity)'),facts);assert.equal(await evaluate(`api('/api/deck?seat='+view.viewerId).then(JSON.stringify)`),saved[who]);}
+    assert.equal(errors.length,0);
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'three-link-'+actor+'-'+kind,catalog:112,
+      actualThreeActivations:true,latestMagicPreview:true,cancelReadOnly:true,lpPaidOnce:true,noCardTargetOrDiscard:true,receiptRetryReadOnly:true,
+      actualTwoPasses:true,magicDestroyedSkipped:true,rootContinuesOnce:true,ownerCleanup:!['lethal','draw'].includes(kind),terminalStops:['lethal','draw'].includes(kind),
+      samePublicFactsAcrossSeats:true,responsive:true,savedDecksUnchanged:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
+  } else if (cleanupOrder !== null) {
     const actor = cleanupOrder, owner = actor === 'a' ? 'b' : 'a', saved = {};
     const own = `view.players.find(p=>p.playerId===${JSON.stringify(owner)})`;
     const summoner = `view.players.find(p=>p.playerId===${JSON.stringify(actor)})`;

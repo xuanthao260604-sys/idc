@@ -171,7 +171,7 @@ describe('Capability report follows validated runtime reviews', () => {
       'normal-spell-single-link-vanilla-v1', 'normal-spell-life-points-single-link-v1', 'normal-spell-highest-defense-single-link-v1',
       'normal-spell-highest-attack-position-single-link-v1', 'normal-spell-discard-target-single-link-v1', 'normal-spell-discard-graveyard-single-link-v1',
       'normal-spell-target-position-single-link-v1', 'normal-spell-all-position-single-link-v1',
-      'flip-single-link-v1', 'flip-own-graveyard-spell-single-link-v1', 'summon-response-trap-v1', 'counter-trap-normal-spell-activation-v1', 'counter-trap-trap-hole-activation-v1',
+      'flip-single-link-v1', 'flip-own-graveyard-spell-single-link-v1', 'summon-response-trap-v1', 'counter-trap-normal-spell-activation-v1', 'counter-trap-trap-hole-or-magic-jammer-v2',
     ].sort());
     expect(capabilities.reviewedEffects).toHaveLength(17);
     expect(capabilities.reviewedEffects.map(e => e.cardId)).toEqual([
