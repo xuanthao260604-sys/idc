@@ -1,5 +1,8 @@
 # Context Phép tạm dừng — bước đầu cho chuỗi ba liên kết
 
+**Mốc mới 31/10:** đã [mở pattern ba liên kết](three-link-counter.md) qua activation thật
+và review Seven v2. Nội dung/kết quả bên dưới giữ mốc triển khai trước đó.
+
 **Cập nhật 31/10:** [parent resolver ứng viên](counter-root-resolution.md)
 đã nối journal với Phép gốc và cleanup; activation link 3 vẫn chưa mở.
 

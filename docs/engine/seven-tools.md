@@ -1,5 +1,8 @@
 # Seven Tools — trả LP và phủ nhận Trap Hole — 29/10/2026
 
+**Mốc mới 31/10:** đã [mở pattern ba liên kết](three-link-counter.md) qua activation thật
+và review Seven v2. Nội dung/kết quả bên dưới giữ mốc triển khai trước đó.
+
 Cập nhật 30/10: đã có [rà soát tương tác LP và các Chain kế tiếp](seven-tools-interaction-audit.md).
 Nội dung/kết quả dưới đây giữ mốc triển khai ban đầu; scope không đổi.
 

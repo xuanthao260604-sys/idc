@@ -1,5 +1,8 @@
 # Tiếp tục Phép sau Counter — parent resolver ứng viên
 
+**Mốc mới 31/10:** đã [mở pattern ba liên kết](three-link-counter.md) qua activation thật
+và review Seven v2. Nội dung/kết quả bên dưới giữ mốc triển khai trước đó.
+
 Mốc 31/10/2026: nối [journal Counter](counter-continuation-journal.md) vào
 resolver Normal Spell và bước cleanup đã có. Đây là bước triển khai nội bộ
 của pattern Phép → Magic Jammer → Seven Tools, **chưa mở kích hoạt link 3**.

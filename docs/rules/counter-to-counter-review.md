@@ -1,5 +1,8 @@
 # Review Counter phản hồi Counter — 30/10/2026
 
+**Mốc mới 31/10:** đã [mở pattern ba liên kết](../engine/three-link-counter.md) qua activation thật
+và review Seven v2. Nội dung/kết quả bên dưới giữ mốc triển khai trước đó.
+
 **Cập nhật 31/10:** [parent resolver ứng viên](../engine/counter-root-resolution.md)
 đã nối journal với Phép gốc và cleanup; activation link 3 vẫn chưa mở.
 

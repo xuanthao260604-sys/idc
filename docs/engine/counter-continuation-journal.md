@@ -1,5 +1,8 @@
 # Journal Counter đã xử lý — thành phần độc lập
 
+**Mốc mới 31/10:** đã [mở pattern ba liên kết](three-link-counter.md) qua activation thật
+và review Seven v2. Nội dung/kết quả bên dưới giữ mốc triển khai trước đó.
+
 **Cập nhật 31/10:** đã [nối parent resolver](counter-root-resolution.md) để xử lý
 root và tiếp tục choice/cleanup qua engine/adapter. Chưa mở activation link 3.
 Các mô tả “chưa được game gọi” bên dưới ghi scope tại mốc 30/10 ban đầu.
