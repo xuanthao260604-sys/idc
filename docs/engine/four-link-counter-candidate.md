@@ -1,5 +1,9 @@
 # Ứng viên Phép → Magic Jammer → Seven → Seven
 
+**Mốc tiếp nối 01/11:** đã [mở bốn activation thật](four-link-counter.md) qua
+review v4 và parent cleanup riêng. Nội dung/kết quả bên dưới giữ mốc ứng viên;
+243 ca cũ vẫn dùng registry v3, không được đổi thành bằng chứng gameplay v4.
+
 Mốc 01/11/2026: chuẩn bị thành phần xử lý độc lập cho đúng pattern bốn liên
 kết này. **Chưa được game gọi; kích hoạt thứ tư vẫn bị chặn.** Không thêm
 review active, continuation gate, DuelState field, API, PlayerView hoặc UI.

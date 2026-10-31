@@ -1,5 +1,8 @@
 # Trap Hole → Seven Tools → Seven Tools
 
+**Review hiện hành:** [v4 bổ sung chuỗi Phép bốn liên kết](four-link-counter.md),
+giữ pattern Trap Hole này. Nội dung/kết quả dưới đây là lịch sử mốc v3.
+
 **Mốc tiếp nối:** đã bổ sung [audit tương tác qua nhiều lượt](seven-response-interaction-audit.md)
 cho phục hồi quái/Phép, đổi payer và phủ nhận hồi LP. Nội dung/kết quả bên
 dưới giữ mốc mở pattern ban đầu; engine/review không đổi trong audit.
