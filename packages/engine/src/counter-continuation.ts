@@ -78,7 +78,7 @@ function pinned(registry:Registry, l:ChainLink) {
   check(l.source===l.sourceAtActivation.id&&l.controllerId===l.sourceAtActivation.controllerId&&l.sourceAtActivation.location.playerId===l.controllerId,'Invalid continuation source identity');
   return card!;
 }
-function graph(registry:Registry, root:ChainLink, magic:ChainLink, seven:ChainLink, turn:CounterContinuationJournal['turn'], sequence:number, spent:boolean) {
+export function assertCounterContinuationGraph(registry:Registry, root:ChainLink, magic:ChainLink, seven:ChainLink, turn:CounterContinuationJournal['turn'], sequence:number, spent:boolean) {
   for(const l of [root,magic,seven]) { check(link.safeParse(l).success,'Malformed continuation link'); pinned(registry,l); }
   const rootDef=pinned(registry,root);
   check(rootDef.kind==='spell'&&rootDef.subtype==='normal'&&registry.spellHandlers[rootDef.id]&&root.effectId==='normal-spell'&&root.spellSpeed===1
@@ -106,7 +106,7 @@ function assertJournal(registry:Registry,journal:CounterContinuationJournal) {
   const {integritySha256,...body}=journal;
   check(integritySha256===seal(body).integritySha256,'Counter continuation journal changed');
   check(journal.registryRevision===registry.revision&&registry.format.id==='goat-2005-08-17'&&registry.format.revision===4,'Continuation registry mismatch');
-  graph(registry,journal.root as ChainLink,journal.magic as ChainLink,journal.seven as ChainLink,journal.turn,journal.capturedSequence,true);
+  assertCounterContinuationGraph(registry,journal.root as ChainLink,journal.magic as ChainLink,journal.seven as ChainLink,journal.turn,journal.capturedSequence,true);
   check(same(journal.cleanupSourceIds,[journal.root.source,journal.seven.source]),'Invalid continuation cleanup sources');
 }
 
@@ -123,7 +123,7 @@ export function prepareCounterContinuation(registry:Registry,state:DuelState) {
     &&state.players.every(p=>Number.isSafeInteger(p.lifePoints)&&p.lifePoints>0)&&['main1','main2'].includes(state.turn.phase),'Invalid candidate Counter resolution input');
   const [root,magic,seven]=state.chain as readonly [ChainLink,ChainLink,ChainLink];
   const turn={...state.turn,phase:state.turn.phase as 'main1'|'main2'};
-  graph(registry,root,magic,seven,turn,state.eventSequence,false);
+  assertCounterContinuationGraph(registry,root,magic,seven,turn,state.eventSequence,false);
   for(const l of [root,magic,seven]) {
     const card=state.cards[l.source],location=card?.location;
     check(card&&same(card,l.sourceAtActivation)&&location?.kind==='spell-trap'
