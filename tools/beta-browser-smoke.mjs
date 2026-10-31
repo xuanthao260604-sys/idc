@@ -2216,7 +2216,7 @@ try {
     const lpGuide=`[...document.querySelectorAll('#response-options button')].find(b=>b.textContent.includes('Phản hồi Bẫy'))`;
     await click(`document.querySelector('#self .zone-row:nth-child(3) .slot:nth-child(5) .card')`);
     assert.match(await evaluate(`document.getElementById('detail').textContent`),/Phản hồi và phủ nhận Bẫy/);
-    assert.match(await evaluate(`document.querySelector('#detail .card-support').textContent`),/chỉ phản hồi Trap Hole ở liên kết đầu tiên/);
+    assert.match(await evaluate(`document.querySelector('#detail .card-support').textContent`),/Phản hồi Trap Hole ở liên kết đầu, hoặc Magic Jammer ở liên kết 2/);
     if(lp<=1000){
       assert.equal(await evaluate(`${textButton('#actions button','Phản hồi Bẫy')}.disabled`),true);
       assert.equal(await evaluate(`Boolean(${lpGuide})`),false);const before=await evaluate('JSON.stringify(view)');
