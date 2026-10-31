@@ -92,7 +92,7 @@ describe('reviewed three-link activation and actual Pass resolver',()=>{
     const v1=createRegistry(runtime.cards,goat200508Format,{},runtime.effectReviews.spells,runtime.effectReviews.flips,runtime.effectReviews.traps,[...runtime.effectReviews.counters.filter(r=>r.cardId!==sevenId),...old]);
     const f=setupCounterPrefix(v1),r=applyAction(v1,f.state,{actorId:f.sevenOwner,expectedStateVersion:f.state.stateVersion,action:{type:'activate-lp-counter-trap',instanceId:f.seven,respondingToLinkId:f.state.chain[1]!.id}});
     expect(r.accepted).toBe(false);expect(r.state).toBe(f.state);expect(v1.counterContinuations).toEqual({});
-    expect(registry.counterContinuations[sevenId]).toBe('normal-spell-magic-jammer-seven-tools-v1');
+    expect(registry.counterContinuations[sevenId]).toBe('reviewed-three-link-counter-patterns-v3');
     expect(runtime.effectReviews.counters.filter(r=>r.cardId===sevenId)).toHaveLength(1);
     expect(()=>createRegistry(runtime.cards,goat200508Format,{},runtime.effectReviews.spells,runtime.effectReviews.flips,runtime.effectReviews.traps,[...runtime.effectReviews.counters,...old])).toThrow();
   });

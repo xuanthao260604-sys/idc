@@ -1,4 +1,7 @@
 import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
+import { createRegistry } from '../packages/engine/src/registry.js';
+import { goat200508Format } from '../packages/card-data/src/formats/goat-2005-08-17.js';
 import { describe, expect, it } from 'vitest';
 import { loadRuntimeCatalog } from './runtime-catalog.js';
 import { setupCounterPrefix } from './fixtures/three-link.js';
@@ -7,7 +10,9 @@ import { captureSevenLPCosts, assertCurrentSevenLPCosts, assertSevenLPCostHistor
 import type { DuelState, Slot } from '../packages/protocol/src/duel.js';
 import type { EngineAction } from '../packages/engine/src/actions.js';
 type Mutable<T>={-readonly[K in keyof T]:Mutable<T[K]>};
-const {registry}=loadRuntimeCatalog(),SEVEN='official:03819470';
+const previous=loadRuntimeCatalog();
+const registry=createRegistry(previous.cards,goat200508Format,{},previous.effectReviews.spells,previous.effectReviews.flips,previous.effectReviews.traps,[...previous.effectReviews.counters.filter(r=>r.cardId!=='official:03819470'),...JSON.parse(readFileSync('data/reviews/seven-tools-v2.effects.json','utf8'))]);
+const SEVEN='official:03819470';
 function act(state:DuelState,who:string,action:EngineAction){const r=applyAction(registry,state,{actorId:who,expectedStateVersion:state.stateVersion,action});if(!r.accepted)throw new Error(r.message);return r.state;}
 function single(actor='a',selfMagic=false,selfSeven=false,root='official:84257639') {
   const f=setupCounterPrefix(registry,root,actor,selfMagic,selfSeven,'main1',false,1001);

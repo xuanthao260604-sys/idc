@@ -132,6 +132,28 @@ export interface CounterResolutionFrame {
   readonly boardFingerprint: string;
   readonly integritySha256: string;
 }
+export interface SevenLPCostLedger {
+  readonly version: 1; readonly kind: 'seven-tools-lp-cost-ledger-v1';
+  readonly duelId: string; readonly registryRevision: string;
+  readonly format: { id: 'goat-2005-08-17'; revision: 4 };
+  readonly definitionSha256: '2dbc5c07956ac97d58b2f449898bf2d73bd0488578b9c69c0fadd5e468accbc0';
+  readonly playerIds: readonly [string,string];
+  readonly turn: { number: number; activePlayer: string; phase: 'main1'|'main2' };
+  readonly capturedStateVersion: number; readonly capturedSequence: number;
+  readonly payments: readonly { linkId:string;sourceId:string;playerId:string;sequence:number;simultaneousGroup:string;amount:1000;beforeLP:number;afterLP:number }[];
+  readonly balances: readonly { playerId:string;beforeFirstLP:number;afterLastLP:number;paymentCount:number;totalPaid:number }[];
+  readonly boardFingerprint:string; readonly integritySha256:string;
+}
+/** Server-only spent Counter context for the reviewed Trap Hole root. */
+export interface TrapCounterResolutionFrame {
+  readonly version:1; readonly kind:'trap-hole-seven-seven-v1'; readonly stage:'cleanup';
+  readonly duelId:string; readonly registryRevision:string;
+  readonly turn:{number:number;activePlayer:string;phase:'main1'|'main2'};
+  readonly capturedStateVersion:number; readonly capturedSequence:number;
+  readonly root:ChainLink; readonly negatedSeven:ChainLink; readonly seven:ChainLink;
+  readonly occurrence:EventRef; readonly lpCosts:SevenLPCostLedger;
+  readonly cleanupSourceIds:readonly[string,string]; readonly boardFingerprint:string; readonly integritySha256:string;
+}
 export interface DuelState {
   id: string;
   format: DefinitionRef;
@@ -145,6 +167,7 @@ export interface DuelState {
   chainCleanup: ChainCleanupFrame | null; // Resolved Trap links stay in chain until their batch commits.
   spellResolution: SpellResolutionFrame | null; // Server-only; never spread into a player view.
   counterResolution: CounterResolutionFrame | null; // Candidate resolver context; activation remains gated.
+  trapCounterResolution: TrapCounterResolutionFrame | null;
   pendingTriggers: readonly PendingTrigger[];
   modifiers: readonly Modifier[];
   timing: {

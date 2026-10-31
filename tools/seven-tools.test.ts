@@ -101,7 +101,7 @@ describe('Seven Tools reviewed two-link Trap Hole activation negation',()=>{
     reject(f.state,f.actor,{type:'activate-lp-counter-trap',instanceId:f.counter,respondingToLinkId:'no-chain'});
     const summoned=act(f.state,f.actor,f.summon).state;reject(summoned,f.actor,{type:'activate-lp-counter-trap',instanceId:f.counter,respondingToLinkId:'no-chain'});
     const s=trapChain(f),paid=act(s,f.owner,action(f,s)).state;
-    reject(paid,f.other,{type:'activate-lp-counter-trap',instanceId:counter2,respondingToLinkId:paid.chain[1]!.id});reject(paid,f.other,{type:'activate-trap',instanceId:trap2,targetId:f.target});
+    expect(act(paid,f.other,{type:'activate-lp-counter-trap',instanceId:counter2,respondingToLinkId:paid.chain[1]!.id}).state.chain).toHaveLength(3);reject(paid,f.other,{type:'activate-trap',instanceId:trap2,targetId:f.target});
     let two=act(s,f.actor,{type:'pass'}).state;two=act(two,f.other,{type:'activate-trap',instanceId:trap2,targetId:f.target}).state;reject(two,f.actor,action(f,two));
     const spellState=act(f.state,f.actor,{type:'activate-spell',instanceId:burn,slot:0}).state;
     reject(spellState,f.other,{type:'activate-lp-counter-trap',instanceId:counter2,respondingToLinkId:spellState.chain[0]!.id});

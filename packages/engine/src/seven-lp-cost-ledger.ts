@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { z } from 'zod';
-import type { DuelState } from '../../protocol/src/duel.js';
+import type { DuelState, SevenLPCostLedger as LedgerState } from '../../protocol/src/duel.js';
 import { definitionFingerprint } from './spell-review.js';
 import { resolutionFingerprint } from './resolution-fingerprint.js';
 import { freeze } from './registry.js';
@@ -24,7 +24,7 @@ const Ledger = z.strictObject({ version: z.literal(1), kind: z.literal('seven-to
   turn: z.strictObject({ number: integer.positive(), activePlayer: id, phase: z.enum(['main1','main2']) }),
   capturedStateVersion: integer, capturedSequence: integer.positive(),
   payments: z.array(Payment).min(1).max(2), balances: z.array(Balance).min(1).max(2), boardFingerprint: sha, integritySha256: sha });
-export type SevenLPCostLedger = Readonly<z.infer<typeof Ledger>>;
+export type SevenLPCostLedger = LedgerState;
 const same = (a:unknown,b:unknown) => JSON.stringify(a)===JSON.stringify(b);
 function check(value:unknown,message:string):asserts value { if(!value)throw new Error(message); }
 const digest=(body:Omit<SevenLPCostLedger,'integritySha256'>)=>createHash('sha256').update(JSON.stringify(body)).digest('hex');
@@ -63,6 +63,7 @@ function readPayments(registry:Registry,state:DuelState) {
     &&state.cardRegistryRevision===registry.revision&&state.format.id===registry.format.id&&state.format.revision===registry.format.revision
     &&registry.format.id==='goat-2005-08-17'&&registry.format.revision===4&&!state.result&&!state.pendingDecision&&!state.pendingTriggers.length
     &&state.chainCleanup===null&&state.spellResolution===null&&state.counterResolution===null
+    &&state.trapCounterResolution===null
     &&state.timing.requestedPhase===null&&['main1','main2'].includes(state.turn.phase)
     &&((state.timing.window==='chain-response'&&state.players.some(p=>p.id===state.timing.priorityPlayer)&&state.timing.consecutivePasses<2)
       ||(state.timing.window==='resolving'&&state.timing.priorityPlayer===null&&state.timing.consecutivePasses===2))
@@ -92,9 +93,9 @@ function readPayments(registry:Registry,state:DuelState) {
   check(payments.length>=1&&payments.length<=2,'Expected one or two Seven payments');
   return payments;
 }
-/** Candidate accounting component; NOT imported by the active duel/activation paths.
+/** Accounting component used only after the separate reviewed Chain gate passes.
  * Input costs have ALREADY been paid. Captures zero LP changes, events or card moves.
- * A synthetic two-Seven input is not thereby a stable/authorized gameplay state.
+ * A ledger alone never authorizes a synthetic Chain or replaces graph validation.
  */
 export function captureSevenLPCosts(registry:Registry,state:DuelState):SevenLPCostLedger {
   const payments=readPayments(registry,state),playerIds=state.players.map(p=>p.id) as [string,string];

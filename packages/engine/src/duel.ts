@@ -7,7 +7,8 @@ import { freeze, validateDeck } from './registry.js';
 import { planResolution } from './effect-plans.js';
 import { prepareChainCleanup, chainCleanupDecision, orderChainCleanup, commitChainCleanup } from './chain-cleanup.js';
 import { spellResolutionBoard, prepareSpellResolution, assertSpellResolution } from './spell-resolution.js';
-import { prepareCounterContinuation, checkpointCounterContinuation, assertCounterResolutionFrame, normalSpellMagicPrefix, SEVEN_MAGIC_EFFECT_ID } from './counter-continuation.js';
+import { prepareCounterContinuation, checkpointCounterContinuation, assertCounterResolutionFrame, normalSpellMagicPrefix, supportsSpellCounterContinuation, SEVEN_MAGIC_EFFECT_ID } from './counter-continuation.js';
+import { trapHoleActivationPrefix, trapSevenPrefix, prepareTrapCounterContinuation, finishTrapCounterContinuation, assertTrapCounterResolutionFrame, SEVEN_RESPONSE_EFFECT_ID } from './trap-counter-continuation.js';
 import type { SupportedMonster, Registry } from './registry.js';
 
 type Mutable<T> = { -readonly [K in keyof T]: Mutable<T[K]> };
@@ -47,6 +48,7 @@ function endDuel(c: Context, winner: string | null, reason: NonNullable<DuelStat
   c.state.chainCleanup = null;
   c.state.spellResolution = null;
   c.state.counterResolution = null;
+  c.state.trapCounterResolution = null;
   open(c); c.state.timing.priorityPlayer = null;
   emit(c, 'duel-ended', [], { winner: winner ?? 'draw', reason });
 }
@@ -102,25 +104,7 @@ function returnToOwnerHand(c: Context, id: string) {
 }
 
 /** Exact first-link eligibility for the reviewed Trap Hole -> Seven Tools pattern. */
-function trapHolePrefix(state: DuelState, registry: Registry) {
-  const link = state.chain[0], source = link && state.cards[link.source], ref = link?.targetRefs[0];
-  const target = ref && state.cards[ref.instanceId], def = target && registry.cards[target.definition.id];
-  const event = state.timing.lastRelevantEvents[0];
-  return !!(link && source && registry.cards[source.definition.id]?.origin === 'official'
-    && registry.trapHandlers[source.definition.id] === 'destroy-opponent-normal-or-flip-summoned-1000'
-    && link.effectId === 'destroy-opponent-normal-or-flip-summoned-1000' && link.spellSpeed === 2 && !link.costEvents.length
-    && source.location.kind === 'spell-trap' && source.position === 'face-up'
-    && source.markers.setOnTurn !== null && source.markers.setOnTurn < state.turn.number
-    && JSON.stringify(link.sourceAtActivation) === JSON.stringify(source)
-    && link.controllerId !== state.turn.activePlayer && ['main1','main2'].includes(state.turn.phase)
-    && link.targetRefs.length === 1 && target && target.controllerId === state.turn.activePlayer
-    && target.location.kind === 'monster' && target.position !== 'face-down-defense'
-    && (def?.kind === 'normal-monster' || def?.kind === 'effect-monster') && def.attack >= 1000
-    && JSON.stringify(target.location) === JSON.stringify(ref!.locationAtSelection)
-    && event?.kind === 'monster-summoned' && event.affectedInstances.includes(target.id)
-    && event.details?.playerId === state.turn.activePlayer
-    && ['normal','tribute','flip'].includes(String(event.details?.method)));
-}
+function trapHolePrefix(state:DuelState,registry:Registry){return trapHoleActivationPrefix(registry,state);}
 export function assertDuelInvariants(state: DuelState, registry: Registry) {
   if (state.format.id !== registry.format.id || state.format.revision !== registry.format.revision || state.cardRegistryRevision !== registry.revision)
     throw new Error('State/registry version mismatch');
@@ -131,10 +115,12 @@ export function assertDuelInvariants(state: DuelState, registry: Registry) {
   if (state.chainCleanup === undefined) throw new Error('Missing cleanup context field');
   if (state.spellResolution === undefined) throw new Error('Missing Spell resolution context field');
   if (state.counterResolution === undefined) throw new Error('Missing Counter resolution context field');
+  if (state.trapCounterResolution === undefined) throw new Error('Missing Trap Counter resolution context field');
+  if (state.trapCounterResolution !== null) assertTrapCounterResolutionFrame(registry,state);
   if (state.counterResolution !== null) assertCounterResolutionFrame(registry, state);
   if (state.spellResolution !== null) assertSpellResolution(registry, state);
   else if (state.pendingDecision?.kind === 'effect-choice' && !state.counterResolution) throw new Error('Missing paused Spell resolution frame');
-  if (state.chainCleanup !== null && !state.counterResolution) {
+  if (state.chainCleanup !== null && !state.counterResolution && !state.trapCounterResolution) {
     const frame = state.chainCleanup, first = state.chain[0], targetId = first?.targetRefs[0]?.instanceId;
     const target = targetId && state.cards[targetId], targetDef = target && registry.cards[target.definition.id];
     if (frame.mode !== 'live' || state.result || state.timing.window !== 'resolving' || state.timing.priorityPlayer !== null
@@ -159,7 +145,7 @@ export function assertDuelInvariants(state: DuelState, registry: Registry) {
     if (!pending || decision.id !== `${first!.id}:cleanup:${pending.playerId}` || decision.playerId !== pending.playerId
       || decision.min !== pending.min || decision.max !== pending.max
       || JSON.stringify(decision.optionIds) !== JSON.stringify(pending.optionIds)) throw new Error('Invalid cleanup decision');
-  } else if (!state.counterResolution && (state.pendingDecision?.kind === 'cleanup-order'
+  } else if (!state.counterResolution && !state.trapCounterResolution && (state.pendingDecision?.kind === 'cleanup-order'
     || (state.timing.window === 'resolving' && (state.chain.length !== 1 || state.pendingDecision?.kind !== 'effect-choice')))) throw new Error('Invalid paused resolution');
   if (state.pendingTriggers.length && (state.chain.length || state.pendingDecision?.kind !== 'target' || state.timing.window !== 'trigger-order')) throw new Error('Invalid pending FLIP');
   if (state.timing.window === 'chain-response' && state.chain.length < 1) throw new Error('Missing Chain link');
@@ -192,8 +178,12 @@ export function assertDuelInvariants(state: DuelState, registry: Registry) {
   }
   const counterLinks = state.chain.filter(link => registry.counterTrapHandlers[state.cards[link.source]?.definition.id ?? '']);
   const threeLink = state.chain.length === 3 && state.chain[2]!.effectId === SEVEN_MAGIC_EFFECT_ID;
-  if (threeLink) {
-    if (registry.counterContinuations[state.chain[2]!.sourceAtActivation.definition.id] !== 'normal-spell-magic-jammer-seven-tools-v1'
+  const threeTrap=state.chain.length===3&&state.chain[2]!.effectId===SEVEN_RESPONSE_EFFECT_ID;
+  if(threeTrap){
+    if(state.timing.window!=='chain-response'||state.timing.priorityPlayer===null||state.timing.consecutivePasses>1)throw new Error('Invalid Seven response timing');
+    prepareTrapCounterContinuation(registry,state);
+  } else if (threeLink) {
+    if (!supportsSpellCounterContinuation(registry,state.chain[2]!.sourceAtActivation.definition.id)
       || state.timing.window !== 'chain-response' || state.timing.priorityPlayer === null
       || state.timing.consecutivePasses > 1 || state.timing.requestedPhase !== null) throw new Error('Unreviewed three-link Counter Chain');
     // Reuse strict graph, full pins, paid-cost and source validation without moving
@@ -207,7 +197,7 @@ export function assertDuelInvariants(state: DuelState, registry: Registry) {
         || state.turn.activePlayer !== state.chain[0]!.controllerId || registry.cards[state.cards[state.chain[0]!.source]?.definition.id ?? '']?.origin !== 'official' || !['main1', 'main2'].includes(state.turn.phase))) throw new Error('Invalid supported Counter Chain');
   } else if (state.chain.length > 1 && !state.chain.every(link => link.effectId === 'destroy-opponent-normal-or-flip-summoned-1000')) throw new Error('Unsupported mixed Chain');
   if (new Set(state.chain.map(link => link.id)).size !== state.chain.length || new Set(state.chain.map(link => link.source)).size !== state.chain.length) throw new Error('Duplicate Chain identity');
-  for (const link of threeLink ? state.chain.slice(0, 2) : state.chain) {
+  for (const link of threeTrap ? state.chain.slice(0,1) : threeLink ? state.chain.slice(0, 2) : state.chain) {
     const rootFinished = state.counterResolution?.stage === 'cleanup';
     const card = state.cards[link.source];
     const flip = card && registry.flipHandlers[card.definition.id];
@@ -294,7 +284,7 @@ export function createDuel(registry: Registry, input: z.input<typeof StartSchema
   const players: [Mutable<PlayerState>, Mutable<PlayerState>] = [makePlayer(options.players[0], 0), makePlayer(options.players[1], 1)];
   const state: State = { id: options.duelId, format: { ...registry.format }, cardRegistryRevision: registry.revision,
     stateVersion: 0, eventSequence: 0, turn: { number: 1, activePlayer: active, phase: 'draw' }, players, cards,
-    chain: [], chainCleanup: null, spellResolution: null, counterResolution: null, pendingTriggers: [], modifiers: [], timing: { window: 'open', priorityPlayer: active, consecutivePasses: 0, lastRelevantEvents: [], requestedPhase: null },
+    chain: [], chainCleanup: null, spellResolution: null, counterResolution: null, trapCounterResolution:null, pendingTriggers: [], modifiers: [], timing: { window: 'open', priorityPlayer: active, consecutivePasses: 0, lastRelevantEvents: [], requestedPhase: null },
     battle: null, pendingDecision: null, rng: rng.state(), result: null };
   const c: Context = { state, registry, events: [] };
   emit(c, 'duel-started');
@@ -545,9 +535,10 @@ function activateCounterTrap(c: Context, actorId: string, id: string, discardId:
 }
 function activateLPCounterTrap(c: Context, actorId: string, id: string, respondingToLinkId: string) {
   rule(!c.state.pendingDecision && c.state.timing.priorityPlayer === actorId, 'not-your-action', 'Wait for response priority');
-  const extended = c.registry.counterContinuations[c.state.cards[id]?.definition.id ?? ''] === 'normal-spell-magic-jammer-seven-tools-v1'
+  const extended = supportsSpellCounterContinuation(c.registry,c.state.cards[id]?.definition.id ?? '')
     && normalSpellMagicPrefix(c.registry, c.state);
-  rule(c.state.timing.window === 'chain-response' && ((c.state.chain.length === 1 && trapHolePrefix(c.state, c.registry)) || extended)
+  const sevenResponse=c.registry.counterContinuations[c.state.cards[id]?.definition.id??'']==='reviewed-three-link-counter-patterns-v3'&&trapSevenPrefix(c.registry,c.state);
+  rule(c.state.timing.window === 'chain-response' && ((c.state.chain.length === 1 && trapHolePrefix(c.state, c.registry)) || extended || sevenResponse)
     && c.state.chain.at(-1)!.id === respondingToLinkId, 'illegal-timing', 'Respond directly to a reviewed Trap activation');
   const p = mutablePlayer(c.state, actorId), card = c.state.cards[id];
   rule(card && c.registry.counterTrapHandlers[card.definition.id] === 'pay-1000-negate-trap-hole-activation'
@@ -561,7 +552,7 @@ function activateLPCounterTrap(c: Context, actorId: string, id: string, respondi
   emit(c, 'life-points-paid', [], { playerId: actorId, amount: 1000, beforeLP, afterLP: p.lifePoints, reason: 'activation-cost' }, false);
   const cost = c.events.at(-1)!; card.position = 'face-up';
   c.state.chain.push({ id: `${c.state.id}:lp-counter-link:${c.state.eventSequence + 1}`, controllerId: actorId, source: id,
-    sourceAtActivation: structuredClone(card), effectId: extended ? SEVEN_MAGIC_EFFECT_ID : 'pay-1000-negate-trap-hole-activation', spellSpeed: 3,
+    sourceAtActivation: structuredClone(card), effectId: sevenResponse?SEVEN_RESPONSE_EFFECT_ID:extended ? SEVEN_MAGIC_EFFECT_ID : 'pay-1000-negate-trap-hole-activation', spellSpeed: 3,
     costEvents: [{ ...cost, affectedInstances: [], details: { ...cost.details } }], targetRefs: [], respondingToLinkId,
     activationNegated: false, effectNegated: false });
   emit(c, 'counter-trap-activated', [id], {}, false);
@@ -579,6 +570,21 @@ function resolveCounterChain(c: Context) {
   emit(c, 'chain-link-negated-skipped', [original.source], {}, false);
   cleanupSingleSource(c, counter.source, 'counter-trap-cleanup');
   emit(c, 'chain-resolved', [], {}, false); response(c, 'action-response');
+}
+function resolveSevenResponse(c:Context) {
+  c.state.timing.window='resolving';c.state.timing.priorityPlayer=null;
+  const p=prepareTrapCounterContinuation(c.registry,c.state);
+  emit(c,'chain-link-resolving',[p.seven.source],{},false);
+  emit(c,'trap-activation-negated',[p.negatedSeven.source],{playerId:p.negatedSeven.controllerId});
+  sendToGraveyard(c,p.negatedSeven.source);emit(c,'trap-destroyed',[p.negatedSeven.source],{playerId:p.negatedSeven.controllerId});
+  emit(c,'chain-link-negated-skipped',[p.negatedSeven.source],{},false);
+  c.state.chain=[structuredClone(p.root)] as State['chain'];
+  emit(c,'chain-link-resolving',[p.root.source],{},false);
+  const target=p.root.targetRefs[0]!.instanceId;
+  sendToGraveyard(c,target);emit(c,'effect-destroyed',[target]);
+  c.state.trapCounterResolution=finishTrapCounterContinuation(c.registry,c.state,p) as State['trapCounterResolution'];
+  c.state.chainCleanup=prepareChainCleanup(c.registry,c.state,[p.root.source,p.seven.source]) as State['chainCleanup'];
+  continueChainCleanup(c);
 }
 function resolveTraps(c: Context) {
   const cleanup: string[] = [];
@@ -605,8 +611,8 @@ function continueChainCleanup(c: Context) {
   }
   Object.assign(c.state, commitChainCleanup(c.registry, c.state, frame));
   const sourceIds = [...frame.sourceIds];
-  const reason = c.state.counterResolution ? 'counter-chain-cleanup' : 'trap-cleanup';
-  c.state.chain = []; c.state.chainCleanup = null; c.state.counterResolution = null;
+  const reason = c.state.counterResolution || c.state.trapCounterResolution ? 'counter-chain-cleanup' : 'trap-cleanup';
+  c.state.chain = []; c.state.chainCleanup = null; c.state.counterResolution = null; c.state.trapCounterResolution=null;
   emit(c, 'sent-to-graveyard', sourceIds, { reason });
   emit(c, 'chain-resolved', [], {}, false); response(c, 'action-response');
 }
@@ -780,7 +786,8 @@ function pass(c: Context, actorId: string) {
   }
   const phase = c.state.timing.requestedPhase;
   if (c.state.chain.length) {
-    if (c.state.chain.length === 3 && c.state.chain[2]!.effectId === SEVEN_MAGIC_EFFECT_ID) {
+    if(c.state.chain.length===3&&c.state.chain[2]!.effectId===SEVEN_RESPONSE_EFFECT_ID)resolveSevenResponse(c);
+    else if (c.state.chain.length === 3 && c.state.chain[2]!.effectId === SEVEN_MAGIC_EFFECT_ID) {
       c.state.timing.window = 'resolving'; c.state.timing.priorityPlayer = null; resolveThreeLinkCounter(c);
     } else if (c.state.chain.length === 2 && c.registry.counterTrapHandlers[c.state.cards[c.state.chain[1]!.source]!.definition.id]) resolveCounterChain(c);
     else if (c.registry.trapHandlers[c.state.cards[c.state.chain[0]!.source]!.definition.id]) resolveTraps(c);

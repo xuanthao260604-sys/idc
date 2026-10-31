@@ -10,9 +10,12 @@ import { createBetaServer } from '../dist/tools/beta-server.js';
 import { loadRuntimeCatalog } from '../dist/tools/runtime-catalog.js';
 import { createRegistry } from '../dist/packages/engine/src/registry.js';
 import { createDuel, assertDuelInvariants } from '../dist/packages/engine/src/duel.js';
+import { setupSevenResponse } from '../dist/tools/fixtures/seven-response.js';
 import { setupThreeLinkInteractions } from '../dist/tools/fixtures/three-link-interactions.js';
 import { goat200508Format } from '../dist/packages/card-data/src/formats/goat-2005-08-17.js';
 const read = async p => JSON.parse(await readFile(join(projectRoot, p), 'utf8'));
+const sevenResponseArg=process.argv.find(arg=>/^--seven-response=[ab]:(split|same|blocked)$/.test(arg));
+const sevenResponse=sevenResponseArg?.split('=')[1].split(':')??null;
 const threeInteractionsArg=process.argv.find(arg=>/^--three-link-interactions=[ab]$/.test(arg));
 const threeInteractions=threeInteractionsArg?.split('=')[1]??null;
 const threeLinkArg = process.argv.find(arg=>/^--three-link=[ab]:(choice|heal|cost|lethal|draw)$/.test(arg));
@@ -57,7 +60,7 @@ const reincarnationMode = reincarnationArg?.split('=')[1] ?? null;
 const deckDraftGuard = process.argv.includes('--deck-draft-guard');
 const deckSaveCheck = process.argv.includes('--deck-save-check');
 const deckOverview = deckSaveCheck || deckDraftGuard || process.argv.includes('--deck-overview');
-const expanded = threeInteractions !== null || threeLink !== null || cleanupOrder !== null || sevenInteractions !== null || sevenMode !== null || responseGuide !== null || magicInteractions !== null || magicMode !== null || ookaziInteractions !== null || ookazi !== null || choiceIdentities || graveyardFilters || handSorting || faithBattle !== null || magicianFaith || deckOverview || earthquake || blockAttack || reincarnationMode !== null || tributeDoomed || hammerShot || smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
+const expanded = sevenResponse !== null || threeInteractions !== null || threeLink !== null || cleanupOrder !== null || sevenInteractions !== null || sevenMode !== null || responseGuide !== null || magicInteractions !== null || magicMode !== null || ookaziInteractions !== null || ookazi !== null || choiceIdentities || graveyardFilters || handSorting || faithBattle !== null || magicianFaith || deckOverview || earthquake || blockAttack || reincarnationMode !== null || tributeDoomed || hammerShot || smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
 const r = expanded ? loadRuntimeCatalog().registry : createRegistry((await read('data/generated/pilot.json')).cards, goat200508Format, {},
   await read('data/reviews/pilot.spell-effects.json'), await read('data/reviews/pilot.flip-effects.json'), await read('data/reviews/pilot.trap-effects.json'));
 const deck = Object.keys(r.cards);
@@ -78,7 +81,8 @@ const chainView = process.argv.includes('--chain-view');
 const deckOutArg = process.argv.find(arg => /^--deck-out=[012]$/.test(arg));
 const deckOut = deckOutArg === undefined ? null : Number(deckOutArg.split('=')[1]);
 const interactionFixture=threeInteractions===null?null:setupThreeLinkInteractions(r,threeInteractions,threeInteractions==='b',threeInteractions==='a');
-const s = interactionFixture?structuredClone(interactionFixture.state):structuredClone(createDuel(r, { duelId: fullDuel ? 'mixed-smoke' : 'browser-fixture', players: [{ id: 'a', deck }, { id: 'b', deck }], firstPlayerId: 'a', seedHex: fullDuel ? (expanded ? '5e' : '08').padStart(64, '0') : '12'.repeat(32) }).state);
+const responseFixture=sevenResponse===null?null:setupSevenResponse(r,sevenResponse[0],sevenResponse[1]==='blocked'||(sevenResponse[1]==='split'&&sevenResponse[0]==='a'),sevenResponse[1]==='blocked'||(sevenResponse[1]==='split'&&sevenResponse[0]==='b'),sevenResponse[1]==='same'?'tribute':sevenResponse[0]==='b'?'flip':'normal',sevenResponse[0]==='a'?'main1':'main2',sevenResponse[1]==='blocked'?2000:2001,1001);
+const s = responseFixture?structuredClone(responseFixture.state):interactionFixture?structuredClone(interactionFixture.state):structuredClone(createDuel(r, { duelId: fullDuel ? 'mixed-smoke' : 'browser-fixture', players: [{ id: 'a', deck }, { id: 'b', deck }], firstPlayerId: 'a', seedHex: fullDuel ? (expanded ? '5e' : '08').padStart(64, '0') : '12'.repeat(32) }).state);
 // Trusted fixture setup BEFORE starting the server. No state-edit endpoint, seed flag or test mode in beta CLI.
 function move(name, owner, zone, slot = 0, down = false) {
   const d = Object.values(r.cards).find(c => c.name === name), p = s.players.find(p => p.id === owner);
@@ -183,7 +187,7 @@ if (chainView) {
   move('Man-Eater Bug','b','monster',0,true);
   s.turn.number=3;s.turn.phase='main1';s.timing.window='open';s.timing.priorityPlayer='a';s.timing.consecutivePasses=0;
 }
-if (expanded && threeInteractions === null && threeLink === null && cleanupOrder === null && sevenInteractions === null && sevenMode === null && responseGuide === null && magicInteractions === null && magicMode === null && ookaziInteractions === null && !fullDuel && lifePointsMode === null && !smashingGround && !hammerShot && !tributeDoomed && !blockAttack && !earthquake && !magicianFaith && !faithBattle && !handSorting && !graveyardFilters && !choiceIdentities && !deckOverview && reincarnationMode === null) {
+if (expanded && sevenResponse === null && threeInteractions === null && threeLink === null && cleanupOrder === null && sevenInteractions === null && sevenMode === null && responseGuide === null && magicInteractions === null && magicMode === null && ookaziInteractions === null && !fullDuel && lifePointsMode === null && !smashingGround && !hammerShot && !tributeDoomed && !blockAttack && !earthquake && !magicianFaith && !faithBattle && !handSorting && !graveyardFilters && !choiceIdentities && !deckOverview && reincarnationMode === null) {
   move('Gaia The Fierce Knight', 'a', 'hand');
   move('Battle Ox', 'a', 'monster', 0); move('Celtic Guardian', 'a', 'monster', 1, true);
   move('Curse of Dragon', 'a', 'hand');
@@ -675,7 +679,65 @@ try {
   await send('Runtime.enable'); await send('Page.enable'); await send('Page.navigate', { url: `http://127.0.0.1:${server.address().port}` });
   await wait(`document.getElementById('seat-dialog')?.open`); await seat('a');
   await verifyResultSummary();
-  if(threeInteractions!==null){
+  if(sevenResponse!==null){
+    const [actor,kind]=sevenResponse,f=responseFixture,saved={};
+    const board=who=>`view.players.find(p=>p.playerId===${JSON.stringify(who)})`;
+    const slot=async(who,row,n)=>{await seat(who);await click(`document.querySelector('#self .zone-row:nth-child(${row}) .slot:nth-child(${n+1}) .card')`);};
+    const grave=who=>evaluate(`${board(who)}.graveyard.map(c=>catalog.get(c.definition.id).name)`);
+    for(const who of ['a','b']){await seat(who);saved[who]=await evaluate(`api('/api/deck?seat='+view.viewerId).then(JSON.stringify)`);}
+    await seat(actor);
+    if(f.method==='flip'){await slot(actor,2,0);await actionClick(textButton('#actions button','Flip Summon'));}
+    else{await click(`[...document.querySelectorAll('#hand .card')].find(e=>e.querySelector('.card-name')?.textContent===${JSON.stringify(f.method==='tribute'?'Gaia The Fierce Knight':'Battle Ox')})`);await click(textButton('#actions button','Triệu hồi'));
+      if(f.method==='tribute')await evaluate(`(()=>{const choices=[...document.querySelectorAll('#action-fields input[type="checkbox"]')];if(choices.length!==2)throw new Error('Missing tribute choices');for(const c of choices){c.checked=true;c.dispatchEvent(new Event('change',{bubbles:true}));}})()`);
+      await confirm();}
+    await pass(actor);await slot(f.other,3,0);await click(textButton('#actions button','Kích hoạt Bẫy'));await confirm();
+    if(await evaluate('view.timing.priorityPlayer')!==f.firstOwner)await pass(await evaluate('view.timing.priorityPlayer'));
+    await slot(f.firstOwner,3,2);await click(textButton('#actions button','Phản hồi Bẫy'));await confirm();assert.deepEqual(await evaluate('view.chain.map(l=>l.spellSpeed)'),[2,3]);
+    if(await evaluate('view.timing.priorityPlayer')!==f.secondOwner)await pass(await evaluate('view.timing.priorityPlayer'));await seat(f.secondOwner);
+    let paidTwice=kind!=='blocked';
+    if(kind==='blocked'){
+      assert.equal(await evaluate(`${board(f.secondOwner)}.lifePoints`),1000);assert.equal(await evaluate(`view.availableActions.some(a=>a.type==='activate-lp-counter-trap')`),false);
+      const before=await evaluate('JSON.stringify(view)');
+      const result=await evaluate(`api('/api/command',{seat:view.viewerId,commandId:'insufficient-second-'+view.stateVersion,duelId:view.duelId,expectedStateVersion:view.stateVersion,action:{type:'activate-lp-counter-trap',cardHandle:${board(f.secondOwner)}.spellsTraps[4].handle,chainHandle:view.chain[1].chainHandle}})`);
+      assert.equal(result.outcome.accepted,false);assert.equal(result.outcome.reason,'unpayable-cost');assert.equal(await evaluate('JSON.stringify(view)'),before);
+    }else{
+      await slot(f.secondOwner,3,4);const before=await evaluate('JSON.stringify(view)');await click(textButton('#actions button','Phản hồi Bẫy'));
+      assert.equal(await evaluate(`document.querySelector('[data-preview="response"] h2').textContent`),'Seven Tools of the Bandit');
+      assert.match(await evaluate(`document.getElementById('action-fields').textContent`),/Phản hồi liên kết 2/);
+      assert.match(await evaluate(`document.getElementById('action-fields').textContent`),/1001 → 1 LP/);
+      assert.equal(await evaluate(`document.querySelectorAll('#action-fields select[name="target"],#action-fields select[name="discard"]').length`),0);
+      for(const [width,height]of [[1440,1000],[390,844]]){await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});assert.equal(await evaluate(`(()=>{const e=document.getElementById('action-dialog'),r=e.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth+1&&e.scrollWidth<=e.clientWidth+1})()`),true);}
+      await send('Emulation.clearDeviceMetricsOverride');await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
+      await click(`document.getElementById('cancel-action')`);assert.equal(await evaluate('JSON.stringify(view)'),before);await click(textButton('#actions button','Phản hồi Bẫy'));
+      await evaluate(`(()=>{const original=window.fetch;window.fetch=async(...args)=>{if(args[0]==='/api/command'){window.fetch=original;window.responseRequest=JSON.parse(args[1].body);const result=await original(...args);window.responseReceipt=await result.clone().json();return result;}return original(...args);};})()`);
+      await confirm();assert.deepEqual(await evaluate('view.chain.map(l=>l.spellSpeed)'),[2,3,3]);assert.equal(await evaluate(`${board(f.secondOwner)}.lifePoints`),1);
+      const paid=await evaluate('JSON.stringify(view)');assert.deepEqual(await evaluate(`api('/api/command',responseRequest).then(r=>r.outcome)`),await evaluate('responseReceipt.outcome'));assert.equal(await evaluate('JSON.stringify(view)'),paid);
+      assert.equal(await evaluate(`view.availableActions.some(a=>a.type==='activate-lp-counter-trap')`),false);
+    }
+    await pass(await evaluate('view.timing.priorityPlayer'));await pass(await evaluate('view.timing.priorityPlayer'));
+    if(paidTwice&&f.secondOwner===f.other){await seat(actor);assert.equal(await evaluate('view.decision'),null);await seat(f.other);assert.equal(await evaluate('view.decision.kind'),'cleanup-order');
+      assert.equal(await evaluate(`${board(actor)}.monsters[0]`),null);assert.equal((await grave(f.firstOwner)).filter(n=>n==='Seven Tools of the Bandit').length,1);
+      assert.equal(await evaluate(`${board(f.other)}.spellsTraps[0].position`),'face-up');assert.equal(await evaluate(`${board(f.secondOwner)}.spellsTraps[4].position`),'face-up');
+      const text=await evaluate('JSON.stringify(view)');for(const k of ['trapCounterResolution','lpCosts','sourceAtActivation','capturedSequence'])assert.equal(text.includes(k),false);
+      if(actor==='a')await click(`document.querySelector('#cleanup-order-list li:first-child [data-order-move="1"]')`);
+      await actionClick(`document.querySelector('#decision-form button[type="submit"]')`);
+      assert.deepEqual((await grave(f.other)).slice(-2),actor==='a'?['Seven Tools of the Bandit','Trap Hole']:['Trap Hole','Seven Tools of the Bandit']);
+    }
+    assert.equal(await evaluate('view.chain.length'),0);assert.equal(await evaluate('view.decision'),null);assert.equal(await evaluate('view.result'),null);
+    assert.equal(await evaluate(`${board(actor)}.monsters[0]!==null`),!paidTwice);
+    if(!paidTwice)assert.equal(await evaluate(`${board(actor)}.spellsTraps[4].position`),'face-down');
+    const facts=await evaluate('view.activity.flatMap(a=>a.resolution||[])');assert.equal(facts.filter(x=>x.kind==='lp-cost').length,paidTwice?2:1);
+    assert.equal(facts.filter(x=>x.kind==='effect-destroyed').length,paidTwice?1:0);assert.equal(facts.some(x=>x.kind==='effect-damage'||x.kind==='battle-damage'),false);
+    assert.equal(await evaluate('view.normalSummonQuota.used'),f.method==='flip'?0:1);
+    const firstLP=await evaluate(`${board(f.firstOwner)}.lifePoints`),secondLP=await evaluate(`${board(f.secondOwner)}.lifePoints`);
+    if(paidTwice){assert.equal(firstLP,1);assert.equal(secondLP,1);}else assert.equal(firstLP,1000);
+    const publicFacts=JSON.stringify(facts);for(const who of ['a','b']){await seat(who);assert.equal(JSON.stringify(await evaluate('view.activity.flatMap(a=>a.resolution||[])')),publicFacts);assert.equal(await evaluate(`api('/api/deck?seat='+view.viewerId).then(JSON.stringify)`),saved[who]);}
+    assert.equal(errors.length,0);
+    console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'seven-response-'+actor+'-'+kind,catalog:112,method:f.method,
+      activated:paidTwice,insufficientSecondBlocked:!paidTwice,latestSevenPreview:paidTwice,payments:paidTwice?2:1,finalPayerLP:firstLP,
+      rootDestroysMonster:paidTwice,firstSevenNegated:paidTwice,originalCostRetained:true,ownerCleanup:paidTwice&&f.secondOwner===f.other,
+      noFourthCounter:paidTwice,samePublicFactsAcrossSeats:true,responsive:paidTwice,savedDecksUnchanged:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
+  }else if(threeInteractions!==null){
     const f=interactionFixture,{actor,other,magicOwner,sevenOwner,burner}=f,saved={};
     const board=who=>`view.players.find(p=>p.playerId===${JSON.stringify(who)})`;
     const lp=()=>evaluate(`${board(sevenOwner)}.lifePoints`),timeline=[await lp()];
@@ -2305,7 +2367,7 @@ try {
     const lpGuide=`[...document.querySelectorAll('#response-options button')].find(b=>b.textContent.includes('Phản hồi Bẫy'))`;
     await click(`document.querySelector('#self .zone-row:nth-child(3) .slot:nth-child(5) .card')`);
     assert.match(await evaluate(`document.getElementById('detail').textContent`),/Phản hồi và phủ nhận Bẫy/);
-    assert.match(await evaluate(`document.querySelector('#detail .card-support').textContent`),/Phản hồi Trap Hole ở liên kết đầu, hoặc Magic Jammer ở liên kết 2/);
+    assert.match(await evaluate(`document.querySelector('#detail .card-support').textContent`),/Phản hồi Trap Hole ở liên kết đầu; Magic Jammer/);
     if(lp<=1000){
       assert.equal(await evaluate(`${textButton('#actions button','Phản hồi Bẫy')}.disabled`),true);
       assert.equal(await evaluate(`Boolean(${lpGuide})`),false);const before=await evaluate('JSON.stringify(view)');

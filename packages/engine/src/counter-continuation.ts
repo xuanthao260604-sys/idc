@@ -27,6 +27,7 @@ export const COUNTER_CONTINUATION_PINS: Readonly<Record<string, string>> = freez
   'official:77414722': 'dcbfa15ffcecc32dd594e2794ab516642bc5ede743942717406b95f955e946bf',
 });
 const MAGIC = 'official:77414722', SEVEN = 'official:03819470';
+export const supportsSpellCounterContinuation=(registry:Registry,id:string)=>['normal-spell-magic-jammer-seven-tools-v1','reviewed-three-link-counter-patterns-v3'].includes(registry.counterContinuations[id]??'');
 /** Additional reviewed prefix, never permission inferred from Spell Speed alone. */
 export function normalSpellMagicPrefix(registry: Registry, state: DuelState): boolean {
   const [root, magic] = state.chain;
@@ -56,6 +57,7 @@ const link = z.strictObject({ id, controllerId: id, source: id, sourceAtActivati
   costEvents: z.array(event).max(1), targetRefs: z.array(z.strictObject({ instanceId: id, locationAtSelection: z.discriminatedUnion('kind',[
     z.strictObject({kind:z.literal('monster'),playerId:id,slot:integer.max(4)}),z.strictObject({kind:z.literal('graveyard'),playerId:id}),
   ]) })).max(1), respondingToLinkId: id.optional(), activationNegated: z.boolean(), effectNegated: z.boolean() });
+export const FieldActivationLinkSchema = link;
 const JournalSchema = z.strictObject({ version: z.literal(1), kind: z.literal('normal-spell-magic-jammer-seven-tools-v1'),
   stage: z.enum(['before-root','root-choice','cleanup']), duelId:id, registryRevision:id,
   turn: z.strictObject({number:integer.positive(),activePlayer:id,phase:z.enum(['main1','main2'])}), capturedSequence:integer.positive(), capturedStateVersion:integer,
@@ -115,7 +117,7 @@ function assertJournal(registry:Registry,journal:CounterContinuationJournal) {
 export function prepareCounterContinuation(registry:Registry,state:DuelState) {
   check(state.cardRegistryRevision===registry.revision&&state.format.id===registry.format.id&&state.format.revision===registry.format.revision
     &&registry.format.id==='goat-2005-08-17'&&registry.format.revision===4&&!state.result&&!state.pendingDecision&&!state.pendingTriggers.length
-    &&state.chainCleanup===null&&state.spellResolution===null&&state.counterResolution===null&&state.chain.length===3&&state.timing.window==='resolving'
+    &&state.chainCleanup===null&&state.spellResolution===null&&state.counterResolution===null&&state.trapCounterResolution===null&&state.chain.length===3&&state.timing.window==='resolving'
     &&state.timing.priorityPlayer===null&&state.timing.consecutivePasses===2&&state.timing.requestedPhase===null
     &&state.players.length===2&&state.players[0].id!==state.players[1].id&&state.players.some(p=>p.id===state.turn.activePlayer)
     &&state.players.every(p=>Number.isSafeInteger(p.lifePoints)&&p.lifePoints>0)&&['main1','main2'].includes(state.turn.phase),'Invalid candidate Counter resolution input');
