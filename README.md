@@ -16,7 +16,8 @@ Không coi việc cấu hình CI Windows hoặc chạy Linux là đã kiểm ch�
 
 Đã mở [Normal Spell → Magic Jammer → Seven Tools](docs/engine/three-link-counter.md) với đúng 11 Phép gốc đã pin, review Seven v2 và activation/priority/cost thật. Seven phủ nhận/phá Magic, giữ các phí đã trả; Phép gốc tiếp tục một lần rồi owner chọn thứ tự cleanup hai nguồn khi cần. Hai pattern Counter hai liên kết cũ vẫn giữ. Chưa có Counter link 4+, Seven → Seven hoặc Chain hỗn hợp tổng quát.
 Đã bổ sung [audit tương tác qua nhiều lượt](docs/engine/three-link-interaction-audit.md): Faith lấy lại cùng Phép để kích hoạt mới, hai lần trả phí riêng, LP hồi rồi trả tiếp và sát thương kết thúc trận. Giữ nguyên engine/review/dữ liệu; thêm 18 ca và hai hành trình browser dài.
-Linux và Windows CI mới nhất đạt 2245/2245 test trong 51 file, gồm 18 ca [tương tác qua nhiều lượt](docs/engine/three-link-interaction-audit.md), 395 ca activation ba link, 387 ca parent ứng viên v1 và các suite cũ. Cả Linux và Windows đạt 84/84 bước validation, 74 browser report, gồm hai hành trình dài với hai Chain ba link mỗi hành trình và 10 mode ba link đơn. Windows dùng Edge 155.0.4283.62, runtimeExceptions=0; capabilities và 310 file dữ liệu/mã sản phẩm cũ giữ nguyên ở mốc audit. [Bằng chứng và giới hạn](docs/engine/three-link-interaction-audit.md) phân biệt kiểm chứng CI với Windows 11 desktop chưa thử.
+Đã chuẩn bị [bản ghi nhiều lần trả LP của Seven](docs/engine/seven-lp-cost-ledger.md) ở mức thành phần nội bộ: nối số dư theo từng payer, giữ cost lịch sử và phân biệt binding board hiện hành. Chưa được game gọi, không mở Seven → Seven hoặc review mới.
+Linux và Windows CI mới nhất đạt 2303/2303 test trong 52 file, gồm 58 ca [ledger LP độc lập](docs/engine/seven-lp-cost-ledger.md), 18 ca tương tác qua nhiều lượt, 395 ca activation ba link và các suite cũ. Ledger mới chưa được game gọi; không mở Seven → Seven. Windows đạt 84/84 bước và 74 browser report trên source 920c1fa, Edge 155.0.4283.62, runtimeExceptions=0. Full browser Linux gần nhất vẫn mốc audit 1368375 với 2245 test/51 file, 84 bước/74 report; không lặp UI cho module chưa nạp, toàn bộ runtime cũ giữ nguyên byte. [Bằng chứng và giới hạn](docs/engine/seven-lp-cost-ledger.md) phân biệt từng report và Windows 11 desktop chưa thử.
 Dữ liệu đã nhập 112 loại; catalog runtime 112 loại với 17 hiệu ứng trong 13 scope. Trạng thái nhập tách riêng review/runtime; historical text pending không tự được nâng thành verified.
 Browser regression tính riêng: xây/lưu deck, 5 hiệu ứng, xem Mộ, tạo trận A/B/ngẫu nhiên, bỏ bài,
 Pot với deck 0/1/2 lá, đầu hàng/hủy và tạo trận sau kết thúc, trận tự nhiên đầy đủ.
@@ -163,7 +164,7 @@ Người dùng chưa cần nhận beta hoặc tự kiểm thử ở thời đi�
 riêng. Hiện có 19 bundle với 112 định nghĩa: 95 verified data và 17 pending rà soát văn bản lịch sử.
 Các số implemented/tested/playable=0 trong snapshot nhập là metadata lần nhập;
 runtime mở riêng 95 quái thường và 17 lá hiệu ứng qua review/kiểm thử trong scope giới hạn từ 19 bundle;
-Magic Jammer và Seven Tools chỉ được mở trong hai pattern hai liên kết đã duyệt. Reimport Ookazi/Magic Jammer/Seven Tools lỗi giữ cả 19 bundle và deck A/B nguyên byte. `cards:import` nhập offline,
+Magic Jammer và Seven Tools mở trong hai pattern hai liên kết và đúng Normal Spell → Magic Jammer → Seven Tools đã duyệt. Reimport Ookazi/Magic Jammer/Seven Tools lỗi giữ cả 19 bundle và deck A/B nguyên byte. `cards:import` nhập offline,
 `cards:fetch` chỉ dùng khi chủ động refresh nguồn.
 
 Xem [Phép](docs/engine/reviewed-spells.md), [FLIP](docs/engine/reviewed-flips.md),
@@ -179,7 +180,7 @@ hoặc mọi tương tác bài. Bài tự tạo giữ ở [kế hoạch mở r�
 
 `npm run validate:platform` chạy bộ kiểm chứng tổng hợp, ghi report JSON và log từng bước
 vào artifacts/platform-validation/ (Git bỏ qua). Lỗi dừng ngay, phần còn lại ghi chưa chạy.
-Windows CI đã chạy cùng lệnh, đạt 70/70 bước và giữ artifact; report Linux vẫn chỉ xác nhận Linux.
+Mốc audit gần nhất đạt 84/84 bước, giữ artifact Windows; xem số test/source hiện hành ở phần tiến độ và tài liệu mốc. Report Linux chỉ xác nhận Linux.
 
 ## Kiểm thử giao diện
 
