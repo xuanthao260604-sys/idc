@@ -10,10 +10,14 @@ import { createBetaServer } from '../dist/tools/beta-server.js';
 import { loadRuntimeCatalog } from '../dist/tools/runtime-catalog.js';
 import { createRegistry } from '../dist/packages/engine/src/registry.js';
 import { createDuel, assertDuelInvariants } from '../dist/packages/engine/src/duel.js';
+import { setupSevenResponseInteractions } from '../dist/tools/fixtures/seven-response-interactions.js';
+import { sevenResponseInteractionsBrowser } from './seven-response-interactions-browser.mjs';
 import { setupSevenResponse } from '../dist/tools/fixtures/seven-response.js';
 import { setupThreeLinkInteractions } from '../dist/tools/fixtures/three-link-interactions.js';
 import { goat200508Format } from '../dist/packages/card-data/src/formats/goat-2005-08-17.js';
 const read = async p => JSON.parse(await readFile(join(projectRoot, p), 'utf8'));
+const sevenResponseInteractionsArg=process.argv.find(arg=>/^--seven-response-interactions=[ab]:(heal|negated)$/.test(arg));
+const sevenResponseInteractions=sevenResponseInteractionsArg?.split('=')[1].split(':')??null;
 const sevenResponseArg=process.argv.find(arg=>/^--seven-response=[ab]:(split|same|blocked)$/.test(arg));
 const sevenResponse=sevenResponseArg?.split('=')[1].split(':')??null;
 const threeInteractionsArg=process.argv.find(arg=>/^--three-link-interactions=[ab]$/.test(arg));
@@ -60,7 +64,7 @@ const reincarnationMode = reincarnationArg?.split('=')[1] ?? null;
 const deckDraftGuard = process.argv.includes('--deck-draft-guard');
 const deckSaveCheck = process.argv.includes('--deck-save-check');
 const deckOverview = deckSaveCheck || deckDraftGuard || process.argv.includes('--deck-overview');
-const expanded = sevenResponse !== null || threeInteractions !== null || threeLink !== null || cleanupOrder !== null || sevenInteractions !== null || sevenMode !== null || responseGuide !== null || magicInteractions !== null || magicMode !== null || ookaziInteractions !== null || ookazi !== null || choiceIdentities || graveyardFilters || handSorting || faithBattle !== null || magicianFaith || deckOverview || earthquake || blockAttack || reincarnationMode !== null || tributeDoomed || hammerShot || smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
+const expanded = sevenResponseInteractions !== null || sevenResponse !== null || threeInteractions !== null || threeLink !== null || cleanupOrder !== null || sevenInteractions !== null || sevenMode !== null || responseGuide !== null || magicInteractions !== null || magicMode !== null || ookaziInteractions !== null || ookazi !== null || choiceIdentities || graveyardFilters || handSorting || faithBattle !== null || magicianFaith || deckOverview || earthquake || blockAttack || reincarnationMode !== null || tributeDoomed || hammerShot || smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
 const r = expanded ? loadRuntimeCatalog().registry : createRegistry((await read('data/generated/pilot.json')).cards, goat200508Format, {},
   await read('data/reviews/pilot.spell-effects.json'), await read('data/reviews/pilot.flip-effects.json'), await read('data/reviews/pilot.trap-effects.json'));
 const deck = Object.keys(r.cards);
@@ -82,7 +86,8 @@ const deckOutArg = process.argv.find(arg => /^--deck-out=[012]$/.test(arg));
 const deckOut = deckOutArg === undefined ? null : Number(deckOutArg.split('=')[1]);
 const interactionFixture=threeInteractions===null?null:setupThreeLinkInteractions(r,threeInteractions,threeInteractions==='b',threeInteractions==='a');
 const responseFixture=sevenResponse===null?null:setupSevenResponse(r,sevenResponse[0],sevenResponse[1]==='blocked'||(sevenResponse[1]==='split'&&sevenResponse[0]==='a'),sevenResponse[1]==='blocked'||(sevenResponse[1]==='split'&&sevenResponse[0]==='b'),sevenResponse[1]==='same'?'tribute':sevenResponse[0]==='b'?'flip':'normal',sevenResponse[0]==='a'?'main1':'main2',sevenResponse[1]==='blocked'?2000:2001,1001);
-const s = responseFixture?structuredClone(responseFixture.state):interactionFixture?structuredClone(interactionFixture.state):structuredClone(createDuel(r, { duelId: fullDuel ? 'mixed-smoke' : 'browser-fixture', players: [{ id: 'a', deck }, { id: 'b', deck }], firstPlayerId: 'a', seedHex: fullDuel ? (expanded ? '5e' : '08').padStart(64, '0') : '12'.repeat(32) }).state);
+const responseInteractionFixture=sevenResponseInteractions===null?null:setupSevenResponseInteractions(r,sevenResponseInteractions[0],sevenResponseInteractions[1]==='negated');
+const s = responseInteractionFixture?structuredClone(responseInteractionFixture.state):responseFixture?structuredClone(responseFixture.state):interactionFixture?structuredClone(interactionFixture.state):structuredClone(createDuel(r, { duelId: fullDuel ? 'mixed-smoke' : 'browser-fixture', players: [{ id: 'a', deck }, { id: 'b', deck }], firstPlayerId: 'a', seedHex: fullDuel ? (expanded ? '5e' : '08').padStart(64, '0') : '12'.repeat(32) }).state);
 // Trusted fixture setup BEFORE starting the server. No state-edit endpoint, seed flag or test mode in beta CLI.
 function move(name, owner, zone, slot = 0, down = false) {
   const d = Object.values(r.cards).find(c => c.name === name), p = s.players.find(p => p.id === owner);
@@ -187,7 +192,7 @@ if (chainView) {
   move('Man-Eater Bug','b','monster',0,true);
   s.turn.number=3;s.turn.phase='main1';s.timing.window='open';s.timing.priorityPlayer='a';s.timing.consecutivePasses=0;
 }
-if (expanded && sevenResponse === null && threeInteractions === null && threeLink === null && cleanupOrder === null && sevenInteractions === null && sevenMode === null && responseGuide === null && magicInteractions === null && magicMode === null && ookaziInteractions === null && !fullDuel && lifePointsMode === null && !smashingGround && !hammerShot && !tributeDoomed && !blockAttack && !earthquake && !magicianFaith && !faithBattle && !handSorting && !graveyardFilters && !choiceIdentities && !deckOverview && reincarnationMode === null) {
+if (expanded && sevenResponseInteractions === null && sevenResponse === null && threeInteractions === null && threeLink === null && cleanupOrder === null && sevenInteractions === null && sevenMode === null && responseGuide === null && magicInteractions === null && magicMode === null && ookaziInteractions === null && !fullDuel && lifePointsMode === null && !smashingGround && !hammerShot && !tributeDoomed && !blockAttack && !earthquake && !magicianFaith && !faithBattle && !handSorting && !graveyardFilters && !choiceIdentities && !deckOverview && reincarnationMode === null) {
   move('Gaia The Fierce Knight', 'a', 'hand');
   move('Battle Ox', 'a', 'monster', 0); move('Celtic Guardian', 'a', 'monster', 1, true);
   move('Curse of Dragon', 'a', 'hand');
@@ -679,7 +684,9 @@ try {
   await send('Runtime.enable'); await send('Page.enable'); await send('Page.navigate', { url: `http://127.0.0.1:${server.address().port}` });
   await wait(`document.getElementById('seat-dialog')?.open`); await seat('a');
   await verifyResultSummary();
-  if(sevenResponse!==null){
+  if(sevenResponseInteractions!==null){
+    await sevenResponseInteractionsBrowser({f:responseInteractionFixture,evaluate,seat,click,actionClick,textButton,confirm,pass,errors,browserVersion});
+  }else if(sevenResponse!==null){
     const [actor,kind]=sevenResponse,f=responseFixture,saved={};
     const board=who=>`view.players.find(p=>p.playerId===${JSON.stringify(who)})`;
     const slot=async(who,row,n)=>{await seat(who);await click(`document.querySelector('#self .zone-row:nth-child(${row}) .slot:nth-child(${n+1}) .card')`);};
