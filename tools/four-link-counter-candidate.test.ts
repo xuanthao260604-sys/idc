@@ -43,7 +43,7 @@ describe('isolated four-link Spell Magic Seven Seven candidate, not enabled game
       // Foundation calls above are not a live cleanup decision or accepted four-link state.
       expect(()=>assertDuelInvariants(post,registry)).toThrow();
     });
-  it.each(['root-flag','magic-flag','first-flag','top-flag','wrong-effect','wrong-response','duplicate-source','duplicate-link','same-turn','source-snapshot','lp-gap','lp-current','lp-amount','lp-sequence','lp-extra','root-cost','magic-cost','target-moved','unknown-target','phase','window','passes','priority','decision','result','registry','orphan','duplicate-zone','fifth-link','negative-version'])(
+  it.each(['root-flag','magic-flag','first-flag','top-flag','wrong-effect','wrong-response','duplicate-source','duplicate-link','same-turn','source-snapshot','lp-gap','lp-current','lp-amount','lp-sequence','lp-extra','root-cost','magic-cost','target-moved','unknown-target','phase','window','passes','priority','decision','result','registry','orphan','duplicate-zone','fifth-link','negative-version','banished-copy','fusion-copy','field-copy'])(
     'rejects invalid candidate %s without moving, paying or freezing input',mode=>{
       const f=setupFourLinkCounterCandidate(registry,'official:74848038','a',false,true,true),s=f.state,l=s.chain[3]!,e=l.costEvents[0]!;
       if(mode==='root-flag')s.chain[0]!.activationNegated=true;if(mode==='magic-flag')s.chain[1]!.activationNegated=true;if(mode==='first-flag')s.chain[2]!.activationNegated=true;if(mode==='top-flag')l.activationNegated=true;
@@ -55,6 +55,7 @@ describe('isolated four-link Spell Magic Seven Seven candidate, not enabled game
       if(mode==='target-moved')s.chain[0]!.targetRefs[0]!.locationAtSelection={kind:'monster',playerId:'a',slot:0};if(mode==='unknown-target')s.chain[0]!.targetRefs[0]!.instanceId='missing';
       if(mode==='phase')s.turn.phase='battle';if(mode==='window')s.timing.window='chain-response';if(mode==='passes')s.timing.consecutivePasses=1;if(mode==='priority')s.timing.priorityPlayer='a';
       if(mode==='decision')s.pendingDecision={id:'x',kind:'discard',playerId:'a',min:0,max:0,optionIds:[]};if(mode==='result')s.result={winner:'a',reason:'concession'};if(mode==='registry')s.cardRegistryRevision='old';
+      if(mode==='banished-copy')s.players[0].banished.push(s.players[0].deck[0]!);if(mode==='fusion-copy')s.players[0].fusionDeck.push(s.players[0].deck[0]!);if(mode==='field-copy')s.players[0].field=s.players[0].deck[0]!;
       if(mode==='orphan')s.players[0].deck.pop();if(mode==='duplicate-zone')s.players[0].hand.push(s.players[0].deck[0]!);if(mode==='fifth-link')s.chain.push(structuredClone(l));if(mode==='negative-version')s.stateVersion=-1;
       const before=structuredClone(s);expect(()=>prepareFourLinkCounterCandidate(registry,s)).toThrow();expect(s).toEqual(before);expect(Object.isFrozen(s.cards[f.top])).toBe(false);
     });

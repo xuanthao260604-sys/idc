@@ -35,7 +35,7 @@ function zones(registry:Registry,state:DuelState){
   const seen=new Set<string>();
   check(state.players.length===2&&state.players[0].id!==state.players[1].id,'Invalid candidate players');
   for(const p of state.players){
-    check(p.monsters.length===5&&p.spellsTraps.length===5,'Invalid candidate field');
+    check(p.monsters.length===5&&p.spellsTraps.length===5&&p.field===null&&!p.banished.length&&!p.fusionDeck.length,'Invalid or unsupported candidate field/extra zone');
     const visit=(key:string,kind:string,slot?:number)=>{const c=state.cards[key],def=c&&registry.cards[c.definition.id];
       check(c&&c.id===key&&!seen.has(key)&&def&&c.definition.revision===def.revision&&state.players.some(p=>p.id===c.ownerId)
         &&same(c.location,{kind,playerId:p.id,...(slot===undefined?{}:{slot})})&&c.controllerId===p.id,'Invalid candidate zone binding');
