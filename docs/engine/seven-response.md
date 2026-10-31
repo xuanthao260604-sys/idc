@@ -1,5 +1,9 @@
 # Trap Hole → Seven Tools → Seven Tools
 
+**Mốc tiếp nối:** đã bổ sung [audit tương tác qua nhiều lượt](seven-response-interaction-audit.md)
+cho phục hồi quái/Phép, đổi payer và phủ nhận hồi LP. Nội dung/kết quả bên
+dưới giữ mốc mở pattern ban đầu; engine/review không đổi trong audit.
+
 Mốc 31/10/2026: đã mở đúng pattern ba liên kết này bằng activation thật,
 review Seven revision 3 và resolver riêng. Giữ hai pattern Counter hai liên
 kết và 11 Phép thường → Magic Jammer → Seven Tools đã triển khai.
