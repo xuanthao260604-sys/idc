@@ -1,5 +1,9 @@
 # Phép thường → Magic Jammer → Seven → Seven
 
+**Mốc tiếp nối 04/11:** đã bổ sung [audit qua nhiều lượt](four-link-interaction-audit.md)
+cho phục hồi root, chi phí mới và chuỗi sau ngắn lại khi thiếu LP. Nội dung/
+kết quả dưới đây giữ mốc mở v4; audit không đổi engine/review/phạm vi luật.
+
 Mốc 01/11/2026: đã nối review v4, activation, discovery/preview, resolver và
 private cleanup cho **đúng pattern bốn liên kết này**. Bốn activation chạy
 bằng lệnh engine/adapter và UI thật. Giữ các pattern hai và ba liên kết cũ.
