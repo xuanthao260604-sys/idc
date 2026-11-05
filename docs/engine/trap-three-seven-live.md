@@ -57,5 +57,46 @@ lưu không đổi. Các lá Seven cùng tên được phân biệt bằng ID tr
 browser xác nhận hộp thứ tự và kết quả công khai, không coi tên giống nhau là
 bằng chứng danh tính hai instance trong Mộ.
 
-Kết quả tổng hợp và CI sẽ được ghi sau khi kiểm chứng hoàn tất.
+Linux local đạt 3563/3563 test trong 59 file, typecheck, build, 19 bundle
+check, 108/108 bước và 98 report trình duyệt, runtimeExceptions=0. Report:
+`artifacts/platform-validation/2026-11-05T06-56-02-644Z-218901/report.json`.
+Chrome 154.0.8037.57; Node 24.19.0; npm 11.9.0; Linux 6.18.57 x64.
+Đã đọc log mỗi bước và đối chiếu raw browser JSON với từng report; facts của
+92 luồng cũ và số ca của cả 58 suite cũ khớp mốc `63d60a5` (CI 41964600663).
+Hai trận tự nhiên giữ 339/239 lệnh, 16/11 lượt, winner B và LP [0,4200]/[0,8000];
+chúng không dùng Counter, không được tính là bằng chứng cho chuỗi mới.
+
+Đối chiếu capabilities chỉ có bốn trường dự kiến thay đổi: scope Seven trong
+danh sách scope và trong reviewedEffects, continuation, reviewRevision=5.
+Vẫn 112 định nghĩa, 95 quái thường, 17 hiệu ứng, 13 scope và 19 snapshot.
+Trong snapshot 318 file cũ, mọi file data/review/evidence và ảnh khung giữ
+nguyên byte; đổi 13 file engine/protocol, câu hướng dẫn Seven trong app và
+đầu vào catalog để chọn review v5. Thêm v5; toàn bộ 40 evidence giữ đúng v4,
+không sửa hồ sơ cũ. Các kiểm thử reimport lỗi cũ vẫn chạy, không mất dữ liệu.
+
+Source CI: `e2c3abd3823d6d2ee9838426cfec7c3584f744ff`.
+Ubuntu CI đã thành công; log xác nhận đúng 3563 test trong 59 file.
+[CI 41983918290](https://github.com/xuanthao260604-sys/idc/actions/runs/41983918290)
+đã thành công ở cả Ubuntu và Windows. Artifact Windows:
+`windows-validation-41983918290-1`, report đã tải và đọc:
+`artifacts/ci-trap-four-live/2026-11-05T06-58-21-583Z-6484/report.json`.
+
+| Kiểm chứng | Linux local | Windows CI |
+| --- | --- | --- |
+| Test / file | 3563 / 59 | 3563 / 59 |
+| Bước / browser report | 108 / 98 | 108 / 98 |
+| Runtime exceptions | 0 | 0 |
+| Browser | Chrome 154.0.8037.57 | Edge 156.0.4314.58 |
+| Node / npm | 24.19.0 / 11.9.0 | 24.19.0 / 11.17.0 |
+| OS / kiến trúc | 6.18.57 / x64 | win32 10.0.26100 / x64 |
+
+Đã đọc log cả 108 bước Windows, đối chiếu raw JSON với 98 report, kiểm riêng
+sáu mode mới (LP timeline, quái/quota, nhánh chặn và owner cleanup), 92 luồng
+cũ, từng suite, 19 bundle và capabilities. Kết quả tương đương Linux: facts
+cũ giữ nguyên, chỉ bốn trường capabilities Seven nêu trên thay đổi. Kiểm tra
+SHA sau toàn bộ lượt local xác nhận mọi file data/review cũ và ảnh khung vẫn
+nguyên byte. Artifact/log nằm ngoài Git và được workflow giữ 14 ngày.
+
+Mốc tiếp theo có thể audit tương tác chuỗi mới qua nhiều lượt. Chưa mở Counter
+link 5 hoặc coi phần Chain tổng quát đã hoàn tất.
 Chưa kiểm thử trực tiếp Windows 11 desktop; chưa đóng gói hoặc phát hành beta.
