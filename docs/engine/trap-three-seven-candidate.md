@@ -53,7 +53,45 @@ Các evidence, review v1–v4 và dữ liệu nhập giữ nguyên.
 16 ca checkpoint drift gồm sai graph/cost/occurrence. Có JSON roundtrip,
 không hoàn phí, không sửa/freeze đầu vào và v1/v2 không nhận chéo.
 
-Kết quả tổng hợp Linux/Windows và source CI sẽ được ghi sau khi chạy xong.
+Hồi quy local đầy đủ đạt 3327/3327 test trong 58 file, typecheck, build,
+19 bundle check và Node ESM probe. So sánh từng suite với mốc trước: 57
+suite cũ giữ nguyên số ca; chỉ thêm suite ứng viên 197 ca. Capabilities
+khớp hoàn toàn mốc v4: 112 định nghĩa, 95 quái thường, 17 hiệu ứng, 13 scope
+và 19 snapshot. Snapshot 316 file data/app/packages và cấu hình đầu vào
+chỉ đổi hai helper engine; dữ liệu,
+review/evidence, ứng dụng, ảnh khung và đầu vào catalog giữ nguyên byte.
+
+Browser Linux local đạt 102/102 bước, 92 report, runtimeExceptions=0:
+`artifacts/platform-validation/2026-11-05T03-54-30-116Z-188698/report.json`.
+Chrome 154.0.8037.57, Node 24.19.0, npm 11.9.0, OS 6.18.57 x64.
+Đã đọc log từng bước, so report với JSON browser gốc trong log và đối chiếu
+facts/capabilities/từng suite với mốc audit trước (`dae6ad6`, CI 41794125965).
+Tất cả facts cũ giữ nguyên sau khi bỏ trường nhận diện trình duyệt/platform.
+Hai trận tự nhiên vẫn có 339/239 lệnh, 16/11 lượt và winner B; chúng không
+sử dụng Counter, không được tính là bằng chứng activation ứng viên mới.
+
+Source CI: `63d60a5213e762d0c6cdb4d5898b936cd8903a24`.
+Ubuntu CI đã thành công, log riêng xác nhận 3327/3327 test trong 58 file.
+[CI 41964600663](https://github.com/xuanthao260604-sys/idc/actions/runs/41964600663)
+đã thành công ở cả Windows và Ubuntu. Windows artifact
+`windows-validation-41964600663-1`, report đã tải:
+`artifacts/ci-trap-three-seven-candidate/2026-11-05T03-56-05-777Z-2032/report.json`.
+
+| Kiểm chứng | Linux local | Windows CI |
+| --- | --- | --- |
+| Test / file | 3327 / 58 | 3327 / 58 |
+| Bước / browser report | 102 / 92 | 102 / 92 |
+| Runtime exceptions | 0 | 0 |
+| Browser | Chrome 154.0.8037.57 | Edge 156.0.4314.56 |
+| Node / npm | 24.19.0 / 11.9.0 | 24.19.0 / 11.17.0 |
+| OS / kiến trúc | 6.18.57 / x64 | win32 10.0.26100 / x64 |
+
+Windows cũng đã đối chiếu đầy đủ log từng bước, raw browser JSON,
+capabilities và số ca từng suite với mốc trước; tất cả facts cũ giữ nguyên.
+197 ca mới là bằng chứng thành phần ứng viên/ledger, không phải 197 ca
+activation live mới. 92 report trình duyệt kiểm gameplay hiện hành; không
+có mode UI mới cho Trap Hole bốn liên kết. Artifact/log nằm ngoài Git,
+được CI giữ theo chính sách 14 ngày của workflow hiện có.
 Chưa kiểm thử Windows 11 desktop; chưa đóng gói hoặc phát hành beta.
 
 Tiếp theo: rà soát phạm vi rồi nối đúng pattern vào activation, invariant,
