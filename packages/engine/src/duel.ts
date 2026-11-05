@@ -1,3 +1,5 @@
+import {prepareTrapThreeSevenResolution,THREE_SEVEN_EFFECT_ID} from './trap-three-seven-candidate.js';
+import {reviewedTrapThreeSevenPrefix,assertTrapThreeSevenCleanup} from './trap-three-seven-continuation.js';
 import { z } from 'zod';
 import type { DuelState, EventRef, Phase, PlayerState, Slot, CounterResolutionFrame } from '../../protocol/src/duel.js';
 import { RequestSchema, RuleError, requireRule as rule } from './actions.js';
@@ -52,6 +54,7 @@ function endDuel(c: Context, winner: string | null, reason: NonNullable<DuelStat
   c.state.counterResolution = null;
   c.state.trapCounterResolution = null;
   c.state.fourLinkCounterResolution = null;
+  c.state.trapThreeSevenResolution = null;
   open(c); c.state.timing.priorityPlayer = null;
   emit(c, 'duel-ended', [], { winner: winner ?? 'draw', reason });
 }
@@ -119,13 +122,15 @@ export function assertDuelInvariants(state: DuelState, registry: Registry) {
   if (state.spellResolution === undefined) throw new Error('Missing Spell resolution context field');
   if (state.counterResolution === undefined) throw new Error('Missing Counter resolution context field');
   if (state.trapCounterResolution === undefined) throw new Error('Missing Trap Counter resolution context field');
+  if(state.trapThreeSevenResolution===undefined)throw new Error('Missing three-Seven context field');
+  if(state.trapThreeSevenResolution!==null)assertTrapThreeSevenCleanup(registry,state);
   if (state.fourLinkCounterResolution === undefined) throw new Error('Missing four-link Counter context field');
   if (state.fourLinkCounterResolution !== null) assertFourLinkCounterCleanup(registry,state);
   if (state.trapCounterResolution !== null) assertTrapCounterResolutionFrame(registry,state);
   if (state.counterResolution !== null) assertCounterResolutionFrame(registry, state);
   if (state.spellResolution !== null) assertSpellResolution(registry, state);
   else if (state.pendingDecision?.kind === 'effect-choice' && !state.counterResolution) throw new Error('Missing paused Spell resolution frame');
-  if (state.chainCleanup !== null && !state.counterResolution && !state.trapCounterResolution && !state.fourLinkCounterResolution) {
+  if (state.chainCleanup !== null && !state.counterResolution && !state.trapCounterResolution && !state.fourLinkCounterResolution && !state.trapThreeSevenResolution) {
     const frame = state.chainCleanup, first = state.chain[0], targetId = first?.targetRefs[0]?.instanceId;
     const target = targetId && state.cards[targetId], targetDef = target && registry.cards[target.definition.id];
     if (frame.mode !== 'live' || state.result || state.timing.window !== 'resolving' || state.timing.priorityPlayer !== null
@@ -150,7 +155,7 @@ export function assertDuelInvariants(state: DuelState, registry: Registry) {
     if (!pending || decision.id !== `${first!.id}:cleanup:${pending.playerId}` || decision.playerId !== pending.playerId
       || decision.min !== pending.min || decision.max !== pending.max
       || JSON.stringify(decision.optionIds) !== JSON.stringify(pending.optionIds)) throw new Error('Invalid cleanup decision');
-  } else if (!state.counterResolution && !state.trapCounterResolution && !state.fourLinkCounterResolution && (state.pendingDecision?.kind === 'cleanup-order'
+  } else if (!state.counterResolution && !state.trapCounterResolution && !state.fourLinkCounterResolution && !state.trapThreeSevenResolution && (state.pendingDecision?.kind === 'cleanup-order'
     || (state.timing.window === 'resolving' && (state.chain.length !== 1 || state.pendingDecision?.kind !== 'effect-choice')))) throw new Error('Invalid paused resolution');
   if (state.pendingTriggers.length && (state.chain.length || state.pendingDecision?.kind !== 'target' || state.timing.window !== 'trigger-order')) throw new Error('Invalid pending FLIP');
   if (state.timing.window === 'chain-response' && state.chain.length < 1) throw new Error('Missing Chain link');
@@ -185,7 +190,13 @@ export function assertDuelInvariants(state: DuelState, registry: Registry) {
   const threeLink = state.chain.length === 3 && state.chain[2]!.effectId === SEVEN_MAGIC_EFFECT_ID;
   const threeTrap=state.chain.length===3&&state.chain[2]!.effectId===SEVEN_RESPONSE_EFFECT_ID;
   const fourLink=state.chain.length===4&&state.chain[3]!.effectId===FOUR_LINK_EFFECT_ID;
-  if(state.fourLinkCounterResolution!==null){
+  const trapFour=state.chain.length===4&&state.chain[3]!.effectId===THREE_SEVEN_EFFECT_ID;
+  if(state.trapThreeSevenResolution!==null){
+    // The live parent validates the spent graph and exact private cleanup pause.
+  }else if(trapFour){
+    if(state.timing.window!=='chain-response'||state.timing.priorityPlayer===null||state.timing.consecutivePasses>1)throw new Error('Invalid three-Seven timing');
+    prepareTrapThreeSevenResolution(registry,{...state,timing:{...state.timing,window:'resolving',priorityPlayer:null,consecutivePasses:2}});
+  }else if(state.fourLinkCounterResolution!==null){
     // Full spent-graph/board and the private cleanup pause were validated above.
   }else if(fourLink){
     if(state.timing.window!=='chain-response'||state.timing.priorityPlayer===null||state.timing.consecutivePasses>1)throw new Error('Invalid four-link Counter timing');
@@ -208,7 +219,7 @@ export function assertDuelInvariants(state: DuelState, registry: Registry) {
         || state.turn.activePlayer !== state.chain[0]!.controllerId || registry.cards[state.cards[state.chain[0]!.source]?.definition.id ?? '']?.origin !== 'official' || !['main1', 'main2'].includes(state.turn.phase))) throw new Error('Invalid supported Counter Chain');
   } else if (state.chain.length > 1 && !state.chain.every(link => link.effectId === 'destroy-opponent-normal-or-flip-summoned-1000')) throw new Error('Unsupported mixed Chain');
   if (new Set(state.chain.map(link => link.id)).size !== state.chain.length || new Set(state.chain.map(link => link.source)).size !== state.chain.length) throw new Error('Duplicate Chain identity');
-  for (const link of fourLink || state.fourLinkCounterResolution !== null ? [] : threeTrap ? state.chain.slice(0,1) : threeLink ? state.chain.slice(0, 2) : state.chain) {
+  for (const link of trapFour || state.trapThreeSevenResolution !== null || fourLink || state.fourLinkCounterResolution !== null ? [] : threeTrap ? state.chain.slice(0,1) : threeLink ? state.chain.slice(0, 2) : state.chain) {
     const rootFinished = state.counterResolution?.stage === 'cleanup';
     const card = state.cards[link.source];
     const flip = card && registry.flipHandlers[card.definition.id];
@@ -295,7 +306,7 @@ export function createDuel(registry: Registry, input: z.input<typeof StartSchema
   const players: [Mutable<PlayerState>, Mutable<PlayerState>] = [makePlayer(options.players[0], 0), makePlayer(options.players[1], 1)];
   const state: State = { id: options.duelId, format: { ...registry.format }, cardRegistryRevision: registry.revision,
     stateVersion: 0, eventSequence: 0, turn: { number: 1, activePlayer: active, phase: 'draw' }, players, cards,
-    chain: [], chainCleanup: null, spellResolution: null, counterResolution: null, trapCounterResolution:null, fourLinkCounterResolution:null, pendingTriggers: [], modifiers: [], timing: { window: 'open', priorityPlayer: active, consecutivePasses: 0, lastRelevantEvents: [], requestedPhase: null },
+    chain: [], chainCleanup: null, spellResolution: null, counterResolution: null, trapCounterResolution:null, fourLinkCounterResolution:null, trapThreeSevenResolution:null, pendingTriggers: [], modifiers: [], timing: { window: 'open', priorityPlayer: active, consecutivePasses: 0, lastRelevantEvents: [], requestedPhase: null },
     battle: null, pendingDecision: null, rng: rng.state(), result: null };
   const c: Context = { state, registry, events: [] };
   emit(c, 'duel-started');
@@ -548,9 +559,10 @@ function activateLPCounterTrap(c: Context, actorId: string, id: string, respondi
   rule(!c.state.pendingDecision && c.state.timing.priorityPlayer === actorId, 'not-your-action', 'Wait for response priority');
   const extended = supportsSpellCounterContinuation(c.registry,c.state.cards[id]?.definition.id ?? '')
     && normalSpellMagicPrefix(c.registry, c.state);
-  const sevenResponse=['reviewed-three-link-counter-patterns-v3','reviewed-four-link-counter-patterns-v4'].includes(c.registry.counterContinuations[c.state.cards[id]?.definition.id??'']??'')&&trapSevenPrefix(c.registry,c.state);
+  const sevenResponse=['reviewed-three-link-counter-patterns-v3','reviewed-four-link-counter-patterns-v4','reviewed-four-link-counter-patterns-v5'].includes(c.registry.counterContinuations[c.state.cards[id]?.definition.id??'']??'')&&trapSevenPrefix(c.registry,c.state);
+  const trapFourResponse=reviewedTrapThreeSevenPrefix(c.registry,c.state);
   const fourResponse=reviewedFourLinkPrefix(c.registry,c.state);
-  rule(c.state.timing.window === 'chain-response' && ((c.state.chain.length === 1 && trapHolePrefix(c.state, c.registry)) || extended || sevenResponse || fourResponse)
+  rule(c.state.timing.window === 'chain-response' && ((c.state.chain.length === 1 && trapHolePrefix(c.state, c.registry)) || extended || sevenResponse || fourResponse || trapFourResponse)
     && c.state.chain.at(-1)!.id === respondingToLinkId, 'illegal-timing', 'Respond directly to a reviewed Trap activation');
   const p = mutablePlayer(c.state, actorId), card = c.state.cards[id];
   rule(card && c.registry.counterTrapHandlers[card.definition.id] === 'pay-1000-negate-trap-hole-activation'
@@ -564,7 +576,7 @@ function activateLPCounterTrap(c: Context, actorId: string, id: string, respondi
   emit(c, 'life-points-paid', [], { playerId: actorId, amount: 1000, beforeLP, afterLP: p.lifePoints, reason: 'activation-cost' }, false);
   const cost = c.events.at(-1)!; card.position = 'face-up';
   c.state.chain.push({ id: `${c.state.id}:lp-counter-link:${c.state.eventSequence + 1}`, controllerId: actorId, source: id,
-    sourceAtActivation: structuredClone(card), effectId: fourResponse?FOUR_LINK_EFFECT_ID:sevenResponse?SEVEN_RESPONSE_EFFECT_ID:extended ? SEVEN_MAGIC_EFFECT_ID : 'pay-1000-negate-trap-hole-activation', spellSpeed: 3,
+    sourceAtActivation: structuredClone(card), effectId: trapFourResponse?THREE_SEVEN_EFFECT_ID:fourResponse?FOUR_LINK_EFFECT_ID:sevenResponse?SEVEN_RESPONSE_EFFECT_ID:extended ? SEVEN_MAGIC_EFFECT_ID : 'pay-1000-negate-trap-hole-activation', spellSpeed: 3,
     costEvents: [{ ...cost, affectedInstances: [], details: { ...cost.details } }], targetRefs: [], respondingToLinkId,
     activationNegated: false, effectNegated: false });
   emit(c, 'counter-trap-activated', [id], {}, false);
@@ -582,6 +594,21 @@ function resolveCounterChain(c: Context) {
   emit(c, 'chain-link-negated-skipped', [original.source], {}, false);
   cleanupSingleSource(c, counter.source, 'counter-trap-cleanup');
   emit(c, 'chain-resolved', [], {}, false); response(c, 'action-response');
+}
+function resolveTrapThreeSeven(c:Context){
+  c.state.timing.window='resolving';c.state.timing.priorityPlayer=null;
+  const p=prepareTrapThreeSevenResolution(c.registry,c.state),j=p.journal;
+  c.state=structuredClone({...c.state,...p.board,chain:p.remainingChain,trapThreeSevenResolution:j})as State;
+  emit(c,'chain-link-resolving',[j.top.source],{},false);
+  emit(c,'trap-activation-negated',[j.middle.source],{playerId:j.middle.controllerId});
+  emit(c,'trap-destroyed',[j.middle.source],{playerId:j.middle.controllerId});
+  emit(c,'chain-link-negated-skipped',[j.middle.source],{},false);
+  emit(c,'chain-link-resolving',[j.first.source],{},false);
+  emit(c,'trap-activation-negated',[j.root.source],{playerId:j.root.controllerId});
+  emit(c,'trap-destroyed',[j.root.source],{playerId:j.root.controllerId});
+  emit(c,'chain-link-negated-skipped',[j.root.source],{},false);
+  c.state.chainCleanup=prepareChainCleanup(c.registry,c.state,j.cleanupSourceIds)as State['chainCleanup'];
+  continueChainCleanup(c);
 }
 function resolveFourLinkCounter(c:Context){
   c.state.timing.window='resolving';c.state.timing.priorityPlayer=null;
@@ -638,8 +665,8 @@ function continueChainCleanup(c: Context) {
   }
   Object.assign(c.state, commitChainCleanup(c.registry, c.state, frame));
   const sourceIds = [...frame.sourceIds];
-  const reason = c.state.counterResolution || c.state.trapCounterResolution || c.state.fourLinkCounterResolution ? 'counter-chain-cleanup' : 'trap-cleanup';
-  c.state.chain = []; c.state.chainCleanup = null; c.state.counterResolution = null; c.state.trapCounterResolution=null; c.state.fourLinkCounterResolution=null;
+  const reason = c.state.counterResolution || c.state.trapCounterResolution || c.state.fourLinkCounterResolution || c.state.trapThreeSevenResolution ? 'counter-chain-cleanup' : 'trap-cleanup';
+  c.state.chain = []; c.state.chainCleanup = null; c.state.counterResolution = null; c.state.trapCounterResolution=null; c.state.fourLinkCounterResolution=null; c.state.trapThreeSevenResolution=null;
   emit(c, 'sent-to-graveyard', sourceIds, { reason });
   emit(c, 'chain-resolved', [], {}, false); response(c, 'action-response');
 }
@@ -813,7 +840,8 @@ function pass(c: Context, actorId: string) {
   }
   const phase = c.state.timing.requestedPhase;
   if (c.state.chain.length) {
-    if(c.state.chain.length===4&&c.state.chain[3]!.effectId===FOUR_LINK_EFFECT_ID)resolveFourLinkCounter(c);
+    if(c.state.chain.length===4&&c.state.chain[3]!.effectId===THREE_SEVEN_EFFECT_ID)resolveTrapThreeSeven(c);
+    else if(c.state.chain.length===4&&c.state.chain[3]!.effectId===FOUR_LINK_EFFECT_ID)resolveFourLinkCounter(c);
     else if(c.state.chain.length===3&&c.state.chain[2]!.effectId===SEVEN_RESPONSE_EFFECT_ID)resolveSevenResponse(c);
     else if (c.state.chain.length === 3 && c.state.chain[2]!.effectId === SEVEN_MAGIC_EFFECT_ID) {
       c.state.timing.window = 'resolving'; c.state.timing.priorityPlayer = null; resolveThreeLinkCounter(c);

@@ -79,10 +79,10 @@ function rootTargets(registry:Registry,state:DuelState,root:ChainLink){
  * DuelState. Only the separate live engine gate may authorize an activation.
  */
 function prepare(registry:Registry,state:DuelState,reviewed:boolean){
-  if(reviewed)check(registry.counterContinuations[SEVEN]===FOUR_LINK_REVIEW,'Unreviewed four-link resolution');
+  if(reviewed)check([FOUR_LINK_REVIEW,'reviewed-four-link-counter-patterns-v5'].includes(registry.counterContinuations[SEVEN]??''),'Unreviewed four-link resolution');
   check(state.chain.length===4&&state.timing.window==='resolving'&&state.timing.priorityPlayer===null&&state.timing.consecutivePasses===2
     &&state.timing.requestedPhase===null&&!state.result&&!state.pendingDecision&&!state.pendingTriggers.length
-    &&state.chainCleanup===null&&state.spellResolution===null&&state.counterResolution===null&&state.trapCounterResolution===null&&state.fourLinkCounterResolution===null,'Invalid four-link candidate context');
+    &&state.chainCleanup===null&&state.spellResolution===null&&state.counterResolution===null&&state.trapCounterResolution===null&&state.fourLinkCounterResolution===null&&state.trapThreeSevenResolution===null,'Invalid four-link candidate context');
   const [root,magic,seven,top]=state.chain as readonly[ChainLink,ChainLink,ChainLink,ChainLink];
   const turn={...state.turn,phase:state.turn.phase as 'main1'|'main2'};
   graph(registry,root,magic,seven,top,turn,state.eventSequence,false,reviewed);zones(registry,state);costsStillPaid(state,root,magic);rootTargets(registry,state,root);
@@ -109,14 +109,14 @@ function prepare(registry:Registry,state:DuelState,reviewed:boolean){
  */
 function assertCheckpoint(registry:Registry,state:DuelState,j:FourLinkCounterCandidateJournal,reviewed:boolean){
   check(j.kind===(reviewed?'normal-spell-magic-seven-seven-v1':'normal-spell-magic-seven-seven-candidate-v1'),'Wrong four-link checkpoint kind');
-  if(reviewed)check(registry.counterContinuations[SEVEN]===FOUR_LINK_REVIEW,'Unreviewed four-link checkpoint');
+  if(reviewed)check([FOUR_LINK_REVIEW,'reviewed-four-link-counter-patterns-v5'].includes(registry.counterContinuations[SEVEN]??''),'Unreviewed four-link checkpoint');
   check(Schema.safeParse(j).success,'Malformed four-link candidate journal');const {integritySha256,...body}=j;
   check(integritySha256===digest(body),'Four-link candidate journal changed');assertSevenLPCostHistory(j.lpCosts);
   check(state.format.id===registry.format.id&&state.format.revision===registry.format.revision&&registry.format.id==='goat-2005-08-17'&&registry.format.revision===4
     &&state.id===j.duelId&&state.cardRegistryRevision===j.registryRevision&&registry.revision===j.registryRevision&&same(state.turn,j.turn)
     &&Number.isSafeInteger(state.stateVersion)&&state.stateVersion>=j.capturedStateVersion&&Number.isSafeInteger(state.eventSequence)&&state.eventSequence>=j.capturedSequence
     &&state.timing.window==='resolving'&&state.timing.priorityPlayer===null&&state.timing.consecutivePasses===2&&state.timing.requestedPhase===null
-    &&!state.result&&!state.pendingDecision&&!state.pendingTriggers.length&&state.chainCleanup===null&&state.spellResolution===null&&state.counterResolution===null&&state.trapCounterResolution===null&&state.fourLinkCounterResolution===null
+    &&!state.result&&!state.pendingDecision&&!state.pendingTriggers.length&&state.chainCleanup===null&&state.spellResolution===null&&state.counterResolution===null&&state.trapCounterResolution===null&&state.fourLinkCounterResolution===null&&state.trapThreeSevenResolution===null
     &&same(state.chain,[j.magic])&&same(j.cleanupSourceIds,[j.magic.source,j.top.source])&&resolutionFingerprint(state)===j.boardFingerprint,'Four-link candidate checkpoint drift');
   graph(registry,j.root,j.magic,j.seven,j.top,j.turn,j.capturedSequence,true,reviewed);zones(registry,state);costsStillPaid(state,j.root,j.magic);rootTargets(registry,state,j.root);
   check(j.lpCosts.duelId===state.id&&j.lpCosts.registryRevision===registry.revision&&same(j.lpCosts.turn,state.turn)

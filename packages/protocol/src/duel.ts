@@ -163,6 +163,18 @@ export interface FourLinkCounterJournal {
   readonly lpCosts:SevenLPCostLedger;readonly cleanupSourceIds:readonly[string,string];
   readonly entryFingerprint:string;readonly boardFingerprint:string;readonly integritySha256:string;
 }
+/** Separate contract; V1 remains capped at two payments in its validator. */
+export type ThreeSevenLPCostLedger=Omit<SevenLPCostLedger,'version'|'kind'>&{
+  readonly version:2;readonly kind:'seven-tools-three-payments-ledger-v2';
+};
+/** Server-only journal shared by frozen candidate and exact reviewed live pattern. */
+export interface TrapThreeSevenJournal {
+  readonly version:1;readonly kind:'trap-hole-three-seven-candidate-v1'|'trap-hole-three-seven-v1';readonly duelId:string;readonly registryRevision:string;
+  readonly turn:{readonly number:number;readonly activePlayer:string;readonly phase:'main1'|'main2'};
+  readonly capturedSequence:number;readonly capturedStateVersion:number;
+  readonly root:ChainLink;readonly first:ChainLink;readonly middle:ChainLink;readonly top:ChainLink;readonly occurrence:EventRef;readonly lpCosts:ThreeSevenLPCostLedger;
+  readonly cleanupSourceIds:readonly[string,string];readonly entryFingerprint:string;readonly boardFingerprint:string;readonly integritySha256:string;
+}
 export interface DuelState {
   id: string;
   format: DefinitionRef;
@@ -178,6 +190,7 @@ export interface DuelState {
   counterResolution: CounterResolutionFrame | null; // Candidate resolver context; activation remains gated.
   trapCounterResolution: TrapCounterResolutionFrame | null;
   fourLinkCounterResolution: FourLinkCounterJournal | null;
+  trapThreeSevenResolution: TrapThreeSevenJournal | null;
   pendingTriggers: readonly PendingTrigger[];
   modifiers: readonly Modifier[];
   timing: {

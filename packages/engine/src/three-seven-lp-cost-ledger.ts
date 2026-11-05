@@ -8,9 +8,8 @@ import {readSevenLPCostPayments,sevenLPCostBalances,SevenLPCostLedgerSchema,Seve
 import type {SevenLPCostLedger} from './seven-lp-cost-ledger.js';
 
 /** Separate accounting contract. Never permission for a third Seven activation. */
-export type ThreeSevenLPCostLedger=Omit<SevenLPCostLedger,'version'|'kind'>&{
-  readonly version:2;readonly kind:'seven-tools-three-payments-ledger-v2';
-};
+export type {ThreeSevenLPCostLedger} from '../../protocol/src/duel.js';
+import type {ThreeSevenLPCostLedger} from '../../protocol/src/duel.js';
 const Schema=SevenLPCostLedgerSchema.extend({version:z.literal(2),kind:z.literal('seven-tools-three-payments-ledger-v2'),
   payments:z.array(SevenLPCostPaymentSchema).length(3),
   balances:z.array(SevenLPCostLedgerSchema.shape.balances.element.extend({paymentCount:z.number().int().positive().max(3)})).min(1).max(2)});

@@ -9,7 +9,7 @@ import { goat200508Format } from '../packages/card-data/src/formats/goat-2005-08
 import type { DuelState } from '../packages/protocol/src/duel.js';
 import type { EngineAction } from '../packages/engine/src/actions.js';
 type Mutable<T>={-readonly[K in keyof T]:Mutable<T[K]>};
-const runtime=loadRuntimeCatalog(),{registry}=runtime;
+const runtime=loadRuntimeCatalog(),registry=createRegistry(runtime.cards,goat200508Format,{},runtime.effectReviews.spells,runtime.effectReviews.flips,runtime.effectReviews.traps,[...runtime.effectReviews.counters.filter(r=>r.cardId!=='official:03819470'),...JSON.parse(readFileSync('data/reviews/seven-tools-v4.effects.json','utf8'))]);
 function act(s:DuelState,who:string,a:EngineAction){const before=structuredClone(s),r=applyAction(registry,s,{actorId:who,expectedStateVersion:s.stateVersion,action:a});expect(s).toEqual(before);if(!r.accepted)throw new Error(r.message);assertDuelInvariants(r.state,registry);return r;}
 function prefix(f:ReturnType<typeof setupSevenResponse>){
   let s=act(f.state,f.actor,f.method==='flip'?{type:'flip-summon',instanceId:f.target}:{type:'normal-summon',instanceId:f.target,slot:0,tributeIds:f.tributes}).state;

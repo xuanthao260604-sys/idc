@@ -1,5 +1,9 @@
 # Ứng viên Trap Hole → Seven → Seven → Seven
 
+**Mốc tiếp nối 05/11:** đã [mở activation thật](trap-three-seven-live.md)
+qua review v5. Nội dung và bằng chứng bên dưới giữ mốc ứng viên ở gate v4;
+197 ca cũ không được đổi thành bằng chứng gameplay mới.
+
 Mốc 05/11/2026: thêm thành phần ứng viên và ledger riêng cho ba khoản phí.
 **Chưa mở pattern này trong game.** Registry/review active vẫn là Seven v4;
 chỉ pattern Phép → Magic Jammer → Seven → Seven có bốn activation thật.

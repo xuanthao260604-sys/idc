@@ -63,7 +63,7 @@ export function createPlayerProjection(registry: Registry, state: DuelState, vie
       ...(link.respondingToLinkId && chainToHandle.has(link.respondingToLinkId) ? { respondingToChainHandle: chainToHandle.get(link.respondingToLinkId)! } : {}), controllerId: link.controllerId, sourceHandle: publicHandle(link.source),
       // Resolved root targets remain server-side history. A returned target may now
       // be in the opponent's hidden hand; never mint or retain a public handle for it.
-      ...(state.counterResolution?.stage === 'cleanup' || state.trapCounterResolution !== null || state.fourLinkCounterResolution !== null ? { resolved: true as const, targetHandles: [] }
+      ...(state.counterResolution?.stage === 'cleanup' || state.trapCounterResolution !== null || state.fourLinkCounterResolution !== null || state.trapThreeSevenResolution !== null ? { resolved: true as const, targetHandles: [] }
         : { targetHandles: link.targetRefs.map(ref => publicHandle(ref.instanceId)) }), spellSpeed: link.spellSpeed })),
     battle: state.battle ? { step: state.battle.step, damageTiming: state.battle.damageTiming,
       attackerHandle: state.battle.attacker ? publicHandle(state.battle.attacker) : null,

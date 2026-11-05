@@ -7,7 +7,7 @@ import { assertFourLinkCounterResolution, FOUR_LINK_REVIEW } from './four-link-c
 /** Prefix eligibility only; complete live-source/cost guards still run in the engine. */
 export function reviewedFourLinkPrefix(registry:Registry,state:DuelState){
   const seven=state.chain[2];
-  return registry.counterContinuations['official:03819470']===FOUR_LINK_REVIEW&&state.chain.length===3
+  return [FOUR_LINK_REVIEW,'reviewed-four-link-counter-patterns-v5'].includes(registry.counterContinuations['official:03819470']??'')&&state.chain.length===3
     &&normalSpellMagicPrefix(registry,{...state,chain:state.chain.slice(0,2)})&&seven?.effectId===SEVEN_MAGIC_EFFECT_ID
     &&seven.sourceAtActivation.definition.id==='official:03819470'&&seven.respondingToLinkId===state.chain[1]!.id;
 }

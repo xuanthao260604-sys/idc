@@ -66,8 +66,8 @@ function graph(registry:Registry,state:DuelState,root:ChainLink,first:ChainLink,
 }
 /** Validates all live sources/costs without paying or moving anything. */
 export function prepareTrapCounterContinuation(registry:Registry,state:DuelState) {
-  check(state.chain.length===3&&state.fourLinkCounterResolution===null&&state.trapCounterResolution===null&&state.counterResolution===null&&state.spellResolution===null
-    &&state.chainCleanup===null&&['reviewed-three-link-counter-patterns-v3','reviewed-four-link-counter-patterns-v4'].includes(registry.counterContinuations[SEVEN]??''),'Unreviewed Seven response');
+  check(state.chain.length===3&&state.fourLinkCounterResolution===null&&state.trapThreeSevenResolution===null&&state.trapCounterResolution===null&&state.counterResolution===null&&state.spellResolution===null
+    &&state.chainCleanup===null&&['reviewed-three-link-counter-patterns-v3','reviewed-four-link-counter-patterns-v4','reviewed-four-link-counter-patterns-v5'].includes(registry.counterContinuations[SEVEN]??''),'Unreviewed Seven response');
   const [root,first,top]=state.chain as readonly[ChainLink,ChainLink,ChainLink],event=state.timing.lastRelevantEvents[0]!;
   graph(registry,state,root,first,top,event,false);
   const lpCosts=captureSevenLPCosts(registry,state);check(lpCosts.payments.length===2,'Two Seven costs required');
@@ -87,8 +87,8 @@ function assertTrapCounterSources(registry:Registry,state:DuelState,f:TrapCounte
   check(Frame.safeParse(f).success,'Malformed Trap Counter frame');const {integritySha256,...body}=f;
   check(integritySha256===digest(body),'Trap Counter frame changed');assertSevenLPCostHistory(f.lpCosts);
   check(state.id===f.duelId&&state.cardRegistryRevision===f.registryRevision&&registry.revision===f.registryRevision
-    &&['reviewed-three-link-counter-patterns-v3','reviewed-four-link-counter-patterns-v4'].includes(registry.counterContinuations[SEVEN]??'')&&same(state.turn,f.turn)&&!state.result&&!state.pendingTriggers.length
-    &&state.spellResolution===null&&state.counterResolution===null&&state.fourLinkCounterResolution===null&&state.timing.window==='resolving'&&state.timing.priorityPlayer===null
+    &&['reviewed-three-link-counter-patterns-v3','reviewed-four-link-counter-patterns-v4','reviewed-four-link-counter-patterns-v5'].includes(registry.counterContinuations[SEVEN]??'')&&same(state.turn,f.turn)&&!state.result&&!state.pendingTriggers.length
+    &&state.spellResolution===null&&state.counterResolution===null&&state.fourLinkCounterResolution===null&&state.trapThreeSevenResolution===null&&state.timing.window==='resolving'&&state.timing.priorityPlayer===null
     &&state.timing.consecutivePasses===2&&state.timing.requestedPhase===null&&state.eventSequence>f.capturedSequence
     &&state.stateVersion>=f.capturedStateVersion&&state.chain.length===1&&same(state.chain[0],f.root)
     &&same(f.cleanupSourceIds,[f.root.source,f.seven.source])&&resolutionFingerprint(state)===f.boardFingerprint,'Trap Counter context drift');

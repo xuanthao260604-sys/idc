@@ -39,7 +39,7 @@ export interface Registry {
   readonly revision: string;
   readonly cards: Readonly<Record<string, SupportedMonster | NormalSpell | NormalTrap>>;
   readonly counterTrapHandlers: Readonly<Record<string, CounterHandler>>;
-  readonly counterContinuations: Readonly<Record<string, 'normal-spell-magic-jammer-seven-tools-v1'|'reviewed-three-link-counter-patterns-v3'|'reviewed-four-link-counter-patterns-v4'>>;
+  readonly counterContinuations: Readonly<Record<string, 'normal-spell-magic-jammer-seven-tools-v1'|'reviewed-three-link-counter-patterns-v3'|'reviewed-four-link-counter-patterns-v4'|'reviewed-four-link-counter-patterns-v5'>>;
   readonly trapHandlers: Readonly<Record<string, 'destroy-opponent-normal-or-flip-summoned-1000'>>;
   readonly flipHandlers: Readonly<Record<string, FlipHandler>>;
   readonly spellHandlers: Readonly<Record<string, SpellHandler>>;
@@ -93,7 +93,7 @@ export function createRegistry(definitions: unknown, formatInput: FormatDefiniti
       || definitionFingerprint(card) !== review.definitionSha256) throw new Error(`Counter Trap review conflict: ${review.cardId}`);
   }
   const counterTrapHandlers: Record<string, CounterHandler> = {};
-  const counterContinuations: Record<string, 'normal-spell-magic-jammer-seven-tools-v1'|'reviewed-three-link-counter-patterns-v3'|'reviewed-four-link-counter-patterns-v4'> = {};
+  const counterContinuations: Record<string, 'normal-spell-magic-jammer-seven-tools-v1'|'reviewed-three-link-counter-patterns-v3'|'reviewed-four-link-counter-patterns-v4'|'reviewed-four-link-counter-patterns-v5'> = {};
   const trapHandlers: Record<string, 'destroy-opponent-normal-or-flip-summoned-1000'> = {};
   const flipHandlers: Record<string, FlipHandler> = {};
   const cards: Record<string, SupportedMonster | NormalSpell | NormalTrap> = {};
@@ -122,7 +122,7 @@ export function createRegistry(definitions: unknown, formatInput: FormatDefiniti
     if (supportedSpell) spellHandlers[card.id] = SpellHandlerSchema.parse(officialReview?.handler ?? binding);
   }
   const reference = { id: format.id, revision: format.revision };
-  const revision = createHash('sha256').update(JSON.stringify({ engineCapabilityVersion: 'reviewed-four-link-spell-counter-v7', format, rules, cards, spellHandlers, reviews, flipHandlers, flipReviews, trapHandlers, trapReviews, counterTrapHandlers, counterContinuations, counterReviews })).digest('hex');
+  const revision = createHash('sha256').update(JSON.stringify({ engineCapabilityVersion: 'reviewed-four-link-trap-counter-v8', format, rules, cards, spellHandlers, reviews, flipHandlers, flipReviews, trapHandlers, trapReviews, counterTrapHandlers, counterContinuations, counterReviews })).digest('hex');
   return freeze({ format: reference, revision, cards, spellHandlers, flipHandlers, trapHandlers, counterTrapHandlers, counterContinuations, unsupportedIds, rules });
 }
 

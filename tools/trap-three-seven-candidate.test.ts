@@ -1,3 +1,4 @@
+import {readFileSync} from 'node:fs';
 import {describe,it,expect} from 'vitest';
 import {createHash} from 'node:crypto';
 import {loadRuntimeCatalog} from './runtime-catalog.js';
@@ -9,7 +10,7 @@ import {captureThreeSevenLPCosts,assertThreeSevenLPCostHistory,assertCurrentThre
 import {captureSevenLPCosts,assertSevenLPCostHistory} from '../packages/engine/src/seven-lp-cost-ledger.js';
 import {assertDuelInvariants} from '../packages/engine/src/duel.js';
 import {prepareChainCleanup,chainCleanupDecision,orderChainCleanup,commitChainCleanup} from '../packages/engine/src/chain-cleanup.js';
-const r=loadRuntimeCatalog(),registry=createRegistry(r.cards,goat200508Format,{},r.effectReviews.spells,r.effectReviews.flips,r.effectReviews.traps,r.effectReviews.counters);
+const r=loadRuntimeCatalog(),registry=createRegistry(r.cards,goat200508Format,{},r.effectReviews.spells,r.effectReviews.flips,r.effectReviews.traps,[...r.effectReviews.counters.filter(x=>x.cardId!=='official:03819470'),...JSON.parse(readFileSync('data/reviews/seven-tools-v4.effects.json','utf8'))]);
 const owners=Array.from({length:8},(_,n)=>[!!(n&1),!!(n&2),!!(n&4)]);
 function rehash(j:any){const{integritySha256:_,...body}=j;j.integritySha256=createHash('sha256').update(JSON.stringify(body)).digest('hex');}
 describe('isolated Trap Hole three-Seven candidate, never gameplay permission',()=>{
