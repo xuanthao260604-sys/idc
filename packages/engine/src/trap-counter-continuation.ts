@@ -22,14 +22,16 @@ const Frame=z.strictObject({version:z.literal(1),kind:z.literal('trap-hole-seven
 function check(v:unknown,message:string):asserts v {if(!v)throw new Error(message);}
 const same=(a:unknown,b:unknown)=>JSON.stringify(a)===JSON.stringify(b);
 const digest=(body:Omit<TrapCounterResolutionFrame,'integritySha256'>)=>createHash('sha256').update(JSON.stringify(body)).digest('hex');
-function rootValid(registry:Registry,state:DuelState,root:ChainLink,event:EventRef,spent:boolean) {
-  const c=state.cards[root.source],ref=root.targetRefs[0],target=ref&&state.cards[ref.instanceId],def=target&&registry.cards[target.definition.id];
+/** Validate the original activation against the real current board. sourceDestroyed
+ * is reserved for the isolated negated-root candidate; spent means target destroyed. */
+export function reviewedTrapHoleRootValid(registry:Registry,state:DuelState,root:ChainLink,event:EventRef,spent:boolean,sourceDestroyed=false) {
+  const actual=state.cards[root.source],c=sourceDestroyed?root.sourceAtActivation:actual,ref=root.targetRefs[0],target=ref&&state.cards[ref.instanceId],def=target&&registry.cards[target.definition.id];
   return !!(FieldActivationLinkSchema.safeParse(root).success&&occurrence.safeParse(event).success&&c
-    &&c.definition.id===TRAP&&definitionFingerprint(registry.cards[TRAP]!)===trapPin
-    &&same(c,root.sourceAtActivation)&&root.controllerId!==state.turn.activePlayer&&root.controllerId===c.controllerId
-    &&root.effectId==='destroy-opponent-normal-or-flip-summoned-1000'&&root.spellSpeed===2&&!root.activationNegated&&!root.effectNegated
+    &&!(spent&&sourceDestroyed)&&c.definition.id===TRAP&&c.definition.revision===registry.cards[TRAP]!.revision&&root.source===c.id&&definitionFingerprint(registry.cards[TRAP]!)===trapPin
+    &&(sourceDestroyed?actual&&same(actual,{...root.sourceAtActivation,location:{kind:'graveyard',playerId:c.ownerId},controllerId:c.ownerId,position:'face-up'}):same(c,root.sourceAtActivation))&&root.controllerId!==state.turn.activePlayer&&root.controllerId===c.controllerId
+    &&root.effectId==='destroy-opponent-normal-or-flip-summoned-1000'&&root.spellSpeed===2&&root.activationNegated===sourceDestroyed&&!root.effectNegated
     &&!root.costEvents.length&&root.respondingToLinkId===undefined&&root.targetRefs.length===1
-    &&c.location.kind==='spell-trap'&&c.location.playerId===c.controllerId&&state.players.find(p=>p.id===c.controllerId)?.spellsTraps[c.location.slot]===c.id
+    &&c.location.kind==='spell-trap'&&c.location.playerId===c.controllerId&&(sourceDestroyed?state.players.find(p=>p.id===c.ownerId)?.graveyard.includes(c.id):state.players.find(p=>p.id===c.controllerId)?.spellsTraps[c.location.slot]===c.id)
     &&c.markers.setOnTurn!==null&&c.markers.setOnTurn<state.turn.number&&['main1','main2'].includes(state.turn.phase)
     &&target&&def&&(def.kind==='normal-monster'||def.kind==='effect-monster')&&def.attack>=1000
     &&ref?.locationAtSelection.kind==='monster'&&ref.locationAtSelection.playerId===state.turn.activePlayer
@@ -41,7 +43,7 @@ function rootValid(registry:Registry,state:DuelState,root:ChainLink,event:EventR
 }
 /** Same original Summon eligibility, with fixed full definition pin. */
 export function trapHoleActivationPrefix(registry:Registry,state:DuelState):boolean {
-  return !!state.chain[0]&&!!state.timing.lastRelevantEvents[0]&&rootValid(registry,state,state.chain[0],state.timing.lastRelevantEvents[0],false);
+  return !!state.chain[0]&&!!state.timing.lastRelevantEvents[0]&&reviewedTrapHoleRootValid(registry,state,state.chain[0],state.timing.lastRelevantEvents[0],false);
 }
 export function trapSevenPrefix(registry:Registry,state:DuelState):boolean {
   const second=state.chain[1];
@@ -50,7 +52,7 @@ export function trapSevenPrefix(registry:Registry,state:DuelState):boolean {
     &&second.spellSpeed===3&&second.respondingToLinkId===state.chain[0]!.id;
 }
 function graph(registry:Registry,state:DuelState,root:ChainLink,first:ChainLink,top:ChainLink,event:EventRef,spent:boolean) {
-  check(rootValid(registry,state,root,event,spent),'Invalid Trap Hole Counter root');
+  check(reviewedTrapHoleRootValid(registry,state,root,event,spent),'Invalid Trap Hole Counter root');
   check(new Set([root.id,first.id,top.id]).size===3&&new Set([root.source,first.source,top.source]).size===3,'Duplicate Trap Counter identity');
   for(const l of [first,top])check(FieldActivationLinkSchema.safeParse(l).success&&l.sourceAtActivation.definition.id===SEVEN
     &&definitionFingerprint(registry.cards[SEVEN]!)===sevenPin&&l.spellSpeed===3&&!l.targetRefs.length&&!l.effectNegated

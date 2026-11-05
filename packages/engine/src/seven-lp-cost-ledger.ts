@@ -29,7 +29,7 @@ const same = (a:unknown,b:unknown) => JSON.stringify(a)===JSON.stringify(b);
 function check(value:unknown,message:string):asserts value { if(!value)throw new Error(message); }
 const digest=(body:Omit<SevenLPCostLedger,'integritySha256'>)=>createHash('sha256').update(JSON.stringify(body)).digest('hex');
 function seal(body:Omit<SevenLPCostLedger,'integritySha256'>):SevenLPCostLedger { return freeze({...body,integritySha256:digest(body)}); }
-function balances(payments:SevenLPCostLedger['payments'],players:readonly string[]) {
+export function sevenLPCostBalances(payments:SevenLPCostLedger['payments'],players:readonly string[]) {
   return players.flatMap(playerId=>{
     const paid=payments.filter(p=>p.playerId===playerId);if(!paid.length)return[];
     for(let i=0;i<paid.length;i++) {
@@ -54,9 +54,10 @@ export function assertSevenLPCostHistory(ledger:SevenLPCostLedger):void {
     check(ledger.playerIds.includes(p.playerId)&&p.sequence<ledger.capturedSequence
       &&(i===0||p.sequence>ledger.payments[i-1]!.sequence),'Invalid LP receipt chronology/player');
   });
-  check(same(ledger.balances,balances(ledger.payments,ledger.playerIds)),'Incorrect per-player LP totals');
+  check(same(ledger.balances,sevenLPCostBalances(ledger.payments,ledger.playerIds)),'Incorrect per-player LP totals');
 }
-function readPayments(registry:Registry,state:DuelState) {
+export function readSevenLPCostPayments(registry:Registry,state:DuelState,maximum:2|3=2) {
+  check(maximum===2||maximum===3,'Unsupported Seven payment limit');
   check(typeof state.id==='string'&&state.id.length>0&&typeof registry.revision==='string'&&registry.revision.length>0
     &&Number.isSafeInteger(state.stateVersion)&&state.stateVersion>=0&&Number.isSafeInteger(state.eventSequence)&&state.eventSequence>0
     &&Number.isSafeInteger(state.turn.number)&&state.turn.number>0
@@ -90,7 +91,7 @@ function readPayments(registry:Registry,state:DuelState) {
     const {playerId,amount,beforeLP,afterLP}=parsed.data.details;
     payments.push({linkId:link.id,sourceId:card.id,playerId,sequence:parsed.data.sequence,simultaneousGroup:parsed.data.simultaneousGroup,amount,beforeLP,afterLP});
   }
-  check(payments.length>=1&&payments.length<=2,'Expected one or two Seven payments');
+  check(payments.length>=1&&payments.length<=maximum,'Unsupported number of Seven payments');
   return payments;
 }
 /** Accounting component used only after the separate reviewed Chain gate passes.
@@ -98,8 +99,8 @@ function readPayments(registry:Registry,state:DuelState) {
  * A ledger alone never authorizes a synthetic Chain or replaces graph validation.
  */
 export function captureSevenLPCosts(registry:Registry,state:DuelState):SevenLPCostLedger {
-  const payments=readPayments(registry,state),playerIds=state.players.map(p=>p.id) as [string,string];
-  const totals=balances(payments,playerIds);
+  const payments=readSevenLPCostPayments(registry,state),playerIds=state.players.map(p=>p.id) as [string,string];
+  const totals=sevenLPCostBalances(payments,playerIds);
   for(const b of totals)check(state.players.find(p=>p.id===b.playerId)!.lifePoints===b.afterLastLP,'LP does not match the last paid receipt');
   const ledger=seal({version:1,kind:'seven-tools-lp-cost-ledger-v1',duelId:state.id,registryRevision:registry.revision,
     format:{id:'goat-2005-08-17',revision:4},definitionSha256:PIN,playerIds,
@@ -116,6 +117,12 @@ export function assertCurrentSevenLPCosts(registry:Registry,state:DuelState,ledg
     &&Number.isSafeInteger(state.stateVersion)&&state.stateVersion>=ledger.capturedStateVersion
     &&Number.isSafeInteger(state.eventSequence)&&state.eventSequence>=ledger.capturedSequence
     &&resolutionFingerprint(state)===ledger.boardFingerprint,'Seven LP ledger board/clock changed');
-  check(same(readPayments(registry,state),ledger.payments),'Current Seven receipts changed');
+  check(same(readSevenLPCostPayments(registry,state),ledger.payments),'Current Seven receipts changed');
   for(const b of ledger.balances)check(state.players.find(p=>p.id===b.playerId)?.lifePoints===b.afterLastLP,'Current LP changed');
 }
+
+/** Shared strict schemas. V1 remains capped at two; explicit V2 consumers may derive a separate contract. */
+export const SevenLPCostLedgerSchema=Ledger;
+export const SevenLPCostPaymentSchema=Payment;
+
+export const SevenLPCostEventSchema=Cost;
