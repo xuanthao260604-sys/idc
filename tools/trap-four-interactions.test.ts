@@ -41,6 +41,7 @@ function run(f:Fixture,reverseFirst:boolean,withAdapter=false){
     const before=structuredClone(state),current=state;
     if(room){
       const intent=translate(who,action),command={commandId:'seven-response-audit-'+ ++serial,duelId:state.id,expectedStateVersion:state.stateVersion,action:intent};
+      if(intent.type==='activate-lp-counter-trap')expect(room.getView(who,true).availableActions!.some(a=>a.type==='activate-lp-counter-trap'&&a.cardHandle===intent.cardHandle&&a.chainHandle===intent.chainHandle)).toBe(true);
       if(action.type==='normal-summon'){
         if(!oldSummon)oldSummon=intent;
         else{const v=room.getView(who);expect(room.submit(who,{...command,commandId:'old-summon-'+ ++serial,action:oldSummon}).accepted).toBe(false);expect(room.getView(who)).toEqual(v);}
@@ -52,7 +53,7 @@ function run(f:Fixture,reverseFirst:boolean,withAdapter=false){
     }
     const r=applyAction(registry,current,{actorId:who,expectedStateVersion:current.stateVersion,action});expect(current).toEqual(before);
     if(!r.accepted)throw new Error(r.message);state=r.state;events.push(...r.events);assertDuelInvariants(state,registry);
-    if(room)for(const viewer of [f.actor,f.other]){const v=room.getView(viewer,true);expect(v.stateVersion).toBe(state.stateVersion);expect(v.players.map(p=>p.lifePoints)).toEqual(state.players.map(p=>p.lifePoints));
+    if(room)for(const viewer of [f.actor,f.other]){const v=room.getView(viewer);expect(v.stateVersion).toBe(state.stateVersion);expect(v.players.map(p=>p.lifePoints)).toEqual(state.players.map(p=>p.lifePoints));
       expect(v.selfHand.map(c=>c.visibility==='known'?c.definition.id:'hidden')).toEqual(state.players.find(p=>p.id===viewer)!.hand.map(id=>state.cards[id]!.definition.id));
       for(const key of ['trapThreeSevenResolution','trapCounterResolution','lpCosts','sourceAtActivation','integritySha256'])expect(JSON.stringify(v)).not.toContain(key);
       if(state.pendingDecision?.playerId!==viewer)expect(v.decision).toBeNull();
@@ -69,7 +70,7 @@ function run(f:Fixture,reverseFirst:boolean,withAdapter=false){
     const firstOwner=second?f.singleOwner:f.doubleOwner,middleOwner=second?f.doubleOwner:f.singleOwner;
     for(const[who,source]of[[firstOwner,second?f.first2:f.first1],[middleOwner,second?f.middle2:f.middle1],[firstOwner,second?f.top2:f.top1]]as const){
       if(state.timing.priorityPlayer!==who)act(state.timing.priorityPlayer!,{type:'pass'});
-      if(second&&f.negateHeal&&source===f.top2){expect(reject(who,{type:'activate-lp-counter-trap',instanceId:source,respondingToLinkId:state.chain.at(-1)!.id})).toMatchObject({code:'unpayable-cost'});expect(state.cards[source]!.position).toBe('face-down');break;}
+      if(second&&f.negateHeal&&source===f.top2){if(room)expect(room.getView(who,true).availableActions!.some(a=>a.type==='activate-lp-counter-trap')).toBe(false);expect(reject(who,{type:'activate-lp-counter-trap',instanceId:source,respondingToLinkId:state.chain.at(-1)!.id})).toMatchObject({code:'unpayable-cost'});expect(state.cards[source]!.position).toBe('face-down');break;}
       act(who,{type:'activate-lp-counter-trap',instanceId:source,respondingToLinkId:state.chain.at(-1)!.id});mark();
     }
     chainLengths.push(state.chain.length);retryOld();act(state.timing.priorityPlayer!,{type:'pass'});act(state.timing.priorityPlayer!,{type:'pass'});
