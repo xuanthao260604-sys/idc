@@ -12,6 +12,8 @@ Hinotama, Dian Keto the Cure Master, Smashing Ground, Hammer Shot, Tribute to Th
 
 Đã nối [Trap Hole → Seven → Seven → Seven](docs/engine/trap-three-seven-live.md) vào gameplay qua review v5: ba phí thật, quái sống sót, cleanup Seven thứ nhất/thứ ba theo owner; vẫn chặn link thứ năm. Mốc ứng viên và review v1–v4 được giữ riêng. Thêm 236 ca live và sáu luồng UI; Linux local và [Windows/Ubuntu CI 41983918290](https://github.com/xuanthao260604-sys/idc/actions/runs/41983918290) đạt 3563/3563 test trong 59 file. Linux/Windows đạt 108/108 bước, 98 browser report, runtimeExceptions=0 trên source e2c3abd; giữ facts của 92 luồng cũ. Chưa kiểm thử trực tiếp Windows 11 desktop.
 
+Đã thêm [audit Trap Hole bốn liên kết qua nhiều lượt](docs/engine/trap-four-interaction-audit.md): đổi người trả hai phí, hồi LP/bị phủ nhận hồi, cùng quái được đưa về tay rồi triệu hồi lại, Faith lấy lại Phép và các lệnh/cleanup cũ không đổi trạng thái mới. Thêm 40 ca cùng bốn hành trình UI; giữ nguyên engine, UI sản phẩm, review và dữ liệu bài.
+
 Đã hoàn tất [hotseat nội bộ 20 lá](docs/milestones/hotseat-20.md) và [xây/lưu deck A/B](docs/beta/deck-builder.md) trong scope giới hạn.
 Đã kiểm chứng [hai Phép thay đổi LP](docs/engine/life-point-spells.md) trên Linux và Windows CI; còn ca Windows 11 desktop chưa chạy.
 Không coi việc cấu hình CI Windows hoặc chạy Linux là đã kiểm chứng Windows.
