@@ -1,6 +1,9 @@
 # Kết quả Windows CI
 
-> Mốc hiện hành: [C2b dispatcher/journal Counter ứng viên](../engine/bounded-counter-dispatcher.md), source 71ba7e2; [run 42566580506](https://github.com/xuanthao260604-sys/idc/actions/runs/42566580506), attempt 1, chốt 09/11/2026.
+> Mốc hiện hành: [C2c kernel LIFO trong gameplay v5](../engine/reviewed-lifo-integration.md), source 898b29c; [run 42590265485](https://github.com/xuanthao260604-sys/idc/actions/runs/42590265485), attempt 1, chốt 09/11/2026.
+> Windows/Ubuntu đạt 4832/4832 test trong 63 file; 163 ca migration gồm 142 baseline hash toàn bộ state/raw events sau từng command. Artifact windows-validation-42590265485-1 đã kiểm checksum và đủ 112 log: Windows đạt 112/112 bước, 102/102 report, Edge 156.0.4314.58, runtimeExceptions=0. 62 suite cũ giữ số ca, browser facts/capabilities giữ baseline C2b. Run đầu 42589352298 dừng ở một adapter timeout 5 giây; đã đặt budget riêng 10 giây cho tám ca dài, không bỏ assertion/bước. Gate v5/frame/protocol/UI/dữ liệu giữ nguyên; Windows 11 desktop chưa chạy, chưa đóng gói/bàn giao beta.
+
+> Mốc trước: [C2b dispatcher/journal Counter ứng viên](../engine/bounded-counter-dispatcher.md), source 71ba7e2; [run 42566580506](https://github.com/xuanthao260604-sys/idc/actions/runs/42566580506), attempt 1, chốt 09/11/2026.
 > Windows/Ubuntu đạt 4669/4669 test trong 62 file, gồm 542 ca C2b mới; chưa mở activation live. Đã tải/kiểm checksum artifact windows-validation-42566580506-1 và đủ 112 log: Windows đạt 112/112 bước, 102/102 browser report, Edge 156.0.4314.58, runtimeExceptions=0. 61 suite cũ giữ số ca; facts của 102 report và capabilities.log giữ baseline C2a. Gate v5/dữ liệu/review/UI giữ nguyên. Windows 11 desktop chưa chạy; chưa đóng gói hoặc bàn giao beta.
 
 > Mốc trước: [C2a graph/ledger Counter ứng viên](../engine/bounded-counter-candidate.md), source 286a56b; [run 42563079635](https://github.com/xuanthao260604-sys/idc/actions/runs/42563079635), attempt 1, chốt 09/11/2026.

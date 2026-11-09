@@ -1,6 +1,9 @@
 # Kiểm thử giao diện bằng trình duyệt trên Windows
 
-> Mốc hiện hành: [C2b dispatcher/journal Counter ứng viên](../engine/bounded-counter-dispatcher.md), source 71ba7e2; [run 42566580506](https://github.com/xuanthao260604-sys/idc/actions/runs/42566580506), chốt 09/11/2026.
+> Mốc hiện hành: [C2c kernel LIFO dùng chung trong gameplay v5](../engine/reviewed-lifo-integration.md), source 898b29c; [run 42590265485](https://github.com/xuanthao260604-sys/idc/actions/runs/42590265485), chốt 09/11/2026.
+> Windows/Ubuntu đạt 4832 test/63 file; artifact Windows đã đối chiếu đủ 112 bước/102 report, Edge 156.0.4314.58, runtimeExceptions=0. Facts của 102 report giữ baseline C2b khi bỏ browserVersion, capabilities bằng nguyên byte. Không đổi UI, frame hay activation gate v5; Counter thứ năm vẫn chặn. Run đầu timeout tại unit không có browser evidence, được ghi riêng; run đạt chạy đủ toàn bộ. Windows 11 desktop chưa chạy; chưa đóng gói/bàn giao beta.
+
+> Mốc trước: [C2b dispatcher/journal Counter ứng viên](../engine/bounded-counter-dispatcher.md), source 71ba7e2; [run 42566580506](https://github.com/xuanthao260604-sys/idc/actions/runs/42566580506), chốt 09/11/2026.
 > Windows/Ubuntu đạt 4669 test/62 file; artifact Windows đã đối chiếu: 112 bước/102 report, Edge 156.0.4314.58, runtimeExceptions=0. Facts của 102 report bằng baseline C2a khi bỏ riêng browserVersion; capabilities giống nguyên byte. Đây là hồi quy gameplay v5, không phải browser mode cho candidate mới; không đổi UI/activation gate. Windows 11 desktop chưa chạy; chưa đóng gói/bàn giao beta.
 
 > Mốc trước: [C2a graph/ledger Counter ứng viên](../engine/bounded-counter-candidate.md), source 286a56b; [run 42563079635](https://github.com/xuanthao260604-sys/idc/actions/runs/42563079635), chốt 09/11/2026.

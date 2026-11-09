@@ -234,6 +234,8 @@ Mốc kiểm chứng C2b: Linux local và [Windows/Ubuntu CI 42566580506](https:
 
 Đã tích hợp [C2c kernel LIFO dùng chung cho gameplay v5](docs/engine/reviewed-lifo-integration.md), giữ gate/frame/protocol/UI cũ. 142 baseline so toàn bộ state/raw events sau từng command, thêm 163 ca migration/guard; C3 vẫn chưa mở activation mới. Sau kiểm chứng C2c, mục kế tiếp là review scope C3.
 
+Đã chốt C2c trên source `898b29c`: [Windows/Ubuntu CI 42590265485](https://github.com/xuanthao260604-sys/idc/actions/runs/42590265485) đạt **4832 test/63 file**; Windows đạt **112 bước/102 browser report**, runtimeExceptions=0. 62 suite cũ giữ số ca, browser facts/capabilities giữ baseline C2b. Đã xử lý timeout 5 giây bằng budget riêng 10 giây cho tám ca adapter dài, giữ mọi assertion; chi tiết run lỗi/run đạt trong báo cáo C2c. Chưa mở gate mới hoặc kiểm thử Windows 11 desktop.
+
 Đã hoàn tất [xây/lưu deck](docs/beta/deck-builder.md); đã hoàn tất [mở rộng 20 → 30](docs/data/classic-30.md).
 Online và trình tạo bài riêng là các mục chưa triển khai. Nhánh work đã được commit/push theo phép người dùng; chưa phát hành beta.
 

@@ -116,15 +116,39 @@ Các ca adapter hai suite four-link/seven-response chạy khoảng 4–5,3 giây
 trên cùng runner. Đã đặt riêng timeout 10 giây cho tám ca adapter dài của
 hai suite đó, không đổi timeout toàn cục, số ca, command, invariant hoặc
 assertion. Đây là budget chạy integration dưới contention, không phải SLA
-phản hồi game. Source sau điều chỉnh cần chạy lại đầy đủ CI và đọc artifact.
+phản hồi game. Source sau điều chỉnh đã chạy lại đầy đủ CI như dưới đây.
 Local đã chạy lại đủ hai suite liên quan: 56/56 ca đạt sau điều chỉnh.
 Artifact lỗi `windows-validation-42589352298-1` (ID `13661270647`) có
 status failed tại tests, 107 bước còn lại not-run; checksum ZIP khớp
 metadata. Không trộn artifact dở này với run hoàn chỉnh sau đó.
 
-Artifact Windows phải đúng source và giữ facts của 102 browser report;
-không dùng việc Linux đạt thay bằng chứng Windows. Windows 11 desktop
-vẫn chưa chạy; chưa đóng gói/bàn giao beta.
+Source cuối: `898b29c2c603f4fb017b3a50cbb01369af4ea84e`.
+[CI 42590265485](https://github.com/xuanthao260604-sys/idc/actions/runs/42590265485),
+attempt 1, completed/success trên Ubuntu job `129069896302` và Windows job
+`129069896671`. Log Ubuntu xác nhận **4832 test/63 file**, gồm đủ 163 ca
+migration; typecheck/data/build/vanilla/mixed smoke đạt.
+
+Đã tải artifact `windows-validation-42590265485-1`, ID `13661842099`,
+SHA-256 ZIP khớp metadata GitHub:
+`50e2ed93fd44157bc71e1ef92cd67dc0a666e19f1a3ff5283ae5dd7d2cb1c38d`.
+Report `2026-11-09T09-02-28-283Z-3452/report.json`: win32/x64,
+OS 10.0.26100, Node 24.19.0, npm 11.17.0, Edge 156.0.4314.58.
+Windows đạt **4832/4832 test trong 63 file, 112/112 bước, 102/102 browser
+report**, runtimeExceptions=0. Đủ tám adapter case với budget mới và toàn
+bộ assertion cũ; không bỏ bước hoặc skip browser khi sửa timeout.
+
+Đã đọc đủ 112 step log; mỗi browser step có đúng một JSON khớp report,
+đúng platform/version và không runtime exception. So artifact C2b
+`windows-validation-42566580506-1`: 62 suite cũ giữ nguyên số ca, suite
+mới đúng 163 ca; facts của cả 102 browser report giữ nguyên khi bỏ riêng
+browserVersion (cả hai run Edge 156.0.4314.58). `capabilities.log` giống
+nguyên byte. Runtime vẫn 112 định nghĩa/95 quái thường/17 hiệu ứng/13 scope/
+19 snapshot; metadata nhập 95 verified/17 historical pending không đổi.
+
+Không ghép report/log của run lỗi với run đạt. Commit chốt sau CI chỉ sửa
+tài liệu; bằng chứng code thuộc `898b29c`. Report vẫn ghi
+windows11DesktopVerified=false. Windows 11 desktop chưa chạy; chưa đóng
+gói hoặc bàn giao beta.
 
 ## Điểm dừng
 
