@@ -226,6 +226,8 @@ Lộ trình đề xuất hiện hành: [Chain → bộ tạo bài riêng → Win
 
 Đã thêm C2a — [graph Counter và ledger phí ứng viên](docs/engine/bounded-counter-candidate.md): kiểm grammar/pin/nguồn/copy/ô, tối đa sáu receipt Seven và phân biệt history với current-board binding. 524 ca thành phần mới, không phải activation live; gate v5, dữ liệu và capability giữ nguyên. Mục kế tiếp là C2b: oracle LIFO và dispatcher/journal ứng viên.
 
+Mốc kiểm chứng C2a: Linux local và [Windows/Ubuntu CI 42563079635](https://github.com/xuanthao260604-sys/idc/actions/runs/42563079635) đạt **4127 test/61 file** trên source `286a56b`. Artifact Windows đạt **112 bước/102 browser report**, Edge 156.0.4314.58, runtimeExceptions=0; 102 facts browser và capabilities giữ baseline. Chưa mở activation mới, chưa thử trực tiếp Windows 11 desktop.
+
 Đã hoàn tất [xây/lưu deck](docs/beta/deck-builder.md); đã hoàn tất [mở rộng 20 → 30](docs/data/classic-30.md).
 Online và trình tạo bài riêng là các mục chưa triển khai. Nhánh work đã được commit/push theo phép người dùng; chưa phát hành beta.
 

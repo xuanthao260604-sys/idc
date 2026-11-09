@@ -71,11 +71,35 @@ bằng artifact Windows đã xác minh của source `ae2d567`; 320 file cũ tron
 snapshot data/apps/packages/manifest/package/lock giữ nguyên byte. Chỉ
 thêm module ứng viên/test/fixture và sửa tài liệu. Không chạy lại browser
 Linux cho capability chưa nối vào gameplay; số browser Linux cũ không
-được gán thành kết quả của source mới. CI source mới chờ xác nhận.
+được gán thành kết quả của source mới.
 
-Bộ browser hiện giữ 112 bước/102 report theo cấu hình; không thêm hành
-trình UI cho một capability chưa mở. Windows 11 desktop chưa được kiểm
-chứng, chưa đóng gói hoặc bàn giao beta.
+Source cuối: `286a56bcee9409e5ee5d1669a117587354d3c949`.
+[CI 42563079635](https://github.com/xuanthao260604-sys/idc/actions/runs/42563079635),
+attempt 1, completed/success trên cả Ubuntu job `128983556331` và Windows
+job `128983556009`. Đã đọc log Ubuntu xác nhận 4127 test/61 file, gồm đủ
+524 ca thành phần mới; typecheck/data/build/vanilla/mixed smoke đạt.
+
+Đã tải artifact `windows-validation-42563079635-1`, ID `13651021996`;
+SHA-256 ZIP khớp metadata GitHub:
+`0f10addede1065d219278544bf8c0da2d557e220f94ef95b39286bad6eb4e0b1`.
+Report: `2026-11-09T04-40-33-738Z-9172/report.json`.
+Windows win32/x64, OS 10.0.26100, Node 24.19.0, npm 11.17.0,
+Edge 156.0.4314.58: **4127/4127 test trong 61 file, 112/112 bước,
+102/102 browser report**, runtimeExceptions=0.
+
+Đã đọc đủ 112 step log, mỗi browser step có đúng một JSON khớp report,
+đúng host/version; số ca của cả 60 suite cũ bằng baseline 3603 test của
+`ae2d567`, suite mới đúng 524 ca. Facts của cả 102 browser report bằng
+artifact `windows-validation-42198431280-1` khi bỏ riêng browserVersion
+(baseline Edge 156.0.4314.56). `capabilities.log` giống nguyên byte.
+Runtime vẫn 112 định nghĩa/95 quái thường/17 hiệu ứng/13 scope/19 snapshot,
+trạng thái nhập 95 verified/17 historical pending không đổi. Đây là bằng
+chứng hồi quy gameplay cũ, không phải 102 hành trình cho Counter mới.
+
+Không thêm hành trình UI cho một capability chưa mở. Report Windows vẫn
+ghi windows11DesktopVerified=false. Windows 11 desktop chưa được kiểm
+chứng, chưa đóng gói hoặc bàn giao beta. Commit chốt sau CI chỉ sửa tài liệu;
+bằng chứng trên thuộc source code `286a56b`, không gán cho một source khác.
 
 ## Điểm dừng
 
