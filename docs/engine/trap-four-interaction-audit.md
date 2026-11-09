@@ -47,5 +47,61 @@ Bộ tổng hợp tăng 108→112 bước và 98→102 browser report. Timeout C
 20→25 phút vì thêm bốn hành trình dài và bộ kiểm thử nhiều lượt; không bỏ
 bước cũ, không giảm phạm vi kiểm chứng Windows.
 
-Kết quả local/Windows CI sẽ được ghi sau khi kiểm chứng xong.
+## Kết quả và đối chiếu bằng chứng
+
+Chốt báo cáo ngày 09/11/2026 cho source
+`ae2d567c96b864d4a947987f8f900187c85ef054` tại
+[CI 42198431280](https://github.com/xuanthao260604-sys/idc/actions/runs/42198431280),
+attempt 1. Windows job `127827429137` và Ubuntu job `127827429488` đều
+completed/success. Log Ubuntu xác nhận **3603/3603 test trong 60 file**,
+gồm đủ 40 ca `tools/trap-four-interactions.test.ts`; typecheck, data/build,
+vanilla và mixed smoke đều đạt. Ubuntu CI không chạy bộ browser tổng hợp.
+
+Local/Linux đã đạt 3603 test/60 file, 112/112 bước và 102 browser report
+theo mốc bàn giao tiếp tục dự án. Phiên chốt báo cáo này không chạy lại bộ
+Linux và không có report local của mốc đó trong checkout phục hồi; số Linux
+không được dùng thay bằng chứng Windows.
+
+Đã tải artifact `windows-validation-42198431280-1`, ID `13494287410`,
+và kiểm SHA-256 ZIP khớp metadata GitHub:
+`dee987d070968fb0b648266aae8c332e46f33d970ce6bf8e2c970b78b30c614d`.
+Report bên trong: `2026-11-06T09-54-04-861Z-2636/report.json`.
+Windows win32/x64, OS 10.0.26100, Node 24.19.0, npm 11.17.0,
+Edge 156.0.4314.56: **3603/3603 test trong 60 file, 112/112 bước,
+102/102 browser report**, runtimeExceptions=0. Đã đọc đủ 112 step log;
+JSON từng browser log khớp report, mỗi bước đúng một report, đúng nền tảng
+và phiên bản. Không ghép bằng chứng từ run khác.
+
+| Mode | Hai Chain chính | Phí Seven | Lệnh chấp nhận | LP cuối A/B | Từ chối cleanup cũ ở pause thứ hai |
+| --- | --- | --- | --- | --- | --- |
+| a:heal | [4,4] | 6 | 80 | [1,0] | Có |
+| a:negated | [4,3] | 5 | 84 | [1,0] | Không có pause thứ hai |
+| b:heal | [4,4] | 6 | 80 | [0,1] | Có |
+| b:negated | [4,3] | 5 | 85 | [0,1] | Có |
+
+Bốn mode đều kết thúc lượt 5, đổi người trả hai phí, lấy lại/triệu hồi lại
+cùng quái, Faith lấy lại Phép, giữ phí đã trả và chặn Summon handle cũ.
+Nhánh phủ nhận hồi chặn Seven cuối do thiếu LP, không bỏ phí cho lệnh lỗi,
+rồi trả chi phí Reincarnation mới. Retry receipt giữ nguyên state mới;
+public facts hai ghế giống nhau, history được thu trước giới hạn 60,
+saved deck A/B không đổi và fixture chỉ dùng lúc setup.
+Riêng `a:negated`, `oldCleanupRejected=false` ghi nhận không thực hiện phép
+thử đó vì chuỗi sau không cần quyết định cleanup; không coi cờ này là một
+ca từ chối đã chạy. Các mode còn lại kiểm lệnh cleanup cũ tại pause mới.
+
+Đối chiếu artifact baseline `windows-validation-41983918290-1`
+(source `e2c3abd`, ID `13395678783`): đủ 98 browser report cũ giữ nguyên
+facts khi bỏ riêng `browserVersion` (Edge baseline 156.0.4314.58,
+run mới 156.0.4314.56); `capabilities.log` giống nguyên byte.
+Runtime vẫn 112 định nghĩa, 95 quái thường, 17 hiệu ứng/13 scope;
+19 bundle và trạng thái nhập 95 verified/17 historical pending giữ nguyên.
+Hai trận tự nhiên giữ seed 08: 16 lượt/339 lệnh/LP [0,4200] và seed 5e:
+11 lượt/239 lệnh/LP [0,8000], không sửa state giữa trận. Chúng là hồi quy
+riêng, không thay thế bốn hành trình audit có fixture.
+
+Thay đổi chốt báo cáo chỉ ở tài liệu. Engine/protocol, UI sản phẩm,
+dữ liệu/review/evidence, hình ảnh và deck được giữ nguyên so với source
+đã kiểm chứng. Audit hoàn tất trong scope v5 hiện có; vẫn chặn link thứ năm,
+chưa có Chain hỗn hợp/negate/SEGOC/modifier/replacement tổng quát.
+Report Windows vẫn ghi `windows11DesktopVerified=false`.
 Chưa kiểm thử Windows 11 desktop; chưa đóng gói hoặc phát hành beta.

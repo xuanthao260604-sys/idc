@@ -14,6 +14,8 @@ Hinotama, Dian Keto the Cure Master, Smashing Ground, Hammer Shot, Tribute to Th
 
 Đã thêm [audit Trap Hole bốn liên kết qua nhiều lượt](docs/engine/trap-four-interaction-audit.md): đổi người trả hai phí, hồi LP/bị phủ nhận hồi, cùng quái được đưa về tay rồi triệu hồi lại, Faith lấy lại Phép và các lệnh/cleanup cũ không đổi trạng thái mới. Thêm 40 ca cùng bốn hành trình UI; giữ nguyên engine, UI sản phẩm, review và dữ liệu bài.
 
+Đã chốt audit trên source `ae2d567`: [Windows/Ubuntu CI 42198431280](https://github.com/xuanthao260604-sys/idc/actions/runs/42198431280) đều đạt **3603/3603 test trong 60 file**. Artifact Windows xác nhận **112/112 bước, 102/102 browser report**, Edge 156.0.4314.56, runtimeExceptions=0; 98 report cũ giữ facts khi bỏ phiên bản browser, capabilities giữ nguyên byte. Linux đạt cùng số bước/report theo mốc tiếp tục dự án; phiên chốt báo cáo không chạy lại Linux. Chi tiết và giới hạn bằng chứng tại tài liệu audit; chưa kiểm thử Windows 11 desktop, chưa đóng gói hoặc bàn giao beta.
+
 Đã hoàn tất [hotseat nội bộ 20 lá](docs/milestones/hotseat-20.md) và [xây/lưu deck A/B](docs/beta/deck-builder.md) trong scope giới hạn.
 Đã kiểm chứng [hai Phép thay đổi LP](docs/engine/life-point-spells.md) trên Linux và Windows CI; còn ca Windows 11 desktop chưa chạy.
 Không coi việc cấu hình CI Windows hoặc chạy Linux là đã kiểm chứng Windows.

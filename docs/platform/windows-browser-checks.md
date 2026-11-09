@@ -1,6 +1,9 @@
 # Kiểm thử giao diện bằng trình duyệt trên Windows
 
-> Mốc hiện hành: [báo cáo khả năng từ review đang hoạt động](../engine/capability-report.md), catalog 109; [run 40261376014](https://github.com/xuanthao260604-sys/idc/actions/runs/40261376014), commit 5530d78.
+> Mốc hiện hành: [audit Trap Hole bốn liên kết qua nhiều lượt](../engine/trap-four-interaction-audit.md), source ae2d567; [run 42198431280](https://github.com/xuanthao260604-sys/idc/actions/runs/42198431280), chốt ngày 09/11/2026.
+> Windows/Ubuntu đạt 3603/3603 test trong 60 file; artifact Windows đã được tải và đối chiếu đủ log: 112/112 bước, 102/102 browser report, Edge 156.0.4314.56, runtimeExceptions=0. Bốn hành trình mới gồm A/B × hồi đủ/phủ nhận hồi; giữ facts của 98 report cũ khi bỏ riêng phiên bản browser. Xem bảng mode và giới hạn phép thử cleanup trong tài liệu audit. Windows 11 desktop chưa chạy; chưa đóng gói hoặc bàn giao beta.
+
+> Mốc trước: [báo cáo khả năng từ review đang hoạt động](../engine/capability-report.md), catalog 109; [run 40261376014](https://github.com/xuanthao260604-sys/idc/actions/runs/40261376014), commit 5530d78.
 > Windows/Ubuntu đạt; Windows: 805/805 test, 47/47 bước, 37 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Đã đọc artifact windows-validation-40261376014-1: capabilities JSON giống Linux, đủ 14 effect record/11 scope, giữ nhập/runtime riêng; thiếu hoặc lệch review không bị báo nhầm hỗ trợ. Không đổi engine/dữ liệu/deck cũ; Windows 11 desktop chưa chạy.
 

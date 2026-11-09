@@ -1,6 +1,10 @@
 # Kết quả Windows CI
 
-> Mốc hiện hành: [runtime Counter Trap Magic Jammer](../engine/magic-jammer.md), catalog 111; [run 40619933412](https://github.com/xuanthao260604-sys/idc/actions/runs/40619933412), commit 7f50e81.
+> Mốc hiện hành: [audit Trap Hole → Seven → Seven → Seven qua nhiều lượt](../engine/trap-four-interaction-audit.md), catalog 112; [run 42198431280](https://github.com/xuanthao260604-sys/idc/actions/runs/42198431280), source ae2d567, attempt 1; chốt ngày 09/11/2026.
+> Windows/Ubuntu đều đạt 3603/3603 test trong 60 file. Đã tải và đối chiếu checksum/report/đủ 112 step log của artifact windows-validation-42198431280-1: Windows đạt 112/112 bước, 102/102 browser report, Edge 156.0.4314.56, runtimeExceptions=0.
+> Bốn mode mới đạt hai nhánh hồi đủ/phủ nhận hồi, đổi người trả phí, lấy lại cùng quái/Phép và bảo vệ receipt/handle/state. Nhánh a:negated không có pause cleanup thứ hai nên không tính cờ oldCleanupRejected=false là ca từ chối đã chạy. 98 report cũ giữ facts khi bỏ riêng phiên bản Edge; capabilities.log bằng nguyên byte baseline 41983918290. Chi tiết từng mode và nguồn Linux tại báo cáo audit. Windows 11 desktop chưa chạy; chưa đóng gói hoặc bàn giao beta.
+
+> Mốc trước: [runtime Counter Trap Magic Jammer](../engine/magic-jammer.md), catalog 111; [run 40619933412](https://github.com/xuanthao260604-sys/idc/actions/runs/40619933412), commit 7f50e81.
 > Windows/Ubuntu đạt; Windows: 1030/1030 test trong 40 file, 58/58 bước, 48 browser report với Edge 155.0.4283.62, runtimeExceptions=0.
 > Đã tải/đọc artifact windows-validation-40619933412-1: 122 ca Counter và bốn luồng UI A/B, tự/đối thủ, lethal/cost/deck rỗng/effect-choice đạt; cost không hoàn, plan của Phép bị phủ nhận bị bỏ qua, handle/riêng tư/deck được bảo vệ. Capabilities JSON giống Linux: 111 supported/16 hiệu ứng/12 scope/18 snapshot, review Counter tách khỏi Trap Hole; nhập 95 verified/16 historical pending giữ nguyên. Hai trận tự nhiên đạt; Windows 11 desktop chưa chạy.
 
