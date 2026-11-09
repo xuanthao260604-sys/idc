@@ -111,8 +111,10 @@ ngày phát hành khi các phụ thuộc chưa sẵn sàng. C1 cần rà soát l
 thay scope hoặc xuất hiện lỗi nền tảng, báo tác động trước khi đổi hướng.
 
 C2a đã thêm [validator graph và ledger ứng viên](bounded-counter-candidate.md)
-theo ma trận; chưa bật activation mới hoặc thêm resolver. Mục tiếp theo là
-C2b — oracle LIFO và dispatcher/journal ứng viên. Ước lượng C2–C4 ở mốc C1
+theo ma trận. [C2b](bounded-counter-dispatcher.md) đã thêm oracle LIFO và
+dispatcher/journal ứng viên, chưa nối gameplay hoặc bật activation mới.
+Mục tiếp theo là C2c — tích hợp phần chung cho pattern cũ, vẫn giữ gate v5.
+Ước lượng C2–C4 ở mốc C1
 là 7–12 ngày công, cần cập nhật tiếp theo kết quả tích hợp. Chu kỳ làm việc
 lấy 30 phút làm mốc dừng; nếu đang dở tác vụ
 tại mốc đó thì hoàn thành tác vụ ấy rồi dừng báo cáo, không mở mục mới.

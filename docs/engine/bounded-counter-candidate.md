@@ -107,3 +107,6 @@ C2a không xử lý LIFO, không trả board patch và không resume root/cleanu
 Tác vụ tiếp theo là C2b: oracle LIFO độc lập và dispatcher/journal ứng viên
 cho hai họ, rồi mới xem xét C2c/C3. Không dùng parity thay kiểm từng link;
 đặc biệt Seven phủ nhận T cuối không phủ nhận các T trước.
+
+Cập nhật chu kỳ sau: đã thêm [C2b dispatcher/journal ứng viên](bounded-counter-dispatcher.md).
+Gate v5 vẫn giữ; điểm dừng tiếp theo là tích hợp phần chung C2c.
