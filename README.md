@@ -230,6 +230,8 @@ Mốc kiểm chứng C2a: Linux local và [Windows/Ubuntu CI 42563079635](https:
 
 Đã thêm [C2b dispatcher LIFO/journal ứng viên](docs/engine/bounded-counter-dispatcher.md): oracle độc lập, 11 plan Phép, root choice, cleanup owner và terminal/concede; 542 ca thành phần mới. Chưa nối vào gameplay hoặc mở gate mới. Mục kế tiếp là C2c: tích hợp phần dùng chung cho pattern cũ trong khi giữ v5.
 
+Mốc kiểm chứng C2b: Linux local và [Windows/Ubuntu CI 42566580506](https://github.com/xuanthao260604-sys/idc/actions/runs/42566580506) đạt **4669 test/62 file** trên source `71ba7e2`. Artifact Windows đạt **112 bước/102 browser report**, Edge 156.0.4314.58, runtimeExceptions=0; 61 suite cũ giữ số ca, browser facts/capabilities giữ baseline C2a. Chưa mở activation mới hoặc kiểm thử Windows 11 desktop.
+
 Đã hoàn tất [xây/lưu deck](docs/beta/deck-builder.md); đã hoàn tất [mở rộng 20 → 30](docs/data/classic-30.md).
 Online và trình tạo bài riêng là các mục chưa triển khai. Nhánh work đã được commit/push theo phép người dùng; chưa phát hành beta.
 

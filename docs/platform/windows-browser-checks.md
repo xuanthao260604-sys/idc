@@ -1,6 +1,9 @@
 # Kiểm thử giao diện bằng trình duyệt trên Windows
 
-> Mốc hiện hành: [C2a graph/ledger Counter ứng viên](../engine/bounded-counter-candidate.md), source 286a56b; [run 42563079635](https://github.com/xuanthao260604-sys/idc/actions/runs/42563079635), chốt 09/11/2026.
+> Mốc hiện hành: [C2b dispatcher/journal Counter ứng viên](../engine/bounded-counter-dispatcher.md), source 71ba7e2; [run 42566580506](https://github.com/xuanthao260604-sys/idc/actions/runs/42566580506), chốt 09/11/2026.
+> Windows/Ubuntu đạt 4669 test/62 file; artifact Windows đã đối chiếu: 112 bước/102 report, Edge 156.0.4314.58, runtimeExceptions=0. Facts của 102 report bằng baseline C2a khi bỏ riêng browserVersion; capabilities giống nguyên byte. Đây là hồi quy gameplay v5, không phải browser mode cho candidate mới; không đổi UI/activation gate. Windows 11 desktop chưa chạy; chưa đóng gói/bàn giao beta.
+
+> Mốc trước: [C2a graph/ledger Counter ứng viên](../engine/bounded-counter-candidate.md), source 286a56b; [run 42563079635](https://github.com/xuanthao260604-sys/idc/actions/runs/42563079635), chốt 09/11/2026.
 > Windows/Ubuntu đạt 4127 test/61 file; Windows đạt 112 bước/102 report, Edge 156.0.4314.58, runtimeExceptions=0. Đã đọc đủ log/report: 102 facts browser bằng baseline 42198431280 khi bỏ browserVersion, capabilities giữ nguyên byte. Không thêm UI mode cho ứng viên chưa mở; browser chỉ chứng minh hồi quy gameplay v5 hiện có. Windows 11 desktop chưa chạy; chưa đóng gói/bàn giao beta.
 
 > Mốc trước: [audit Trap Hole bốn liên kết qua nhiều lượt](../engine/trap-four-interaction-audit.md), source ae2d567; [run 42198431280](https://github.com/xuanthao260604-sys/idc/actions/runs/42198431280), chốt ngày 09/11/2026.

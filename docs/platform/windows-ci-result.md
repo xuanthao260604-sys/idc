@@ -1,6 +1,9 @@
 # Kết quả Windows CI
 
-> Mốc hiện hành: [C2a graph/ledger Counter ứng viên](../engine/bounded-counter-candidate.md), source 286a56b; [run 42563079635](https://github.com/xuanthao260604-sys/idc/actions/runs/42563079635), attempt 1, chốt 09/11/2026.
+> Mốc hiện hành: [C2b dispatcher/journal Counter ứng viên](../engine/bounded-counter-dispatcher.md), source 71ba7e2; [run 42566580506](https://github.com/xuanthao260604-sys/idc/actions/runs/42566580506), attempt 1, chốt 09/11/2026.
+> Windows/Ubuntu đạt 4669/4669 test trong 62 file, gồm 542 ca C2b mới; chưa mở activation live. Đã tải/kiểm checksum artifact windows-validation-42566580506-1 và đủ 112 log: Windows đạt 112/112 bước, 102/102 browser report, Edge 156.0.4314.58, runtimeExceptions=0. 61 suite cũ giữ số ca; facts của 102 report và capabilities.log giữ baseline C2a. Gate v5/dữ liệu/review/UI giữ nguyên. Windows 11 desktop chưa chạy; chưa đóng gói hoặc bàn giao beta.
+
+> Mốc trước: [C2a graph/ledger Counter ứng viên](../engine/bounded-counter-candidate.md), source 286a56b; [run 42563079635](https://github.com/xuanthao260604-sys/idc/actions/runs/42563079635), attempt 1, chốt 09/11/2026.
 > Windows/Ubuntu đạt 4127/4127 test trong 61 file; 524 ca mới chỉ kiểm thành phần ứng viên, không mở activation live. Artifact windows-validation-42563079635-1 đã đối chiếu checksum và đủ 112 log: Windows đạt 112/112 bước, 102/102 browser report, Edge 156.0.4314.58, runtimeExceptions=0. 60 suite cũ giữ số ca; facts của 102 report cũ giữ nguyên khi bỏ browserVersion; capabilities.log bằng nguyên byte baseline 42198431280. Gate v5/dữ liệu/review/UI cũ giữ nguyên; Windows 11 desktop chưa chạy, chưa đóng gói/bàn giao beta.
 
 > Mốc trước: [audit Trap Hole → Seven → Seven → Seven qua nhiều lượt](../engine/trap-four-interaction-audit.md), catalog 112; [run 42198431280](https://github.com/xuanthao260604-sys/idc/actions/runs/42198431280), source ae2d567, attempt 1; chốt ngày 09/11/2026.

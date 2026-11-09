@@ -92,12 +92,53 @@ test trong 62 file**, gồm 542 ca C2b mới và 524 ca C2a giữ nguyên. Capab
 JSON bằng mốc C2a; 320 file cũ trong snapshot data/apps/packages/manifest/
 package/lock giữ nguyên byte. Không sửa module C2a, review hoặc gameplay.
 
-Windows/Ubuntu CI chờ xác nhận source mới. Không dùng số ca thành phần mới
-làm bằng chứng activation live. Không chạy browser Linux lại chỉ để cộng
-số cho module chưa nối; Windows CI vẫn cần đủ browser regression hiện có
-và artifact đúng source.
+Source: `71ba7e2d370bf84f4d68e380bd268778957edeef`.
+[CI 42566580506](https://github.com/xuanthao260604-sys/idc/actions/runs/42566580506),
+attempt 1, completed/success ở Ubuntu job `128994271757` và Windows job
+`128994272061`. Đã đọc log Ubuntu: 4669 test/62 file, đủ 542 ca mới;
+typecheck/data/build/vanilla/mixed smoke đều đạt.
+
+Artifact `windows-validation-42566580506-1`, ID `13652621016`, đã tải và
+kiểm SHA-256 ZIP bằng metadata GitHub:
+`9ab89069661d9d335cb87138cd4d20e4789333188e146b1b764529a95db7c04e`.
+Report `2026-11-09T05-19-58-298Z-2368/report.json`: win32/x64,
+OS 10.0.26100, Node 24.19.0, npm 11.17.0, Edge 156.0.4314.58.
+Windows đạt **4669/4669 test trong 62 file, 112/112 bước, 102/102 browser
+report**, runtimeExceptions=0; windows11DesktopVerified=false.
+
+Đã đọc đủ 112 step log, kiểm mỗi browser step đúng một JSON khớp report
+và đúng host/version. So artifact C2a `windows-validation-42563079635-1`:
+61 suite cũ giữ nguyên số ca, suite mới đúng 542 ca; facts của 102 browser
+report giữ nguyên khi bỏ riêng browserVersion (cả hai run đều Edge
+156.0.4314.58), `capabilities.log` giống nguyên byte. Vẫn 112 định nghĩa,
+95 quái thường/17 hiệu ứng/13 scope/19 snapshot; dữ liệu nhập 95 verified /
+17 historical pending không thay đổi. Không ghép log/report từ run khác.
+
+Không dùng số ca thành phần mới làm bằng chứng activation live. Không chạy
+browser Linux lại cho module chưa nối; số browser Linux cũ không được gán
+cho source mới. Browser Windows ở đây là hồi quy gameplay v5. Commit chốt
+sau CI chỉ sửa tài liệu; bằng chứng code thuộc `71ba7e2`. Windows 11 desktop
+chưa chạy, chưa đóng gói hoặc bàn giao beta.
 
 ## Điểm dừng và việc tiếp theo
+
+Các ràng buộc bàn giao từ C2b sang C2c:
+
+- Live effect ID của Seven v5 khác ID ứng viên. Phải phân loại prefix bằng
+  gate active trước khi chuẩn hóa nội bộ hoặc gọi kernel; không chuyển
+  Chain bất kỳ sang ID ứng viên để lách review/activation guard.
+- Interpreter ứng viên tự tăng clock và phát trace riêng. Khi tích hợp,
+  applyAction/adapter vẫn sở hữu version/receipt và pipeline EngineEvent;
+  không chép nguyên output thành transition live rồi tăng version lần nữa.
+- Survivor list ứng viên theo thứ tự nguồn ban đầu, còn một số resolver
+  cũ đưa options theo thứ tự xử lý. Giữ đúng owner/default option order,
+  decision identity và public facts của pattern cũ khi thay phần chung;
+  không coi permutation có cùng tập nguồn là UI hồi quy đã tương đương.
+- Journal entry đầy đủ chỉ ở server/thành phần; projection cần allowlist,
+  không đưa journal/LP receipt/snapshot kín ra PlayerView. Frame cũ và
+  candidate API/ID lịch sử tiếp tục tách khỏi frame live.
+- Giữ chính sách terminal một nguồn/nhiều nguồn và xóa context khi concede;
+  không hỏi cleanup sau trận hoặc hoàn phí để làm snapshot trông gọn hơn.
 
 C2b dừng ở dispatcher/journal **ứng viên**. Mục tiếp theo C2c: tích hợp phần
 dùng chung cho các pattern cũ, event/fact mapping, frame lifecycle và adapter
