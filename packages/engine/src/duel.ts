@@ -1,7 +1,8 @@
 import {prepareTrapThreeSevenResolution,THREE_SEVEN_EFFECT_ID} from './trap-three-seven-candidate.js';
 import {reviewedTrapThreeSevenPrefix,assertTrapThreeSevenCleanup} from './trap-three-seven-continuation.js';
 import { z } from 'zod';
-import type { DuelState, EventRef, Phase, PlayerState, Slot, CounterResolutionFrame } from '../../protocol/src/duel.js';
+import type { DuelState, ChainLink, EventRef, Phase, PlayerState, Slot, CounterResolutionFrame } from '../../protocol/src/duel.js';
+import { prepareCounterLifoSchedule } from './counter-lifo-schedule.js';
 import { RequestSchema, RuleError, requireRule as rule } from './actions.js';
 import type { EngineRequest, RejectionCode } from './actions.js';
 import { createRandom } from './random.js';
@@ -582,58 +583,52 @@ function activateLPCounterTrap(c: Context, actorId: string, id: string, respondi
   emit(c, 'counter-trap-activated', [id], {}, false);
   c.state.timing.window = 'chain-response'; c.state.timing.priorityPlayer = other(c.state, actorId).id; c.state.timing.consecutivePasses = 0;
 }
+/** Only entered after existing parent/invariant guards. Keep the live event clock,
+ * fact names and movement ownership here; never install a candidate state/journal.
+ */
+function emitValidatedCounterLifo(c: Context, links: readonly ChainLink[], sourcesAlreadyMoved: boolean) {
+  for (const step of prepareCounterLifoSchedule(links)) {
+    const link = links[step.linkIndex]!;
+    if (step.kind === 'resolve') emit(c, 'chain-link-resolving', [link.source], {}, false);
+    else if (step.kind === 'skip') emit(c, 'chain-link-negated-skipped', [link.source], {}, false);
+    else {
+      const spell = c.registry.cards[link.sourceAtActivation.definition.id]!.kind === 'spell';
+      emit(c, spell ? 'spell-activation-negated' : 'trap-activation-negated', [link.source], { playerId: link.controllerId });
+      if (!sourcesAlreadyMoved) sendToGraveyard(c, link.source);
+      emit(c, spell ? 'spell-destroyed' : 'trap-destroyed', [link.source], { playerId: link.controllerId });
+    }
+  }
+}
 function resolveCounterChain(c: Context) {
   // Called only after invariants validated the exact two-link pattern; no effect-choice pause.
   c.state.timing.window = 'resolving'; c.state.timing.priorityPlayer = null;
-  const counter = c.state.chain.pop()!, original = c.state.chain.pop()!;
-  const lpCounter = counter.effectId === 'pay-1000-negate-trap-hole-activation';
-  emit(c, 'chain-link-resolving', [counter.source], {}, false);
-  original.activationNegated = true;
-  emit(c, lpCounter ? 'trap-activation-negated' : 'spell-activation-negated', [original.source], { playerId: original.controllerId });
-  sendToGraveyard(c, original.source); emit(c, lpCounter ? 'trap-destroyed' : 'spell-destroyed', [original.source], { playerId: original.controllerId });
-  emit(c, 'chain-link-negated-skipped', [original.source], {}, false);
+  const links = c.state.chain, counter = links[1]!;
+  c.state.chain = [];
+  emitValidatedCounterLifo(c, links, false);
   cleanupSingleSource(c, counter.source, 'counter-trap-cleanup');
   emit(c, 'chain-resolved', [], {}, false); response(c, 'action-response');
 }
 function resolveTrapThreeSeven(c:Context){
   c.state.timing.window='resolving';c.state.timing.priorityPlayer=null;
-  const p=prepareTrapThreeSevenResolution(c.registry,c.state),j=p.journal;
+  const links=c.state.chain,p=prepareTrapThreeSevenResolution(c.registry,c.state),j=p.journal;
   c.state=structuredClone({...c.state,...p.board,chain:p.remainingChain,trapThreeSevenResolution:j})as State;
-  emit(c,'chain-link-resolving',[j.top.source],{},false);
-  emit(c,'trap-activation-negated',[j.middle.source],{playerId:j.middle.controllerId});
-  emit(c,'trap-destroyed',[j.middle.source],{playerId:j.middle.controllerId});
-  emit(c,'chain-link-negated-skipped',[j.middle.source],{},false);
-  emit(c,'chain-link-resolving',[j.first.source],{},false);
-  emit(c,'trap-activation-negated',[j.root.source],{playerId:j.root.controllerId});
-  emit(c,'trap-destroyed',[j.root.source],{playerId:j.root.controllerId});
-  emit(c,'chain-link-negated-skipped',[j.root.source],{},false);
+  emitValidatedCounterLifo(c,links,true);
   c.state.chainCleanup=prepareChainCleanup(c.registry,c.state,j.cleanupSourceIds)as State['chainCleanup'];
   continueChainCleanup(c);
 }
 function resolveFourLinkCounter(c:Context){
   c.state.timing.window='resolving';c.state.timing.priorityPlayer=null;
-  const p=prepareFourLinkCounterResolution(c.registry,c.state),j=p.journal;
+  const links=c.state.chain,p=prepareFourLinkCounterResolution(c.registry,c.state),j=p.journal;
   c.state=structuredClone({...c.state,...p.board,chain:p.remainingChain,fourLinkCounterResolution:j}) as State;
-  emit(c,'chain-link-resolving',[j.top.source],{},false);
-  emit(c,'trap-activation-negated',[j.seven.source],{playerId:j.seven.controllerId});
-  emit(c,'trap-destroyed',[j.seven.source],{playerId:j.seven.controllerId});
-  emit(c,'chain-link-negated-skipped',[j.seven.source],{},false);
-  emit(c,'chain-link-resolving',[j.magic.source],{},false);
-  emit(c,'spell-activation-negated',[j.root.source],{playerId:j.root.controllerId});
-  emit(c,'spell-destroyed',[j.root.source],{playerId:j.root.controllerId});
-  emit(c,'chain-link-negated-skipped',[j.root.source],{},false);
+  emitValidatedCounterLifo(c,links,true);
   c.state.chainCleanup=prepareChainCleanup(c.registry,c.state,j.cleanupSourceIds) as State['chainCleanup'];
   continueChainCleanup(c);
 }
 function resolveSevenResponse(c:Context) {
   c.state.timing.window='resolving';c.state.timing.priorityPlayer=null;
-  const p=prepareTrapCounterContinuation(c.registry,c.state);
-  emit(c,'chain-link-resolving',[p.seven.source],{},false);
-  emit(c,'trap-activation-negated',[p.negatedSeven.source],{playerId:p.negatedSeven.controllerId});
-  sendToGraveyard(c,p.negatedSeven.source);emit(c,'trap-destroyed',[p.negatedSeven.source],{playerId:p.negatedSeven.controllerId});
-  emit(c,'chain-link-negated-skipped',[p.negatedSeven.source],{},false);
+  const links=c.state.chain,p=prepareTrapCounterContinuation(c.registry,c.state);
+  emitValidatedCounterLifo(c,links,false);
   c.state.chain=[structuredClone(p.root)] as State['chain'];
-  emit(c,'chain-link-resolving',[p.root.source],{},false);
   const target=p.root.targetRefs[0]!.instanceId;
   sendToGraveyard(c,target);emit(c,'effect-destroyed',[target]);
   c.state.trapCounterResolution=finishTrapCounterContinuation(c.registry,c.state,p) as State['trapCounterResolution'];
@@ -643,7 +638,9 @@ function resolveSevenResponse(c:Context) {
 function resolveTraps(c: Context) {
   const cleanup: string[] = [];
   c.state.timing.window = 'resolving'; c.state.timing.priorityPlayer = null;
-  for (const link of [...c.state.chain].reverse()) {
+  for (const step of prepareCounterLifoSchedule(c.state.chain)) {
+    rule(step.kind === 'resolve', 'illegal-timing', 'Trap-only resolver requires a validated Trap-only schedule');
+    const link = c.state.chain[step.linkIndex]!;
     const ref = link.targetRefs[0]!, target = c.state.cards[ref.instanceId];
     emit(c, 'chain-link-resolving', [link.source], {}, false);
     if (target?.location.kind === 'monster' && target.position !== 'face-down-defense'
@@ -811,11 +808,7 @@ function resolveThreeLinkCounter(c: Context) {
   assertDuelInvariants({ ...state, chain: [state.chain[0]!], timing: { ...state.timing, window: 'chain-response',
     priorityPlayer: state.turn.activePlayer, consecutivePasses: 0 } }, registry);
   c.state = structuredClone({ ...state, ...prepared.board, chain: [prepared.activeRoot], counterResolution: prepared.journal }) as State;
-  emit(c, 'chain-link-resolving', [prepared.journal.seven.source], {}, false);
-  emit(c, 'trap-activation-negated', [prepared.journal.magic.source], { playerId: prepared.journal.magic.controllerId });
-  emit(c, 'trap-destroyed', [prepared.journal.magic.source], { playerId: prepared.journal.magic.controllerId });
-  emit(c, 'chain-link-negated-skipped', [prepared.journal.magic.source], {}, false);
-  emit(c, 'chain-link-resolving', [prepared.activeRoot.source], {}, false);
+  emitValidatedCounterLifo(c, state.chain, true);
   resolveSpell(c);
 }
 /** Isolated trusted seam retained for component tests; gameplay uses the same resolver

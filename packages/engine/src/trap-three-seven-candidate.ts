@@ -3,6 +3,7 @@ import {z} from 'zod';
 import type {ChainLink,DuelState,EventRef,TrapThreeSevenJournal} from '../../protocol/src/duel.js';
 import type {Registry} from './registry.js';
 import {freeze} from './registry.js';
+import {prepareCounterLifoSchedule} from './counter-lifo-schedule.js';
 import {FieldActivationLinkSchema} from './counter-continuation.js';
 import {reviewedTrapHoleRootValid,SEVEN_RESPONSE_EFFECT_ID} from './trap-counter-continuation.js';
 import {SevenLPCostEventSchema} from './seven-lp-cost-ledger.js';
@@ -57,7 +58,8 @@ function prepare(registry:Registry,state:DuelState,reviewed:boolean){
   const lpCosts=captureThreeSevenLPCosts(registry,state),players=structuredClone(state.players)as Mutable<DuelState['players']>,cards=structuredClone(state.cards);
   const destroy=(source:string)=>{const c=cards[source]!,loc=c.location;check(loc.kind==='spell-trap','Candidate source already destroyed');const owner=players.find(p=>p.id===c.ownerId)!,controller=players.find(p=>p.id===c.controllerId)!;
     controller.spellsTraps[loc.slot]=null;owner.graveyard.push(c.id);c.location={kind:'graveyard',playerId:owner.id};c.controllerId=owner.id;c.position='face-up';};
-  destroy(middle.source);destroy(root.source);const board={players,cards},remainingChain=[structuredClone(first)];
+  for(const step of prepareCounterLifoSchedule(state.chain))if(step.kind==='negate')destroy(state.chain[step.linkIndex]!.source);
+  const board={players,cards},remainingChain=[structuredClone(first)];
   const body:Omit<TrapThreeSevenCandidateJournal,'integritySha256'>={version:1,kind:reviewed?'trap-hole-three-seven-v1':'trap-hole-three-seven-candidate-v1',duelId:state.id,registryRevision:registry.revision,
     turn:{...state.turn,phase:state.turn.phase as 'main1'|'main2'},capturedSequence:state.eventSequence,capturedStateVersion:state.stateVersion,
     root:{...structuredClone(root),activationNegated:true},first:structuredClone(first),middle:{...structuredClone(middle),activationNegated:true},top:structuredClone(top),occurrence:structuredClone(event),lpCosts,

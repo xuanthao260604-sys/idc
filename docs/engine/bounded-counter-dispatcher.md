@@ -145,3 +145,7 @@ dùng chung cho các pattern cũ, event/fact mapping, frame lifecycle và adapte
 trong khi v5 vẫn chặn pattern mới. C3 mới review/gate/activation/discovery/UI
 cho phạm vi mới; C4 mới đóng Chain beta. Sau đó giữ mục tiêu editor giới hạn
 và Windows 11 desktop. Chưa đóng gói hoặc bàn giao beta.
+
+Cập nhật chu kỳ sau: [C2c](reviewed-lifo-integration.md) đã nối kernel LIFO
+dùng chung vào parent v5, giữ frame/event/decision và các guard cũ. Không
+cài nguyên candidate state/journal vào gameplay hoặc mở activation mới.

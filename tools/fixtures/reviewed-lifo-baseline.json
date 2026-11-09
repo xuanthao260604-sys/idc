@@ -1,0 +1,715 @@
+{
+  "source": "88b16180cab1ca5e4b2e1eb1d721ccd467168c0c",
+  "cases": [
+    {
+      "key": "spell-official:19523799-a-0",
+      "commands": 7,
+      "digest": "9ac65a6a5510f4de81a8c9309fa6fc30ac755ca0a6237ef55405367cdb9e90e0"
+    },
+    {
+      "key": "spell-official:19523799-a-1",
+      "commands": 10,
+      "digest": "c333c21d4e4a054e74df8870aba5d1b8501b714a3be5bc1832040729c92ae3b3"
+    },
+    {
+      "key": "spell-official:19523799-a-2",
+      "commands": 12,
+      "digest": "273c97b01761f12fdc5b5afd3e6e0b2824cddfd31c16913e3ee554c961ba4c36"
+    },
+    {
+      "key": "spell-official:19523799-b-0",
+      "commands": 10,
+      "digest": "6dfe9dc3f73c10faa2df09570c81896b43825d0a582b1a6e9590cd4690579b76"
+    },
+    {
+      "key": "spell-official:19523799-b-1",
+      "commands": 13,
+      "digest": "3dff12e1ac579f5640f742df6fc5ec0506648fa91f08557edabeaf19b34d3e47"
+    },
+    {
+      "key": "spell-official:19523799-b-2",
+      "commands": 15,
+      "digest": "9a1e098f6381aef57f30d8609170911b1f92cb443e89d92898730845801d04fd"
+    },
+    {
+      "key": "spell-official:25880422-a-0",
+      "commands": 6,
+      "digest": "281e22c56ac3e3edf4c39718db2b77fd00e20107496861289df9b38ae862a599"
+    },
+    {
+      "key": "spell-official:25880422-a-1",
+      "commands": 8,
+      "digest": "575dfc475fb855e1b1a84dbe041735267e51b2bb5f70c740c155873f18e922cc"
+    },
+    {
+      "key": "spell-official:25880422-a-2",
+      "commands": 9,
+      "digest": "1a7374df838b357138bc379496d41ad14777ed40a8f9586af86cddc298192823"
+    },
+    {
+      "key": "spell-official:25880422-b-0",
+      "commands": 9,
+      "digest": "e14301f5e8fe93f4cd703b4316690124b9ed31ac15d3df2b77fb8c95363846ed"
+    },
+    {
+      "key": "spell-official:25880422-b-1",
+      "commands": 11,
+      "digest": "f59ac7e63c47bc84c2edd71f04b5acfadffdbda4680742df18f1ad93633fe22d"
+    },
+    {
+      "key": "spell-official:25880422-b-2",
+      "commands": 12,
+      "digest": "a23707df23fdb2744f64dbef98cf392e2367e48a92baaf9696fcaa9d37d3a1c7"
+    },
+    {
+      "key": "spell-official:26412047-a-0",
+      "commands": 7,
+      "digest": "7880840c2f21a5abf057132f991d30e5d6d182b23a34d9f7d8519ce9a9a5d214"
+    },
+    {
+      "key": "spell-official:26412047-a-1",
+      "commands": 11,
+      "digest": "39fecceb57d0efa36b67a3063391f62a9eecd9b5096eb6c6eedeb8d519fc4d2f"
+    },
+    {
+      "key": "spell-official:26412047-a-2",
+      "commands": 12,
+      "digest": "19cc307d1dbddc2b5295775605ffecf2b6ab541785f8111aad37dc030e818c20"
+    },
+    {
+      "key": "spell-official:26412047-b-0",
+      "commands": 10,
+      "digest": "094a83f6e3cda3f2b69d009cb6f0f20d43c352d1859e4162a6a4e9e76687b144"
+    },
+    {
+      "key": "spell-official:26412047-b-1",
+      "commands": 14,
+      "digest": "7f5b4b2ef176dc7c8efbbbf7ad3884e22b130b961dfebf356ec5c2eb92704d5f"
+    },
+    {
+      "key": "spell-official:26412047-b-2",
+      "commands": 15,
+      "digest": "0f991c091ae262294f81dbcd61a2a4da91b9a8a033afa4057b809979f3795cc5"
+    },
+    {
+      "key": "spell-official:46130346-a-0",
+      "commands": 6,
+      "digest": "c6a036a342535e7b1f131598318603dbf9039e3147d1e086d23a0f242350bbe2"
+    },
+    {
+      "key": "spell-official:46130346-a-1",
+      "commands": 8,
+      "digest": "3b15e75b1068716520a3b34a9d519ca1e3c65ceed0a7262fa872555109c4a96d"
+    },
+    {
+      "key": "spell-official:46130346-a-2",
+      "commands": 9,
+      "digest": "d4203a28166d0bf00bf94441a59b294f6381237080a2383bc2058e077ddd136d"
+    },
+    {
+      "key": "spell-official:46130346-b-0",
+      "commands": 9,
+      "digest": "d69ad9eee86777a23777be295394b4be92dff8494f62a88399dc1dd395522b20"
+    },
+    {
+      "key": "spell-official:46130346-b-1",
+      "commands": 11,
+      "digest": "84fd2fc914babb74d7bbd069d9dfe9ee7ad0c16f1daf1fce4971f271723dc466"
+    },
+    {
+      "key": "spell-official:46130346-b-2",
+      "commands": 12,
+      "digest": "f86c03dfb9c5ff3c1f27bffaf6104bc2966a2bdf6dc019925208860349fc7a86"
+    },
+    {
+      "key": "spell-official:55144522-a-0",
+      "commands": 7,
+      "digest": "88b9f28ce3c56786f2bb7ee475076bb096b0b607433c5c61b35d2d32e323dd54"
+    },
+    {
+      "key": "spell-official:55144522-a-1",
+      "commands": 10,
+      "digest": "9ed82608260bd181438f6f304845a1e8a81823f25695bf1582e950c5977fe4b4"
+    },
+    {
+      "key": "spell-official:55144522-a-2",
+      "commands": 12,
+      "digest": "dbf539a5046a83cbe6a571f6ff456968b57f41a61b6b24f7587673fec7eb3a92"
+    },
+    {
+      "key": "spell-official:55144522-b-0",
+      "commands": 10,
+      "digest": "96125b59ae4c8644b312b28704348760dc361eeb098c2c631f557c8b677bf0e1"
+    },
+    {
+      "key": "spell-official:55144522-b-1",
+      "commands": 13,
+      "digest": "c8ed1ca940293eee90371008c31302c90a007ecbe298ff9b914a54a3a227a38c"
+    },
+    {
+      "key": "spell-official:55144522-b-2",
+      "commands": 15,
+      "digest": "07f3bef3efd7b9f4c7efceef0261b937ed341f39c64ac89a1cd2d9fb442065f3"
+    },
+    {
+      "key": "spell-official:66788016-a-0",
+      "commands": 6,
+      "digest": "1bd44355e2580ee90ae2a60ce754cf6d54be2633d9dbcdec1807725592e5ee10"
+    },
+    {
+      "key": "spell-official:66788016-a-1",
+      "commands": 9,
+      "digest": "f6b12aafae0e964d3c44c76af6bf2f213553eea6260814c6104e93225abc323e"
+    },
+    {
+      "key": "spell-official:66788016-a-2",
+      "commands": 9,
+      "digest": "4e4eb5d0db58bd87cdaead3fcbbeabcf3f30d87ccf28d2f38d5c140164138ed2"
+    },
+    {
+      "key": "spell-official:66788016-b-0",
+      "commands": 9,
+      "digest": "4ef26e42eb71a12d77f0c422c73c24a1ea5176031217bb660f72e23bc697a147"
+    },
+    {
+      "key": "spell-official:66788016-b-1",
+      "commands": 12,
+      "digest": "5ab907c071f686e51d22b7fd6dd0d1994ad39068367c332c5774c6437cd05633"
+    },
+    {
+      "key": "spell-official:66788016-b-2",
+      "commands": 12,
+      "digest": "6911c543c2c90b50313b92610b07067f914ea3fc498a5fc7655d051eb16d5e8f"
+    },
+    {
+      "key": "spell-official:74848038-a-0",
+      "commands": 7,
+      "digest": "38de2991204f78736bc2c39f30916f8a6a180db0fb266c7521a51ccb101214b1"
+    },
+    {
+      "key": "spell-official:74848038-a-1",
+      "commands": 10,
+      "digest": "85db4067c2f4df6278df08714a7b147fb8f2971a8fdab3b5e17730c602ddf9de"
+    },
+    {
+      "key": "spell-official:74848038-a-2",
+      "commands": 12,
+      "digest": "f9ee633e1f7c002154808ef785aae6b23d674eb9c5458af759784d006254ad4a"
+    },
+    {
+      "key": "spell-official:74848038-b-0",
+      "commands": 10,
+      "digest": "bd48a026a311909967c3a59da78e3f9cd6c0ccd55e3b626f91f2728a2f3c5f6d"
+    },
+    {
+      "key": "spell-official:74848038-b-1",
+      "commands": 13,
+      "digest": "152ada6d5b3bb4b624eea16faebd114b69ecbc2ec3a04e1fb71e4c89efaf26cb"
+    },
+    {
+      "key": "spell-official:74848038-b-2",
+      "commands": 15,
+      "digest": "a6c42823a98263bc7960d9291ee65a8426aedf3e623fbfbd65f5364a048ca1e1"
+    },
+    {
+      "key": "spell-official:79759861-a-0",
+      "commands": 6,
+      "digest": "1924aa9bf93636a2d3939a3129d117abe42fd8af3d419d36e860dc4457054055"
+    },
+    {
+      "key": "spell-official:79759861-a-1",
+      "commands": 8,
+      "digest": "dcced06d491cbf580b2bb35322301b5c50bbffb0011a7c256f7456050fa004ac"
+    },
+    {
+      "key": "spell-official:79759861-a-2",
+      "commands": 9,
+      "digest": "911941f7b8668b2e7e82cb0dc4ebae823920c6c6de5b70ce7b6ba00646802235"
+    },
+    {
+      "key": "spell-official:79759861-b-0",
+      "commands": 9,
+      "digest": "476376f2e0d628ae78b1b9493d246b33cee8608e1cb8ec9df518f1ea07365c39"
+    },
+    {
+      "key": "spell-official:79759861-b-1",
+      "commands": 11,
+      "digest": "f1953023d5f19c3bd55547daeff9975383e646570159360b936eecba127a7564"
+    },
+    {
+      "key": "spell-official:79759861-b-2",
+      "commands": 12,
+      "digest": "2bc9eaec4c78ef6cf50341b5fb09f1df08973fadcffc18d32228a2825b25a81b"
+    },
+    {
+      "key": "spell-official:82828051-a-0",
+      "commands": 7,
+      "digest": "9bc7109453d92f1b923e6b6434ad8bb7838aa909fcba6149006d7254219e40f9"
+    },
+    {
+      "key": "spell-official:82828051-a-1",
+      "commands": 10,
+      "digest": "b148de939b3bb351c41158dc2af49cbed40f3dd460df69c4d4ab18ccd582d6f6"
+    },
+    {
+      "key": "spell-official:82828051-a-2",
+      "commands": 12,
+      "digest": "6dd96930eb2c06c45f79feb834bb0b249a24aa751a5919bf5332f68ff0b57fca"
+    },
+    {
+      "key": "spell-official:82828051-b-0",
+      "commands": 10,
+      "digest": "f101efffb848fe5644f68e54febd63d4a16f0e612a225e8a34e6ec1c49f54a2f"
+    },
+    {
+      "key": "spell-official:82828051-b-1",
+      "commands": 13,
+      "digest": "c9fe01b9b3f658f4c08fd801a91a388368203367aaf3eef63fcae0395ec2390a"
+    },
+    {
+      "key": "spell-official:82828051-b-2",
+      "commands": 15,
+      "digest": "c0d51d6b0379239cf9d1c5fb787fbb78ed712ea3b5c52d9080eca198ee8c776b"
+    },
+    {
+      "key": "spell-official:84257639-a-0",
+      "commands": 6,
+      "digest": "58b01f5dff0b194e8f02aad35e5a3771ffd6d8046403af8f8634888769d9b162"
+    },
+    {
+      "key": "spell-official:84257639-a-1",
+      "commands": 8,
+      "digest": "86f8bb15d839f981c9cb9020854d9e9bf28b01d70279d255bf1ecd8597b70f6b"
+    },
+    {
+      "key": "spell-official:84257639-a-2",
+      "commands": 9,
+      "digest": "de66263dfdee322aa05fdb7e06d78aa646230ebfb563ae41c75fedaf4953baa7"
+    },
+    {
+      "key": "spell-official:84257639-b-0",
+      "commands": 9,
+      "digest": "0c98f06cf0189ea302624ac27a25d794014691d94ed5c903fb4dfd09b9910794"
+    },
+    {
+      "key": "spell-official:84257639-b-1",
+      "commands": 11,
+      "digest": "68690e40696176707818824984410fe71612e1e1d88059be411ca7e27a2c20aa"
+    },
+    {
+      "key": "spell-official:84257639-b-2",
+      "commands": 12,
+      "digest": "40ae38d5e39f02536d2a979d9674b5cfbae7db3dd803e77bd7517c1419ae9ff4"
+    },
+    {
+      "key": "spell-official:97169186-a-0",
+      "commands": 7,
+      "digest": "b3cd8f2dd0d7bab970fe7cb52c71f5d5c79cba4d8c64e79d7a768d5815ec513c"
+    },
+    {
+      "key": "spell-official:97169186-a-1",
+      "commands": 11,
+      "digest": "be5f4100d9b2744091fd96eb43e38e5cf6ffeadeb31631b019d8f63e8e5e136f"
+    },
+    {
+      "key": "spell-official:97169186-a-2",
+      "commands": 12,
+      "digest": "650e39535b8c3fff7a7bd090bbff70e7957e0b7c4e46a6bd7179a167b17a744f"
+    },
+    {
+      "key": "spell-official:97169186-b-0",
+      "commands": 10,
+      "digest": "db2c4fdc619fad747999b01581a788f279afcf33e68a908a1801f742e682766e"
+    },
+    {
+      "key": "spell-official:97169186-b-1",
+      "commands": 14,
+      "digest": "313e743e357c50491f5567e56935c2d0d4c344c9103cf609e8ed5264bde21d88"
+    },
+    {
+      "key": "spell-official:97169186-b-2",
+      "commands": 15,
+      "digest": "7be4f8888e477ba63451d3513e70a9c9417786787c3a307acef5f0a382aa8fb8"
+    },
+    {
+      "key": "trap-a-1-normal-false-main1",
+      "commands": 9,
+      "digest": "b0fd0b18c632a21c5f84b08160934426f010c941a6701348e11882597396a475"
+    },
+    {
+      "key": "trap-a-1-normal-false-main2",
+      "commands": 9,
+      "digest": "1656aea623b57608c360be1f1b1c76c57ff820e923e7819d4fd27a50a2532af8"
+    },
+    {
+      "key": "trap-a-1-normal-true-main1",
+      "commands": 8,
+      "digest": "90d18de10145c63a79e4d3cf7a095bd9cf0aa3aa5ff1cfa2ed0c1e7a9eb4f73b"
+    },
+    {
+      "key": "trap-a-1-normal-true-main2",
+      "commands": 8,
+      "digest": "ba7e645fe56bf33bae46d1aa71e11804e27137cbb471669d77b85fde6512a0ee"
+    },
+    {
+      "key": "trap-a-1-tribute-false-main1",
+      "commands": 9,
+      "digest": "5cf227466c6dac2498b9935db77d251605c3bf95164c6c1983c0d3b8f022d7b8"
+    },
+    {
+      "key": "trap-a-1-tribute-false-main2",
+      "commands": 9,
+      "digest": "edd694610bd47e6107758f377042488b8adbd0a09ef72b5a9754482184ac12c9"
+    },
+    {
+      "key": "trap-a-1-tribute-true-main1",
+      "commands": 8,
+      "digest": "3a87d593c1228d4d269b463cb4b4890367047e6ce763dc5cecf94396797e1c52"
+    },
+    {
+      "key": "trap-a-1-tribute-true-main2",
+      "commands": 8,
+      "digest": "81ea7f8aa3db21f1dba937f35bb4db3849fd9cd7843fc3d313e199bb51378d29"
+    },
+    {
+      "key": "trap-a-1-flip-false-main1",
+      "commands": 9,
+      "digest": "0fce3989ff3380777ac9b2ed6619cee9375e9b3ffa6e8266133bfbc7529c34bf"
+    },
+    {
+      "key": "trap-a-1-flip-false-main2",
+      "commands": 9,
+      "digest": "b026fbebc09f23ff26038d9a8f5fd501d1704b8084d18f99e137c75d7c1e3b59"
+    },
+    {
+      "key": "trap-a-1-flip-true-main1",
+      "commands": 8,
+      "digest": "381579671a4d2fd432d0187bb17462185a73eb151e12bdc301db3c188de10d2d"
+    },
+    {
+      "key": "trap-a-1-flip-true-main2",
+      "commands": 8,
+      "digest": "5241a12ec20d0303331179afb02e02714c4413d660417d3eb2ab6a8a87b6274e"
+    },
+    {
+      "key": "trap-a-2-normal-false-main1",
+      "commands": 10,
+      "digest": "51e281a2a57c6235b1ea3aa8d6f7e70cebacb787795914161e3f7c0b719f1174"
+    },
+    {
+      "key": "trap-a-2-normal-false-main2",
+      "commands": 10,
+      "digest": "9ef5c5e70453ddd5a9336662d5935e38b10afb6c02fc1b3370cf380770070c72"
+    },
+    {
+      "key": "trap-a-2-normal-true-main1",
+      "commands": 10,
+      "digest": "440a4ea983e2b2b0286f26e300cf4fa37555e0d581caa29afb835f06536a096d"
+    },
+    {
+      "key": "trap-a-2-normal-true-main2",
+      "commands": 10,
+      "digest": "c296bcada3db2d7dfa8d193464fe7b84f7704e0a7bd4c4cfad771b5d23a01147"
+    },
+    {
+      "key": "trap-a-2-tribute-false-main1",
+      "commands": 10,
+      "digest": "fc98edb979c4f9b2bf0a454918653b5f078eae143aafaaa269317d94e5d63c54"
+    },
+    {
+      "key": "trap-a-2-tribute-false-main2",
+      "commands": 10,
+      "digest": "02f64590975c72e4574ae2dfc7b3c1d3bb62de47867a9b1790c6526eb1c2e541"
+    },
+    {
+      "key": "trap-a-2-tribute-true-main1",
+      "commands": 10,
+      "digest": "ef411764536fcd0f705e4d9be3d618d0a1f3ad8114bdde27c548b3f00ea6e66f"
+    },
+    {
+      "key": "trap-a-2-tribute-true-main2",
+      "commands": 10,
+      "digest": "70900cc0e517557ec6a6513a4e30dff48fed4394f6bb896faaa24e4d906b4092"
+    },
+    {
+      "key": "trap-a-2-flip-false-main1",
+      "commands": 10,
+      "digest": "1a81516cdb1c74b614f57f989e7a5a98e85c85035358322af86d4749bd942040"
+    },
+    {
+      "key": "trap-a-2-flip-false-main2",
+      "commands": 10,
+      "digest": "f1560f794f916219c101b87ed7f2eb878781f20c966ae7611a523248af27b7bb"
+    },
+    {
+      "key": "trap-a-2-flip-true-main1",
+      "commands": 10,
+      "digest": "8bb6c67a2988e230e7cfb00859fbdcce8777df5d8267f9da0728a8ff8d17ae4f"
+    },
+    {
+      "key": "trap-a-2-flip-true-main2",
+      "commands": 10,
+      "digest": "3a916016ab4c210da898088cf4889bf8e643eefe9cf2214e7ae2f12c9ebb08d0"
+    },
+    {
+      "key": "trap-a-3-normal-false-main1",
+      "commands": 12,
+      "digest": "f756641bd50e18f55bbc92ab34a6064e48ef3ce553d306bb6469ee92ac0fd0eb"
+    },
+    {
+      "key": "trap-a-3-normal-false-main2",
+      "commands": 12,
+      "digest": "5bc5612aa07f402fe939b9b94670a2f7efb8948591f9f9bd6439058b95e98304"
+    },
+    {
+      "key": "trap-a-3-normal-true-main1",
+      "commands": 11,
+      "digest": "77ef026fe4cb4812ea316aca9a78b3f82b31bcd66c79cbd734978a9acde6b726"
+    },
+    {
+      "key": "trap-a-3-normal-true-main2",
+      "commands": 11,
+      "digest": "72d84fbe02df7347a3db9b5776bb6ee2af3ed8a2dadf7982782357a34155fdb0"
+    },
+    {
+      "key": "trap-a-3-tribute-false-main1",
+      "commands": 12,
+      "digest": "400f1655334d4b82cd6dd769734c6983b9a1ece6fe288fe956fc82ad50ff4242"
+    },
+    {
+      "key": "trap-a-3-tribute-false-main2",
+      "commands": 12,
+      "digest": "a29bb2ea0d010b6e778ab8d185d05fd27ae0f45cab0ad4d05befaf4a024c2caf"
+    },
+    {
+      "key": "trap-a-3-tribute-true-main1",
+      "commands": 11,
+      "digest": "5b76e921a15c739b6704b8bafe4c94665e52569e8d4320c21ff9c48aadc017fc"
+    },
+    {
+      "key": "trap-a-3-tribute-true-main2",
+      "commands": 11,
+      "digest": "23f17816b9678f9e214fedb12225305c5cf723e986f2c672083004f364dff719"
+    },
+    {
+      "key": "trap-a-3-flip-false-main1",
+      "commands": 12,
+      "digest": "698e1b077ed6eb3b081101de68c16523274719f8b44f68dfeb26dec517315e2d"
+    },
+    {
+      "key": "trap-a-3-flip-false-main2",
+      "commands": 12,
+      "digest": "b2254295da7a91a2ab54f83c3ebd7b45a04d5088cfa7146081d51f44950b3ccd"
+    },
+    {
+      "key": "trap-a-3-flip-true-main1",
+      "commands": 11,
+      "digest": "9c05860dc26c37e7f12a0df14275dabc3e4e38f09ba5b44b9a99e5128587a538"
+    },
+    {
+      "key": "trap-a-3-flip-true-main2",
+      "commands": 11,
+      "digest": "73afbad0e72dd72037cbdc09afab2f33eaea15e7e57d9071c9b6ce5e3ac538ae"
+    },
+    {
+      "key": "trap-b-1-normal-false-main1",
+      "commands": 9,
+      "digest": "14e6b207363c176b813137171ed728884ff9d660630f549cc5af6766fa836bb7"
+    },
+    {
+      "key": "trap-b-1-normal-false-main2",
+      "commands": 9,
+      "digest": "06ba13666311f1c61e4c2b571fb7ad1ed803f5baddbd33cfafeb8a9da3ce2ccd"
+    },
+    {
+      "key": "trap-b-1-normal-true-main1",
+      "commands": 8,
+      "digest": "a1b82406d3338769fb89250c14debdc2e72531bfa3bca23051b991146e917468"
+    },
+    {
+      "key": "trap-b-1-normal-true-main2",
+      "commands": 8,
+      "digest": "0ce4ce3150eb72925bf862f3bc95775049d7afdf6b4c4713a69870adcc2ababf"
+    },
+    {
+      "key": "trap-b-1-tribute-false-main1",
+      "commands": 9,
+      "digest": "456877fe6536d9f099305a263a125d55b6a9d4934000fba4b19193ea11dfb510"
+    },
+    {
+      "key": "trap-b-1-tribute-false-main2",
+      "commands": 9,
+      "digest": "175c4cc988ca0aeb37fdad6dfd431a0a7d663f6f92e2fdf1cc68d94af168fb90"
+    },
+    {
+      "key": "trap-b-1-tribute-true-main1",
+      "commands": 8,
+      "digest": "6de35bc5831c25d4344b191fe3a16bd3f752822347eab2a0c994237c0bb97e69"
+    },
+    {
+      "key": "trap-b-1-tribute-true-main2",
+      "commands": 8,
+      "digest": "79f3a3d6051a60791b9f111d603b12830ccdbbcac551cbf0c628868caacb21c1"
+    },
+    {
+      "key": "trap-b-1-flip-false-main1",
+      "commands": 9,
+      "digest": "0f63051a0e812b58559997c069911d85a7443816eafc5f68cb675bbb2df70ea1"
+    },
+    {
+      "key": "trap-b-1-flip-false-main2",
+      "commands": 9,
+      "digest": "24c2dcf5659b1a45c0bbf6f07dedf7740452b58657326babe2f948dc6a8f0449"
+    },
+    {
+      "key": "trap-b-1-flip-true-main1",
+      "commands": 8,
+      "digest": "290a0c75903c4c87876cfd8cd30e4b499db4494838c1796ec50f9a230d97cbba"
+    },
+    {
+      "key": "trap-b-1-flip-true-main2",
+      "commands": 8,
+      "digest": "24c6c72fcd7a05943f7bfffec234480abcec68e5ffcacbbc2f50fd0736aa8673"
+    },
+    {
+      "key": "trap-b-2-normal-false-main1",
+      "commands": 10,
+      "digest": "ebf44c5f85833488bd2b40979467d6edf364096068a243499fedbbeafcb2737f"
+    },
+    {
+      "key": "trap-b-2-normal-false-main2",
+      "commands": 10,
+      "digest": "43210b33eea7863ad303f29ec4f4a0143e9397284e8d66503f02c2429b8c3aac"
+    },
+    {
+      "key": "trap-b-2-normal-true-main1",
+      "commands": 10,
+      "digest": "7f6570805ed31662c57445788248aa83ef6aeed7ae352582547c985266261020"
+    },
+    {
+      "key": "trap-b-2-normal-true-main2",
+      "commands": 10,
+      "digest": "d281eafe957eef336b60707036021f721461d555e535f00a66e6dd2fd48bd1dc"
+    },
+    {
+      "key": "trap-b-2-tribute-false-main1",
+      "commands": 10,
+      "digest": "2a00d0a5053090d616f720e716b70d929407ea3476fb8911090c18047c0d1003"
+    },
+    {
+      "key": "trap-b-2-tribute-false-main2",
+      "commands": 10,
+      "digest": "1b0cafe847873354b20065cb8b31036cead81c462675d519e66108e4b787cc1d"
+    },
+    {
+      "key": "trap-b-2-tribute-true-main1",
+      "commands": 10,
+      "digest": "d4c637992a2a55c3e30b75836d1504f246ea3bf0a15736a17575e5cee74385fd"
+    },
+    {
+      "key": "trap-b-2-tribute-true-main2",
+      "commands": 10,
+      "digest": "592aec4a1fbd869eeb234a608284b43667f3fcd90f2240487246aaa7b5ab9513"
+    },
+    {
+      "key": "trap-b-2-flip-false-main1",
+      "commands": 10,
+      "digest": "a352a99735a2aff00992902afd25670561bec7a144740b29594a1f064a1fa4d0"
+    },
+    {
+      "key": "trap-b-2-flip-false-main2",
+      "commands": 10,
+      "digest": "77feebfc6a4493f762eb061d5d2d5856748c156ccd3da5fd9ad95b9faa2cd0bb"
+    },
+    {
+      "key": "trap-b-2-flip-true-main1",
+      "commands": 10,
+      "digest": "e71ca921e6b76beb5746d3e5bdf95e3c8abb1e88d348dc914457184d4a364c91"
+    },
+    {
+      "key": "trap-b-2-flip-true-main2",
+      "commands": 10,
+      "digest": "824452f94789dd8de1cada86e0c184e848d6202b00fd33fdaa76a4e4dd75158e"
+    },
+    {
+      "key": "trap-b-3-normal-false-main1",
+      "commands": 12,
+      "digest": "d5628c6dd67091cb0d92a13a3be97220c1dbe7be08bec2a26d5b4c53db09a5be"
+    },
+    {
+      "key": "trap-b-3-normal-false-main2",
+      "commands": 12,
+      "digest": "73416a77f7c33a818ef3a9a0c1524a254b347fa4a6bffd760416553d01c0a466"
+    },
+    {
+      "key": "trap-b-3-normal-true-main1",
+      "commands": 11,
+      "digest": "285ecf84ac4cd9810338e119a39d65232f61079d0e4ecde00aad4edadd283fef"
+    },
+    {
+      "key": "trap-b-3-normal-true-main2",
+      "commands": 11,
+      "digest": "397b69d8320d68d6f1631efdb7172a52a51271026403d9607ebb6fd284480aad"
+    },
+    {
+      "key": "trap-b-3-tribute-false-main1",
+      "commands": 12,
+      "digest": "238551dd522f5d7ec48da47fea61a5fd14c735d8f75c69390430b91e1da8d3fc"
+    },
+    {
+      "key": "trap-b-3-tribute-false-main2",
+      "commands": 12,
+      "digest": "6f08908f6a41720bf247c009009fd9e3143e74fa5edce0b8cbfcb6b89bd0b27b"
+    },
+    {
+      "key": "trap-b-3-tribute-true-main1",
+      "commands": 11,
+      "digest": "3ec64f4e211adfe89aa09c0493bc6a90f712c49c4b4ba909f4653cb01e846751"
+    },
+    {
+      "key": "trap-b-3-tribute-true-main2",
+      "commands": 11,
+      "digest": "848d6c118fa2dc4a3a8c5f5418dd92679541b024d9af818ea781820f1a1b0463"
+    },
+    {
+      "key": "trap-b-3-flip-false-main1",
+      "commands": 12,
+      "digest": "3ae3acca0c207c3a91b48d78a67c486b8301680a8168c4f850351d6fe632e6d7"
+    },
+    {
+      "key": "trap-b-3-flip-false-main2",
+      "commands": 12,
+      "digest": "309c731b54151073b0b226f9bc00146d9185e7b6e9eb6dc96e239b19140c6622"
+    },
+    {
+      "key": "trap-b-3-flip-true-main1",
+      "commands": 11,
+      "digest": "b448fc071912b12afbb56c17ceba65508a17aa758365a46069bf7f1fdaa4dc1d"
+    },
+    {
+      "key": "trap-b-3-flip-true-main2",
+      "commands": 11,
+      "digest": "65c53d32d1d07ad4dd3980372d0ff42030671f8d49baff19667c11e0065ccd0d"
+    },
+    {
+      "key": "concede-root-a",
+      "commands": 8,
+      "digest": "220257a80eb102ac435953d356980b5e99cbb9a5c229edf2ef5a146ee7565301"
+    },
+    {
+      "key": "concede-cleanup-a",
+      "commands": 8,
+      "digest": "1f1ff136d7025e084cba99139a8c843d969a8809bf09f69a9fab2fb62950b7dc"
+    },
+    {
+      "key": "concede-root-b",
+      "commands": 8,
+      "digest": "ee8277c8ba88a25d7ba5b4453ae56c9033262c40a926c0dbaf096b2b93e0c4e4"
+    },
+    {
+      "key": "concede-cleanup-b",
+      "commands": 8,
+      "digest": "8430a7c647fb347dd277f5f3990a4a9da8339d618d9a9fd146c5a52588711bcb"
+    }
+  ]
+}

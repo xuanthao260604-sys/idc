@@ -10,6 +10,7 @@ import { planResolution, chooseDestruction } from './effect-plans.js';
 import type { ResolutionPlan } from './effect-plans.js';
 import { spellResolutionBoard } from './spell-resolution.js';
 import { prepareChainCleanup, chainCleanupDecision, orderChainCleanup, commitChainCleanup } from './chain-cleanup.js';
+import { prepareCounterLifoSchedule } from './counter-lifo-schedule.js';
 
 type Mutable<T> = { -readonly [K in keyof T]: Mutable<T[K]> };
 const AnswerSchema = z.discriminatedUnion('kind', [
@@ -131,14 +132,17 @@ function run(registry: Registry, entry: DuelState, answers: readonly BoundedCoun
     cleanupSourceIds = s.chain.filter(l => !l.activationNegated && s.cards[l.source]!.location.kind === 'spell-trap').map(l => l.source);
     s.chainCleanup = prepareChainCleanup(registry, s, cleanupSourceIds) as Mutable<DuelState>['chainCleanup']; finishCleanup();
   };
-  while (cursor >= 0 && !s.result) {
+  for (const step of prepareCounterLifoSchedule(s.chain)) {
+    cursor = step.linkIndex;
     const l = s.chain[cursor]!;
-    if (l.activationNegated) { emit('skip', l.id, [l.source]); cursor--; continue; }
+    if (step.kind === 'skip') { emit('skip', l.id, [l.source]); continue; }
+    if (step.kind === 'negate') {
+      l.activationNegated = true; emit('negate', l.id, [l.source]); grave(l.source);
+      emit('destroy', s.chain[step.byLinkIndex]!.id, [l.source]); continue;
+    }
     emit('resolve', l.id, [l.source]);
-    if (l.effectId === BOUNDED_SEVEN_CANDIDATE_EFFECT || l.effectId === 'discard-negate-normal-spell-activation') {
-      const previous = s.chain[cursor - 1]; check(previous && l.respondingToLinkId === previous.id, 'Candidate response graph changed');
-      previous.activationNegated = true; emit('negate', previous.id, [previous.source]); grave(previous.source); emit('destroy', l.id, [previous.source]);
-    } else if (l.effectId === 'normal-spell') {
+    if (l.spellSpeed === 3) continue;
+    if (l.effectId === 'normal-spell') {
       const plan = rootPlan(l);
       if (plan.kind === 'choose-destruction') {
         stage = 'root-choice'; s.pendingDecision = { id: decisionId('root-choice'), kind: 'effect-choice', playerId: plan.playerId,
@@ -151,8 +155,9 @@ function run(registry: Registry, entry: DuelState, answers: readonly BoundedCoun
         grave(c.id); emit('destroy', l.id, [c.id]);
       }
     }
-    if (!s.result) cursor--; else cursor = -1;
+    if (s.result) break;
   }
+  if (!s.pendingDecision) cursor = -1;
   if (s.result && entry.chain.length === 1 && s.result.reason !== 'concession') {
     // Preserve existing single-Spell terminal bookkeeping; multi-source terminal
     // never invents a post-game owner order or moves surviving sources.

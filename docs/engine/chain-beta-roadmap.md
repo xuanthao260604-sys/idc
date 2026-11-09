@@ -113,7 +113,9 @@ thay scope hoặc xuất hiện lỗi nền tảng, báo tác động trước k
 C2a đã thêm [validator graph và ledger ứng viên](bounded-counter-candidate.md)
 theo ma trận. [C2b](bounded-counter-dispatcher.md) đã thêm oracle LIFO và
 dispatcher/journal ứng viên, chưa nối gameplay hoặc bật activation mới.
-Mục tiếp theo là C2c — tích hợp phần chung cho pattern cũ, vẫn giữ gate v5.
+Đã thêm [C2c kernel LIFO dùng chung](reviewed-lifo-integration.md) cho các
+pattern đang mở, vẫn giữ gate/frame/behavior v5. Mục tiếp theo sau kiểm
+chứng C2c là C3, bắt đầu bằng review phạm vi mới trước activation/discovery/UI.
 Ước lượng C2–C4 ở mốc C1
 là 7–12 ngày công, cần cập nhật tiếp theo kết quả tích hợp. Chu kỳ làm việc
 lấy 30 phút làm mốc dừng; nếu đang dở tác vụ

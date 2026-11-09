@@ -7,6 +7,7 @@ import { spellResolutionBoard } from './spell-resolution.js';
 import { planResolution } from './effect-plans.js';
 import { chainCleanupDecision } from './chain-cleanup.js';
 import { freeze } from './registry.js';
+import { prepareCounterLifoSchedule } from './counter-lifo-schedule.js';
 import type { Registry } from './registry.js';
 
 // Definition pins from the frozen design. Activation separately requires the active
@@ -135,7 +136,9 @@ export function prepareCounterContinuation(registry:Registry,state:DuelState) {
       &&state.players.find(p=>p.id===l.controllerId)?.graveyard.includes(paid.id),'Discard was not already paid');}
   check(state.players.find(p=>p.id===seven.controllerId)?.lifePoints===seven.costEvents[0]!.details?.afterLP,'LP receipt does not match pre-resolution LP');
   const players=structuredClone(state.players) as Mutable<DuelState['players']>,cards=structuredClone(state.cards);
-  const destroyed=cards[magic.source]!,location=destroyed.location;
+  const negations=prepareCounterLifoSchedule(state.chain).filter(step=>step.kind==='negate');
+  check(negations.length===1&&state.chain[negations[0]!.linkIndex]!.source===magic.source,'Counter continuation schedule drift');
+  const destroyed=cards[state.chain[negations[0]!.linkIndex]!.source]!,location=destroyed.location;
   if(location.kind!=='spell-trap')throw new Error('Validated Counter moved');
   const owner=players.find(p=>p.id===destroyed.ownerId),controller=players.find(p=>p.id===destroyed.controllerId);
   check(owner&&controller&&!owner.graveyard.includes(destroyed.id),'Invalid destroyed Counter destination');

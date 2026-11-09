@@ -7,6 +7,7 @@ import type { SevenLPCostLedger } from './seven-lp-cost-ledger.js';
 import { definitionFingerprint } from './spell-review.js';
 import { resolutionFingerprint } from './resolution-fingerprint.js';
 import { freeze } from './registry.js';
+import { prepareCounterLifoSchedule } from './counter-lifo-schedule.js';
 import type { Registry } from './registry.js';
 
 // Candidate accounting/resolution ONLY. No active review or activation gate uses this ID.
@@ -93,7 +94,7 @@ function prepare(registry:Registry,state:DuelState,reviewed:boolean){
     const controller=players.find(p=>p.id===c.controllerId)!,owner=players.find(p=>p.id===c.ownerId)!;
     controller.spellsTraps[loc.slot]=null;owner.graveyard.push(c.id);c.location={kind:'graveyard',playerId:owner.id};c.controllerId=owner.id;c.position='face-up';
   };
-  destroy(seven.source);destroy(root.source);
+  for(const step of prepareCounterLifoSchedule(state.chain))if(step.kind==='negate')destroy(state.chain[step.linkIndex]!.source);
   const board={players,cards},remainingChain=[structuredClone(magic)];
   const body:Omit<FourLinkCounterCandidateJournal,'integritySha256'>={version:1,kind:reviewed?'normal-spell-magic-seven-seven-v1':'normal-spell-magic-seven-seven-candidate-v1',duelId:state.id,registryRevision:registry.revision,turn,
     capturedStateVersion:state.stateVersion,capturedSequence:state.eventSequence,root:{...structuredClone(root),activationNegated:true},magic:structuredClone(magic),
