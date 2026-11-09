@@ -110,8 +110,9 @@ ngày phát hành khi các phụ thuộc chưa sẵn sàng. C1 cần rà soát l
 ước lượng theo code thực; C4/U1/W1 đều có điểm dừng báo cáo riêng. Nếu
 thay scope hoặc xuất hiện lỗi nền tảng, báo tác động trước khi đổi hướng.
 
-Việc tiếp theo sau C1: C2a — validator graph và ledger ứng viên theo
-[ma trận đã lập](chain-beta-scope.md), chưa bật activation mới. C2–C4 còn
-ước lượng 7–12 ngày công. Tài liệu này chưa thay review active, capability
-hay engine. Chu kỳ làm việc lấy 30 phút làm mốc dừng; nếu đang dở tác vụ
+C2a đã thêm [validator graph và ledger ứng viên](bounded-counter-candidate.md)
+theo ma trận; chưa bật activation mới hoặc thêm resolver. Mục tiếp theo là
+C2b — oracle LIFO và dispatcher/journal ứng viên. Ước lượng C2–C4 ở mốc C1
+là 7–12 ngày công, cần cập nhật tiếp theo kết quả tích hợp. Chu kỳ làm việc
+lấy 30 phút làm mốc dừng; nếu đang dở tác vụ
 tại mốc đó thì hoàn thành tác vụ ấy rồi dừng báo cáo, không mở mục mới.

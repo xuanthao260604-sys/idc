@@ -153,9 +153,9 @@ không công bố một API effect-negation tổng quát chỉ vì có field tro
 
 ## Trình tự triển khai và kiểm chứng
 
-1. C2a: graph validator và ledger ứng viên, oracle LIFO độc lập, không đổi
+1. C2a: graph validator và ledger ứng viên, không đổi
    manifest active. Kiểm mọi số n có thể đạt, owner/copy/zone và biến thể lỗi.
-2. C2b: dispatcher/journal ứng viên cho R4/R5/R6; reuse plan S và cleanup;
+2. C2b: oracle LIFO độc lập và dispatcher/journal ứng viên cho R4/R5/R6; reuse plan S và cleanup;
    pause/resume, terminal/concede, source/board drift. Candidate tests tách
    khỏi gameplay và không được gọi là activation live.
 3. C2c: dùng phần chung cho pattern cũ sau khi đối chiếu behavior/baseline;
@@ -179,8 +179,8 @@ các tương tác khác nhau và bound dài nhất. Ghi bảng coverage thực t
 vì đặt một số test mục tiêu rồi coi số lượng là điều kiện đạt.
 
 Bộ liệt kê thiết kế kiểm được 69 chuỗi owner V cho prefix một T và 69 cho
-hai T, 36 cho ba T (gồm n=0), tổng 174. Đây chỉ là phân bổ owner theo copy/
-zone, chưa xét LP/target/timing và **không phải 174 test đã chạy**. Chuỗi
+hai T, 34 cho ba T (gồm n=0), tổng 172. Đây chỉ là phân bổ owner theo copy/
+zone, chưa xét LP/target/timing và **không phải 172 test hiệu ứng đã chạy**. Chuỗi
 owner có thể có cùng người liên tiếp nhờ đối thủ Pass. Trường hợp sáu V ở
 R4 có 20 phân bổ 3+3, hợp với cả M cùng hoặc khác chủ S. Các số này giúp
 kiểm generator không bỏ trường hợp hoặc sinh fixture vượt ô, không chứng
@@ -238,5 +238,6 @@ ledger v1/v2, cleanup primitive, 11 pins và copy limit trong dữ liệu nhập
 Build và xuất capability hiện hành đạt; capability mới chưa được mở.
 Kiểm phân bổ owner/copy/zone là phép tính kế hoạch, không chạy hiệu ứng.
 Thay đổi chỉ ở tài liệu; không chạy lại full suite hoặc CI cho kế hoạch.
-Tác vụ tiếp theo đã xác định: **C2a — validator graph và ledger ứng viên**.
-Kết thúc C1 rồi dừng báo cáo, chưa chuyển sang viết C2a trong cùng chu kỳ.
+Tại điểm dừng C1, tác vụ tiếp theo là C2a. Chu kỳ sau đã thêm
+[graph/ledger ứng viên C2a](bounded-counter-candidate.md), không đổi gate
+live. Tác vụ kế tiếp: **C2b — oracle LIFO và dispatcher/journal ứng viên**.

@@ -222,7 +222,9 @@ Xem [Windows browser checks](docs/platform/windows-browser-checks.md),
 
 Lộ trình đề xuất hiện hành: [Chain → bộ tạo bài riêng → Windows 11](docs/engine/chain-beta-roadmap.md), gồm mốc beta, tiêu chí đóng Chain và khoảng ước lượng công sức. Đây là kế hoạch, không phải các capability đã triển khai hoặc lịch phát hành đã cam kết.
 
-Đã hoàn tất C1 — [ma trận Chain beta](docs/engine/chain-beta-scope.md): phạm vi, các pattern giữ/mở thêm, ca từ chối, gate review và thứ tự C2a–C4. Active review vẫn v5; chưa mở Counter dài hơn hoặc Chain tổng quát. Mục tiếp theo là validator graph/ledger ứng viên; sau Chain là bộ tạo bài riêng giới hạn và Windows 11 desktop.
+Đã hoàn tất C1 — [ma trận Chain beta](docs/engine/chain-beta-scope.md): phạm vi, các pattern giữ/mở thêm, ca từ chối, gate review và thứ tự C2a–C4. Active review vẫn v5; chưa mở Counter dài hơn hoặc Chain tổng quát. Sau Chain là bộ tạo bài riêng giới hạn và Windows 11 desktop.
+
+Đã thêm C2a — [graph Counter và ledger phí ứng viên](docs/engine/bounded-counter-candidate.md): kiểm grammar/pin/nguồn/copy/ô, tối đa sáu receipt Seven và phân biệt history với current-board binding. 524 ca thành phần mới, không phải activation live; gate v5, dữ liệu và capability giữ nguyên. Mục kế tiếp là C2b: oracle LIFO và dispatcher/journal ứng viên.
 
 Đã hoàn tất [xây/lưu deck](docs/beta/deck-builder.md); đã hoàn tất [mở rộng 20 → 30](docs/data/classic-30.md).
 Online và trình tạo bài riêng là các mục chưa triển khai. Nhánh work đã được commit/push theo phép người dùng; chưa phát hành beta.
