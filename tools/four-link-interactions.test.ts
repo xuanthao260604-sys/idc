@@ -88,5 +88,7 @@ function run(f:Fixture,reverseFirst:boolean,withAdapter=false){
 describe('four-link sequential interactions, recovery and insufficient later costs',()=>{
   it.each(['a','b'].flatMap(actor=>[false,true].flatMap(selfMagic=>[false,true].flatMap(selfFirst=>[false,true].flatMap(negateHeal=>[false,true].map(reverse=>({actor,selfMagic,selfFirst,negateHeal,reverse})))))))(
     '$actor MagicSelf=$selfMagic firstSelf=$selfFirst negatedHeal=$negateHeal reverse=$reverse',o=>{run(setupFourLinkInteractions(registry,o.actor,o.selfMagic,o.selfFirst,o.negateHeal),o.reverse);});
-  it.each(['a','b'].flatMap(actor=>[false,true].map(negateHeal=>({actor,negateHeal}))))('adapter $actor negatedHeal=$negateHeal',o=>{run(setupFourLinkInteractions(registry,o.actor,o.actor==='b',true,o.negateHeal),true,true);});
+  // Full multi-turn adapter journeys validate/discover real actions repeatedly;
+  // Windows CI contention can exceed Vitest's default 5s without an assertion failure.
+  it.each(['a','b'].flatMap(actor=>[false,true].map(negateHeal=>({actor,negateHeal}))))('adapter $actor negatedHeal=$negateHeal',o=>{run(setupFourLinkInteractions(registry,o.actor,o.actor==='b',true,o.negateHeal),true,true);},10000);
 });

@@ -116,5 +116,6 @@ function run(f:Fixture,reverseFirst:boolean,withAdapter=false){
 describe('Seven versus Seven across recovery, new turns and distinct payers',()=>{
   it.each(['a','b'].flatMap(actor=>(['main1','main2']as const).flatMap(phase=>[false,true].flatMap(reverse=>[false,true].map(negateHeal=>({actor,phase,reverse,negateHeal}))))))(
     '$actor $phase reverse=$reverse negatedHeal=$negateHeal',o=>{run(setupSevenResponseInteractions(registry,o.actor,o.negateHeal,o.phase),o.reverse);});
-  it.each(['a','b'].flatMap(actor=>[false,true].map(negateHeal=>({actor,negateHeal}))))('adapter $actor negatedHeal=$negateHeal',o=>{run(setupSevenResponseInteractions(registry,o.actor,o.negateHeal),true,true);});
+  // Keep every command/assertion; give the long adapter journey explicit CI headroom.
+  it.each(['a','b'].flatMap(actor=>[false,true].map(negateHeal=>({actor,negateHeal}))))('adapter $actor negatedHeal=$negateHeal',o=>{run(setupSevenResponseInteractions(registry,o.actor,o.negateHeal),true,true);},10000);
 });

@@ -106,9 +106,25 @@ nguyên byte. Interpreter C2b cũng đổi sang kernel chung, giữ API và kế
 Không chạy lại browser Linux trong mốc này; bằng chứng Linux hiện hành là
 unit/integration/typecheck/build/data, không cộng số browser lịch sử.
 
-CI Windows/Ubuntu chờ xác nhận source. Artifact Windows phải đúng source
-và giữ facts của 102 browser report; không dùng việc Linux đạt thay bằng
-chứng Windows. Windows 11 desktop vẫn chưa chạy; chưa đóng gói/bàn giao beta.
+Run đầu [42589352298](https://github.com/xuanthao260604-sys/idc/actions/runs/42589352298)
+trên `b5beedf`: Ubuntu đạt 4832 test/63 file, Windows đạt 4831 ca nhưng một
+adapter `four-link-interactions` negatedHeal bị timeout mặc định 5000ms
+(log ghi 5278ms). 163 ca migration đều đạt trên Windows; chưa chạy browser
+vì bộ tổng hợp dừng ở bước unit. Không coi run này là Windows đạt.
+
+Các ca adapter hai suite four-link/seven-response chạy khoảng 4–5,3 giây
+trên cùng runner. Đã đặt riêng timeout 10 giây cho tám ca adapter dài của
+hai suite đó, không đổi timeout toàn cục, số ca, command, invariant hoặc
+assertion. Đây là budget chạy integration dưới contention, không phải SLA
+phản hồi game. Source sau điều chỉnh cần chạy lại đầy đủ CI và đọc artifact.
+Local đã chạy lại đủ hai suite liên quan: 56/56 ca đạt sau điều chỉnh.
+Artifact lỗi `windows-validation-42589352298-1` (ID `13661270647`) có
+status failed tại tests, 107 bước còn lại not-run; checksum ZIP khớp
+metadata. Không trộn artifact dở này với run hoàn chỉnh sau đó.
+
+Artifact Windows phải đúng source và giữ facts của 102 browser report;
+không dùng việc Linux đạt thay bằng chứng Windows. Windows 11 desktop
+vẫn chưa chạy; chưa đóng gói/bàn giao beta.
 
 ## Điểm dừng
 
