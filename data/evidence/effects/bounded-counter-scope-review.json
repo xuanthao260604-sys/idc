@@ -1,0 +1,1095 @@
+{
+  "schemaVersion": 1,
+  "status": "design-reviewed-not-enabled",
+  "reviewedOn": "2026-11-10",
+  "basedOnCommit": "da61c010d9346ecd36d32108cf15d0e09afb70f2",
+  "format": {
+    "id": "goat-2005-08-17",
+    "revision": 4
+  },
+  "runtimeEnabled": false,
+  "historicalPrintedTextReview": "pending",
+  "activationImplementation": "not-started",
+  "effectTestsForNewScope": "not-run",
+  "existingInfrastructure": "C2a candidate graph/ledger, C2b candidate interpreter and C2c shared LIFO in v5; not new-scope activations.",
+  "activeBaseline": {
+    "sevenReviewPath": "data/reviews/seven-tools-v5.effects.json",
+    "sevenRevision": 5,
+    "testedSource": "898b29c2c603f4fb017b3a50cbb01369af4ea84e",
+    "ciRunId": 42590265485,
+    "tests": 4832,
+    "files": 63,
+    "windowsSteps": 112,
+    "windowsBrowserReports": 102,
+    "windows11DesktopVerified": false
+  },
+  "proposal": {
+    "cardId": "official:03819470",
+    "definitionSha256": "2dbc5c07956ac97d58b2f449898bf2d73bd0488578b9c69c0fadd5e468accbc0",
+    "revision": 6,
+    "scope": "counter-trap-reviewed-bounded-patterns-v6",
+    "continuation": "reviewed-bounded-counter-patterns-v6",
+    "handler": "pay-1000-negate-trap-hole-activation",
+    "activeFileNotCreated": "data/reviews/seven-tools-v6.effects.json"
+  },
+  "grammar": {
+    "spellFamily": {
+      "rootSpellIds": [
+        "official:19523799",
+        "official:25880422",
+        "official:26412047",
+        "official:46130346",
+        "official:55144522",
+        "official:66788016",
+        "official:74848038",
+        "official:79759861",
+        "official:82828051",
+        "official:84257639",
+        "official:97169186"
+      ],
+      "sevenMin": 0,
+      "sevenMax": 6,
+      "maxLinks": 8
+    },
+    "trapFamily": {
+      "trapMin": 1,
+      "trapMax": 3,
+      "sevenMin": 0,
+      "sevenMax": 6,
+      "maxLinks": 8,
+      "sameSummonOccurrence": true
+    },
+    "limits": {
+      "players": 2,
+      "sevenCopiesPerOwner": 3,
+      "trapCopiesPerOwner": 3,
+      "spellTrapSlotsPerPlayer": 5
+    },
+    "phases": [
+      "main1",
+      "main2"
+    ],
+    "summonMethods": [
+      "normal",
+      "tribute",
+      "flip"
+    ]
+  },
+  "cardPins": [
+    {
+      "cardId": "official:03819470",
+      "name": "Seven Tools of the Bandit",
+      "definitionSha256": "2dbc5c07956ac97d58b2f449898bf2d73bd0488578b9c69c0fadd5e468accbc0",
+      "definitionRevision": 1,
+      "maxCopies": 3
+    },
+    {
+      "cardId": "official:04206964",
+      "name": "Trap Hole",
+      "definitionSha256": "6bde121e8b1b4409e34d907b2d9e9d5ba5df93676a46507d205cd6d96372d35d",
+      "definitionRevision": 1,
+      "maxCopies": 3
+    },
+    {
+      "cardId": "official:19523799",
+      "name": "Ookazi",
+      "definitionSha256": "834b4eee8335d5e15da679820bd89d728327b5b7f2dee1dd9be895a7e0180bac",
+      "definitionRevision": 1,
+      "maxCopies": 3
+    },
+    {
+      "cardId": "official:25880422",
+      "name": "Block Attack",
+      "definitionSha256": "93aa075ddd05f9f30b3e03f045c8720aa065ff3684a2b7d0590987d02912a3d5",
+      "definitionRevision": 1,
+      "maxCopies": 3
+    },
+    {
+      "cardId": "official:26412047",
+      "name": "Hammer Shot",
+      "definitionSha256": "e99e146fddebbfb918c468a94b3bb6608ac00c0cc75770602018ce331de14c5e",
+      "definitionRevision": 1,
+      "maxCopies": 3
+    },
+    {
+      "cardId": "official:46130346",
+      "name": "Hinotama",
+      "definitionSha256": "7db0e22ab9c746643d0e9191e45f84f8f76b6b2cdd9999016194be4e4b06b459",
+      "definitionRevision": 1,
+      "maxCopies": 3
+    },
+    {
+      "cardId": "official:55144522",
+      "name": "Pot of Greed",
+      "definitionSha256": "e267b070ff9477b340042761d189b221e471910a10cf9571ce4a770db22e7909",
+      "definitionRevision": 1,
+      "maxCopies": 1
+    },
+    {
+      "cardId": "official:66788016",
+      "name": "Fissure",
+      "definitionSha256": "73cf26b24c8c287ab9c2c87c881e8b52f9cf4d821c405b55cbefe8941b8e77f0",
+      "definitionRevision": 1,
+      "maxCopies": 3
+    },
+    {
+      "cardId": "official:74848038",
+      "name": "Monster Reincarnation",
+      "definitionSha256": "655ceb62f07b6e19eb30a85ac5c6aac097af16e68bd7fb25175118d2da496f15",
+      "definitionRevision": 1,
+      "maxCopies": 3
+    },
+    {
+      "cardId": "official:77414722",
+      "name": "Magic Jammer",
+      "definitionSha256": "dcbfa15ffcecc32dd594e2794ab516642bc5ede743942717406b95f955e946bf",
+      "definitionRevision": 1,
+      "maxCopies": 3
+    },
+    {
+      "cardId": "official:79759861",
+      "name": "Tribute to The Doomed",
+      "definitionSha256": "788c8981799ec84ae6e5837e6933cfb3b650df4f7031ee666aa70908bc283604",
+      "definitionRevision": 1,
+      "maxCopies": 3
+    },
+    {
+      "cardId": "official:82828051",
+      "name": "Earthquake",
+      "definitionSha256": "6dafa3956a9454679c400e0b7e086ccc74599bc6f16ddb964de86a6af5f58c01",
+      "definitionRevision": 1,
+      "maxCopies": 3
+    },
+    {
+      "cardId": "official:84257639",
+      "name": "Dian Keto the Cure Master",
+      "definitionSha256": "e9fafe2761bde56cd0a75bd820de9bbcbe173a944e92254cf6380e8fbf97fdbb",
+      "definitionRevision": 1,
+      "maxCopies": 3
+    },
+    {
+      "cardId": "official:97169186",
+      "name": "Smashing Ground",
+      "definitionSha256": "7743be5806f0fc8b856f8061701ffffe77e47831f1752da6ca604fe8201c450c",
+      "definitionRevision": 1,
+      "maxCopies": 3
+    }
+  ],
+  "sources": [
+    {
+      "id": "source-01",
+      "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4863&request_locale=en",
+      "sourceKind": "official-current",
+      "accessedOn": "2026-10-29",
+      "checkedOn": "2026-11-10",
+      "sha256": "0fa7aeda482c7792e98dd9bca18bcef5f0ac675a1f7140b83dd530edd17d09da",
+      "bytes": 148891,
+      "provenance": {
+        "kind": "review-source",
+        "path": "data/evidence/effects/seven-tools-scope-review.json",
+        "sourceId": "card-text"
+      },
+      "notes": "Retained raw snapshot re-read locally; original retrieval date retained. This hash does not authenticate a historical publisher.",
+      "rawPath": "data/raw/konami/0fa7aeda482c7792e98dd9bca18bcef5f0ac675a1f7140b83dd530edd17d09da.html"
+    },
+    {
+      "id": "source-02",
+      "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+      "sourceKind": "archive",
+      "accessedOn": "2026-11-10",
+      "checkedOn": "2026-11-10",
+      "sha256": "d02c016334f65c98a9fe900ae0b2630a3de63f63e330426ab07c55d9466dc61a",
+      "bytes": 681725,
+      "provenance": {
+        "kind": "review-source",
+        "path": "data/evidence/effects/seven-tools-scope-review.json",
+        "sourceId": "v5"
+      },
+      "notes": "Fetched again on 2026-11-10; SHA-256 and byte count match the earlier reviewed PDF. Binary retained in review cache only. Match establishes consistency, not publisher authenticity.",
+      "cacheFile": "rulebook-v05.pdf"
+    },
+    {
+      "id": "source-03",
+      "url": "https://www.yugioh-card.com/en/downloads/rulebook/SD_RuleBook_EN_10.pdf",
+      "sourceKind": "official-current",
+      "accessedOn": "2026-11-10",
+      "checkedOn": "2026-11-10",
+      "sha256": "82be14641b2b7940467034a5b14b0d4037835831866537738d34fd9df5a0f444",
+      "bytes": 3415528,
+      "provenance": {
+        "kind": "review-source",
+        "path": "data/evidence/effects/seven-tools-scope-review.json",
+        "sourceId": "current-book"
+      },
+      "notes": "Fetched again on 2026-11-10; SHA-256 and byte count match the earlier reviewed PDF. Binary retained in review cache only. Match establishes consistency, not publisher authenticity.",
+      "cacheFile": "current-rulebook.pdf"
+    },
+    {
+      "id": "source-04",
+      "url": "https://www.goatformat.com/basics.html",
+      "sourceKind": "community",
+      "accessedOn": "2026-10-27",
+      "checkedOn": "2026-11-10",
+      "sha256": "c4ce900ab808c269392a84a4a077970ec39ac30a4d937d63689ffc0cae3213d0",
+      "bytes": 136366,
+      "provenance": {
+        "kind": "review-source",
+        "path": "data/evidence/effects/seven-tools-scope-review.json",
+        "sourceId": "goat-basics"
+      },
+      "notes": "Retained raw snapshot re-read locally; original retrieval date retained. This hash does not authenticate a historical publisher.",
+      "rawPath": "data/raw/goatformat/c4ce900ab808c269392a84a4a077970ec39ac30a4d937d63689ffc0cae3213d0.html"
+    },
+    {
+      "id": "source-05",
+      "url": "https://www.goatformat.com/rulings4.html",
+      "sourceKind": "community",
+      "accessedOn": "2026-10-29",
+      "checkedOn": "2026-11-10",
+      "sha256": "8966dc9f578cdc28ef09f653c73ebf955a58548698e5aa43d624552e43e1ddff",
+      "bytes": 147775,
+      "provenance": {
+        "kind": "review-source",
+        "path": "data/evidence/effects/seven-tools-scope-review.json",
+        "sourceId": "goat-rulings4"
+      },
+      "notes": "Retained raw snapshot re-read locally; original retrieval date retained. This hash does not authenticate a historical publisher.",
+      "rawPath": "data/raw/goatformat/8966dc9f578cdc28ef09f653c73ebf955a58548698e5aa43d624552e43e1ddff.html"
+    },
+    {
+      "id": "source-06",
+      "url": "https://www.goatformat.com/rulings7.html",
+      "sourceKind": "community",
+      "accessedOn": "2026-10-29",
+      "checkedOn": "2026-11-10",
+      "sha256": "caf0bf7d4f89887a630d99caef888574d63253c5e2b67f3eb96131804e70ab62",
+      "bytes": 291636,
+      "provenance": {
+        "kind": "review-source",
+        "path": "data/evidence/effects/seven-tools-scope-review.json",
+        "sourceId": "goat-rulings7"
+      },
+      "notes": "Retained raw snapshot re-read locally; original retrieval date retained. This hash does not authenticate a historical publisher.",
+      "rawPath": "data/raw/goatformat/caf0bf7d4f89887a630d99caef888574d63253c5e2b67f3eb96131804e70ab62.html"
+    },
+    {
+      "id": "source-07",
+      "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=4&cid=4863&request_locale=ja",
+      "sourceKind": "official-current",
+      "accessedOn": "2026-10-29",
+      "checkedOn": "2026-11-10",
+      "sha256": "43cc4589b7f32d969d8b79c60cf1d8255b1c9d83ccc7f1f801191bf1cdb589dd",
+      "bytes": 90398,
+      "provenance": {
+        "kind": "review-source",
+        "path": "data/evidence/effects/seven-tools-scope-review.json",
+        "sourceId": "current-faq"
+      },
+      "notes": "Retained raw snapshot re-read locally; original retrieval date retained. This hash does not authenticate a historical publisher.",
+      "rawPath": "data/raw/konami/43cc4589b7f32d969d8b79c60cf1d8255b1c9d83ccc7f1f801191bf1cdb589dd.html"
+    },
+    {
+      "id": "source-08",
+      "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4862&request_locale=en",
+      "sourceKind": "official-current",
+      "accessedOn": "2026-10-27",
+      "checkedOn": "2026-11-10",
+      "sha256": "c845de6762ad7f9dce7f1f229a3af767c313b6a1d5e455f9ebc01be5a8220ab3",
+      "bytes": 147299,
+      "provenance": {
+        "kind": "review-source",
+        "path": "data/evidence/effects/counter-to-counter-scope-review.json",
+        "sourceId": "magic-text"
+      },
+      "notes": "Retained raw snapshot re-read locally; original retrieval date retained. This hash does not authenticate a historical publisher.",
+      "rawPath": "data/raw/konami/c845de6762ad7f9dce7f1f229a3af767c313b6a1d5e455f9ebc01be5a8220ab3.html"
+    },
+    {
+      "id": "source-09",
+      "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=5&fid=206&request_locale=ja",
+      "sourceKind": "official-current",
+      "accessedOn": "2026-10-30",
+      "checkedOn": "2026-11-10",
+      "sha256": "ea4cdb39493bfbb62f0a91905f214a4a778c0d3e2adb5ef29664f190585f1488",
+      "bytes": 86268,
+      "provenance": {
+        "kind": "review-source",
+        "path": "data/evidence/effects/counter-chain-cleanup-order-review.json",
+        "sourceId": "konami-206"
+      },
+      "notes": "Retained raw snapshot re-read locally; original retrieval date retained. This hash does not authenticate a historical publisher.",
+      "rawPath": "data/raw/konami/ea4cdb39493bfbb62f0a91905f214a4a778c0d3e2adb5ef29664f190585f1488.html"
+    },
+    {
+      "id": "source-10",
+      "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=5&fid=11538&request_locale=ja",
+      "sourceKind": "official-current",
+      "accessedOn": "2026-10-30",
+      "checkedOn": "2026-11-10",
+      "sha256": "85f33be424da2515ef002286919a050c16ac8ab25ddc854b578eb274b2020bdb",
+      "bytes": 85049,
+      "provenance": {
+        "kind": "review-source",
+        "path": "data/evidence/effects/counter-chain-cleanup-order-review.json",
+        "sourceId": "konami-11538"
+      },
+      "notes": "Retained raw snapshot re-read locally; original retrieval date retained. This hash does not authenticate a historical publisher.",
+      "rawPath": "data/raw/konami/85f33be424da2515ef002286919a050c16ac8ab25ddc854b578eb274b2020bdb.html"
+    },
+    {
+      "id": "source-11",
+      "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=5&fid=6880&request_locale=ja",
+      "sourceKind": "official-current",
+      "accessedOn": "2026-10-30",
+      "checkedOn": "2026-11-10",
+      "sha256": "f91430de01f0eb9f833918786fc30063c977fcd4f1f47cc195dc1616a8fd9b2c",
+      "bytes": 89557,
+      "provenance": {
+        "kind": "review-source",
+        "path": "data/evidence/effects/counter-chain-cleanup-order-review.json",
+        "sourceId": "konami-6880"
+      },
+      "notes": "Retained raw snapshot re-read locally; original retrieval date retained. This hash does not authenticate a historical publisher.",
+      "rawPath": "data/raw/konami/f91430de01f0eb9f833918786fc30063c977fcd4f1f47cc195dc1616a8fd9b2c.html"
+    },
+    {
+      "id": "source-12",
+      "url": "https://www.c-labo.jp/blog/176900/",
+      "sourceKind": "community",
+      "accessedOn": "2026-10-30",
+      "checkedOn": "2026-11-10",
+      "sha256": "1bf862db248a13b92dded48a711401c971ffe84af5ec573993a50e7a4edfe63f",
+      "bytes": 77134,
+      "provenance": {
+        "kind": "review-source",
+        "path": "data/evidence/effects/counter-chain-cleanup-order-review.json",
+        "sourceId": "c-labo"
+      },
+      "notes": "Retained raw snapshot re-read locally; original retrieval date retained. This hash does not authenticate a historical publisher.",
+      "rawPath": "data/raw/c-labo/1bf862db248a13b92dded48a711401c971ffe84af5ec573993a50e7a4edfe63f.html"
+    },
+    {
+      "id": "source-13",
+      "url": "https://yugioh-wiki.net/index.php?%CA%E8%C3%CF",
+      "sourceKind": "community",
+      "accessedOn": "2026-10-30",
+      "checkedOn": "2026-11-10",
+      "sha256": "22ba33b040c0f7e8384d97ea6d8e46cf3fb6d5ab28c682a01640a95c31627545",
+      "bytes": 80386,
+      "provenance": {
+        "kind": "review-source",
+        "path": "data/evidence/effects/counter-chain-cleanup-order-review.json",
+        "sourceId": "wiki-graveyard"
+      },
+      "notes": "Retained raw snapshot re-read locally; original retrieval date retained. This hash does not authenticate a historical publisher.",
+      "rawPath": "data/raw/yugioh-wiki/22ba33b040c0f7e8384d97ea6d8e46cf3fb6d5ab28c682a01640a95c31627545.html"
+    },
+    {
+      "id": "source-14",
+      "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4836&request_locale=en",
+      "sourceKind": "official-current",
+      "accessedOn": "2026-11-10",
+      "checkedOn": "2026-11-10",
+      "sha256": "6255c0545d75981eb8ffb112924fad483715f269e954f03e63e6a3484b85fe85",
+      "bytes": 192242,
+      "rawPath": "data/raw/konami/6255c0545d75981eb8ffb112924fad483715f269e954f03e63e6a3484b85fe85.html",
+      "provenance": {
+        "kind": "fresh-source"
+      },
+      "notes": "Fresh current-reference HTML. The old card evidence hash is not present as raw HTML in the recovered checkout. Keep old evidence/bundles untouched; this snapshot confirms the same current Trap Hole wording, not original 2005 printing."
+    }
+  ],
+  "quotations": [
+    {
+      "id": "seven-v5-0",
+      "reusedFrom": {
+        "path": "data/reviews/seven-tools-v5.effects.json",
+        "reviewIndex": 0,
+        "evidenceIndex": 0
+      },
+      "evidence": {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4863&request_locale=en",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "official-current",
+        "quotation": "When a Trap Card is activated: Pay 1000 LP; negate the activation, and if you do, destroy it.",
+        "historicalApplicability": "Current reference semantics. No original printed-text verification. Corroborate the activation/effect distinction with the curated Goat Seven Tools ruling."
+      },
+      "sourceId": "source-01"
+    },
+    {
+      "id": "seven-v5-1",
+      "reusedFrom": {
+        "path": "data/reviews/seven-tools-v5.effects.json",
+        "reviewIndex": 0,
+        "evidenceIndex": 1
+      },
+      "evidence": {
+        "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "archive",
+        "quotation": "The effects are then resolved, starting at the top link and working down to the Chain Link 1 at the bottom.",
+        "historicalApplicability": "Period baseline for reverse resolution; does not establish every individual card ruling."
+      },
+      "sourceId": "source-02"
+    },
+    {
+      "id": "seven-v5-2",
+      "reusedFrom": {
+        "path": "data/reviews/seven-tools-v5.effects.json",
+        "reviewIndex": 0,
+        "evidenceIndex": 2
+      },
+      "evidence": {
+        "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "archive",
+        "quotation": "the same player can play consecutive cards if their opponent does not respond",
+        "historicalApplicability": "Period baseline for responding to one’s own Trap after the opponent declines; response priority is still checked."
+      },
+      "sourceId": "source-02"
+    },
+    {
+      "id": "seven-v5-3",
+      "reusedFrom": {
+        "path": "data/reviews/seven-tools-v5.effects.json",
+        "reviewIndex": 0,
+        "evidenceIndex": 3
+      },
+      "evidence": {
+        "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "archive",
+        "quotation": "Only another Spell Speed 3 card may be used against these cards.",
+        "historicalApplicability": "Counter Trap baseline. Speed alone does not satisfy a responding card activation condition. Counter-to-counter responses can be legal, but are outside the proposed first scope."
+      },
+      "sourceId": "source-02"
+    },
+    {
+      "id": "seven-v5-4",
+      "reusedFrom": {
+        "path": "data/reviews/seven-tools-v5.effects.json",
+        "reviewIndex": 0,
+        "evidenceIndex": 4
+      },
+      "evidence": {
+        "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "archive",
+        "quotation": "These cards can be used against a card with a Spell Speed of 1 or 2.",
+        "historicalApplicability": "Normal Trap is listed in this section. Preserve the existing speed-2 Trap Hole behavior; do not allow it to respond to speed 3."
+      },
+      "sourceId": "source-02"
+    },
+    {
+      "id": "seven-v5-5",
+      "reusedFrom": {
+        "path": "data/reviews/seven-tools-v5.effects.json",
+        "reviewIndex": 0,
+        "evidenceIndex": 5
+      },
+      "evidence": {
+        "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "archive",
+        "quotation": "Paying a cost means an action like discarding or sending a card to the Graveyard from your hand, or paying Life Points, in order to Summon a monster or activate an effect. You have to pay any costs before you declare the activation of the card.",
+        "historicalApplicability": "Period baseline that paying LP can be a cost; the specific fixed amount comes from Seven Tools current reference text."
+      },
+      "sourceId": "source-02"
+    },
+    {
+      "id": "seven-v5-6",
+      "reusedFrom": {
+        "path": "data/reviews/seven-tools-v5.effects.json",
+        "reviewIndex": 0,
+        "evidenceIndex": 6
+      },
+      "evidence": {
+        "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "archive",
+        "quotation": "Even if the activation of the card is negated, you cannot get a refund of the cost that you have paid.",
+        "historicalApplicability": "Already paid costs remain paid. First scope does not implement a further Counter negating Seven Tools; no-refund remains a requirement for any later extension."
+      },
+      "sourceId": "source-02"
+    },
+    {
+      "id": "seven-v5-8",
+      "reusedFrom": {
+        "path": "data/reviews/seven-tools-v5.effects.json",
+        "reviewIndex": 0,
+        "evidenceIndex": 8
+      },
+      "evidence": {
+        "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "archive",
+        "quotation": "For an effect that targets a card, you select the target that you would like and then activate the effect.",
+        "historicalApplicability": "Baseline distinction between choosing a card target and recording the Chain link being answered. Seven Tools non-targeting design is a semantic reading of current reference text/direct-chain supplement, not a quotation explicitly stating that property."
+      },
+      "sourceId": "source-02"
+    },
+    {
+      "id": "seven-v5-9",
+      "reusedFrom": {
+        "path": "data/reviews/seven-tools-v5.effects.json",
+        "reviewIndex": 0,
+        "evidenceIndex": 9
+      },
+      "evidence": {
+        "url": "https://www.yugioh-card.com/en/downloads/rulebook/SD_RuleBook_EN_10.pdf",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "official-current",
+        "quotation": "Before you can activate a Trap Card, you must Set it on the field first.",
+        "historicalApplicability": "Current common Trap baseline under the selected Goat policy. No hand-activation exception is enabled."
+      },
+      "sourceId": "source-03"
+    },
+    {
+      "id": "seven-v5-10",
+      "reusedFrom": {
+        "path": "data/reviews/seven-tools-v5.effects.json",
+        "reviewIndex": 0,
+        "evidenceIndex": 10
+      },
+      "evidence": {
+        "url": "https://www.yugioh-card.com/en/downloads/rulebook/SD_RuleBook_EN_10.pdf",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "official-current",
+        "quotation": "You cannot activate a Trap in the same turn that you Set it, but you can activate it at any time after that",
+        "historicalApplicability": "Read together with each Trap condition and response priority; not permission to activate Seven Tools at arbitrary timing."
+      },
+      "sourceId": "source-03"
+    },
+    {
+      "id": "seven-v5-11",
+      "reusedFrom": {
+        "path": "data/reviews/seven-tools-v5.effects.json",
+        "reviewIndex": 0,
+        "evidenceIndex": 11
+      },
+      "evidence": {
+        "url": "https://www.goatformat.com/basics.html",
+        "accessedOn": "2026-10-27",
+        "sourceKind": "community",
+        "quotation": "if a general rule is not explicitly listed here is being different in Goat Format, you can assume that it works the exact same way as it does in the current format.",
+        "historicalApplicability": "Existing community policy adopted by the project; retain its editorial caveat about recent rule changes."
+      },
+      "sourceId": "source-04"
+    },
+    {
+      "id": "seven-v5-12",
+      "reusedFrom": {
+        "path": "data/reviews/seven-tools-v5.effects.json",
+        "reviewIndex": 0,
+        "evidenceIndex": 12
+      },
+      "evidence": {
+        "url": "https://www.goatformat.com/rulings4.html",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "community",
+        "quotation": "They cannot choose to pay if it would make their Life Points become 0.",
+        "historicalApplicability": "Community transcription of a period LP-payment rule. This is an Imperial Order example, not a Seven Tools-specific original bulletin; combine with the activation-cost example and Seven Tools fixed 1000 cost."
+      },
+      "sourceId": "source-05"
+    },
+    {
+      "id": "seven-v5-13",
+      "reusedFrom": {
+        "path": "data/reviews/seven-tools-v5.effects.json",
+        "reviewIndex": 0,
+        "evidenceIndex": 13
+      },
+      "evidence": {
+        "url": "https://www.goatformat.com/rulings4.html",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "community",
+        "quotation": "“Injection Fairy Lily’s” effect may not be activated if the controller’s Life Points are at or below 2000.",
+        "historicalApplicability": "Period activation-cost example corroborating that an exact fixed LP cost cannot be paid down to zero. Derive Seven Tools minimum 1001 from its fixed 1000 cost; do not enable Lily or its battle effect."
+      },
+      "sourceId": "source-05"
+    },
+    {
+      "id": "seven-v5-14",
+      "reusedFrom": {
+        "path": "data/reviews/seven-tools-v5.effects.json",
+        "reviewIndex": 0,
+        "evidenceIndex": 14
+      },
+      "evidence": {
+        "url": "https://www.goatformat.com/rulings7.html",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "community",
+        "quotation": "“Seven Tools of the Bandit” may not be activated in a chain to the use of an effect of a continuous Trap that has already been activated, like “Ultimate Offering.”",
+        "historicalApplicability": "Curated period distinction between Trap card activation and a previously active Continuous Trap effect. Ultimate Offering and Continuous Trap handling remain unsupported."
+      },
+      "sourceId": "source-06"
+    },
+    {
+      "id": "seven-v5-15",
+      "reusedFrom": {
+        "path": "data/reviews/seven-tools-v5.effects.json",
+        "reviewIndex": 0,
+        "evidenceIndex": 15
+      },
+      "evidence": {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=4&cid=4863&request_locale=ja",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "official-current",
+        "quotation": "■自分または相手の罠カードのカードの発動に直接チェーンして発動するカードです。（カードの発動を伴わない、罠カードの効果の発動にチェーンして発動することはできません。）",
+        "historicalApplicability": "Current OCG corroboration: directly chain to one’s own or the opponent’s Trap card activation, not an effect activation without card activation. Not asserted as original TCG 2005 wording."
+      },
+      "sourceId": "source-07"
+    },
+    {
+      "id": "seven-v5-26",
+      "reusedFrom": {
+        "path": "data/reviews/seven-tools-v5.effects.json",
+        "reviewIndex": 0,
+        "evidenceIndex": 26
+      },
+      "evidence": {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4862&request_locale=en",
+        "accessedOn": "2026-10-27",
+        "sourceKind": "official-current",
+        "quotation": "When a Spell Card is activated: Discard 1 card; negate the activation, and if you do, destroy it.",
+        "historicalApplicability": "Current reference semantics, cross-checked with the curated Goat Magic Jammer entries. Not an original printed-text verification."
+      },
+      "sourceId": "source-08"
+    },
+    {
+      "id": "seven-v5-27",
+      "reusedFrom": {
+        "path": "data/reviews/seven-tools-v5.effects.json",
+        "reviewIndex": 0,
+        "evidenceIndex": 27
+      },
+      "evidence": {
+        "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+        "accessedOn": "2026-10-30",
+        "sourceKind": "archive",
+        "quotation": "Counter trap used against Chain Link 3.",
+        "historicalApplicability": "Period example explicitly includes a Counter Trap responding to a previous Counter Trap. It does not itself identify Seven Tools or prove every speed-3 response is legal."
+      },
+      "sourceId": "source-02"
+    },
+    {
+      "id": "seven-v5-28",
+      "reusedFrom": {
+        "path": "data/reviews/seven-tools-v5.effects.json",
+        "reviewIndex": 0,
+        "evidenceIndex": 28
+      },
+      "evidence": {
+        "url": "https://www.goatformat.com/rulings7.html",
+        "accessedOn": "2026-10-29",
+        "sourceKind": "community",
+        "quotation": "Spell and Trap Cards remain on the field until the entire chain resolves, unless destroyed by a card effect during the chain.",
+        "historicalApplicability": "Community transcription of a period FAQ, not an authenticated original UDE bulletin. Distinguishes normal Chain-end cleanup from Magic Jammer destroyed immediately by Seven Tools. Stamping Destruction remains unsupported."
+      },
+      "sourceId": "source-06"
+    },
+    {
+      "id": "seven-v5-29",
+      "reusedFrom": {
+        "path": "data/reviews/seven-tools-v5.effects.json",
+        "reviewIndex": 0,
+        "evidenceIndex": 29
+      },
+      "evidence": {
+        "url": "https://www.yugioh-card.com/en/downloads/rulebook/SD_RuleBook_EN_10.pdf",
+        "accessedOn": "2026-10-30",
+        "sourceKind": "official-current",
+        "quotation": "Then the effect of “Heavy Storm” (Chain Link 1) is resolved successfully, destroying all Spell and Trap Cards on the field,",
+        "historicalApplicability": "Current official three-link example corroborates that negating link 2 does not negate link 1. The example uses a Normal Trap, not Magic Jammer; counter-to-counter applicability is derived with the archived speed diagram and Seven Tools Trap activation condition. Example cards remain outside runtime."
+      },
+      "sourceId": "source-03"
+    },
+    {
+      "id": "seven-v5-30",
+      "reusedFrom": {
+        "path": "data/reviews/seven-tools-v5.effects.json",
+        "reviewIndex": 0,
+        "evidenceIndex": 30
+      },
+      "evidence": {
+        "url": "https://www.yugioh-card.com/en/downloads/rulebook/SD_RuleBook_EN_10.pdf",
+        "accessedOn": "2026-10-30",
+        "sourceKind": "official-current",
+        "quotation": "The order of the cards in the Graveyard should not be changed.",
+        "historicalApplicability": "Current official baseline for preserving Graveyard order. This statement does not specify the relative order of multiple Spell/Trap sources placed in the Graveyard at Chain end; that implementation check remains pending."
+      },
+      "sourceId": "source-03"
+    },
+    {
+      "id": "seven-v5-32",
+      "reusedFrom": {
+        "path": "data/reviews/seven-tools-v5.effects.json",
+        "reviewIndex": 0,
+        "evidenceIndex": 32
+      },
+      "evidence": {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=5&fid=206&request_locale=ja",
+        "accessedOn": "2026-10-30",
+        "sourceKind": "official-current",
+        "quotation": "一つの効果処理にて、一度に複数のカードが同時に墓地へ送られる事になる場合、それらのカードを墓地へ置く順番は、その墓地へ送られるカードの持ち主が選ぶ事ができます。",
+        "historicalApplicability": "Official ownership/ordering principle for simultaneous cards sent by one effect. Chain-end cleanup is a rules action, so its application there is a synthesis with the general community rule and simultaneous-cleanup sources, not a direct quotation about cleanup."
+      },
+      "sourceId": "source-09"
+    },
+    {
+      "id": "seven-v5-34",
+      "reusedFrom": {
+        "path": "data/reviews/seven-tools-v5.effects.json",
+        "reviewIndex": 0,
+        "evidenceIndex": 34
+      },
+      "evidence": {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=5&fid=11538&request_locale=ja",
+        "accessedOn": "2026-10-30",
+        "sourceKind": "official-current",
+        "quotation": "デュエル中に墓地へ送られたカードの順番を、プレイヤーが任意に入れ替える事はできません。",
+        "historicalApplicability": "Current baseline: ordering newly sent cards does not authorize rearranging cards already in the GY."
+      },
+      "sourceId": "source-10"
+    },
+    {
+      "id": "seven-v5-35",
+      "reusedFrom": {
+        "path": "data/reviews/seven-tools-v5.effects.json",
+        "reviewIndex": 0,
+        "evidenceIndex": 35
+      },
+      "evidence": {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=5&fid=11538&request_locale=ja",
+        "accessedOn": "2026-10-30",
+        "sourceKind": "official-current",
+        "quotation": "墓地に送られたカードは、墓地に送られた順番のままでデュエルを進行します。",
+        "historicalApplicability": "Preserve established GY order. Previously paid discard, destroyed Magic Jammer and root-effect victims are outside the later cleanup batch."
+      },
+      "sourceId": "source-10"
+    },
+    {
+      "id": "seven-v5-36",
+      "reusedFrom": {
+        "path": "data/reviews/seven-tools-v5.effects.json",
+        "reviewIndex": 0,
+        "evidenceIndex": 36
+      },
+      "evidence": {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=5&fid=6880&request_locale=ja",
+        "accessedOn": "2026-10-30",
+        "sourceKind": "official-current",
+        "quotation": "最後にチェーン処理が終了し、発動した「フォースフィールド」と「神罰」は墓地へ送られる事になります。",
+        "historicalApplicability": "Official Counter example corroborates deferred cleanup. No Minerva/Counter-trigger support, fourth link or example-card import is enabled."
+      },
+      "sourceId": "source-11"
+    },
+    {
+      "id": "seven-v5-37",
+      "reusedFrom": {
+        "path": "data/reviews/seven-tools-v5.effects.json",
+        "reviewIndex": 0,
+        "evidenceIndex": 37
+      },
+      "evidence": {
+        "url": "https://www.c-labo.jp/blog/176900/",
+        "accessedOn": "2026-10-30",
+        "sourceKind": "community",
+        "quotation": "また、その一連のチェーンが全て終了したタイミングで、ルールによって全て同時に墓地へ送られるので、「チェーン処理の最中は魔法＆罠ゾーンにこれらの使用済みカードは存在し続けている」ことになります。",
+        "historicalApplicability": "Community statement explicitly supplies simultaneity of normal Chain-end cleanup. Apply only to sources that remain to be cleaned up; a source already destroyed in the Chain is excluded."
+      },
+      "sourceId": "source-12"
+    },
+    {
+      "id": "seven-v5-38",
+      "reusedFrom": {
+        "path": "data/reviews/seven-tools-v5.effects.json",
+        "reviewIndex": 0,
+        "evidenceIndex": 38
+      },
+      "evidence": {
+        "url": "https://yugioh-wiki.net/index.php?%CA%E8%C3%CF",
+        "accessedOn": "2026-10-30",
+        "sourceKind": "community",
+        "quotation": "複数枚のカードが同時に墓地へ送られる場合、カードの持ち主が墓地に置く順番を決定します。",
+        "historicalApplicability": "General community formulation for simultaneous sends, corroborated for a specific effect by official FAQ 206. Not represented as an authenticated TCG 2005 bulletin."
+      },
+      "sourceId": "source-13"
+    },
+    {
+      "id": "seven-v5-39",
+      "reusedFrom": {
+        "path": "data/reviews/seven-tools-v5.effects.json",
+        "reviewIndex": 0,
+        "evidenceIndex": 39
+      },
+      "evidence": {
+        "url": "https://yugioh-wiki.net/index.php?%CA%E8%C3%CF",
+        "accessedOn": "2026-10-30",
+        "sourceKind": "community",
+        "quotation": "また、自分で発動したカードでも、相手が発動したカードでも、墓地に置く順番を決定するプレイヤーは、墓地へ送られるカードの持ち主になります。",
+        "historicalApplicability": "Order within one GY belongs to the card owner. Do not give a counter/effect controller permission to reorder another player’s batch."
+      },
+      "sourceId": "source-13"
+    },
+    {
+      "id": "trap-v1-0",
+      "reusedFrom": {
+        "path": "data/reviews/pilot.trap-effects.json",
+        "reviewIndex": 0,
+        "evidenceIndex": 0
+      },
+      "evidence": {
+        "url": "https://www.db.yugioh-card.com/yugiohdb/card_search.action?ope=2&cid=4836&request_locale=en",
+        "accessedOn": "2026-10-15",
+        "sourceKind": "official-current",
+        "quotation": "When your opponent Normal or Flip Summons a monster with 1000 or more ATK: Target that monster; destroy that target.",
+        "historicalApplicability": "Current semantics reference; 2002 LOB print evidence separate. Not claiming 2005 printed wording."
+      },
+      "sourceId": "source-14"
+    },
+    {
+      "id": "trap-v1-1",
+      "reusedFrom": {
+        "path": "data/reviews/pilot.trap-effects.json",
+        "reviewIndex": 0,
+        "evidenceIndex": 1
+      },
+      "evidence": {
+        "url": "https://www.goatformat.com/rulings7.html",
+        "accessedOn": "2026-10-15",
+        "sourceKind": "community",
+        "quotation": "“Trap Hole” is a targeting effect.",
+        "historicalApplicability": "Goat compilation labels this Netrep ruling. Community source, not authenticated original UDE publication."
+      },
+      "sourceId": "source-06"
+    },
+    {
+      "id": "v5-opponent-chance",
+      "locator": "printed p.32, Opponent’s Chance to Respond",
+      "evidence": {
+        "url": "https://archive.org/download/rulebook_v05/rulebook_v05.pdf",
+        "accessedOn": "2026-11-10",
+        "sourceKind": "archive",
+        "quotation": "When making a play on a Chain, you must always ask your opponent, \"Do you wish to continue?\"",
+        "historicalApplicability": "Period-looking archived rulebook baseline for giving the opponent a response opportunity. Not publisher authentication, not a complete Goat priority/SEGOC specification."
+      },
+      "sourceId": "source-02"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "direct-counter-conditions",
+      "category": "rule-synthesis",
+      "conclusion": "M responds directly to S; V responds directly to latest T/M/V card activation.",
+      "evidenceIds": [
+        "seven-v5-0",
+        "seven-v5-3",
+        "seven-v5-14",
+        "seven-v5-15",
+        "seven-v5-26",
+        "seven-v5-27"
+      ],
+      "rationale": "Card condition plus Speed 3 and latest-link requirement; subtype/speed alone is insufficient.",
+      "limitations": "No monster effect, Continuous Trap effect-only activation or Spell directly answered by Seven."
+    },
+    {
+      "id": "trap-prefix",
+      "category": "rule-synthesis",
+      "conclusion": "T^k shares one eligible opponent Normal/Tribute/Flip Summon, then only V may extend it.",
+      "evidenceIds": [
+        "trap-v1-0",
+        "trap-v1-1",
+        "seven-v5-4",
+        "seven-v5-3",
+        "seven-v5-8"
+      ],
+      "rationale": "Combine existing Trap Hole condition/targeting with Speed 2 response to Speed 2. During building, earlier T has not resolved and the same target is still present. Once V is added, Speed 2 cannot follow it.",
+      "limitations": "Synthesis, not a quoted TCG-2005 FAQ for multiple Trap Hole plus Seven. Do not bypass pending Trigger or add new Summon windows."
+    },
+    {
+      "id": "priority-and-set",
+      "category": "rule-synthesis",
+      "conclusion": "Opponent has first response opportunity; own responses require a decline. Every Trap source was Set before this turn.",
+      "evidenceIds": [
+        "seven-v5-2",
+        "seven-v5-9",
+        "seven-v5-10",
+        "v5-opponent-chance"
+      ],
+      "rationale": "Retain the existing Main1/Main2 priority/pass and earlier-Set policy.",
+      "limitations": "No new ignition priority, SEGOC, Damage Step or phase timing rules."
+    },
+    {
+      "id": "local-lifo",
+      "category": "rule-synthesis",
+      "conclusion": "Resolve backwards; V cancels only the immediately preceding activation, which is then skipped. Other earlier links continue.",
+      "evidenceIds": [
+        "seven-v5-0",
+        "seven-v5-1",
+        "seven-v5-26",
+        "seven-v5-27",
+        "seven-v5-29"
+      ],
+      "rationale": "Alternating Counter cancellations follow repeated direct responses; no hard-coded odd/even board patch.",
+      "limitations": "Odd/even is an oracle consequence, not proof of a new exact-length official example."
+    },
+    {
+      "id": "multiple-targets",
+      "category": "rule-synthesis",
+      "conclusion": "Cancelling the last T does not cancel earlier T. Earlier T may destroy the same monster; later checks never retarget or send an already departed target again.",
+      "evidenceIds": [
+        "trap-v1-0",
+        "trap-v1-1",
+        "seven-v5-8",
+        "seven-v5-1"
+      ],
+      "rationale": "Every T fixes its target at activation; resolve each surviving link independently against current target identity/location.",
+      "limitations": "Only the one Summon target and existing pool; no simultaneous multi-Summon, protection, replacement or control changes."
+    },
+    {
+      "id": "fixed-costs",
+      "category": "rule-synthesis",
+      "conclusion": "Each accepted V costs 1000 with LP >1000; M discards one card; reject before mutation when unpayable. Never refund committed costs.",
+      "evidenceIds": [
+        "seven-v5-0",
+        "seven-v5-5",
+        "seven-v5-6",
+        "seven-v5-12",
+        "seven-v5-13",
+        "seven-v5-26"
+      ],
+      "rationale": "LP >1000 combines fixed printed cost with the adopted rule against choosing a payment that makes LP zero.",
+      "limitations": "No reducers, prevention, half-LP costs or LP-payment triggers."
+    },
+    {
+      "id": "survivor-cleanup",
+      "category": "rule-synthesis",
+      "conclusion": "Negated/destroyed sources leave immediately; remaining used sources wait to Chain end, then each owner orders its own simultaneous batch. Preserve old Graveyard order.",
+      "evidenceIds": [
+        "seven-v5-28",
+        "seven-v5-30",
+        "seven-v5-32",
+        "seven-v5-34",
+        "seven-v5-35",
+        "seven-v5-36",
+        "seven-v5-37",
+        "seven-v5-38",
+        "seven-v5-39"
+      ],
+      "rationale": "Retain the adopted cleanup policy: combine official current examples/owner-order principle with community rules-action descriptions.",
+      "limitations": "FAQ 206 is about one effect, not direct rules cleanup authority. This is project synthesis, not a newly authenticated TCG-2005 cleanup ruling."
+    },
+    {
+      "id": "finite-bound",
+      "category": "engineering-contract",
+      "conclusion": "At most 8 links for these families with this pool; validate per-owner copies and occupied slots, not just total length.",
+      "evidenceIds": [
+        "seven-v5-0",
+        "trap-v1-0"
+      ],
+      "rationale": "Three copies of Seven per owner and five Spell/Trap slots per player; no Trap revival/control-changing effect in the pool.",
+      "limitations": "Eight is not a Yu-Gi-Oh! Chain limit. Revisit bounds before future cards/custom effects."
+    },
+    {
+      "id": "history-vs-binding",
+      "category": "engineering-contract",
+      "conclusion": "Historical costs remain valid after root heal/movement; a current-board binding must be refreshed by a trusted parent.",
+      "evidenceIds": [
+        "seven-v5-6"
+      ],
+      "rationale": "Keep C2a/C2b distinction and server-only receipts/journals.",
+      "limitations": "Hashes are not authentication; candidate snapshots are not legal action histories."
+    },
+    {
+      "id": "root-resume-terminal",
+      "category": "engineering-contract",
+      "conclusion": "Root runs once, may pause for its private choice, then survivor cleanup; terminal/concede never invent post-game owner choices.",
+      "evidenceIds": [
+        "seven-v5-1",
+        "seven-v5-28"
+      ],
+      "rationale": "Keep current single-source versus multi-source terminal bookkeeping and adapter dedup/version contract.",
+      "limitations": "Engineering policy, not a universal new rule for every effect after a Duel ends."
+    },
+    {
+      "id": "target-chronology",
+      "category": "engineering-contract",
+      "conclusion": "Activation target cannot be a card discarded by later M; source/target/link/decision identity stays pinned through resume.",
+      "evidenceIds": [
+        "seven-v5-8",
+        "seven-v5-5"
+      ],
+      "rationale": "Root target selection precedes later Counter costs; an instance cannot be retroactively selected from a future zone.",
+      "limitations": "No client-supplied state/journal/LP amounts accepted."
+    },
+    {
+      "id": "gated-release",
+      "category": "engineering-contract",
+      "conclusion": "Only install the proposed v6 after actual activation/frame/discovery/UI/regression checks; v1-v5 artifacts remain historical.",
+      "evidenceIds": [
+        "seven-v5-11"
+      ],
+      "rationale": "Review supports implementation, not runtime enablement. Preserve imported metadata and old decks/artwork.",
+      "limitations": "Candidates/evidence checks do not count as live effects or Windows 11 desktop evidence."
+    }
+  ],
+  "openImplementationChecks": [
+    {
+      "id": "schema-gate",
+      "status": "not-started",
+      "requirement": "New v6 schema/revision, exact prefix and pins before costs; active manifest changes only with verified implementation."
+    },
+    {
+      "id": "live-context",
+      "status": "not-started",
+      "requirement": "Versioned live frame/invariants and private projection; do not install candidate entry/clock into gameplay."
+    },
+    {
+      "id": "activation-discovery",
+      "status": "not-started",
+      "requirement": "Real commands for every legal prefix, latest handles, priority, earlier Set, paid receipts, per-owner copy/slot guards."
+    },
+    {
+      "id": "event-terminal",
+      "status": "not-started",
+      "requirement": "Preserve event/receipt/version ownership, root resume once, cleanup survivors/owner orders and terminal/concede behavior."
+    },
+    {
+      "id": "live-ui-matrix",
+      "status": "not-started",
+      "requirement": "Exercise S=11, A/B, Main1/2, hand/Set, T normal/tribute/flip, all feasible owner assignments and blocked costs/old handles."
+    },
+    {
+      "id": "cross-platform",
+      "status": "not-started",
+      "requirement": "Linux core/data plus complete Windows CI/artifact on final source, capabilities delta explained; no evidence assembled across runs."
+    }
+  ],
+  "notCovered": [
+    "general mixed Chain",
+    "SEGOC/new Trigger timing",
+    "Damage Step expansion",
+    "Quick-Play/Continuous/Field effects",
+    "Special/Fusion/Ritual/summon negation",
+    "effect-negation-only effects",
+    "modifiers/replacements/cost reducers",
+    "control changes/Trap revival",
+    "online/auth/persistent matches",
+    "custom-card editor or wholesale content replacement"
+  ],
+  "reviewLimitations": [
+    "No exact eight-link TCG-2005 FAQ is claimed. Grammar closure is a documented synthesis of the cited conditions, speed and reverse-resolution rules.",
+    "Original evidence bodies/dates are retained verbatim; historicalApplicability notes can describe their older review stage. Current decisions here state the new proposed design.",
+    "Raw Trap Hole HTML for the old card metadata was absent from the recovered checkout; append a fresh current snapshot, keep old card evidence/bundles unchanged.",
+    "Fresh PDFs match prior hashes; publisher authentication and original printed text remain unverified.",
+    "Windows CI 42590265485 is a v5 baseline only. New-scope effect tests have not run; desktop Windows 11 is still unverified."
+  ],
+  "remainingMilestones": [
+    "C3b live implementation and validation",
+    "C4 multi-turn audit of the newly enabled scope",
+    "U1 limited custom editor",
+    "W1 real Windows 11 desktop",
+    "B1 readiness report; packaging/delivery only on request"
+  ]
+}

@@ -114,8 +114,10 @@ C2a đã thêm [validator graph và ledger ứng viên](bounded-counter-candidat
 theo ma trận. [C2b](bounded-counter-dispatcher.md) đã thêm oracle LIFO và
 dispatcher/journal ứng viên, chưa nối gameplay hoặc bật activation mới.
 Đã thêm [C2c kernel LIFO dùng chung](reviewed-lifo-integration.md) cho các
-pattern đang mở, vẫn giữ gate/frame/behavior v5. Mục tiếp theo sau kiểm
-chứng C2c là C3, bắt đầu bằng review phạm vi mới trước activation/discovery/UI.
+pattern đang mở, vẫn giữ gate/frame/behavior v5. [C3a review phạm vi mới](../rules/bounded-counter-review.md) đã chốt thiết kế
+inactive ngày 10/11/2026. Mục tiếp theo là C3b: gate/frame/activation,
+discovery và UI theo sáu nhóm kiểm tra; chưa có live v6 hoặc test hiệu ứng
+scope mới. C3/C4 chưa hoàn tất.
 Ước lượng C2–C4 ở mốc C1
 là 7–12 ngày công, cần cập nhật tiếp theo kết quả tích hợp. Chu kỳ làm việc
 lấy 30 phút làm mốc dừng; nếu đang dở tác vụ

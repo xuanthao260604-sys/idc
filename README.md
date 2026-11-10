@@ -232,7 +232,7 @@ Mốc kiểm chứng C2a: Linux local và [Windows/Ubuntu CI 42563079635](https:
 
 Mốc kiểm chứng C2b: Linux local và [Windows/Ubuntu CI 42566580506](https://github.com/xuanthao260604-sys/idc/actions/runs/42566580506) đạt **4669 test/62 file** trên source `71ba7e2`. Artifact Windows đạt **112 bước/102 browser report**, Edge 156.0.4314.58, runtimeExceptions=0; 61 suite cũ giữ số ca, browser facts/capabilities giữ baseline C2a. Chưa mở activation mới hoặc kiểm thử Windows 11 desktop.
 
-Đã tích hợp [C2c kernel LIFO dùng chung cho gameplay v5](docs/engine/reviewed-lifo-integration.md), giữ gate/frame/protocol/UI cũ. 142 baseline so toàn bộ state/raw events sau từng command, thêm 163 ca migration/guard; C3 vẫn chưa mở activation mới. Sau kiểm chứng C2c, mục kế tiếp là review scope C3.
+Đã tích hợp [C2c kernel LIFO dùng chung cho gameplay v5](docs/engine/reviewed-lifo-integration.md), giữ gate/frame/protocol/UI cũ. 142 baseline so toàn bộ state/raw events sau từng command, thêm 163 ca migration/guard; C3 vẫn chưa mở activation mới. Review scope C3a được chốt riêng bên dưới; gameplay vẫn ở v5.
 
 Đã chốt C2c trên source `898b29c`: [Windows/Ubuntu CI 42590265485](https://github.com/xuanthao260604-sys/idc/actions/runs/42590265485) đạt **4832 test/63 file**; Windows đạt **112 bước/102 browser report**, runtimeExceptions=0. 62 suite cũ giữ số ca, browser facts/capabilities giữ baseline C2b. Đã xử lý timeout 5 giây bằng budget riêng 10 giây cho tám ca adapter dài, giữ mọi assertion; chi tiết run lỗi/run đạt trong báo cáo C2c. Chưa mở gate mới hoặc kiểm thử Windows 11 desktop.
 
@@ -246,3 +246,5 @@ Xây deck lưu riêng cho A/B và dùng khi tạo trận mới; sửa deck khôn
 Deck được lưu local qua restart, còn trận đấu vẫn chỉ trong bộ nhớ.
 
 Catalog runtime nạp 19 bundle đang hoạt động từ danh sách đầu vào chung; giữ nguyên định nghĩa/hồ sơ hiệu ứng cũ.
+
+Đã chốt [C3a review phạm vi Counter hữu hạn](docs/rules/bounded-counter-review.md): 14 pin/14 nguồn/30 trích dẫn, hồ sơ thiết kế inactive; v5 vẫn được chọn, chưa có activation v6. Typecheck/build và 163 ca migration v5 đạt; không tính đây là test hiệu ứng scope mới. Mục tiếp theo là C3b nối gate/frame/activation/discovery/UI theo sáu nhóm kiểm tra trong review. C3/C4 chưa hoàn tất; sau Chain giữ mục tiêu bộ tạo bài riêng và Windows 11 thực.

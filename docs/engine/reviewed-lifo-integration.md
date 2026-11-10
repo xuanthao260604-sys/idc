@@ -158,3 +158,7 @@ luật/pin và giới hạn trước khi nối frame/activation/discovery/UI m�
 tự nâng review v5, nhập thêm bài hoặc coi Chain tổng quát đã hoàn tất.
 Mốc C4 vẫn cần audit nhiều lượt trên scope mới trước khi chuyển editor và
 kiểm chứng Windows 11 desktop.
+
+Cập nhật 10/11/2026: [C3a review phạm vi](../rules/bounded-counter-review.md)
+đã hoàn thành thiết kế inactive; bước tiếp theo C3b nối gameplay, không
+thay đổi bằng chứng CI hoặc gate v5 của mốc C2c này.
