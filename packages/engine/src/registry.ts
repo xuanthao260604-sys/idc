@@ -24,6 +24,13 @@ export function freeze<T>(value: T): T {
   }
   return value;
 }
+/** Syntax support may precede gameplay. Reject staged reviews even if a card
+ * would later be filtered out, rather than returning a partially enabled registry. */
+function implementedCounterContinuation(continuation: z.infer<typeof CounterReviewsSchema>[number]['continuation']) {
+  if (continuation === 'reviewed-bounded-counter-patterns-v6')
+    throw new Error('Bounded Counter v6 gameplay is not implemented; keep the active v5 review');
+  return continuation;
+}
 const CoreRulesSchema = z.strictObject({
   lifePoints: z.number().int().positive(), openingHand: z.number().int().positive(),
   deck: z.object({ mainMin: z.number().int().positive(), mainMax: z.number().int().positive().nullable(), combinedCopyLimit: z.number().int().positive() }),
@@ -87,6 +94,7 @@ export function createRegistry(definitions: unknown, formatInput: FormatDefiniti
   }
   const counterReviews = CounterReviewsSchema.parse(counterReviewInput);
   for (const review of counterReviews) {
+    implementedCounterContinuation(review.continuation);
     const card = parsed.find(c => c.id === review.cardId);
     if (!card || card.kind !== 'trap' || card.subtype !== 'counter' || card.origin !== 'official'
       || review.format.id !== format.id || review.format.revision !== format.revision
@@ -115,8 +123,9 @@ export function createRegistry(definitions: unknown, formatInput: FormatDefiniti
     if (names.has(card.name)) throw new Error('Registry requires one definition per canonical card name');
     names.add(card.name);
     cards[card.id] = card as SupportedMonster | NormalSpell | NormalTrap;
+    const continuation = implementedCounterContinuation(counterReview?.continuation);
     if (counterReview) counterTrapHandlers[card.id] = counterReview.handler;
-    if (counterReview?.continuation) counterContinuations[card.id] = counterReview.continuation;
+    if (continuation) counterContinuations[card.id] = continuation;
     if (trapReview) trapHandlers[card.id] = trapReview.handler;
     if (flipReview) flipHandlers[card.id] = flipReview.handler;
     if (supportedSpell) spellHandlers[card.id] = SpellHandlerSchema.parse(officialReview?.handler ?? binding);

@@ -122,3 +122,8 @@ scope mới. C3/C4 chưa hoàn tất.
 là 7–12 ngày công, cần cập nhật tiếp theo kết quả tích hợp. Chu kỳ làm việc
 lấy 30 phút làm mốc dừng; nếu đang dở tác vụ
 tại mốc đó thì hoàn thành tác vụ ấy rồi dừng báo cáo, không mở mục mới.
+
+Cập nhật 12/11/2026: [C3b.1](bounded-counter-review-gate.md) chuẩn bị
+schema/preflight v6 và guard registry chưa triển khai. Chưa bật v6; bước
+tiếp theo C3b.2 nối live context/resolver, rồi activation/discovery/UI và
+kiểm chứng trước khi mở gate. Ước lượng C3 tổng thể vẫn 2–4 ngày công.
