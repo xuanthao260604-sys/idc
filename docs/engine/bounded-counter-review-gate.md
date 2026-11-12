@@ -70,4 +70,36 @@ giao beta; Windows runner không thay Windows 11 desktop.
 
 ## Bằng chứng chốt
 
-Đang kiểm chứng source C3b.1; cập nhật sau khi đọc kết quả CI và artifact.
+Code được kiểm chứng là `47a7ce86614b7d0a6937051b808912f17122d518` tại
+[CI 43191173336](https://github.com/xuanthao260604-sys/idc/actions/runs/43191173336),
+attempt 1. Ubuntu job `131090578048` và Windows job `131090579088` đều
+completed/success. Đã đọc log Ubuntu, khớp source SHA và **4902/4902 test
+trong 64 file**, typecheck, offline data/build và hai smoke đều đạt.
+Local cũng đạt typecheck/build, cards:check, hai smoke và **4902/4902 test
+trong 64 file**. Suite mới đủ 70 ca, migration cũ đủ 163 ca.
+
+Artifact `windows-validation-43191173336-1`, ID `13931827614`,
+SHA-256 ZIP khớp metadata GitHub:
+`a79cd045c3d92f26261b95eb247dc28b2c5943a5b718e59a5bcabdfeee259426`.
+Report: `2026-11-12T09-24-59-089Z-8340/report.json`.
+Windows win32/x64, OS 10.0.26100, Node 24.19.0,
+npm 11.17.0, browser Edg/156.0.4314.58: **4902/4902 test/64 file,
+112/112 bước, 102/102 browser report**, runtimeExceptions=0.
+
+Đã đọc đủ 112 raw step log, mỗi browser JSON khớp report/bước và platform.
+So artifact C2c `windows-validation-42590265485-1` source `898b29c`:
+cả 63 suite cũ giữ số ca; chỉ thêm suite gate 70 ca. Facts của 102 browser
+report giữ nguyên khi bỏ riêng browserVersion; `capabilities.log` giống
+nguyên byte. Không ghép log/report của run hoặc source khác.
+
+Chạy lại checker C3a: 14 pin/14 nguồn/30 trích dẫn vẫn khớp, 29 evidence kế
+thừa nguyên vẹn; schema nhận proposal v6, v5 vẫn active, chưa có file active
+v6. Registry từ chối v6 đã được kiểm riêng trong suite mới. C3a profile và
+mọi data/reviews/evidence, bundle, ảnh, deck được giữ nguyên byte; ngoài
+hai tài liệu chỉ dẫn, chỉ hai file engine có sẵn thay đổi theo tác vụ.
+Không đổi protocol/UI, hash registry v5 hoặc baseline golden.
+
+Commit chốt sau CI chỉ cập nhật tài liệu với `[skip ci]`; bằng chứng code
+thuộc `47a7ce8`, không gán kết quả cho code mới chưa chạy. Report vẫn ghi
+`windows11DesktopVerified=false`. Chưa có kiểm thử Windows 11 desktop,
+chưa có positive live test cho scope v6; chưa đóng gói/bàn giao beta.
