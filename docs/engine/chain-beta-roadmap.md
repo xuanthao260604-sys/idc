@@ -142,3 +142,9 @@ Cập nhật 24/11/2026: [C3b.2b.2](staged-bounded-parent.md) nối parent stage
 với handler/event thật và frame lifecycle. Bước tiếp theo C3b.3 là server
 state/gate/activation/discovery/preview/projection/UI; chưa mở v6 hoặc đóng
 C3/C4. Sau Chain vẫn là bộ tạo bài riêng và Windows 11 desktop thực.
+
+Cập nhật tiếp 24/11/2026: [C3b.3a](bounded-live-backend.md) nối backend
+v6 bằng cấu hình server explicit opt-in, không đổi default manifest/review
+v5. Tiếp theo C3b.3b kiểm HTTP/UI/browser và active review trước khi bật
+mặc định; C4 audit nhiều lượt còn giữ nguyên. Chưa đóng C3/Chain/beta;
+U1 bộ tạo bài riêng và W1 Windows 11 desktop thực vẫn ở sau Chain.

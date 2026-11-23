@@ -175,6 +175,19 @@ export interface TrapThreeSevenJournal {
   readonly root:ChainLink;readonly first:ChainLink;readonly middle:ChainLink;readonly top:ChainLink;readonly occurrence:EventRef;readonly lpCosts:ThreeSevenLPCostLedger;
   readonly cleanupSourceIds:readonly[string,string];readonly entryFingerprint:string;readonly boardFingerprint:string;readonly integritySha256:string;
 }
+/** Server-only bounded frame; absent from the retained v5 state contract. */
+export interface BoundedCounterResolutionFrame {
+  readonly version: 1;
+  readonly kind: 'bounded-counter-resolution-frame-v1';
+  readonly stage: 'before-root' | 'root-choice' | 'cleanup';
+  readonly duelId: string; readonly registryRevision: string; readonly reviewSha256: string;
+  readonly playerIds: readonly [string,string];
+  readonly turn: { readonly number:number; readonly activePlayer:string; readonly phase:'main1'|'main2' };
+  readonly originVersion:number; readonly originSequence:number; readonly checkpointVersion:number; readonly checkpointSequence:number;
+  readonly occurrence:unknown; readonly links:readonly ChainLink[]; readonly survivingSourceIds:readonly string[];
+  readonly cleanupOrders:readonly {readonly ownerId:string;readonly order:readonly string[]|null}[]|null;
+  readonly binding:string; readonly integritySha256:string;
+}
 export interface DuelState {
   id: string;
   format: DefinitionRef;
@@ -191,6 +204,7 @@ export interface DuelState {
   trapCounterResolution: TrapCounterResolutionFrame | null;
   fourLinkCounterResolution: FourLinkCounterJournal | null;
   trapThreeSevenResolution: TrapThreeSevenJournal | null;
+  boundedCounterResolution?: BoundedCounterResolutionFrame | null; // Private, explicit v6 registry only.
   pendingTriggers: readonly PendingTrigger[];
   modifiers: readonly Modifier[];
   timing: {

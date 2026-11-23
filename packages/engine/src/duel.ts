@@ -1,3 +1,4 @@
+import { BOUNDED_SEVEN_EFFECT_ID, validateStagedBoundedCounterGraph } from './bounded-counter-graph.js';
 import { startBoundedCounterFrame, checkpointBoundedCounterFrame, assertCurrentBoundedCounterFrame, releaseBoundedCounterFrame } from './bounded-counter-frame.js';
 import type { BoundedCounterFrame } from './bounded-counter-frame.js';
 import { captureCounterResolutionEntry, counterEntrySchedule } from './counter-resolution-entry.js';
@@ -14,7 +15,7 @@ import { freeze, validateDeck } from './registry.js';
 import { planResolution } from './effect-plans.js';
 import { prepareChainCleanup, chainCleanupDecision, orderChainCleanup, commitChainCleanup } from './chain-cleanup.js';
 import { spellResolutionBoard, prepareSpellResolution, assertSpellResolution } from './spell-resolution.js';
-import { prepareCounterContinuation, checkpointCounterContinuation, assertCounterResolutionFrame, normalSpellMagicPrefix, supportsSpellCounterContinuation, SEVEN_MAGIC_EFFECT_ID } from './counter-continuation.js';
+import { prepareCounterContinuation, checkpointCounterContinuation, assertCounterResolutionFrame, normalSpellMagicPrefix, supportsSpellCounterContinuation, SEVEN_MAGIC_EFFECT_ID, COUNTER_CONTINUATION_PINS } from './counter-continuation.js';
 import { prepareFourLinkCounterResolution, FOUR_LINK_EFFECT_ID } from './four-link-counter-candidate.js';
 import { reviewedFourLinkPrefix, assertFourLinkCounterCleanup } from './four-link-counter-continuation.js';
 import { trapHoleActivationPrefix, trapSevenPrefix, prepareTrapCounterContinuation, finishTrapCounterContinuation, assertTrapCounterResolutionFrame, SEVEN_RESPONSE_EFFECT_ID } from './trap-counter-continuation.js';
@@ -116,7 +117,33 @@ function returnToOwnerHand(c: Context, id: string) {
 
 /** Exact first-link eligibility for the reviewed Trap Hole -> Seven Tools pattern. */
 function trapHolePrefix(state:DuelState,registry:Registry){return trapHoleActivationPrefix(registry,state);}
-export function assertDuelInvariants(state: DuelState, registry: Registry) {
+const boundedRegistry = (registry:Registry) => registry.counterContinuations['official:03819470']==='reviewed-bounded-counter-patterns-v6' && !!registry.boundedCounterReview;
+function boundedFamily(state:DuelState) {
+  const root=state.chain[0];
+  return !!root && (root.sourceAtActivation.definition.id==='official:04206964'||root.effectId==='normal-spell'&&state.chain.length>1);
+}
+export function assertDuelInvariants(state:DuelState,registry:Registry) {
+  const bounded=boundedRegistry(registry);
+  if(!bounded&&state.boundedCounterResolution!==undefined)throw new Error('Bounded frame requires explicit v6 registry');
+  if(bounded&&state.boundedCounterResolution===undefined)throw new Error('Missing v6 frame field');
+  if(bounded&&(state.counterResolution||state.trapCounterResolution||state.fourLinkCounterResolution||state.trapThreeSevenResolution))
+    throw new Error('Legacy Counter frame cannot overlap v6 capability');
+  if(bounded&&(state.boundedCounterResolution||boundedFamily(state)&&!state.spellResolution)) {
+    // Reuse all board/index/definition/quota checks without pretending the bounded
+    // spent graph is a legacy one. Graph/frame checks own actual timing/decisions.
+    assertLegacyDuelInvariants({...state,chain:[],pendingDecision:null,chainCleanup:null,spellResolution:null,
+      counterResolution:null,trapCounterResolution:null,fourLinkCounterResolution:null,trapThreeSevenResolution:null,
+      timing:{...state.timing,window:'open',priorityPlayer:state.result?null:state.turn.activePlayer,consecutivePasses:0,requestedPhase:null}},registry);
+    if(state.boundedCounterResolution)assertCurrentBoundedCounterFrame(registry,state,state.boundedCounterResolution,registry.boundedCounterReview);
+    else {
+      if(state.timing.window!=='chain-response'||state.timing.priorityPlayer===null||state.timing.consecutivePasses>1)throw new Error('Invalid v6 building timing');
+      validateStagedBoundedCounterGraph(registry,state);
+    }
+    return;
+  }
+  assertLegacyDuelInvariants(state,registry);
+}
+function assertLegacyDuelInvariants(state: DuelState, registry: Registry) {
   if (state.format.id !== registry.format.id || state.format.revision !== registry.format.revision || state.cardRegistryRevision !== registry.revision)
     throw new Error('State/registry version mismatch');
   if (state.players.length !== 2 || state.players[0].id === state.players[1].id) throw new Error('Invalid players');
@@ -313,6 +340,7 @@ export function createDuel(registry: Registry, input: z.input<typeof StartSchema
     stateVersion: 0, eventSequence: 0, turn: { number: 1, activePlayer: active, phase: 'draw' }, players, cards,
     chain: [], chainCleanup: null, spellResolution: null, counterResolution: null, trapCounterResolution:null, fourLinkCounterResolution:null, trapThreeSevenResolution:null, pendingTriggers: [], modifiers: [], timing: { window: 'open', priorityPlayer: active, consecutivePasses: 0, lastRelevantEvents: [], requestedPhase: null },
     battle: null, pendingDecision: null, rng: rng.state(), result: null };
+  if(boundedRegistry(registry))state.boundedCounterResolution=null;
   const c: Context = { state, registry, events: [] };
   emit(c, 'duel-started');
   for (let i = 0; i < registry.rules.openingHand; i++) for (const p of players) draw(c, p.id);
@@ -528,6 +556,7 @@ function activateTrap(c: Context, actorId: string, id: string, targetId: string)
     && ['normal', 'tribute', 'flip'].includes(String(event.details?.method)), 'invalid-target', 'Not a supported Normal/Flip Summon event');
   rule(target && target.controllerId !== actorId && target.location.kind === 'monster' && target.position !== 'face-down-defense'
     && monsterDefinition(c, targetId).attack >= 1000, 'invalid-target', 'Summoned opponent monster must have at least 1000 ATK');
+  rule(!boundedRegistry(c.registry)||(card.definition.id==='official:04206964'&&c.state.chain.length<3),'illegal-timing','Bounded Trap prefix limit');
   card.position = 'face-up';
   c.state.chain.push({ id: `${c.state.id}:trap-link:${c.state.eventSequence + 1}`, controllerId: actorId, source: id,
     sourceAtActivation: structuredClone(card), effectId: c.registry.trapHandlers[card.definition.id]!, spellSpeed: 2,
@@ -550,6 +579,7 @@ function activateCounterTrap(c: Context, actorId: string, id: string, discardId:
     && card.location.kind === 'spell-trap' && card.location.playerId === actorId && card.position === 'face-down', 'invalid-target', 'Counter Trap must be Set on your field');
   rule(card.markers.setOnTurn !== null && card.markers.setOnTurn < c.state.turn.number, 'illegal-timing', 'Cannot activate Trap in the turn it was Set');
   rule(discardId !== id && p.hand.includes(discardId), 'unpayable-cost', 'Discard one card from your hand');
+  rule(!boundedRegistry(c.registry)||(card.definition.id==='official:77414722'&&!!COUNTER_CONTINUATION_PINS[originalCard.definition.id]),'invalid-target','Unreviewed bounded Magic source/root');
   // All conditions precede the first mutation. Rejected intent never pays or reveals anything.
   sendToGraveyard(c, discardId); emit(c, 'cards-discarded', [discardId], { playerId: actorId, reason: 'activation-cost' });
   const cost = c.events.at(-1)!; card.position = 'face-up';
@@ -562,18 +592,23 @@ function activateCounterTrap(c: Context, actorId: string, id: string, discardId:
 }
 function activateLPCounterTrap(c: Context, actorId: string, id: string, respondingToLinkId: string) {
   rule(!c.state.pendingDecision && c.state.timing.priorityPlayer === actorId, 'not-your-action', 'Wait for response priority');
-  const extended = supportsSpellCounterContinuation(c.registry,c.state.cards[id]?.definition.id ?? '')
+  const bounded=boundedRegistry(c.registry);
+  const last=c.state.chain.at(-1),sevenCount=c.state.chain.filter(l=>l.sourceAtActivation.definition.id==='official:03819470').length;
+  const boundedResponse=bounded&&!!last&&['official:04206964','official:77414722','official:03819470'].includes(last.sourceAtActivation.definition.id)
+    &&c.state.chain.length<8&&sevenCount<6&&c.state.chain.filter(l=>l.sourceAtActivation.definition.id==='official:03819470'&&l.controllerId===actorId).length<3;
+  const extended = !bounded && supportsSpellCounterContinuation(c.registry,c.state.cards[id]?.definition.id ?? '')
     && normalSpellMagicPrefix(c.registry, c.state);
   const sevenResponse=['reviewed-three-link-counter-patterns-v3','reviewed-four-link-counter-patterns-v4','reviewed-four-link-counter-patterns-v5'].includes(c.registry.counterContinuations[c.state.cards[id]?.definition.id??'']??'')&&trapSevenPrefix(c.registry,c.state);
   const trapFourResponse=reviewedTrapThreeSevenPrefix(c.registry,c.state);
   const fourResponse=reviewedFourLinkPrefix(c.registry,c.state);
-  rule(c.state.timing.window === 'chain-response' && ((c.state.chain.length === 1 && trapHolePrefix(c.state, c.registry)) || extended || sevenResponse || fourResponse || trapFourResponse)
+  rule(c.state.timing.window === 'chain-response' && (bounded?boundedResponse:((c.state.chain.length === 1 && trapHolePrefix(c.state, c.registry)) || extended || sevenResponse || fourResponse || trapFourResponse))
     && c.state.chain.at(-1)!.id === respondingToLinkId, 'illegal-timing', 'Respond directly to a reviewed Trap activation');
   const p = mutablePlayer(c.state, actorId), card = c.state.cards[id];
   rule(card && c.registry.counterTrapHandlers[card.definition.id] === 'pay-1000-negate-trap-hole-activation'
     && card.controllerId === actorId && card.location.kind === 'spell-trap' && card.location.playerId === actorId
     && card.position === 'face-down', 'invalid-target', 'LP Counter Trap must be Set on your field');
   rule(card.markers.setOnTurn !== null && card.markers.setOnTurn < c.state.turn.number, 'illegal-timing', 'Cannot activate Trap in the turn it was Set');
+  rule(!bounded||card.definition.id==='official:03819470','invalid-target','Unreviewed bounded Counter source');
   rule(p.lifePoints > 1000, 'unpayable-cost', 'Must have more than 1000 LP');
   const beforeLP = p.lifePoints;
   p.lifePoints -= 1000;
@@ -581,7 +616,7 @@ function activateLPCounterTrap(c: Context, actorId: string, id: string, respondi
   emit(c, 'life-points-paid', [], { playerId: actorId, amount: 1000, beforeLP, afterLP: p.lifePoints, reason: 'activation-cost' }, false);
   const cost = c.events.at(-1)!; card.position = 'face-up';
   c.state.chain.push({ id: `${c.state.id}:lp-counter-link:${c.state.eventSequence + 1}`, controllerId: actorId, source: id,
-    sourceAtActivation: structuredClone(card), effectId: trapFourResponse?THREE_SEVEN_EFFECT_ID:fourResponse?FOUR_LINK_EFFECT_ID:sevenResponse?SEVEN_RESPONSE_EFFECT_ID:extended ? SEVEN_MAGIC_EFFECT_ID : 'pay-1000-negate-trap-hole-activation', spellSpeed: 3,
+    sourceAtActivation: structuredClone(card), effectId: bounded?BOUNDED_SEVEN_EFFECT_ID:trapFourResponse?THREE_SEVEN_EFFECT_ID:fourResponse?FOUR_LINK_EFFECT_ID:sevenResponse?SEVEN_RESPONSE_EFFECT_ID:extended ? SEVEN_MAGIC_EFFECT_ID : 'pay-1000-negate-trap-hole-activation', spellSpeed: 3,
     costEvents: [{ ...cost, affectedInstances: [], details: { ...cost.details } }], targetRefs: [], respondingToLinkId,
     activationNegated: false, effectNegated: false });
   emit(c, 'counter-trap-activated', [id], {}, false);
@@ -849,6 +884,12 @@ function pass(c: Context, actorId: string) {
   }
   const phase = c.state.timing.requestedPhase;
   if (c.state.chain.length) {
+    if(boundedRegistry(c.registry)&&boundedFamily(c.state)) {
+      c.state.timing.window='resolving';c.state.timing.priorityPlayer=null;
+      c.boundedReview=c.registry.boundedCounterReview;
+      c.boundedFrame=startBoundedCounterFrame(c.registry,c.state,c.boundedReview);
+      runStagedBoundedParent(c);return;
+    }
     if (c.registry.counterContinuations['official:03819470'] === 'reviewed-four-link-counter-patterns-v5'
       && c.state.chain.some(l => l.spellSpeed === 3))
       c.counterEntry = captureCounterResolutionEntry(c.registry, { ...c.state,
@@ -911,6 +952,7 @@ export function applyAction(registry: Registry, state: DuelState, requestInput: 
     rule(!state.result, 'duel-ended', 'Duel is already finished');
     rule(request.expectedStateVersion === state.stateVersion, 'stale-state', 'State version has changed');
     const c: Context = { state: structuredClone(state) as State, registry, events: [] };
+    if(state.boundedCounterResolution) {c.boundedFrame=state.boundedCounterResolution;c.boundedReview=registry.boundedCounterReview;}
     const a = request.action;
     switch (a.type) {
       case 'set-trap': setTrap(c, request.actorId, a.instanceId, a.slot as Slot); break;
@@ -924,9 +966,10 @@ export function applyAction(registry: Registry, state: DuelState, requestInput: 
       case 'request-phase': requestPhase(c, request.actorId, a.phase); break;
       case 'pass': pass(c, request.actorId); break;
       case 'answer-decision': answer(c, request.actorId, a.decisionId, a.optionIds); break;
-      case 'concede': c.state.chain = []; c.state.pendingTriggers = []; endDuel(c, other(state, request.actorId).id, 'concession'); break;
+      case 'concede': c.state.chain = []; c.state.pendingTriggers = []; endDuel(c, other(state, request.actorId).id, 'concession'); if(c.boundedFrame)releaseBoundedFrame(c); break;
     }
     c.state.stateVersion++;
+    if(c.boundedFrame!==undefined)c.state.boundedCounterResolution=c.boundedFrame?structuredClone(c.boundedFrame) as NonNullable<State['boundedCounterResolution']>:null;
     assertDuelInvariants(c.state, registry);
     return { accepted: true, state: freeze(c.state), events: freeze(c.events) };
   } catch (error) {
@@ -1006,10 +1049,11 @@ function finishStagedBoundedTransition(c: Context): StagedBoundedCounterResult {
 }
 
 /** Trusted staged resolution seam: receipts are ALREADY paid and the response
- * window is closed. Not called by live Pass, activation, discovery or HTTP.
- * The frame stays a sidecar until the v6 server/projection integration is reviewed.
+ * window is closed. This legacy staged seam keeps its frame as a sidecar.
+ * Live v6 uses applyAction and persists its frame in server state instead.
  */
 export function resolveStagedBoundedCounter(registry: Registry, state: DuelState, review: unknown): StagedBoundedCounterResult {
+  rule(state.boundedCounterResolution===undefined,'illegal-timing','Use applyAction for persisted v6 state');
   const frame = startBoundedCounterFrame(registry, state, review);
   const c: Context = { registry, state: structuredClone(state) as State, events: [], boundedFrame: frame, boundedReview: review };
   runStagedBoundedParent(c); return finishStagedBoundedTransition(c);
@@ -1020,6 +1064,7 @@ export function resolveStagedBoundedCounter(registry: Registry, state: DuelState
  */
 export function resumeStagedBoundedCounter(registry: Registry, state: DuelState, frame: BoundedCounterFrame,
   review: unknown, requestInput: unknown): ActionResult & { readonly frame: BoundedCounterFrame | null } {
+  rule(state.boundedCounterResolution===undefined,'illegal-timing','Use applyAction for persisted v6 state');
   assertCurrentBoundedCounterFrame(registry, state, frame, review);
   const parsed = RequestSchema.safeParse(requestInput);
   if (!parsed.success) return { accepted: false, state, frame, code: 'invalid-action', message: 'Malformed staged bounded request' };

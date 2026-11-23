@@ -17,19 +17,19 @@ function build(input: unknown) {
 }
 
 describe('bounded Counter v6 schema/preflight; gameplay remains v5', () => {
-  it('pairs the reviewed proposal while refusing to load it into a live registry', () => {
+  it('loads v6 only from an explicit reviewed input while the default catalog stays v5', () => {
     const input = proposal(), before = structuredClone(input);
     expect(CounterReviewsSchema.safeParse([input]).success).toBe(true);
-    expect(() => build(input)).toThrow('Bounded Counter v6 gameplay is not implemented');
+    expect(build(input).counterContinuations[seven.cardId]).toBe(BOUNDED_COUNTER_CONTINUATION);
     expect(input).toEqual(before); expect(Object.isFrozen(input)).toBe(false);
     expect(registry.counterContinuations[seven.cardId]).toBe('reviewed-four-link-counter-patterns-v5');
   });
-  it('rejects v6 before unsupported or missing cards could silently remove it from the registry', () => {
+  it('rejects v6 with unsupported/missing pinned dependency instead of returning a partial registry', () => {
     for (const absent of [false, true]) {
       const cards = structuredClone(runtime.cards).filter(c => !absent || c.id !== seven.cardId);
       if (!absent) Object.assign(cards.find(c => c.id === seven.cardId)!.legality, { status: 'illegal', maxCopies: 0 });
       expect(() => createRegistry(cards, goat200508Format, {}, runtime.effectReviews.spells, runtime.effectReviews.flips,
-        runtime.effectReviews.traps, [proposal()])).toThrow('Bounded Counter v6 gameplay is not implemented');
+        runtime.effectReviews.traps, [proposal()])).toThrow();
     }
   });
   it('preflights exactly C3a pins and bounds without mutating/freezing caller data or granting activation', () => {

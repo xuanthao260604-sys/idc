@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { z } from 'zod';
-import type { DuelState, ChainLink } from '../../protocol/src/duel.js';
+import type { DuelState, ChainLink, BoundedCounterResolutionFrame } from '../../protocol/src/duel.js';
 import type { Registry } from './registry.js';
 import { freeze } from './registry.js';
 import { FieldActivationLinkSchema } from './counter-continuation.js';
@@ -21,7 +21,7 @@ const Schema = z.strictObject({ version: z.literal(1), kind: z.literal('bounded-
   originVersion: integer, originSequence: integer.positive(), checkpointVersion: integer, checkpointSequence: integer.positive(),
   occurrence: z.unknown(), links: z.array(FieldActivationLinkSchema).min(1).max(8),
   survivingSourceIds: z.array(id).min(1).max(8), cleanupOrders: z.array(z.strictObject({ownerId:id,order:z.array(id).min(1).max(8).nullable()})).min(1).max(2).nullable(), binding: sha, integritySha256: sha });
-export type BoundedCounterFrame = Omit<z.infer<typeof Schema>,'links'> & { readonly links: readonly ChainLink[] };
+export type BoundedCounterFrame = BoundedCounterResolutionFrame;
 const same = (a: unknown,b: unknown) => JSON.stringify(a) === JSON.stringify(b);
 const hash = (v: unknown) => createHash('sha256').update(JSON.stringify(v)).digest('hex');
 function check(v: unknown, message: string): asserts v { if (!v) throw new Error(message); }
