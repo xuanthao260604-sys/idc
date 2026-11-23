@@ -80,4 +80,38 @@ gói/bàn giao beta và không coi Windows runner là Windows 11 đã kiểm ch�
 
 ## Bằng chứng chốt
 
-Đang chạy hồi quy/CI; chốt sau khi đọc artifact đúng source.
+Code được kiểm chứng: `096a23e8ccb594a1352a67e0ea6e8dce6f683536` tại
+[CI 45255332294](https://github.com/xuanthao260604-sys/idc/actions/runs/45255332294),
+attempt 1. Ubuntu job `137975532869`, Windows job `137975533528` đều
+completed/success. Đã đọc log Ubuntu, source SHA khớp: **6149/6149 test/67
+file**, typecheck, data/build và vanilla/mixed smoke đạt. Local cũng đạt
+**6149/6149 test trong 67 file**, typecheck, cards:check/build và hai smoke.
+Suite parent mới đủ 689 ca; migration cũ đủ 163 ca, 142 golden không đổi.
+
+Artifact `windows-validation-45255332294-1`, ID `14859572005`;
+SHA-256 ZIP khớp metadata GitHub:
+`aace328c6ba35730e3cb7d0fc4d563d68443d8c21cbd654e73b4b1db984d9e73`.
+Report: `2026-11-23T20-03-57-548Z-6312/report.json`.
+Windows win32/x64, OS 10.0.26100, Node 24.19.0,
+npm 11.17.0, Edg/157.0.4341.60: **6149/6149 test/67 file, 112/112 bước,
+102/102 browser report**, runtimeExceptions=0.
+
+Đã đọc đủ 112 raw step log; từng JSON browser khớp report, đủ 102 report,
+đúng platform/version và không runtime exception. So artifact baseline
+C3b.2b.1 `windows-validation-45193878890-1` source `3e716ba`: 66 suite cũ
+giữ số ca, chỉ thêm suite parent 689 ca; 102 browser facts giữ nguyên khi
+bỏ riêng browserVersion; capabilities.log giống nguyên byte. ZIP baseline
+cũng khớp metadata đã lưu. Không ghép report/log khác source.
+
+Mọi data/reviews/evidence/bundle/ảnh/deck nguồn, protocol/UI và 142 golden
+giữ nguyên byte. README trước chu kỳ giữ nguyên nội dung; capabilities
+local khớp baseline. Chỉ duel.ts là source engine cũ được sửa, các nhánh
+mới đòi Context staged; đường chơi/manifest v5 giữ nguyên.
+
+689 ca mới dùng entry receipt tổng hợp rồi chạy handler/event/resume của
+parent staged, không phải bằng chứng activation, HTTP hoặc UI v6. Frame
+vẫn là sidecar; registry v6 còn bị chặn và chưa tạo active review v6.
+Commit chốt sau CI chỉ cập nhật tài liệu `[skip ci]`; bằng chứng code thuộc
+`096a23e`. Report ghi `windows11DesktopVerified=false`; chưa kiểm Windows 11
+desktop, chưa đóng gói/bàn giao beta. Tiếp theo là wiring C3b.3, C3/C4 chưa
+hoàn tất; mục tiêu sau Chain vẫn là bộ tạo bài riêng và Windows 11 thực.
