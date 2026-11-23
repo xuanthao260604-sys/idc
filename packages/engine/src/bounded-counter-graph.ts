@@ -13,6 +13,7 @@ import { SevenLPCostEventSchema, sevenLPCostBalances } from './seven-lp-cost-led
 
 /** Component-only identity. Never accepted by the live v5 activation dispatcher. */
 export const BOUNDED_SEVEN_CANDIDATE_EFFECT = 'candidate-bounded-seven-response-v1';
+export const BOUNDED_SEVEN_EFFECT_ID = 'pay-1000-negate-direct-trap-activation-v6';
 const T = 'official:04206964', M = 'official:77414722', V = 'official:03819470';
 const trapPin = '6bde121e8b1b4409e34d907b2d9e9d5ba5df93676a46507d205cd6d96372d35d';
 const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
@@ -25,7 +26,7 @@ const Discard = z.strictObject({ sequence: z.number().int().positive().safe(), s
 /** Shared structural validation, not proof of a legal action history, priority history,
  * a complete DuelState validator, or permission to activate a new pattern. No mutations.
  */
-function validateGraph(registry: Registry, state: DuelState, reviewed: boolean) {
+function validateGraph(registry: Registry, state: DuelState, reviewed: boolean | 'staged-v6') {
   check(state.id && state.cardRegistryRevision === registry.revision && same(state.format, registry.format)
     && registry.format.id === 'goat-2005-08-17' && registry.format.revision === 4
     && natural(state.stateVersion) && natural(state.eventSequence) && state.eventSequence > 0
@@ -131,7 +132,7 @@ function validateGraph(registry: Registry, state: DuelState, reviewed: boolean) 
   check(seven.length <= 6 && (!spell || !seven.length || prefixLength === 2), 'Invalid candidate Seven suffix');
   for (let i = 0; i < seven.length; i++) {
     const l = seven[i]!, previous = state.chain[prefixLength + i - 1]!;
-    check(l.sourceAtActivation.definition.id === V && l.effectId === (reviewed ? (spell ? [SEVEN_MAGIC_EFFECT_ID, FOUR_LINK_EFFECT_ID] : ['pay-1000-negate-trap-hole-activation', SEVEN_RESPONSE_EFFECT_ID, THREE_SEVEN_EFFECT_ID])[i] : BOUNDED_SEVEN_CANDIDATE_EFFECT) && l.spellSpeed === 3
+    check(l.sourceAtActivation.definition.id === V && l.effectId === (reviewed === 'staged-v6' ? BOUNDED_SEVEN_EFFECT_ID : reviewed ? (spell ? [SEVEN_MAGIC_EFFECT_ID, FOUR_LINK_EFFECT_ID] : ['pay-1000-negate-trap-hole-activation', SEVEN_RESPONSE_EFFECT_ID, THREE_SEVEN_EFFECT_ID])[i] : BOUNDED_SEVEN_CANDIDATE_EFFECT) && l.spellSpeed === 3
       && l.respondingToLinkId === previous.id && !l.targetRefs.length && l.costEvents.length === 1, 'Invalid candidate Seven response');
     const e = l.costEvents[0]!;
     check(SevenLPCostEventSchema.safeParse(e).success && e.details?.playerId === l.controllerId, 'Invalid candidate LP receipt');
@@ -171,4 +172,12 @@ export function validateReviewedCounterGraph(registry: Registry, state: DuelStat
     || (!spell && graph.prefixLength === 1 && graph.sevenCount >= 1 && graph.sevenCount <= 3), 'Unreviewed Counter entry pattern');
   const { kind: _candidateKind, ...body } = graph;
   return freeze({ kind: 'reviewed-counter-graph-v1' as const, ...body });
+}
+
+/** Structure for a staged resolver, not live activation permission. The caller
+ * must independently preflight the v6 review and keep the active registry gate.
+ */
+export function validateStagedBoundedCounterGraph(registry: Registry, state: DuelState) {
+  const { kind: _candidateKind, ...body } = validateGraph(registry, state, 'staged-v6');
+  return freeze({ kind: 'staged-bounded-counter-graph-v6' as const, ...body });
 }

@@ -132,3 +132,8 @@ Cập nhật 23/11/2026: [C3b.2a](counter-resolution-entry.md) nối checkpoint
 đầu vào vào resolver v5, giữ baseline state/events và gate hiện tại. Bước
 tiếp theo C3b.2b làm frame/resolver hữu hạn; C3/C4 chưa hoàn tất, chưa mở
 v6 hoặc đóng gói beta. Sau Chain vẫn là bộ tạo bài riêng và Windows 11.
+
+Cập nhật tiếp 23/11/2026: [C3b.2b.1](bounded-counter-frame.md) thêm hợp
+đồng frame staged; chưa nối resolver/live state. Mục tiếp theo C3b.2b.2
+là parent resolver/event thật/resume/cleanup/terminal, rồi mới activation
+và UI scope mới. C3/C4 chưa hoàn tất; editor và Windows 11 giữ mục tiêu sau.
