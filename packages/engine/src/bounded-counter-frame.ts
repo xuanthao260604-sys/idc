@@ -191,7 +191,9 @@ export function checkpointBoundedCounterFrame(registry: Registry,state: DuelStat
 
 /** Parent calls after its validated cleanup commit or end/concede transition.
  * Returns null to drop the frame. Never moves a card, refunds LP, selects an order,
- * or proves that arbitrary proposed effects were legal. No post-game owner choice.
+ * or proves that arbitrary proposed effects were legal. Cleanup may finish in
+ * the same committed version as its checkpoint, with a later event sequence;
+ * concession remains a separate command/version. No post-game owner choice.
  */
 export function releaseBoundedCounterFrame(registry:Registry,state:DuelState,frame:BoundedCounterFrame,review:unknown):null {
   assertBoundedCounterFrameHistory(registry,frame,review);
@@ -199,7 +201,8 @@ export function releaseBoundedCounterFrame(registry:Registry,state:DuelState,fra
     &&same(state.turn,frame.turn)&&same(state.players.map(p=>p.id),frame.playerIds)
     &&Number.isSafeInteger(state.stateVersion)&&Number.isSafeInteger(state.eventSequence)
     &&state.players.every(p=>Number.isSafeInteger(p.lifePoints)&&p.lifePoints>=(state.result?0:1))
-    &&state.stateVersion>frame.checkpointVersion&&state.eventSequence>frame.checkpointSequence
+    &&state.stateVersion>=frame.checkpointVersion&&state.stateVersion>frame.originVersion&&state.eventSequence>frame.checkpointSequence
+    &&(state.result?.reason!=='concession'||state.stateVersion>frame.checkpointVersion)
     &&state.chain.length===0&&state.pendingDecision===null&&state.chainCleanup===null
     &&state.spellResolution===null&&state.counterResolution===null&&state.trapCounterResolution===null
     &&state.fourLinkCounterResolution===null&&state.trapThreeSevenResolution===null&&!state.pendingTriggers.length,
@@ -207,9 +210,19 @@ export function releaseBoundedCounterFrame(registry:Registry,state:DuelState,fra
   check(state.result ? frame.playerIds.includes(state.result.winner??'')&&['concession','failed-draw','life-points'].includes(state.result.reason)
     : frame.stage==='cleanup','Bounded frame cannot finish before cleanup');
   const gone=new Set(prepareCounterLifoSchedule(frame.links).filter(s=>s.kind==='negate').map(s=>s.linkIndex));
+  if(state.result&&state.result.reason!=='concession') {
+    const root=frame.links[0]!,handler=registry.spellHandlers[root.sourceAtActivation.definition.id],other=frame.playerIds.find(p=>p!==root.controllerId)!;
+    check(frame.stage==='before-root'&&root.effectId==='normal-spell'&&!gone.has(0)
+      &&(state.result.reason==='failed-draw'?handler?.handler==='draw'&&state.result.winner===other&&state.players.find(p=>p.id===root.controllerId)?.deck.length===0
+        :handler?.handler==='inflict-damage'&&state.result.winner===root.controllerId&&state.players.find(p=>p.id===other)?.lifePoints===0),
+    'Bounded frame terminal must come from the surviving reviewed root');
+  }
   for(const [i,l] of frame.links.entries()) {
     const snapshot=l.sourceAtActivation,c=state.cards[l.source];
-    const grave = !state.result||gone.has(i)&&frame.stage!=='before-root';
+    // A non-concession terminal can only occur in the root after the atomic
+    // sweep. Concession is observable only at entry or an already paused stage.
+    const swept = frame.stage!=='before-root'||state.result?.reason!=='concession';
+    const grave = !state.result||gone.has(i)&&swept;
     const wanted=grave?{...snapshot,location:{kind:'graveyard',playerId:snapshot.ownerId},controllerId:snapshot.ownerId,position:'face-up'}:snapshot;
     check(c&&same(c,wanted),'Bounded frame release source lifecycle changed');
     check(grave?state.players.find(p=>p.id===c.ownerId)?.graveyard.filter(id=>id===c.id).length===1

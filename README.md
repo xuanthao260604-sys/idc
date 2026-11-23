@@ -224,7 +224,7 @@ Lộ trình đề xuất hiện hành: [Chain → bộ tạo bài riêng → Win
 
 Đã hoàn tất C1 — [ma trận Chain beta](docs/engine/chain-beta-scope.md): phạm vi, các pattern giữ/mở thêm, ca từ chối, gate review và thứ tự C2a–C4. Active review vẫn v5; chưa mở Counter dài hơn hoặc Chain tổng quát. Sau Chain là bộ tạo bài riêng giới hạn và Windows 11 desktop.
 
-Đã thêm C2a — [graph Counter và ledger phí ứng viên](docs/engine/bounded-counter-candidate.md): kiểm grammar/pin/nguồn/copy/ô, tối đa sáu receipt Seven và phân biệt history với current-board binding. 525 ca thành phần mới, không phải activation live; gate v5, dữ liệu và capability giữ nguyên. Mục kế tiếp là C2b: oracle LIFO và dispatcher/journal ứng viên.
+Đã thêm C2a — [graph Counter và ledger phí ứng viên](docs/engine/bounded-counter-candidate.md): kiểm grammar/pin/nguồn/copy/ô, tối đa sáu receipt Seven và phân biệt history với current-board binding. 524 ca thành phần mới, không phải activation live; gate v5, dữ liệu và capability giữ nguyên. Mục kế tiếp là C2b: oracle LIFO và dispatcher/journal ứng viên.
 
 Mốc kiểm chứng C2a: Linux local và [Windows/Ubuntu CI 42563079635](https://github.com/xuanthao260604-sys/idc/actions/runs/42563079635) đạt **4127 test/61 file** trên source `286a56b`. Artifact Windows đạt **112 bước/102 browser report**, Edge 156.0.4314.58, runtimeExceptions=0; 102 facts browser và capabilities giữ baseline. Chưa mở activation mới, chưa thử trực tiếp Windows 11 desktop.
 
@@ -257,4 +257,4 @@ Catalog runtime nạp 19 bundle đang hoạt động từ danh sách đầu vào
 
 Đã chốt C3b.2a trên code `d40434a`: [Windows/Ubuntu CI 45183066151](https://github.com/xuanthao260604-sys/idc/actions/runs/45183066151) đạt **4932 test/65 file**; Windows **112 bước/102 browser report**, runtimeExceptions=0. 64 suite cũ giữ số ca; browser facts/capabilities giữ baseline C3b.1; 30 ca mới kiểm checkpoint v5. Chưa mở v6 hoặc kiểm Windows 11 desktop.
 
-Đã thêm [C3b.2b.1 hợp đồng frame Counter staged](docs/engine/bounded-counter-frame.md): history phí/occurrence tách current binding, checkpoint root-choice/cleanup và release. 525 ca fixture mô hình, chưa phải activation/resolver v6; chưa gắn frame vào DuelState. Mục tiếp theo C3b.2b.2 nối parent resolver và clock commit; gate/manifest vẫn v5.
+Đã thêm [C3b.2b.1 hợp đồng frame Counter staged](docs/engine/bounded-counter-frame.md): history phí/occurrence tách current binding, checkpoint root-choice/cleanup và release. 528 ca fixture mô hình, chưa phải activation/resolver v6; chưa gắn frame vào DuelState. Mục tiếp theo C3b.2b.2 nối parent resolver và clock commit; gate/manifest vẫn v5.

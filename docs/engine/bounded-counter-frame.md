@@ -42,7 +42,10 @@ riêng, giữ hai entry candidate/live-v5 hiện có.
   quay về Summon sau semantic event của resolution. Current binding vẫn
   bao gồm timing/event hiện hành; sửa nó sau checkpoint bị từ chối.
 - Release trả null sau cleanup commit hoặc terminal/concede đã được parent
-  thực hiện. Kiểm source lifecycle/clock/context; không chuyển bài, trả
+  thực hiện. Cleanup commit có thể cùng version với checkpoint và event
+  sequence mới; đầu hàng phải là command/version mới. Terminal do Phép gốc
+  ngay sau sweep được nhận diện riêng với đầu hàng trước sweep.
+  Kiểm source lifecycle/clock/context; không chuyển bài, trả
   LP, chọn thứ tự hoặc tạo quyết định sau trận.
 
 Hash chỉ là integrity/binding, không phải xác thực hoặc dịch vụ chống
@@ -55,7 +58,7 @@ sau. Chưa dùng frame này cho dữ liệu client hoặc serialization gameplay
 
 ## Bằng chứng test đúng phạm vi
 
-525 ca mới là **test hợp đồng frame trên fixture tổng hợp**, không phải
+528 ca mới là **test hợp đồng frame trên fixture tổng hợp**, không phải
 activation hoặc resolver v6 qua applyAction. Fixture tạo instance/receipt
 và mô phỏng sweep/effect/cleanup; chỉ trong test đổi ID candidate sang ID
 staged. Không chép candidate journal vào frame hoặc coi receipt mô hình là

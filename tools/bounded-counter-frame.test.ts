@@ -39,7 +39,7 @@ function finish(s:ReturnType<typeof fixture>['state'],frame:ReturnType<typeof st
     s.chainCleanup=orderChainCleanup(registry,s,s.chainCleanup!,d.playerId,[...d.optionIds].reverse()) as any;
     decision(s);s.stateVersion++;s.eventSequence++;frame=checkpointBoundedCounterFrame(registry,s,frame,'cleanup',review);
   }
-  Object.assign(s,commitChainCleanup(registry,s,s.chainCleanup!));s.chain=[];s.chainCleanup=null;s.stateVersion++;s.eventSequence++;
+  Object.assign(s,commitChainCleanup(registry,s,s.chainCleanup!));s.chain=[];s.chainCleanup=null;s.eventSequence++;
   expect(releaseBoundedCounterFrame(registry,s,frame,review)).toBeNull();
 }
 const seq=Array.from({length:7},(_,n)=>Array.from({length:2**n},(_,bits)=>Array.from({length:n},(_,i)=>bits&(1<<i)?'a':'b'))).flat().filter(s=>s.filter(x=>x==='a').length<=3&&s.filter(x=>x==='b').length<=3);
@@ -79,6 +79,8 @@ describe('bounded Counter frame contract, staged outside live v5',()=>{
     const plan=planResolution(registry.spellHandlers[spellId],spellResolutionBoard(registry,s,'a'));if(plan.kind!=='choose-destruction')throw Error('Missing tie');
     s.pendingDecision={id:`${s.chain[0]!.id}:bounded-choice`,kind:'effect-choice',playerId:plan.playerId,optionIds:[...plan.optionIds],min:1,max:1};
     const paused=checkpointBoundedCounterFrame(registry,s,start,'root-choice',review);assertCurrentBoundedCounterFrame(registry,s,paused,review);
+    const ended=structuredClone(s);ended.pendingDecision=null;ended.chain=[];ended.chainCleanup=null;ended.result={winner:'b',reason:'concession'};ended.stateVersion++;ended.eventSequence++;
+    expect(releaseBoundedCounterFrame(registry,ended,paused,review)).toBeNull();
     grave(s,extra);s.stateVersion++;s.eventSequence++;cleanup(s,start.survivingSourceIds);
     const next=checkpointBoundedCounterFrame(registry,s,paused,'cleanup',review);
     expect(()=>checkpointBoundedCounterFrame(registry,s,next,'root-choice',review)).toThrow();finish(s,next);
@@ -103,6 +105,20 @@ describe('bounded Counter frame contract, staged outside live v5',()=>{
     if(stage==='cleanup'){sweep(s);cleanup(s,start.survivingSourceIds);f=checkpointBoundedCounterFrame(registry,s,start,'cleanup',review);}
     const cards=structuredClone(s.cards),lp=s.players.map(p=>p.lifePoints);s.chain=[];s.chainCleanup=null;s.pendingDecision=null;s.result={winner:'b',reason:'concession'};s.stateVersion++;s.eventSequence++;
     expect(releaseBoundedCounterFrame(registry,s,f,review)).toBeNull();expect(s.cards).toEqual(cards);expect(s.players.map(p=>p.lifePoints)).toEqual(lp);
+  });
+  it.each(['failed-draw','life-points'] as const)('drops an entry frame after inline root terminal %s without a post-game cleanup',reason=>{
+    const {state:s}=fixture({spellId:reason==='failed-draw'?'official:55144522':'official:19523799',owners:['a']});
+    if(reason==='failed-draw') {const p=s.players.find(p=>p.id==='a')!;for(const id of p.deck.splice(0)){p.graveyard.push(id);s.cards[id]!.location={kind:'graveyard',playerId:p.id};s.cards[id]!.position='face-up';}}
+    const f=startBoundedCounterFrame(registry,s,review);sweep(s);s.result={winner:reason==='failed-draw'?'b':'a',reason};if(reason==='life-points')s.players.find(p=>p.id==='b')!.lifePoints=0;
+    s.chain=[];s.pendingDecision=null;s.chainCleanup=null;s.eventSequence++;
+    s.timing={...s.timing,window:'open',priorityPlayer:null,consecutivePasses:0};
+    const cards=structuredClone(s.cards);expect(releaseBoundedCounterFrame(registry,s,f,review)).toBeNull();expect(s.cards).toEqual(cards);
+    for(const id of f.survivingSourceIds)expect(s.cards[id]!.location.kind).toBe('spell-trap');
+  });
+  it('rejects a non-concession terminal attributed to a negated root',()=>{
+    const {state:s}=fixture({spellId:'official:55144522',owners:[]}),f=startBoundedCounterFrame(registry,s,review);sweep(s);
+    s.result={winner:'b',reason:'failed-draw'};s.chain=[];s.eventSequence++;
+    expect(()=>releaseBoundedCounterFrame(registry,s,f,review)).toThrow('surviving reviewed root');
   });
   it('keeps the original summon as history after semantic events replace the response occurrence',()=>{
     const {state:s}=fixture({owners:['a','b']}),f=startBoundedCounterFrame(registry,s,review),original=structuredClone(f.occurrence);
