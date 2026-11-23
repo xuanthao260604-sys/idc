@@ -9,7 +9,7 @@ const runtime=loadRuntimeCatalog();
 export const explicitBoundedReview={...runtime.effectReviews.counters.find(r=>r.cardId==='official:03819470')!,revision:6,scope:'counter-trap-reviewed-bounded-patterns-v6',continuation:'reviewed-bounded-counter-patterns-v6'};
 export const boundedRegistry=createRegistry(runtime.cards,goat200508Format,{},runtime.effectReviews.spells,runtime.effectReviews.flips,runtime.effectReviews.traps,
   [...runtime.effectReviews.counters.filter(r=>r.cardId!=='official:03819470'),explicitBoundedReview]);
-export interface BoundedLiveOptions { actor?:string;spellId?:string;magicOwner?:string;owners?:readonly string[];traps?:number;phase?:'main1'|'main2';method?:'normal'|'tribute'|'flip';tie?:boolean;lp?:Readonly<Record<string,number>>;deckRemaining?:number;activateSevenCount?:number }
+export interface BoundedLiveOptions { actor?:string;spellId?:string;rootSet?:boolean;magicOwner?:string;owners?:readonly string[];traps?:number;phase?:'main1'|'main2';method?:'normal'|'tribute'|'flip';tie?:boolean;lp?:Readonly<Record<string,number>>;deckRemaining?:number;activateSevenCount?:number }
 /** Initial board only. Every Chain receipt/link after this fixture is produced by
  * applyAction, never by converting a candidate snapshot or writing Chain state.
  */
@@ -34,7 +34,7 @@ export function setupBoundedLive(o:BoundedLiveOptions={}) {
   let root:string|undefined,magic:string|undefined,magicCost:string|undefined,rootCost:string|undefined,target:string,rootTarget:string|undefined;
   const trapIds:string[]=[],tributes:string[]=[];
   const reserved:Record<string,Set<number>>={a:new Set(),b:new Set()};
-  if(o.spellId){root=take(actor,o.spellId,'hand');reserved[actor]!.add(0);const mslot=magicOwner===actor?1:0;reserved[magicOwner]!.add(mslot);magic=take(magicOwner,'official:77414722','spell-trap',mslot as Slot);magicCost=normal(magicOwner,'hand');target=take(other,ox,'monster',0);if(o.tie)take(other,ox,'monster',1);
+  if(o.spellId){root=take(actor,o.spellId,o.rootSet?'spell-trap':'hand',0);reserved[actor]!.add(0);const mslot=magicOwner===actor?1:0;reserved[magicOwner]!.add(mslot);magic=take(magicOwner,'official:77414722','spell-trap',mslot as Slot);magicCost=normal(magicOwner,'hand');target=take(other,ox,'monster',0);if(o.tie)take(other,ox,'monster',1);
     const handler=registry.spellHandlers[o.spellId]!.handler;
     if(['discard-destroy-target-monster','discard-return-own-graveyard-monster'].includes(handler))rootCost=normal(actor,'hand');
     if(handler==='discard-return-own-graveyard-monster')rootTarget=normal(actor,'graveyard');

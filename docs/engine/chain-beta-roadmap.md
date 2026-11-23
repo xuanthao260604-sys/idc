@@ -153,3 +153,9 @@ Cập nhật tiếp 24/11/2026: [C3b.3b.1](bounded-live-http-ui.md) kiểm đư�
 HTTP/UI/browser với registry v6 explicit opt-in; chưa đổi active review
 hoặc manifest mặc định. C3b.3b.2 còn ma trận HTTP/UI và gate review/default,
 rồi C4 audit nhiều lượt. U1 và Windows 11 desktop thực giữ thứ tự sau Chain.
+
+Cập nhật tiếp 24/11/2026: [C3b.3b.2a](bounded-boundary-http-ui.md) bổ sung
+biên LP/tay-Set/phase/terminal và 11 root qua HTTP/UI explicit v6. Review/
+manifest vẫn v5. Tiếp theo chốt gate review/default với baseline legacy
+có phiên bản và ma trận phần còn thiếu, rồi C4 audit nhiều lượt. U1 và
+Windows 11 desktop thực vẫn theo sau Chain.
