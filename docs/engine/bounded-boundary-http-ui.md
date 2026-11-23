@@ -36,9 +36,9 @@ kết quả trận đều phát sinh từ lệnh thật. Seven preview/hủy kh�
 UI giữ cách kích hoạt trực tiếp Phép Set không có lựa chọn hiện có.
 Không giả định Phép Set luôn có dialog xác nhận.
 
-Validation thêm tám mode vào bộ cũ, dự kiến 126 bước/116 browser report.
-Không bỏ mode cũ, không tăng timeout workflow 25 phút. Con số nghiệm thu
-chỉ chốt theo artifact thực tế.
+Validation thêm tám mode vào bộ cũ; artifact đúng source đã xác nhận
+126 bước/116 browser report như bằng chứng dưới đây. Không bỏ mode cũ
+hoặc tăng timeout workflow 25 phút.
 
 ## Điểm dừng
 
@@ -57,4 +57,48 @@ bàn giao beta hoặc kiểm chứng Windows 11 bằng runner CI.
 
 ## Bằng chứng
 
-Đang chốt hồi quy và CI đúng source; chưa dùng số dự kiến làm kết luận.
+Code `dc5452bb86da523d23035e9e8cdcd323da2861d9` tại [CI 45288045142](https://github.com/xuanthao260604-sys/idc/actions/runs/45288045142), attempt 1.
+Ubuntu job `138089363817`, Windows job `138089363065` đều completed/success.
+Đã đọc log Ubuntu: checkout SHA khớp code; **6892/6892 test/71 file**,
+typecheck, cards:check/build và vanilla/mixed smoke đạt. Local đạt cùng
+**6892/6892 test/71 file**, typecheck, cards:check/build và hai smoke.
+66 ca HTTP mới đạt; 70 suite cũ giữ số ca và test cũ nguyên byte. 163 ca
+migration với 142 golden state/raw events không tái sinh hoặc thay hash.
+
+Linux local chạy đủ tám mode mới và hai hồi quy bounded-live-a-trap,
+chain-view, Chrome/154.0.8037.57, runtimeExceptions=0. Không chạy lại bộ
+126 bước đầy đủ trên Linux local trong chu kỳ này; Ubuntu CI cũng không
+chạy browser tổng hợp. Không dùng số Windows điền vào bằng chứng Linux.
+
+Artifact `windows-validation-45288045142-1`, ID `14873896987`;
+SHA-256 ZIP khớp metadata GitHub:
+`6f754cf556eaa12a81547d6f1f8c33081d0be10344c36ac4778acaa112d3f8b4`.
+Report `2026-11-23T23-21-30-759Z-5816/report.json`.
+Windows win32/x64, OS 10.0.26100, Node 24.19.0,
+npm 11.17.0, Edg/157.0.4341.60: **6892/6892 test/71 file,
+126/126 bước, 116/116 browser report**, runtimeExceptions=0.
+
+Đã đọc đủ 126 raw step log, đối chiếu mọi JSON browser với report/platform.
+So baseline C3b.3b.1 `windows-validation-45276011271-1`, source `f24d2e0`:
+giữ toàn bộ 118 bước và 108 browser facts khi bỏ riêng browserVersion;
+capabilities.log nguyên byte. Tám mode mới Windows khớp facts Linux khi
+bỏ platform/browserVersion. ZIP baseline cũng khớp metadata đã lưu.
+Không ghép evidence từ source khác hoặc tự gọi runner là Windows 11.
+
+Hash sau kiểm tra xác nhận engine/protocol, UI/server, dữ liệu/review/
+evidence, ảnh/frame/back, deck nguồn và mọi test cũ nguyên byte. Fixture
+bounded-live chỉ thêm rootSet; các cấu hình cũ mặc định vẫn đi từ tay.
+README trước chu kỳ giữ làm prefix; default capabilities khớp baseline.
+Không tạo active review v6 hoặc thay runtime manifest.
+
+Harness ban đầu đã kỳ vọng dialog cho Phép Set không chọn mục tiêu;
+đã sửa để theo đúng đường kích hoạt trực tiếp có sẵn, không thay UI hoặc
+nới guard để qua test. Các assertion preview/hủy áp dụng cho Seven.
+Commit chốt sau CI chỉ cập nhật tài liệu [skip ci]; bằng chứng code thuộc
+`dc5452b`.
+
+Dừng ở kiểm biên C3b.3b.2a. Bước tiếp theo là gate review v6/default với
+baseline legacy có phiên bản và ma trận phần còn thiếu trước khi bật.
+C4 audit nhiều lượt còn mở; chưa đóng Chain, chưa kiểm Windows 11 desktop,
+chưa đóng gói/bàn giao beta. Sau Chain giữ bộ tạo bài riêng và Windows 11
+thực.
