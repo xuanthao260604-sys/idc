@@ -48,10 +48,13 @@ schema đã nhận cú pháp. Không nhập thêm bài hoặc thay metadata hi�
 
 ## Kiểm chứng
 
-30 ca mới kiểm capture hai họ/hai ghế từ lệnh thật sau fixture đầu, input
-bất biến, clock/board/occurrence/receipt/decision/terminal, entry bị sửa,
-candidate/registry gate, hai Pass và lịch trước emission. Đây là kiểm thử
-checkpoint live v5, chưa phải kiểm thử hiệu ứng cho scope v6.
+30 ca mới kiểm capture hai họ/hai ghế, input bất biến, drift clock/board/
+occurrence/receipt/decision/terminal, entry bị sửa, candidate/registry gate
+và lịch trước emission. Prefix được tạo bằng lệnh thật sau fixture đầu;
+unit capture chuẩn hóa timing trên bản sao để mô phỏng điểm nội bộ đầu
+resolution, không coi đó là lịch sử hai Pass thật. Ca hai Pass riêng và
+các golden journey chạy lệnh thật qua transition. Đây là kiểm thử checkpoint
+live v5, chưa phải kiểm thử hiệu ứng cho scope v6.
 
 Đã chạy lại 142 golden journey trong suite migration 163 ca: giữ toàn bộ
 hash state/raw event sau mỗi command, không tái sinh file baseline. Phần
@@ -77,4 +80,32 @@ trước U1 bộ tạo bài riêng và W1 Windows 11 thực. Chưa đóng gói/b
 
 ## Bằng chứng chốt
 
-Đang kiểm chứng source C3b.2a; chốt sau khi đọc CI và artifact Windows.
+Source code: `d40434a4d3d8b63592ae0f23d6afc519c5376353` tại
+[CI 45183066151](https://github.com/xuanthao260604-sys/idc/actions/runs/45183066151),
+attempt 1. Ubuntu job `137721548608`, Windows job `137721548586` đều
+completed/success. Đã đọc log Ubuntu: source SHA khớp, **4932/4932 test/65
+file**, typecheck, data/build, vanilla và mixed smoke đạt. Local đạt cùng
+số test/file, typecheck/build, offline cards check và hai smoke; suite entry
+mới đủ 30 ca, migration cũ đủ 163 ca và 142 golden không thay đổi.
+
+Artifact `windows-validation-45183066151-1`, ID `14823741969`;
+SHA-256 ZIP khớp metadata GitHub:
+`865192e4c4bd8dbf885f5a2b8b189cb1e6a07fa29b85dd436be95f3c8ef965c9`.
+Report: `2026-11-23T13-21-34-992Z-4904/report.json`.
+Windows win32/x64, OS 10.0.26100, Node 24.19.0,
+npm 11.17.0, Edg/157.0.4341.60: **4932/4932 test/65 file, 112/112 bước,
+102/102 browser report**, runtimeExceptions=0.
+
+Đã đọc đủ 112 step log; JSON browser từng bước khớp report, đúng platform,
+đủ 102 report. So baseline C3b.1 `windows-validation-43191173336-1`, source
+`47a7ce8`: 64 suite cũ giữ số ca, chỉ thêm suite entry 30 ca; 102 browser
+facts giữ nguyên khi bỏ riêng browserVersion; capabilities.log giống
+nguyên byte. Không ghép report/log khác source. Capabilities local cũng
+khớp C3b.1; toàn bộ data/reviews/evidence, ảnh, deck nguồn, protocol/UI và
+142 golden giữ nguyên byte. Hai file engine cũ thay đổi là graph validator
+và duel.ts; checkpoint mới là Context tạm, không đổi schema DuelState.
+
+Commit chốt sau CI chỉ cập nhật tài liệu `[skip ci]`; bằng chứng code thuộc
+`d40434a`. Review/manifest active vẫn v5 và registry v6 vẫn bị chặn.
+`windows11DesktopVerified=false`; chưa kiểm Windows 11 desktop hoặc
+positive live scope v6, chưa đóng gói/bàn giao beta.
