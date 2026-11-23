@@ -127,3 +127,8 @@ Cập nhật 12/11/2026: [C3b.1](bounded-counter-review-gate.md) chuẩn bị
 schema/preflight v6 và guard registry chưa triển khai. Chưa bật v6; bước
 tiếp theo C3b.2 nối live context/resolver, rồi activation/discovery/UI và
 kiểm chứng trước khi mở gate. Ước lượng C3 tổng thể vẫn 2–4 ngày công.
+
+Cập nhật 23/11/2026: [C3b.2a](counter-resolution-entry.md) nối checkpoint
+đầu vào vào resolver v5, giữ baseline state/events và gate hiện tại. Bước
+tiếp theo C3b.2b làm frame/resolver hữu hạn; C3/C4 chưa hoàn tất, chưa mở
+v6 hoặc đóng gói beta. Sau Chain vẫn là bộ tạo bài riêng và Windows 11.

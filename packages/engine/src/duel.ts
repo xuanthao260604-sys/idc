@@ -1,3 +1,5 @@
+import { captureCounterResolutionEntry, counterEntrySchedule } from './counter-resolution-entry.js';
+import type { CounterResolutionEntry } from './counter-resolution-entry.js';
 import {prepareTrapThreeSevenResolution,THREE_SEVEN_EFFECT_ID} from './trap-three-seven-candidate.js';
 import {reviewedTrapThreeSevenPrefix,assertTrapThreeSevenCleanup} from './trap-three-seven-continuation.js';
 import { z } from 'zod';
@@ -21,7 +23,7 @@ type State = Mutable<DuelState>;
 export interface EngineEvent extends EventRef {
   readonly details: Readonly<Record<string, string | number | boolean>>;
 }
-interface Context { state: State; registry: Registry; events: EngineEvent[] }
+interface Context { state: State; registry: Registry; events: EngineEvent[]; counterEntry?: CounterResolutionEntry }
 export type ActionResult =
   | { accepted: true; state: DuelState; events: readonly EngineEvent[] }
   | { accepted: false; state: DuelState; code: RejectionCode; message: string };
@@ -587,7 +589,7 @@ function activateLPCounterTrap(c: Context, actorId: string, id: string, respondi
  * fact names and movement ownership here; never install a candidate state/journal.
  */
 function emitValidatedCounterLifo(c: Context, links: readonly ChainLink[], sourcesAlreadyMoved: boolean) {
-  for (const step of prepareCounterLifoSchedule(links)) {
+  for (const step of c.counterEntry ? counterEntrySchedule(c.counterEntry, links) : prepareCounterLifoSchedule(links)) {
     const link = links[step.linkIndex]!;
     if (step.kind === 'resolve') emit(c, 'chain-link-resolving', [link.source], {}, false);
     else if (step.kind === 'skip') emit(c, 'chain-link-negated-skipped', [link.source], {}, false);
@@ -833,6 +835,10 @@ function pass(c: Context, actorId: string) {
   }
   const phase = c.state.timing.requestedPhase;
   if (c.state.chain.length) {
+    if (c.registry.counterContinuations['official:03819470'] === 'reviewed-four-link-counter-patterns-v5'
+      && c.state.chain.some(l => l.spellSpeed === 3))
+      c.counterEntry = captureCounterResolutionEntry(c.registry, { ...c.state,
+        timing: { ...c.state.timing, window: 'resolving', priorityPlayer: null } });
     if(c.state.chain.length===4&&c.state.chain[3]!.effectId===THREE_SEVEN_EFFECT_ID)resolveTrapThreeSeven(c);
     else if(c.state.chain.length===4&&c.state.chain[3]!.effectId===FOUR_LINK_EFFECT_ID)resolveFourLinkCounter(c);
     else if(c.state.chain.length===3&&c.state.chain[2]!.effectId===SEVEN_RESPONSE_EFFECT_ID)resolveSevenResponse(c);

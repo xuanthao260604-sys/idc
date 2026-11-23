@@ -4,6 +4,10 @@ import type { Registry } from './registry.js';
 import { freeze } from './registry.js';
 import { definitionFingerprint } from './spell-review.js';
 import { COUNTER_CONTINUATION_PINS, FieldActivationLinkSchema } from './counter-continuation.js';
+import { FOUR_LINK_EFFECT_ID } from './four-link-counter-candidate.js';
+import { THREE_SEVEN_EFFECT_ID } from './trap-three-seven-candidate.js';
+import { SEVEN_MAGIC_EFFECT_ID } from './counter-continuation.js';
+import { SEVEN_RESPONSE_EFFECT_ID } from './trap-counter-continuation.js';
 import { reviewedTrapHoleRootValid } from './trap-counter-continuation.js';
 import { SevenLPCostEventSchema, sevenLPCostBalances } from './seven-lp-cost-ledger.js';
 
@@ -18,10 +22,10 @@ const Discard = z.strictObject({ sequence: z.number().int().positive().safe(), s
   kind: z.literal('cards-discarded'), affectedInstances: z.array(z.string().min(1)).length(1),
   details: z.strictObject({ playerId: z.string().min(1), reason: z.literal('activation-cost') }) });
 
-/** Structural candidate validation, not proof of a legal action history, priority history,
+/** Shared structural validation, not proof of a legal action history, priority history,
  * a complete DuelState validator, or permission to activate a new pattern. No mutations.
  */
-export function validateBoundedCounterGraph(registry: Registry, state: DuelState) {
+function validateGraph(registry: Registry, state: DuelState, reviewed: boolean) {
   check(state.id && state.cardRegistryRevision === registry.revision && same(state.format, registry.format)
     && registry.format.id === 'goat-2005-08-17' && registry.format.revision === 4
     && natural(state.stateVersion) && natural(state.eventSequence) && state.eventSequence > 0
@@ -127,7 +131,7 @@ export function validateBoundedCounterGraph(registry: Registry, state: DuelState
   check(seven.length <= 6 && (!spell || !seven.length || prefixLength === 2), 'Invalid candidate Seven suffix');
   for (let i = 0; i < seven.length; i++) {
     const l = seven[i]!, previous = state.chain[prefixLength + i - 1]!;
-    check(l.sourceAtActivation.definition.id === V && l.effectId === BOUNDED_SEVEN_CANDIDATE_EFFECT && l.spellSpeed === 3
+    check(l.sourceAtActivation.definition.id === V && l.effectId === (reviewed ? (spell ? [SEVEN_MAGIC_EFFECT_ID, FOUR_LINK_EFFECT_ID] : ['pay-1000-negate-trap-hole-activation', SEVEN_RESPONSE_EFFECT_ID, THREE_SEVEN_EFFECT_ID])[i] : BOUNDED_SEVEN_CANDIDATE_EFFECT) && l.spellSpeed === 3
       && l.respondingToLinkId === previous.id && !l.targetRefs.length && l.costEvents.length === 1, 'Invalid candidate Seven response');
     const e = l.costEvents[0]!;
     check(SevenLPCostEventSchema.safeParse(e).success && e.details?.playerId === l.controllerId, 'Invalid candidate LP receipt');
@@ -145,4 +149,26 @@ export function validateBoundedCounterGraph(registry: Registry, state: DuelState
   for (const b of balances) check(state.players.find(p => p.id === b.playerId)!.lifePoints === b.afterLastLP, 'Candidate current LP drift');
   return freeze({ kind: 'bounded-counter-graph-candidate-v1' as const, family: spell ? 'spell-magic' as const : 'trap-prefix' as const,
     prefixLength, sevenCount: seven.length, linkIds: state.chain.map(l => l.id), sourceIds: state.chain.map(l => l.source), payments, balances });
+}
+
+/** Retained component entry, with a distinct effect identity and no live permission. */
+export function validateBoundedCounterGraph(registry: Registry, state: DuelState) {
+  return validateGraph(registry, state, false);
+}
+
+/** Reviewed v5 entry ONLY. Shared structural checks do not extend its capability.
+ * No candidate effect identity is rewritten or accepted as a live activation.
+ */
+export function validateReviewedCounterGraph(registry: Registry, state: DuelState) {
+  const root = state.chain[0], spell = root?.effectId === 'normal-spell';
+  check(root && state.chain.length >= 2 && state.chain.length <= 4
+    && registry.counterContinuations[V] === 'reviewed-four-link-counter-patterns-v5'
+    && registry.counterTrapHandlers[V] === 'pay-1000-negate-trap-hole-activation'
+    && (!spell || registry.counterTrapHandlers[M] === 'discard-negate-normal-spell-activation')
+    && (spell || registry.trapHandlers[T] === 'destroy-opponent-normal-or-flip-summoned-1000'), 'Unreviewed Counter entry');
+  const graph = validateGraph(registry, state, true);
+  check((spell && graph.prefixLength === 2 && graph.sevenCount <= 2)
+    || (!spell && graph.prefixLength === 1 && graph.sevenCount >= 1 && graph.sevenCount <= 3), 'Unreviewed Counter entry pattern');
+  const { kind: _candidateKind, ...body } = graph;
+  return freeze({ kind: 'reviewed-counter-graph-v1' as const, ...body });
 }
