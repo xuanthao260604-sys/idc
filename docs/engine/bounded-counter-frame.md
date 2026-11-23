@@ -89,4 +89,35 @@ không coi hợp đồng staged là đã đóng Chain. Chưa đóng gói/bàn gi
 
 ## Bằng chứng chốt
 
-Đang chạy hồi quy và CI; cập nhật sau khi đọc artifact đúng source.
+Source code: `3e716ba99c6284552159ac10311faa1454213bcc` tại
+[CI 45193878890](https://github.com/xuanthao260604-sys/idc/actions/runs/45193878890),
+attempt 1; Ubuntu job `137759038845`, Windows job `137759039084` đều
+completed/success. Log Ubuntu khớp source SHA và **5460/5460 test trong 66
+file**, typecheck, data/build và hai smoke đạt. Local bản cuối cũng đạt
+**5460/5460 test/66 file**, typecheck, cards:check/build, vanilla/mixed smoke.
+Lượt local cũ và CI `45192651580` source `13b48d7` trước bổ sung terminal
+không được dùng làm bằng chứng cho source cuối hoặc ghép report/log.
+
+Artifact `windows-validation-45193878890-1`, ID `14828352310`;
+SHA-256 ZIP khớp metadata GitHub:
+`710b4519627d346e0b083fd7eb55e6f58c1f98730f12b1ec0bdd28cd4b71dc3e`.
+Report: `2026-11-23T14-25-01-800Z-5968/report.json`.
+Windows win32/x64, OS 10.0.26100, Node 24.19.0,
+npm 11.17.0, Edg/157.0.4341.60: **5460/5460 test/66 file, 112/112 bước,
+102/102 browser report**, runtimeExceptions=0.
+
+Đã đọc đủ 112 raw step log, từng JSON browser khớp report và platform.
+So baseline C3b.2a `windows-validation-45183066151-1`, source `d40434a`:
+65 suite cũ giữ số ca, chỉ thêm suite frame 528 ca; 102 browser facts giữ
+nguyên khi bỏ riêng browserVersion; capabilities.log giống nguyên byte.
+Hash ZIP baseline cũng được đối chiếu metadata đã lưu. 142 golden không
+thay đổi; mọi data/reviews/evidence/bundle/ảnh/deck nguồn, protocol/UI và
+review/manifest v5 giữ nguyên byte. Nội dung README trước chu kỳ giữ
+nguyên; capabilities local cũng khớp C3b.2a.
+
+528 ca mới là mô hình frame contract, không phải bằng chứng activation
+hoặc parent resolver v6. Chưa tạo active review v6, chưa cài frame vào
+DuelState và registry vẫn chặn continuation v6. Commit chốt sau CI chỉ sửa
+tài liệu `[skip ci]`; bằng chứng code thuộc `3e716ba`.
+`windows11DesktopVerified=false`; chưa kiểm Windows 11 desktop, chưa đóng
+gói/bàn giao beta. Tiếp theo là parent resolver C3b.2b.2, không đóng C3/C4.
