@@ -137,3 +137,8 @@ Cập nhật tiếp 23/11/2026: [C3b.2b.1](bounded-counter-frame.md) thêm hợp
 đồng frame staged; chưa nối resolver/live state. Mục tiếp theo C3b.2b.2
 là parent resolver/event thật/resume/cleanup/terminal, rồi mới activation
 và UI scope mới. C3/C4 chưa hoàn tất; editor và Windows 11 giữ mục tiêu sau.
+
+Cập nhật 24/11/2026: [C3b.2b.2](staged-bounded-parent.md) nối parent staged
+với handler/event thật và frame lifecycle. Bước tiếp theo C3b.3 là server
+state/gate/activation/discovery/preview/projection/UI; chưa mở v6 hoặc đóng
+C3/C4. Sau Chain vẫn là bộ tạo bài riêng và Windows 11 desktop thực.

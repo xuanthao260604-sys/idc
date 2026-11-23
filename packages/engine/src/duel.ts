@@ -1,3 +1,5 @@
+import { startBoundedCounterFrame, checkpointBoundedCounterFrame, assertCurrentBoundedCounterFrame, releaseBoundedCounterFrame } from './bounded-counter-frame.js';
+import type { BoundedCounterFrame } from './bounded-counter-frame.js';
 import { captureCounterResolutionEntry, counterEntrySchedule } from './counter-resolution-entry.js';
 import type { CounterResolutionEntry } from './counter-resolution-entry.js';
 import {prepareTrapThreeSevenResolution,THREE_SEVEN_EFFECT_ID} from './trap-three-seven-candidate.js';
@@ -23,7 +25,7 @@ type State = Mutable<DuelState>;
 export interface EngineEvent extends EventRef {
   readonly details: Readonly<Record<string, string | number | boolean>>;
 }
-interface Context { state: State; registry: Registry; events: EngineEvent[]; counterEntry?: CounterResolutionEntry }
+interface Context { state: State; registry: Registry; events: EngineEvent[]; counterEntry?: CounterResolutionEntry; boundedFrame?: BoundedCounterFrame | null; boundedReview?: unknown }
 export type ActionResult =
   | { accepted: true; state: DuelState; events: readonly EngineEvent[] }
   | { accepted: false; state: DuelState; code: RejectionCode; message: string };
@@ -656,6 +658,7 @@ function resolveTraps(c: Context) {
 }
 
 function continueChainCleanup(c: Context) {
+  if (c.boundedFrame !== undefined) { continueBoundedCleanup(c); return; }
   const frame = c.state.chainCleanup!;
   const decision = chainCleanupDecision(c.registry, c.state, frame);
   if (decision) {
@@ -728,6 +731,13 @@ function spell(c: Context, actorId: string, action: Extract<EngineRequest['actio
   c.state.timing.window = 'chain-response'; c.state.timing.priorityPlayer = other(c.state, actorId).id; c.state.timing.consecutivePasses = 0;
 }
 function finishSpell(c: Context, continuation: CounterResolutionFrame | null = c.state.counterResolution) {
+  if (c.boundedFrame !== undefined) {
+    rule(c.boundedFrame && c.state.chain[0]?.effectId === 'normal-spell'
+      && c.state.chain[0].id === c.boundedFrame.links[0]!.id, 'illegal-timing', 'Finish the original bounded Spell root');
+    if (c.state.result) { c.state.chain = []; releaseBoundedFrame(c); }
+    else beginBoundedCleanup(c);
+    return;
+  }
   const link = c.state.chain[0]!;
   rule(c.state.chain.length === 1 && link?.effectId === 'normal-spell'
     && (!c.state.spellResolution || (c.state.spellResolution.rootLinkId === link.id
@@ -752,6 +762,10 @@ function resolveSpell(c: Context) {
   c.state.timing.window = 'resolving'; c.state.timing.priorityPlayer = null;
   const plan = planResolution(c.registry.spellHandlers[c.state.cards[link.source]!.definition.id], resolutionBoard(c, link.controllerId));
   if (plan.kind === 'choose-destruction') {
+    if (c.boundedFrame !== undefined) {
+      c.state.pendingDecision = { id: `${link.id}:bounded-choice`, playerId: plan.playerId, kind: 'effect-choice', optionIds: [...plan.optionIds], min: 1, max: 1 };
+      checkpointBoundedFrame(c, 'root-choice'); return;
+    }
     if (continuation) {
       c.state.pendingDecision = { id: `${link.id}:choice`, playerId: plan.playerId, kind: 'effect-choice', optionIds: [...plan.optionIds], min: 1, max: 1 };
       c.state.counterResolution = checkpointCounterContinuation(c.registry, c.state, continuation, 'root-choice') as State['counterResolution']; return;
@@ -859,11 +873,18 @@ function answer(c: Context, actorId: string, decisionId: string, ids: string[]) 
       'invalid-choice', 'Not your cleanup ordering decision');
     const next = orderChainCleanup(c.registry, { ...c.state, pendingDecision: null }, c.state.chainCleanup, actorId, ids);
     c.state.pendingDecision = null; c.state.chainCleanup = next as State['chainCleanup'];
+    if (c.boundedFrame !== undefined) emit(c, 'cleanup-order-selected', [], { playerId: actorId }, false);
     continueChainCleanup(c); return;
   }
   if (decision?.kind === 'target') {
     rule(decision.id === decisionId && decision.playerId === actorId && ids.length === 1 && decision.optionIds.includes(ids[0]!), 'invalid-choice', 'Not your FLIP target choice');
     c.state.pendingDecision = null; activateFlip(c, ids[0]!); return;
+  }
+  if (decision?.kind === 'effect-choice' && c.boundedFrame !== undefined) {
+    rule(c.boundedFrame?.stage === 'root-choice' && decision.id === decisionId && decision.playerId === actorId
+      && ids.length === 1 && decision.optionIds.includes(ids[0]!), 'invalid-choice', 'Not your bounded root choice');
+    sendToGraveyard(c, ids[0]!); emit(c, 'effect-destroyed', ids);
+    c.state.pendingDecision = null; finishSpell(c); return;
   }
   if (decision?.kind === 'effect-choice') {
     rule(decision.id === decisionId && decision.playerId === actorId && ids.length === 1 && decision.optionIds.includes(ids[0]!), 'invalid-choice', 'Not a valid resolution choice');
@@ -910,6 +931,111 @@ export function applyAction(registry: Registry, state: DuelState, requestInput: 
     return { accepted: true, state: freeze(c.state), events: freeze(c.events) };
   } catch (error) {
     if (error instanceof RuleError) return { accepted: false, state, code: error.code, message: error.message };
+    throw error;
+  }
+}
+
+/** Staged parent uses the same committed clock as applyAction's single increment.
+ * Frames bind the committed view while the private Context is still being built.
+ */
+function boundedCommittedView(c: Context): DuelState {
+  rule(Number.isSafeInteger(c.state.stateVersion + 1), 'invalid-action', 'State version exceeds numeric representation');
+  return { ...c.state, stateVersion: c.state.stateVersion + 1 };
+}
+function checkpointBoundedFrame(c: Context, stage: 'root-choice' | 'cleanup') {
+  rule(c.boundedFrame, 'illegal-timing', 'Missing staged bounded frame');
+  c.boundedFrame = checkpointBoundedCounterFrame(c.registry, boundedCommittedView(c), c.boundedFrame, stage, c.boundedReview);
+}
+function releaseBoundedFrame(c: Context) {
+  rule(c.boundedFrame, 'illegal-timing', 'Missing bounded release frame');
+  c.boundedFrame = releaseBoundedCounterFrame(c.registry, boundedCommittedView(c), c.boundedFrame, c.boundedReview);
+}
+function beginBoundedCleanup(c: Context) {
+  rule(c.boundedFrame && !c.state.result && !c.state.pendingDecision, 'illegal-timing', 'Finish the bounded root before cleanup');
+  c.state.chainCleanup = prepareChainCleanup(c.registry, c.state, c.boundedFrame.survivingSourceIds) as State['chainCleanup'];
+  continueBoundedCleanup(c);
+}
+function continueBoundedCleanup(c: Context) {
+  rule(c.boundedFrame && c.state.chainCleanup && !c.state.result, 'illegal-timing', 'Missing bounded cleanup');
+  const pending = chainCleanupDecision(c.registry, { ...c.state, pendingDecision: null }, c.state.chainCleanup);
+  c.state.pendingDecision = pending ? { id: `${c.boundedFrame.links[0]!.id}:bounded-cleanup:${pending.playerId}`,
+    kind: 'cleanup-order', playerId: pending.playerId, optionIds: [...pending.optionIds], min: pending.min, max: pending.max } : null;
+  checkpointBoundedFrame(c, 'cleanup');
+  if (pending) return;
+  const sourceIds = [...c.state.chainCleanup.sourceIds];
+  Object.assign(c.state, commitChainCleanup(c.registry, c.state, c.state.chainCleanup));
+  c.state.chain = []; c.state.chainCleanup = null;
+  emit(c, 'sent-to-graveyard', sourceIds, { reason: 'counter-chain-cleanup' });
+  emit(c, 'chain-resolved', [], {}, false);
+  releaseBoundedFrame(c); response(c, 'action-response');
+}
+function runStagedBoundedParent(c: Context) {
+  rule(c.boundedFrame?.stage === 'before-root', 'illegal-timing', 'Start a fresh bounded parent');
+  for (const step of prepareCounterLifoSchedule(c.boundedFrame.links)) {
+    const link = c.state.chain[step.linkIndex]!;
+    if (step.kind === 'skip') { emit(c, 'chain-link-negated-skipped', [link.source], {}, false); continue; }
+    if (step.kind === 'negate') {
+      link.activationNegated = true;
+      const spell = c.registry.cards[link.sourceAtActivation.definition.id]!.kind === 'spell';
+      emit(c, spell ? 'spell-activation-negated' : 'trap-activation-negated', [link.source], { playerId: link.controllerId });
+      sendToGraveyard(c, link.source);
+      emit(c, spell ? 'spell-destroyed' : 'trap-destroyed', [link.source], { playerId: link.controllerId }); continue;
+    }
+    emit(c, 'chain-link-resolving', [link.source], {}, false);
+    if (link.spellSpeed === 3) continue;
+    if (link.effectId === 'normal-spell') { resolveSpell(c); continue; }
+    const ref = link.targetRefs[0]!, target = c.state.cards[ref.instanceId];
+    if (target?.location.kind === 'monster' && target.position !== 'face-down-defense'
+      && JSON.stringify(target.location) === JSON.stringify(ref.locationAtSelection) && monsterDefinition(c, target.id).attack >= 1000) {
+      sendToGraveyard(c, target.id); emit(c, 'effect-destroyed', [target.id]);
+    }
+  }
+  if (c.boundedFrame && !c.state.pendingDecision && !c.state.result && !c.state.chainCleanup) beginBoundedCleanup(c);
+}
+export interface StagedBoundedCounterResult {
+  readonly state: DuelState;
+  readonly frame: BoundedCounterFrame | null;
+  readonly events: readonly EngineEvent[];
+}
+function finishStagedBoundedTransition(c: Context): StagedBoundedCounterResult {
+  rule(c.boundedFrame !== undefined && c.boundedFrame?.stage !== 'before-root', 'illegal-timing', 'Unfinished internal bounded stage');
+  c.state.stateVersion++;
+  if (c.boundedFrame) assertCurrentBoundedCounterFrame(c.registry, c.state, c.boundedFrame, c.boundedReview);
+  else assertDuelInvariants(c.state, c.registry);
+  return freeze({ state: c.state, frame: c.boundedFrame, events: c.events });
+}
+
+/** Trusted staged resolution seam: receipts are ALREADY paid and the response
+ * window is closed. Not called by live Pass, activation, discovery or HTTP.
+ * The frame stays a sidecar until the v6 server/projection integration is reviewed.
+ */
+export function resolveStagedBoundedCounter(registry: Registry, state: DuelState, review: unknown): StagedBoundedCounterResult {
+  const frame = startBoundedCounterFrame(registry, state, review);
+  const c: Context = { registry, state: structuredClone(state) as State, events: [], boundedFrame: frame, boundedReview: review };
+  runStagedBoundedParent(c); return finishStagedBoundedTransition(c);
+}
+
+/** Same request/actor/version contract as the engine, restricted to the pending
+ * root/owner answer or concession. No transport commandId deduplication is implied.
+ */
+export function resumeStagedBoundedCounter(registry: Registry, state: DuelState, frame: BoundedCounterFrame,
+  review: unknown, requestInput: unknown): ActionResult & { readonly frame: BoundedCounterFrame | null } {
+  assertCurrentBoundedCounterFrame(registry, state, frame, review);
+  const parsed = RequestSchema.safeParse(requestInput);
+  if (!parsed.success) return { accepted: false, state, frame, code: 'invalid-action', message: 'Malformed staged bounded request' };
+  const request = parsed.data;
+  try {
+    rule(state.players.some(p => p.id === request.actorId), 'invalid-player', 'Player is not in this duel');
+    rule(request.expectedStateVersion === state.stateVersion, 'stale-state', 'State version has changed');
+    rule(request.action.type === 'answer-decision' || request.action.type === 'concede', 'illegal-timing', 'Only answer or concede while bounded resolution is paused');
+    const c: Context = { registry, state: structuredClone(state) as State, events: [], boundedFrame: frame, boundedReview: review };
+    if (request.action.type === 'concede') {
+      c.state.chain = []; c.state.pendingTriggers = [];
+      endDuel(c, other(state, request.actorId).id, 'concession'); releaseBoundedFrame(c);
+    } else answer(c, request.actorId, request.action.decisionId, request.action.optionIds);
+    return { accepted: true, ...finishStagedBoundedTransition(c) };
+  } catch (error) {
+    if (error instanceof RuleError) return { accepted: false, state, frame, code: error.code, message: error.message };
     throw error;
   }
 }
