@@ -148,3 +148,8 @@ v6 bằng cấu hình server explicit opt-in, không đổi default manifest/rev
 v5. Tiếp theo C3b.3b kiểm HTTP/UI/browser và active review trước khi bật
 mặc định; C4 audit nhiều lượt còn giữ nguyên. Chưa đóng C3/Chain/beta;
 U1 bộ tạo bài riêng và W1 Windows 11 desktop thực vẫn ở sau Chain.
+
+Cập nhật tiếp 24/11/2026: [C3b.3b.1](bounded-live-http-ui.md) kiểm đường
+HTTP/UI/browser với registry v6 explicit opt-in; chưa đổi active review
+hoặc manifest mặc định. C3b.3b.2 còn ma trận HTTP/UI và gate review/default,
+rồi C4 audit nhiều lượt. U1 và Windows 11 desktop thực giữ thứ tự sau Chain.

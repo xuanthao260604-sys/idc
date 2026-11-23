@@ -356,7 +356,7 @@ function cardSupport(d) {
   const list = node('dl');
   for (const [key, label, value] of statuses) { const description = node('dd', value); description.dataset.support = key; list.append(node('dt', label), description); }
   section.append(list, node('div', 'Dữ liệu và khả năng trong game được theo dõi riêng. Chưa hỗ trợ mọi tương tác trong Yu-Gi-Oh!', 'support-note'));
-  if (d.support?.runtime === 'lp-counter') section.append(node('div', 'Phản hồi Trap Hole ở liên kết đầu; Magic Jammer sau một Phép thường đã hỗ trợ; hoặc Seven Tools ở liên kết 2/3 trong chuỗi bắt đầu bằng Trap Hole hay liên kết 3 sau Phép thường → Magic Jammer. Cần trên 1000 LP và đã úp từ lượt trước.', 'support-note'));
+  if (d.support?.runtime === 'lp-counter') section.append(node('div', d.support.counterContinuation === 'reviewed-bounded-counter-patterns-v6' ? 'Phản hồi trực tiếp Trap Hole, Magic Jammer hoặc Seven Tools trong các chuỗi đã hỗ trợ. Cho phép 1–3 Trap Hole cùng phản hồi một lần triệu hồi hoặc Phép thường → Magic Jammer, rồi tối đa 6 Seven Tools khi còn bản sao và ô hợp lệ. Cần trên 1000 LP và đã úp từ lượt trước.' : 'Phản hồi Trap Hole ở liên kết đầu; Magic Jammer sau một Phép thường đã hỗ trợ; hoặc Seven Tools ở liên kết 2/3 trong chuỗi bắt đầu bằng Trap Hole hay liên kết 3 sau Phép thường → Magic Jammer. Cần trên 1000 LP và đã úp từ lượt trước.', 'support-note'));
   return section;
 }
 function cardInfo(panel, card) {
