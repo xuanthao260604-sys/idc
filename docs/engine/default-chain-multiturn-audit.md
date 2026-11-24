@@ -45,7 +45,7 @@ Hai mode browser `--default-audit=a|b` dùng loader mặc định thật, UI/HTT
 thật sau setup: 84 lệnh thành công, lượt 3–5, hai cách xếp thứ tự đại diện.
 Thu activity từ response từng command vào Map trước giới hạn 60 mục;
 kiểm đủ lịch sử phí/discard/phá/quay về tay/sát thương và facts chung hai
-ghế. Deck A/B giữ nguyên. Thêm hai mode vào validation, dự kiến 130 bước/
+ghế. Deck A/B giữ nguyên. Thêm hai mode vào validation; artifact đúng source đã xác nhận 130 bước/
 120 browser report, không bỏ bước cũ hoặc đổi timeout workflow 25 phút.
 
 Trong lúc viết harness đã sửa kỳ vọng cleanup để đợi cả hai owner commit,
@@ -63,4 +63,49 @@ Chain. Sau Chain giữ bộ tạo bài riêng và Windows 11 desktop thực; ch�
 
 ## Bằng chứng
 
-Đang chốt hồi quy và CI đúng source; số dự kiến chưa là kết quả nghiệm thu.
+Code `691a2bfe86666acb38fb051dd5d13d4adb242d92` tại [CI 45347734575](https://github.com/xuanthao260604-sys/idc/actions/runs/45347734575), attempt 1.
+Ubuntu job `138286279690`, Windows job `138286280063` đều completed/success.
+Đã đọc log Ubuntu: checkout SHA khớp code; **6922/6922 test/73 file**,
+typecheck, cards:check/build và vanilla/mixed smoke đạt. Local đạt cùng
+**6922/6922 test/73 file**, typecheck, cards:check/build và hai smoke.
+Tám test mới là tám trace có engine/adapter song song; 72 suite cũ giữ số
+ca, 163 migration case/142 golden không đổi hoặc tái sinh.
+
+Linux local chạy đủ hai mode default-audit-a/b, Chrome/154.0.8037.57,
+84 lệnh mỗi mode, Chain [8,2,3], sáu phí, lượt cuối 5 và runtimeExceptions=0.
+Không chạy lại bộ 130 bước đầy đủ trên Linux local trong chu kỳ này;
+Ubuntu CI không chạy browser tổng hợp. Không lấy số Windows điền Linux.
+
+Artifact `windows-validation-45347734575-1`, ID `14900395939`;
+SHA-256 ZIP khớp metadata GitHub:
+`1692c78dc5bb7007dc4c3052808206e9b1b513c2739916ab6e87060ff72d47b4`.
+Report `2026-11-24T07-24-50-606Z-8744/report.json`.
+Windows win32/x64, OS 10.0.26100, Node 24.19.0,
+npm 11.17.0, Edg/157.0.4341.60: **6922/6922 test/73 file,
+130/130 bước, 120/120 browser report**, runtimeExceptions=0.
+
+Đã đọc đủ 130 raw step log, đối chiếu mọi JSON browser/report/platform.
+So baseline default-v6 `windows-validation-45337089591-1`, source `f553737`:
+giữ đủ 128 bước và 118 browser facts cũ khi bỏ riêng browserVersion;
+capabilities.log nguyên byte. Hai report audit mới Windows khớp Linux
+khi bỏ platform/browserVersion, gồm 84 lệnh và toàn bộ timeline LP. ZIP
+baseline cũng khớp metadata đã lưu; không ghép evidence khác source.
+
+Hash sau hồi quy xác nhận engine/protocol, UI/server, dữ liệu/review/
+evidence, ảnh/frame/back, deck nguồn, mọi test cũ và golden nguyên byte.
+README giữ prefix cũ; capability default v6 không đổi. Chỉ thêm fixture/
+test/browser audit, hai mode validation và tài liệu. Không thay luật hoặc
+review để làm hành trình đi qua.
+
+Các lỗi lúc viết harness là kiểm thứ tự Mộ trước commit đủ owner, dùng
+Set Spell cho Magic (là Trap) và bỏ qua cửa sổ phản hồi sau Summon trước
+Phép kế tiếp. Đã sửa driver/expectation theo hợp đồng hiện có; không nới
+invariant hoặc sửa engine. Source cuối đạt như trên. Commit chốt sau CI
+chỉ cập nhật tài liệu [skip ci]; bằng chứng code thuộc `691a2bf`.
+
+Dừng ở C4a. Kết quả này là hành trình thật sau fixture turn 3, không phải
+trận new-game tự nhiên và chưa đủ checklist đóng toàn bộ Chain. C4 còn
+các họ/nhánh khác, new-game, reset/concede/terminal và bảo toàn dữ liệu ở
+source cuối. Sau khi đóng Chain mới tới bộ tạo bài riêng rồi Windows 11
+desktop thực. Report windows11DesktopVerified=false; chưa đóng gói hoặc
+bàn giao beta.
