@@ -10,6 +10,7 @@ import { CounterReviewsSchema } from '../packages/engine/src/counter-review.js';
 import { TrapReviewsSchema } from '../packages/engine/src/trap-review.js';
 import { projectRoot } from './project-root.js';
 import inputs from './runtime-catalog-inputs.json' with { type: 'json' };
+import legacyV5Inputs from './runtime-catalog-legacy-v5-inputs.json' with { type: 'json' };
 
 const Bundle = z.object({ schemaVersion: z.literal(1), format: z.strictObject({ id: z.string(), revision: z.number().int() }), cards: CardBatchSchema });
 /** Additive snapshots: never rewrite old definitions or silently choose a duplicate winner. */
@@ -22,16 +23,21 @@ export function combineCatalogBundles(inputs: readonly unknown[]) {
   if (new Set(cards.map(c=>c.name)).size !== cards.length) throw new Error('Catalog has duplicate canonical names');
   return cards;
 }
-export function loadRuntimeCatalog(root = projectRoot) {
+function loadCatalog(selected: typeof inputs, root: string) {
   const read = (path: string) => JSON.parse(readFileSync(join(root, path), 'utf8'));
-  const bundles = Object.entries(inputs.bundles).map(([key, path]) => ({ key, bundle: read(path) }));
+  const bundles = Object.entries(selected.bundles).map(([key, path]) => ({ key, bundle: read(path) }));
   const cards = combineCatalogBundles(bundles.map(({ bundle }) => bundle));
   const effectReviews = {
-    spells: SpellReviewsSchema.parse(inputs.reviews.spells.flatMap(read)),
-    flips: FlipReviewsSchema.parse(inputs.reviews.flips.flatMap(read)),
-    traps: TrapReviewsSchema.parse(inputs.reviews.traps.flatMap(read)),
-    counters: CounterReviewsSchema.parse(inputs.reviews.counters.flatMap(read)),
+    spells: SpellReviewsSchema.parse(selected.reviews.spells.flatMap(read)),
+    flips: FlipReviewsSchema.parse(selected.reviews.flips.flatMap(read)),
+    traps: TrapReviewsSchema.parse(selected.reviews.traps.flatMap(read)),
+    counters: CounterReviewsSchema.parse(selected.reviews.counters.flatMap(read)),
   };
   const registry = createRegistry(cards, goat200508Format, {}, effectReviews.spells, effectReviews.flips, effectReviews.traps, effectReviews.counters);
   return { cards, registry, effectReviews, importedSnapshots: Object.fromEntries(bundles.map(({ key, bundle }) => [key, bundle.summary])) };
 }
+
+/** Current application profile; never silently fall back to a historical review. */
+export function loadRuntimeCatalog(root=projectRoot){return loadCatalog(inputs,root);}
+/** Explicit historical profile for v5 regression fixtures and golden journeys. */
+export function loadLegacyV5Catalog(root=projectRoot){return loadCatalog(legacyV5Inputs,root);}

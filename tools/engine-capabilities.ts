@@ -1,11 +1,11 @@
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { loadRuntimeCatalog } from './runtime-catalog.js';
+import { loadRuntimeCatalog, loadLegacyV5Catalog } from './runtime-catalog.js';
 import { projectRoot } from './project-root.js';
 
 /** Describe only active registry bindings whose review passed the normal catalog validation. */
-export function createCapabilityReport(root = projectRoot) {
-  const { registry, importedSnapshots, effectReviews } = loadRuntimeCatalog(root);
+export function createCapabilityReport(root = projectRoot, profile: 'current'|'legacy-v5'='current') {
+  const { registry, importedSnapshots, effectReviews } = (profile==='legacy-v5'?loadLegacyV5Catalog:loadRuntimeCatalog)(root);
   const groups = [
     { kind: 'normal-spell', bindings: registry.spellHandlers, reviews: effectReviews.spells },
     { kind: 'flip-monster', bindings: registry.flipHandlers, reviews: effectReviews.flips },
@@ -35,10 +35,12 @@ export function createCapabilityReport(root = projectRoot) {
       unsupportedIds: registry.unsupportedIds,
       scope: [...new Set(reviewedEffects.map(review => review.scope))].sort(),
       reviewedEffects,
-      limitations: ['only reviewed summon Traps, reviewed two-link and three-link Counters, and pinned Normal Spell -> Magic Jammer -> Seven -> Seven, or passes as responses', 'no general mixed Chain/negation', 'no general SEGOC/modifiers/replacements', 'no online multiplayer or persistent matches'],
+      limitations: [registry.boundedCounterReview?'only 11 pinned Normal Spells -> Magic Jammer -> Seven^0..6 or same-summon Trap Hole^1..3 -> Seven^0..6, subject to copy/zone bounds; no universal eight-link rule':'only reviewed summon Traps, reviewed two-link and three-link Counters, and pinned Normal Spell -> Magic Jammer -> Seven -> Seven, or passes as responses', 'no general mixed Chain/negation', 'no general SEGOC/modifiers/replacements', 'no online multiplayer or persistent matches'],
     },
   };
 }
 if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.meta.url) {
   console.log(JSON.stringify(createCapabilityReport(), null, 2));
 }
+
+export function createLegacyV5CapabilityReport(root=projectRoot){return createCapabilityReport(root,'legacy-v5');}

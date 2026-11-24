@@ -1,6 +1,6 @@
 import {readFileSync} from 'node:fs';
 import {describe,it,expect} from 'vitest';
-import {loadRuntimeCatalog} from './runtime-catalog.js';
+import {loadLegacyV5Catalog as loadRuntimeCatalog} from './runtime-catalog.js';
 import {setupTrapThreeSevenPrefix} from './fixtures/trap-three-seven-candidate.js';
 import {applyAction,assertDuelInvariants} from '../packages/engine/src/duel.js';
 import {createRegistry} from '../packages/engine/src/registry.js';

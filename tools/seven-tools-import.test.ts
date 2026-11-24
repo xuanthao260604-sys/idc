@@ -6,7 +6,7 @@ import { describe, expect, it } from 'vitest';
 import { run } from './card-import/src/cli.js';
 import { sha256 } from './card-import/src/pipeline.js';
 import { projectRoot } from './project-root.js';
-import { loadRuntimeCatalog } from './runtime-catalog.js';
+import { loadLegacyV5Catalog as loadRuntimeCatalog } from './runtime-catalog.js';
 import { createDeckStore } from './deck-store.js';
 import { createRegistry, validateDeck } from '../packages/engine/src/registry.js';
 import { goat200508Format } from '../packages/card-data/src/formats/goat-2005-08-17.js';

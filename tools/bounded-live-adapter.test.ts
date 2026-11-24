@@ -3,7 +3,7 @@ import { boundedRegistry as registry,buildBoundedLive } from './fixtures/bounded
 import { createCommandAdapter } from '../packages/engine/src/command-adapter.js';
 import { applyAction } from '../packages/engine/src/duel.js';
 import { createPlayerProjection } from '../packages/engine/src/player-view.js';
-import { loadRuntimeCatalog } from './runtime-catalog.js';
+import { loadLegacyV5Catalog as loadRuntimeCatalog } from './runtime-catalog.js';
 const secrets=['bounded-counter-resolution-frame-v1','reviewSha256','integritySha256','originSequence','sourceAtActivation','survivingSourceIds'];
 describe('explicit v6 adapter discovery/projection/receipt boundaries',()=>{
  it.each(['a','b'])('discovers the eighth link and keeps retries/handles private for %s',actor=>{
@@ -36,5 +36,5 @@ describe('explicit v6 adapter discovery/projection/receipt boundaries',()=>{
   expect(r.accepted).toBe(lp>1000);expect(s).toEqual(before);
   if(r.accepted){expect(r.state.players[0].lifePoints).toBe(1);expect(r.events.filter(e=>e.kind==='life-points-paid')).toHaveLength(1);}else{expect(r.state).toBe(s);expect(s.cards[source]!.position).toBe('face-down');}
  });
- it('keeps default runtime v5 and legacy state ABI unchanged',()=>{const {registry:r}=loadRuntimeCatalog();expect(r.counterContinuations['official:03819470']).toBe('reviewed-four-link-counter-patterns-v5');expect(r.boundedCounterReview).toBeUndefined();});
+ it('keeps pinned legacy runtime v5 and legacy state ABI unchanged',()=>{const {registry:r}=loadRuntimeCatalog();expect(r.counterContinuations['official:03819470']).toBe('reviewed-four-link-counter-patterns-v5');expect(r.boundedCounterReview).toBeUndefined();});
 });

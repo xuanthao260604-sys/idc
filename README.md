@@ -6,6 +6,8 @@ Game đấu bài hai người theo Goat Format Bắc Mỹ: cutoff 17/8/2005, ban
 
 ## Tiến độ hiện tại
 
+Mặc định hiện dùng Seven review v6 cho hai họ Chain hữu hạn đã pin, tối đa tám link theo giới hạn pool/copy/ô. V5 được giữ riêng cho hồi quy lịch sử; các mốc v1–v5 bên dưới ghi kết quả tại thời điểm đó. C4 audit nhiều lượt còn mở, chưa đóng Chain/beta. Xem [gate mặc định v6](docs/engine/default-bounded-counter.md).
+
 Đã có bàn đấu hotseat hai người thay phiên cùng máy, catalog 112 loại và deck mẫu hợp lệ 40 lá; deck A/B tự xây vẫn được giữ.
 Core hỗ trợ 95 quái thường; 17 hiệu ứng Pot of Greed, Fissure, Trap Hole, Hane-Hane, Man-Eater Bug,
 Hinotama, Dian Keto the Cure Master, Smashing Ground, Hammer Shot, Tribute to The Doomed, Monster Reincarnation, Block Attack, Earthquake, Magician of Faith, Ookazi, Magic Jammer và Seven Tools được mở bằng hồ sơ review và kiểm thử trong scope giới hạn.
@@ -276,3 +278,5 @@ Catalog runtime nạp 19 bundle đang hoạt động từ danh sách đầu vào
 Đã thêm [C3b.3b.2a biên HTTP/UI v6](docs/engine/bounded-boundary-http-ui.md): 66 ca HTTP và tám mode browser cho LP biên sau nhiều phí, tay/Set, Main1/Main2, deck-out, sát thương terminal và 11 Phép gốc. Default review/manifest vẫn v5; tiếp theo là gate review/default với baseline legacy có phiên bản, rồi C4 nhiều lượt. Chưa đóng Chain/beta hoặc kiểm Windows 11 desktop.
 
 Đã chốt C3b.3b.2a trên code `dc5452b`: [Windows/Ubuntu CI 45288045142](https://github.com/xuanthao260604-sys/idc/actions/runs/45288045142) đạt **6892 test/71 file**; Windows **126 bước/116 browser report**, runtimeExceptions=0. Giữ 70 suite và 108 browser facts cũ, thêm 66 ca HTTP/tám mode biên; tám facts mới Windows khớp Linux. Default review/manifest vẫn v5; gate review/default và C4 còn mở, chưa kiểm Windows 11 desktop.
+
+Đã nối [C3b.3b.2b review/default v6](docs/engine/default-bounded-counter.md): review mới kế thừa nguyên evidence C3a, loader mặc định fail closed và legacy v5 rõ phiên bản, không tái sinh golden. Thêm kiểm profile/deck/server và hai browser journey default. C4 nhiều lượt là bước tiếp theo; Windows 11 thực và bộ tạo bài riêng giữ thứ tự sau Chain.

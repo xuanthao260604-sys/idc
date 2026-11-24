@@ -37,7 +37,7 @@ describe('Cross-platform project resource paths', () => {
   // A source-only checkout models preflight before npm ci/build, without editing the real repo.
   function preflightFixture() {
     const folder = mkdtempSync(join(temporary, 'Kiểm tra đầu vào '));
-    const files = ['tools/check-environment.mjs', 'tools/runtime-catalog-inputs.json', 'package.json', 'package-lock.json',
+    const files = ['tools/check-environment.mjs', 'tools/runtime-catalog-inputs.json', 'tools/runtime-catalog-legacy-v5-inputs.json', 'package.json', 'package-lock.json',
       ...Object.values(inputs.bundles), ...Object.values(inputs.reviews).flat(),
       'apps/beta/public/index.html', 'apps/beta/public/app.js', 'apps/beta/public/style.css',
       'apps/beta/public/assets/card-frames/monster-and-back.png', 'apps/beta/public/assets/card-frames/spell-and-trap.png'];
@@ -68,7 +68,7 @@ describe('Cross-platform project resource paths', () => {
     fixture.expectPreserved();
   });
   it.each([
-    'data/generated/seven-tools.json', 'data/reviews/seven-tools-v5.effects.json',
+    'tools/runtime-catalog-legacy-v5-inputs.json', 'data/generated/seven-tools.json', 'data/reviews/seven-tools-v6.effects.json',
     'data/generated/magic-jammer.json', 'data/reviews/magic-jammer.effects.json',
     'data/generated/ookazi.json', 'data/reviews/ookazi.effects.json',
     'data/generated/block-attack.json', 'data/reviews/block-attack.effects.json',

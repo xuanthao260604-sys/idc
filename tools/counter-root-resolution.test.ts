@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { createRegistry } from '../packages/engine/src/registry.js';
 import { goat200508Format } from '../packages/card-data/src/formats/goat-2005-08-17.js';
 import { describe, expect, it } from 'vitest';
-import { loadRuntimeCatalog } from './runtime-catalog.js';
+import { loadLegacyV5Catalog as loadRuntimeCatalog } from './runtime-catalog.js';
 import { createDuel, applyAction, assertDuelInvariants, resolveCandidateCounterContinuation } from '../packages/engine/src/duel.js';
 import { createCommandAdapter } from '../packages/engine/src/command-adapter.js';
 import { CANDIDATE_SEVEN_EFFECT_ID } from '../packages/engine/src/counter-continuation.js';

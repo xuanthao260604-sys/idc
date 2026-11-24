@@ -10,7 +10,7 @@ const extendedScopes = {
 } as const;
 
 /** Review syntax and scope pairing, not proof that its continuation is implemented.
- * createRegistry separately rejects staged v6 until gameplay integration is ready.
+ * createRegistry checks the full dependency preflight before accepting v6.
  * Never coerce a Counter Trap into a Normal Trap review. */
 export const CounterReviewsSchema = z.array(z.strictObject({
   cardId: z.string().regex(/^official:\d{8}$/), definitionSha256: z.string().regex(/^[a-f0-9]{64}$/),

@@ -3,7 +3,7 @@ import {readFileSync} from 'node:fs';
 import {createRegistry} from '../packages/engine/src/registry.js';
 import {goat200508Format} from '../packages/card-data/src/formats/goat-2005-08-17.js';
 import { createHash } from 'node:crypto';
-import { loadRuntimeCatalog } from './runtime-catalog.js';
+import { loadLegacyV5Catalog as loadRuntimeCatalog } from './runtime-catalog.js';
 import { setupFourLinkCounterCandidate } from './fixtures/four-link-counter-candidate.js';
 import { prepareFourLinkCounterCandidate,assertFourLinkCounterCandidate } from '../packages/engine/src/four-link-counter-candidate.js';
 import { assertDuelInvariants,applyAction } from '../packages/engine/src/duel.js';

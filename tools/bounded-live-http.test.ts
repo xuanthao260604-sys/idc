@@ -1,7 +1,7 @@
 import {describe,it,expect} from 'vitest';
 import {createBetaServer} from './beta-server.js';
 import {boundedRegistry as registry,setupBoundedLive} from './fixtures/bounded-live.js';
-import {loadRuntimeCatalog} from './runtime-catalog.js';
+import {loadLegacyV5Catalog as loadRuntimeCatalog} from './runtime-catalog.js';
 const cases=['a','b'].flatMap(actor=>['spell','trap','choice'].map(kind=>({actor,kind})));
 describe('explicit bounded v6 through loopback HTTP; no client capability switch',()=>{
  it.each(cases)('plays $actor/$kind with owner privacy, strict commands and deduplication',async({actor,kind})=>{
@@ -36,5 +36,5 @@ describe('explicit bounded v6 through loopback HTTP; no client capability switch
    expect(rootChoices).toBe(kind==='choice'?1:0);expect(cleanup).toBe(kind==='trap'?2:1);const end=await view(actor);expect(end.chain).toEqual([]);expect(end.result).toBeNull();expect((await view(other)).activity).toEqual(end.activity);expect([await get('/api/deck',actor),await get('/api/deck',other)]).toEqual(decks);
   }finally{server.closeAllConnections();await new Promise<void>(resolve=>server.close(()=>resolve()));}
  });
- it('keeps the normal runtime manifest on v5',()=>{expect(loadRuntimeCatalog().registry.counterContinuations['official:03819470']).toBe('reviewed-four-link-counter-patterns-v5');});
+ it('keeps the legacy runtime profile on v5',()=>{expect(loadRuntimeCatalog().registry.counterContinuations['official:03819470']).toBe('reviewed-four-link-counter-patterns-v5');});
 });

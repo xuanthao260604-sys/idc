@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
-import { loadRuntimeCatalog } from './runtime-catalog.js';
+import { loadLegacyV5Catalog as loadRuntimeCatalog } from './runtime-catalog.js';
 import { setupBoundedCounterCandidate } from './fixtures/bounded-counter-candidate.js';
 import { boundedCounterOracle } from './fixtures/bounded-counter-oracle.js';
 import { prepareBoundedCounterCandidate, resumeBoundedCounterCandidate, assertBoundedCounterCandidate } from '../packages/engine/src/bounded-counter-dispatcher.js';

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { loadRuntimeCatalog } from './runtime-catalog.js';
+import { loadLegacyV5Catalog as loadRuntimeCatalog } from './runtime-catalog.js';
 import { createDuel, assertDuelInvariants, applyAction } from '../packages/engine/src/duel.js';
 import { prepareChainCleanup, chainCleanupDecision, orderChainCleanup, commitChainCleanup } from '../packages/engine/src/chain-cleanup.js';
 import type { ChainCleanupFrame } from '../packages/engine/src/chain-cleanup.js';

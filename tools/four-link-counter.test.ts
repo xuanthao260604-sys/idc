@@ -1,6 +1,6 @@
 import {readFileSync} from 'node:fs';
 import {describe,expect,it} from 'vitest';
-import {loadRuntimeCatalog} from './runtime-catalog.js';
+import {loadLegacyV5Catalog as loadRuntimeCatalog} from './runtime-catalog.js';
 import {setupFourLinkPrefix} from './fixtures/four-link-counter-candidate.js';
 import {applyAction,assertDuelInvariants} from '../packages/engine/src/duel.js';
 import {createRegistry} from '../packages/engine/src/registry.js';

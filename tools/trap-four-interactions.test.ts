@@ -1,7 +1,7 @@
 import {assertThreeSevenLPCostHistory,assertCurrentThreeSevenLPCosts} from '../packages/engine/src/three-seven-lp-cost-ledger.js';
 import type {TrapThreeSevenJournal} from '../packages/protocol/src/duel.js';
 import { describe, expect, it } from 'vitest';
-import { loadRuntimeCatalog } from './runtime-catalog.js';
+import { loadLegacyV5Catalog as loadRuntimeCatalog } from './runtime-catalog.js';
 import { setupTrapFourInteractions } from './fixtures/trap-four-interactions.js';
 import { applyAction, assertDuelInvariants } from '../packages/engine/src/duel.js';
 import { createCommandAdapter } from '../packages/engine/src/command-adapter.js';

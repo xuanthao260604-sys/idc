@@ -1,4 +1,5 @@
-import { loadRuntimeCatalog } from '../runtime-catalog.js';
+import type {Registry} from '../../packages/engine/src/registry.js';
+import { loadLegacyV5Catalog as loadRuntimeCatalog } from '../runtime-catalog.js';
 import { createRegistry } from '../../packages/engine/src/registry.js';
 import { goat200508Format } from '../../packages/card-data/src/formats/goat-2005-08-17.js';
 import { createDuel,applyAction,assertDuelInvariants } from '../../packages/engine/src/duel.js';
@@ -13,8 +14,8 @@ export interface BoundedLiveOptions { actor?:string;spellId?:string;rootSet?:boo
 /** Initial board only. Every Chain receipt/link after this fixture is produced by
  * applyAction, never by converting a candidate snapshot or writing Chain state.
  */
-export function setupBoundedLive(o:BoundedLiveOptions={}) {
-  const registry=boundedRegistry,actor=o.actor??'a',other=actor==='a'?'b':'a',magicOwner=o.magicOwner??other,owners=o.owners??['a','b'];
+export function setupBoundedLive(o:BoundedLiveOptions={},registry:Registry=boundedRegistry) {
+  const actor=o.actor??'a',other=actor==='a'?'b':'a',magicOwner=o.magicOwner??other,owners=o.owners??['a','b'];
   const targetDef=Object.values(registry.cards).find(c=>o.method==='tribute'?c.kind==='normal-monster'&&c.level>=5&&c.level<=6&&c.attack>=1000:c.name==='Battle Ox')!.id;
   const ox=Object.values(registry.cards).find(c=>c.name==='Battle Ox')!.id;
   const deck=['official:03819470','official:03819470','official:03819470','official:04206964','official:04206964','official:04206964','official:77414722',ox,ox];

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { loadRuntimeCatalog } from './runtime-catalog.js';
+import { loadLegacyV5Catalog as loadRuntimeCatalog } from './runtime-catalog.js';
 import { setupFourLinkPrefix } from './fixtures/four-link-counter-candidate.js';
 import { setupTrapThreeSevenPrefix } from './fixtures/trap-three-seven-candidate.js';
 import { setupBoundedCounterCandidate } from './fixtures/bounded-counter-candidate.js';

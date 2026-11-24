@@ -1,5 +1,5 @@
 import { describe,it,expect } from 'vitest';
-import { loadRuntimeCatalog } from './runtime-catalog.js';
+import { loadLegacyV5Catalog as loadRuntimeCatalog } from './runtime-catalog.js';
 import { setupBoundedCounterCandidate } from './fixtures/bounded-counter-candidate.js';
 import { boundedCounterOracle } from './fixtures/bounded-counter-oracle.js';
 import { BOUNDED_SEVEN_EFFECT_ID,BOUNDED_SEVEN_CANDIDATE_EFFECT } from '../packages/engine/src/bounded-counter-graph.js';

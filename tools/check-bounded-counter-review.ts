@@ -135,7 +135,8 @@ export function checkBoundedCounterReview(input: unknown, evidenceDirectory: str
     trapAssignments: traps.map(s => s.length), spellAssignmentsPerRootAndMagicOwner: owners.length, maxLinksForSelectedPool: 8,
     activeSevenRevision: current.revision, activeV5StillSelected: current.revision === 5 && allInputs.includes(p.activeBaseline.sevenReviewPath),
     proposalAcceptedByCurrentSchema: CounterReviewsSchema.safeParse([proposed]).success,
-    proposedActiveFileExists: existsSync(join(root, p.proposal.activeFileNotCreated)), runtimeEnabled: p.runtimeEnabled,
+    proposedActiveFileExists: existsSync(join(root, p.proposal.activeFileNotCreated)), runtimeEnabled: p.runtimeEnabled, runtimeEnabledDescribes: 'immutable C3a design profile',
+    currentRuntimeEnabled: current.continuation === 'reviewed-bounded-counter-patterns-v6',
     newScopeEffectTests: p.effectTestsForNewScope, historicalPrintedTextReview: p.historicalPrintedTextReview };
 }
 

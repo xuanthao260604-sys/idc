@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 /** Only the starting board is prepared; all later changes use the real UI/HTTP. */
-export async function boundedLiveBrowser({f,kind,evaluate,seat,click,actionClick,textButton,confirm,pass,send,errors,browserVersion}){
+export async function boundedLiveBrowser({f,kind,defaultRun=false,evaluate,seat,click,actionClick,textButton,confirm,pass,send,errors,browserVersion}){
  const {actor,other}=f,saved={},secret=['boundedCounterResolution','sourceAtActivation','reviewSha256','integritySha256','survivingSourceIds'];
  const board=who=>`view.players.find(p=>p.playerId===${JSON.stringify(who)})`;
  const priority=async who=>{const current=await evaluate('view.timing.priorityPlayer');if(current!==who)await pass(current);await seat(who);};
@@ -47,5 +47,5 @@ export async function boundedLiveBrowser({f,kind,evaluate,seat,click,actionClick
  assert.equal(rootChoice,kind==='choice'?1:0);assert.equal(cleanup,kind==='trap'?2:1);assert.equal(await evaluate('view.chain.length'),0);assert.equal(await evaluate('view.decision'),null);assert.equal(await evaluate('view.result'),null);
  const facts=await evaluate('view.activity.flatMap(a=>a.resolution||[])');assert.equal(facts.filter(x=>x.kind==='lp-cost').length,f.owners.length);assert.equal(facts.filter(x=>x.kind==='effect-destroyed').length,kind==='spell'?0:1);
  const publicFacts=JSON.stringify(facts);for(const who of [actor,other]){await seat(who);assert.equal(JSON.stringify(await evaluate('view.activity.flatMap(a=>a.resolution||[])')),publicFacts);assert.equal(await evaluate(`api('/api/deck?seat='+view.viewerId).then(JSON.stringify)`),saved[who]);await immutable();}
- assert.equal(errors.length,0);console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'bounded-live-'+actor+'-'+kind,explicitV6:true,defaultCatalogStillV5:true,actualLinks:kind==='choice'?7:8,payments:f.owners.length,previewCancelReadOnly:true,latestResponsePreview:true,responsiveWidths:[1440,390],privateCleanupOwners:cleanup,rootChoice:rootChoice===1,idempotentReceipts:true,samePublicFactsAcrossSeats:true,savedDecksUnchanged:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
+ assert.equal(errors.length,0);console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:defaultRun?'default-chain-'+actor:'bounded-live-'+actor+'-'+kind,explicitV6:!defaultRun,defaultCatalogStillV5:false,...(defaultRun?{defaultV6:true}:{}),actualLinks:kind==='choice'?7:8,payments:f.owners.length,previewCancelReadOnly:true,latestResponsePreview:true,responsiveWidths:[1440,390],privateCleanupOwners:cleanup,rootChoice:rootChoice===1,idempotentReceipts:true,samePublicFactsAcrossSeats:true,savedDecksUnchanged:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
 }

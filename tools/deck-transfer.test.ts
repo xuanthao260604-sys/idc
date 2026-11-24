@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { loadRuntimeCatalog } from './runtime-catalog.js';
+import { loadLegacyV5Catalog as loadRuntimeCatalog } from './runtime-catalog.js';
 import { defaultDeck } from './deck-store.js';
 import { exportDeck, importDeck } from './deck-transfer.js';
 const { registry } = loadRuntimeCatalog(), cards = defaultDeck(registry);

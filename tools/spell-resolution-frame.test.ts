@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { loadRuntimeCatalog } from './runtime-catalog.js';
+import { loadLegacyV5Catalog as loadRuntimeCatalog } from './runtime-catalog.js';
 import { createDuel, applyAction, assertDuelInvariants } from '../packages/engine/src/duel.js';
 import { prepareSpellResolution, assertSpellResolution } from '../packages/engine/src/spell-resolution.js';
 import { createCommandAdapter } from '../packages/engine/src/command-adapter.js';

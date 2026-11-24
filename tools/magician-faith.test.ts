@@ -3,7 +3,7 @@ import {mkdtemp,readFile,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {describe,it,expect} from 'vitest';
-import {loadRuntimeCatalog} from './runtime-catalog.js';
+import {loadLegacyV5Catalog as loadRuntimeCatalog} from './runtime-catalog.js';
 import {createDeckStore} from './deck-store.js';
 import {createDuel,applyAction,assertDuelInvariants} from '../packages/engine/src/duel.js';
 import {createPlayerProjection} from '../packages/engine/src/player-view.js';

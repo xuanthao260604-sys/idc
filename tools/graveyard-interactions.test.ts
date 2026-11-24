@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { loadRuntimeCatalog } from './runtime-catalog.js';
+import { loadLegacyV5Catalog as loadRuntimeCatalog } from './runtime-catalog.js';
 import { applyAction, assertDuelInvariants, createDuel } from '../packages/engine/src/duel.js';
 import type { DuelState } from '../packages/protocol/src/duel.js';
 import type { EngineAction } from '../packages/engine/src/actions.js';

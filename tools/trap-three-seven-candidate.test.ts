@@ -1,7 +1,7 @@
 import {readFileSync} from 'node:fs';
 import {describe,it,expect} from 'vitest';
 import {createHash} from 'node:crypto';
-import {loadRuntimeCatalog} from './runtime-catalog.js';
+import {loadLegacyV5Catalog as loadRuntimeCatalog} from './runtime-catalog.js';
 import {createRegistry} from '../packages/engine/src/registry.js';
 import {goat200508Format} from '../packages/card-data/src/formats/goat-2005-08-17.js';
 import {setupTrapThreeSevenCandidate} from './fixtures/trap-three-seven-candidate.js';

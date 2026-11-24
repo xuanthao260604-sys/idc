@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, it, expect } from 'vitest';
-import { loadRuntimeCatalog } from './runtime-catalog.js';
+import { loadLegacyV5Catalog as loadRuntimeCatalog } from './runtime-catalog.js';
 import { projectRoot } from './project-root.js';
 import { defaultDeck } from './deck-store.js';
 import { createDuel, applyAction, assertDuelInvariants } from '../packages/engine/src/duel.js';

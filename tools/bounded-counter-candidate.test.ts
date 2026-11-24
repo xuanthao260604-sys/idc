@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
-import { loadRuntimeCatalog } from './runtime-catalog.js';
+import { loadLegacyV5Catalog as loadRuntimeCatalog } from './runtime-catalog.js';
 import { setupBoundedCounterCandidate } from './fixtures/bounded-counter-candidate.js';
 import { validateBoundedCounterGraph } from '../packages/engine/src/bounded-counter-graph.js';
 import { captureBoundedSevenLPCandidate, assertBoundedSevenLPHistory, assertCurrentBoundedSevenLPCandidate } from '../packages/engine/src/bounded-seven-lp-ledger.js';

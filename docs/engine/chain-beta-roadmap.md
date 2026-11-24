@@ -159,3 +159,9 @@ biên LP/tay-Set/phase/terminal và 11 root qua HTTP/UI explicit v6. Review/
 manifest vẫn v5. Tiếp theo chốt gate review/default với baseline legacy
 có phiên bản và ma trận phần còn thiếu, rồi C4 audit nhiều lượt. U1 và
 Windows 11 desktop thực vẫn theo sau Chain.
+
+Cập nhật tiếp 24/11/2026: [C3b.3b.2b](default-bounded-counter.md) chuyển
+review/default sang v6, giữ loader/manifest/capability legacy v5 rõ phiên
+bản và golden cũ. C4 audit nhiều lượt trên default v6 là bước tiếp theo;
+chưa đóng Chain/beta. Ước lượng C4 2–3 ngày công cần cập nhật theo lỗi tìm
+được; sau C4 vẫn là U1 và Windows 11 desktop thực.

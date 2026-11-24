@@ -6,7 +6,7 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const major = Number(process.versions.node.split('.')[0]);
 const issues = [];
 if (major !== 24) issues.push(`Cần Node.js 24.x; máy đang chạy ${process.version}.`);
-for (const path of ['package.json', 'package-lock.json', ...Object.values(inputs.bundles), ...Object.values(inputs.reviews).flat(),
+for (const path of ['package.json', 'package-lock.json', 'tools/runtime-catalog-legacy-v5-inputs.json', ...Object.values(inputs.bundles), ...Object.values(inputs.reviews).flat(),
   'apps/beta/public/index.html', 'apps/beta/public/app.js', 'apps/beta/public/style.css', 'apps/beta/public/assets/card-frames/monster-and-back.png', 'apps/beta/public/assets/card-frames/spell-and-trap.png']) {
   try {
     accessSync(join(root, path), constants.R_OK);

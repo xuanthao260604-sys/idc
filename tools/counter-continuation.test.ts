@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { loadRuntimeCatalog } from './runtime-catalog.js';
+import { loadLegacyV5Catalog as loadRuntimeCatalog } from './runtime-catalog.js';
 import { createDuel, assertDuelInvariants } from '../packages/engine/src/duel.js';
 import { COUNTER_CONTINUATION_PINS, CANDIDATE_SEVEN_EFFECT_ID, prepareCounterContinuation, assertCounterContinuation, checkpointCounterContinuation } from '../packages/engine/src/counter-continuation.js';
 import { spellResolutionBoard } from '../packages/engine/src/spell-resolution.js';

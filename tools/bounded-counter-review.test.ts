@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { loadRuntimeCatalog } from './runtime-catalog.js';
+import { loadLegacyV5Catalog as loadRuntimeCatalog } from './runtime-catalog.js';
 import { goat200508Format } from '../packages/card-data/src/formats/goat-2005-08-17.js';
 import { createRegistry } from '../packages/engine/src/registry.js';
 import { CounterReviewsSchema } from '../packages/engine/src/counter-review.js';
@@ -17,7 +17,7 @@ function build(input: unknown) {
 }
 
 describe('bounded Counter v6 schema/preflight; gameplay remains v5', () => {
-  it('loads v6 only from an explicit reviewed input while the default catalog stays v5', () => {
+  it('loads v6 only from an explicit reviewed input while the pinned legacy catalog stays v5', () => {
     const input = proposal(), before = structuredClone(input);
     expect(CounterReviewsSchema.safeParse([input]).success).toBe(true);
     expect(build(input).counterContinuations[seven.cardId]).toBe(BOUNDED_COUNTER_CONTINUATION);

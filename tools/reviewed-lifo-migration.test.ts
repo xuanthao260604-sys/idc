@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import baseline from './fixtures/reviewed-lifo-baseline.json' with { type: 'json' };
 import { reviewedLifoMigrationCases, runReviewedLifoMigration } from './fixtures/reviewed-lifo-migration.js';
-import { loadRuntimeCatalog } from './runtime-catalog.js';
+import { loadLegacyV5Catalog as loadRuntimeCatalog } from './runtime-catalog.js';
 import { prepareCounterLifoSchedule } from '../packages/engine/src/counter-lifo-schedule.js';
 import { setupBoundedCounterCandidate } from './fixtures/bounded-counter-candidate.js';
 import { setupTrapThreeSevenBoard } from './fixtures/trap-three-seven-candidate.js';

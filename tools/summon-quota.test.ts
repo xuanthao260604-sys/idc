@@ -1,5 +1,5 @@
 import {describe,it,expect} from 'vitest';
-import {loadRuntimeCatalog} from './runtime-catalog.js';
+import {loadLegacyV5Catalog as loadRuntimeCatalog} from './runtime-catalog.js';
 import {createDuel,applyAction,assertDuelInvariants} from '../packages/engine/src/duel.js';
 import {createPlayerProjection} from '../packages/engine/src/player-view.js';
 import type {DuelState,Slot,Phase} from '../packages/protocol/src/duel.js';

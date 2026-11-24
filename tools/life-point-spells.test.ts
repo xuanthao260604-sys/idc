@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { loadRuntimeCatalog } from './runtime-catalog.js';
+import { loadLegacyV5Catalog as loadRuntimeCatalog } from './runtime-catalog.js';
 import { defaultDeck } from './deck-store.js';
 import { createRegistry } from '../packages/engine/src/registry.js';
 import { goat200508Format } from '../packages/card-data/src/formats/goat-2005-08-17.js';
