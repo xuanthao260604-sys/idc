@@ -43,7 +43,7 @@ Các tổ hợp actor/phase/parity còn lại có trong 16 trace engine/adapter,
 không tính là đã chạy UI. Deck test dùng store in-memory riêng; saved A/B
 giữ nguyên. Thu activity theo duelId/stateVersion trước giới hạn 60 mục,
 kiểm sáu phí/hai discard, public history hai ghế và runtime exception.
-Hai mode mới thêm vào validation, dự kiến 134 bước/124 browser report;
+Hai mode mới thêm vào validation, artifact xác nhận 134 bước/124 browser report;
 không bỏ các bước cũ, giữ timeout workflow 25 phút.
 
 ## Điểm dừng và phần còn lại
@@ -57,4 +57,48 @@ Chưa đóng gói/bàn giao beta; Windows runner không thay desktop W1.
 
 ## Bằng chứng
 
-Đang chốt hồi quy và CI đúng source; số dự kiến chưa là kết quả nghiệm thu.
+Code `b80c7301b6705d6ac016362c3c2d0d259a2efc1e` tại [CI 45361921064](https://github.com/xuanthao260604-sys/idc/actions/runs/45361921064), attempt 1.
+Ubuntu job `138333851890`, Windows job `138333851445` đều completed/success;
+đã đọc log checkout SHA khớp code ở cả hai job. Ubuntu đạt **6948/6948
+test/75 file**, typecheck, cards:check/build và vanilla/mixed smoke. Local
+đạt cùng **6948/6948 test/75 file**, typecheck, cards:check/build và hai smoke.
+Mười sáu trace mới mỗi ca mirror engine/adapter, không tính đôi số test;
+74 suite cũ giữ số ca, 163 migration case/142 golden nguyên byte.
+
+Linux local chạy hai mode natural-spell-a/b trên Chrome/154.0.8037.57,
+99/102 lệnh, Chain [7,3]/[8,2], sáu phí/hai discard, lượt cuối 5,
+LP A/B 5000/5000, runtimeExceptions=0. Không chạy lại bộ 134 bước tổng
+hợp trên Linux local; Ubuntu CI không chạy browser tổng hợp. Không lấy
+số Windows làm số nghiệm thu Linux.
+
+Artifact `windows-validation-45361921064-1`, ID `14905559590`;
+SHA-256 ZIP khớp metadata GitHub:
+`e9fabcfd8d3153cc5c6a41f082e013fd2e2c0a39c2d4d976ae18c97faa519f2d`.
+Report `2026-11-24T09-06-16-002Z-7492/report.json`.
+Windows win32/x64, OS 10.0.26100, Node 24.19.0,
+npm 11.17.0, Edg/157.0.4341.60: **6948/6948 test/75 file,
+134/134 bước, 124/124 browser report**, runtimeExceptions=0.
+
+Đã đọc đủ 134 raw step log và đối chiếu mọi JSON browser với report,
+expected count, platform/version/exception. So baseline C4b
+`windows-validation-45353563068-1`, source `a9a3aea`: đủ 132 bước và
+122 browser facts cũ giữ nguyên khi bỏ riêng browserVersion;
+capabilities.log nguyên byte. ZIP baseline khớp metadata đã lưu. Hai report
+mới Windows khớp Linux khi bỏ platform/browserVersion, gồm parity, số lệnh,
+LP, rút 4/0 lá hiệu ứng, Faith lấy cùng Pot, stale handle/receipt và deck.
+Không ghép evidence khác source.
+
+Hash xác nhận engine/protocol, UI/server, dữ liệu/review/evidence,
+ảnh/frame/back, deck nguồn, test cũ và golden nguyên byte. README giữ
+prefix cũ; capability default v6 không đổi. Chỉ thêm fixture/test/browser
+audit, hai mode validation và tài liệu; không đổi luật hoặc review.
+Lúc viết driver đã sửa slot Phép sang ô trống (ba Seven chiếm ô 0–2),
+và expectation thời điểm rút Magic thứ hai theo từng input parity.
+Source cuối không sửa board/LP/quota/zone để đi qua các bước.
+Commit chốt sau CI chỉ tài liệu [skip ci]; evidence code thuộc `b80c730`.
+
+Dừng ở C4c, riêng root Pot of Greed với đầu vào deterministic đã chọn.
+Không coi đã audit new-game đủ 11 Phép, đóng C4/Chain hoặc beta. Mục tiếp
+là root có lựa chọn/chi phí riêng và checklist terminal/rejection cuối;
+sau đóng Chain vẫn U1 bộ tạo bài riêng rồi Windows 11 desktop thực.
+Report windows11DesktopVerified=false; chưa đóng gói/bàn giao beta.
