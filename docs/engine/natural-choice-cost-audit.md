@@ -52,7 +52,7 @@ xác nhận một rejection. Cả hai dùng DOM/UI/HTTP thật, store deck in-me
 riêng, giữ saved A/B; thu public history theo duelId/stateVersion trước
 limiter 60 mục, không lấy history đã cắt để đếm phí.
 
-Thêm hai mode validation, dự kiến 136 bước/126 browser report, giữ mọi
+Thêm hai mode validation, artifact xác nhận 136 bước/126 browser report, giữ mọi
 bước cũ. Timeout CI tăng 25→30 phút: artifact C4c cho thấy validation mất
 23 phút 34 giây, thêm hai journey chín lượt cần dư thời gian; không giảm
 coverage. Timeout browser riêng mode mới 240 giây, mode cũ giữ nguyên.
@@ -71,4 +71,53 @@ Windows 11 desktop thực. Chưa đóng gói hoặc bàn giao beta.
 
 ## Bằng chứng
 
-Đang chốt hồi quy và CI đúng source; số dự kiến chưa là kết quả nghiệm thu.
+Code `3650a2df808a7c4c0df16ef3be36cc0a525a8cd1` tại [CI 45380797380](https://github.com/xuanthao260604-sys/idc/actions/runs/45380797380), attempt 1.
+Ubuntu job `138398989543`, Windows job `138398989220` đều completed/success;
+đã đọc log checkout khớp SHA ở cả hai job. Ubuntu đạt **6964/6964 test/76
+file**, typecheck, cards:check/build, vanilla/mixed smoke. Local đạt cùng
+**6964/6964 test/76 file**, typecheck, cards:check/build và hai smoke.
+16 trace mới mirror engine/adapter, không tính đôi số test;
+75 suite cũ giữ số ca, 163 migration case/142 golden nguyên byte.
+
+Linux local chạy hai mode natural-choice-a/b trên Chrome/154.0.8037.57:
+Fissure 149 lệnh, một root-choice pause, hai discard; Tribute 152 lệnh,
+không root-choice pause, bốn discard. Cả hai Chain [7,3], sáu phí Seven,
+hai quái bị phá, LP A/B 5000/5000, lượt cuối 9, runtimeExceptions=0.
+Không chạy lại bộ 136 bước tổng hợp Linux local trong C4d; Ubuntu CI không
+chạy browser tổng hợp. Đây là gap kiểm chứng tổng hợp dành cho C4e,
+không lấy số Windows điền thay Linux.
+
+Artifact `windows-validation-45380797380-1`, ID `14914704441`;
+SHA-256 ZIP khớp metadata GitHub:
+`9d2c473d729f57d2aa12dea1113a5468f555b512a77cb22e119ab7e5c9715c71`.
+Report `2026-11-24T11-05-07-962Z-852/report.json`.
+Windows win32/x64, OS 10.0.26100, Node 24.19.0,
+npm 11.17.0, Edg/157.0.4341.60: **6964/6964 test/76 file,
+136/136 bước, 126/126 browser report**, runtimeExceptions=0.
+
+Đã đọc đủ 136 raw step log, đối chiếu JSON browser/report/expected count,
+platform/browserVersion/exception. So baseline C4c
+`windows-validation-45361921064-1`, source `b80c730`: đủ 134 bước và 124
+browser facts cũ giữ nguyên khi bỏ riêng browserVersion; capabilities.log
+nguyên byte. ZIP baseline khớp metadata đã lưu. Hai report mới Windows
+khớp Linux khi bỏ platform/browserVersion, gồm 149/152 lệnh, Fissure pause,
+Tribute cost, Faith lấy cùng root, stale/retry, public history và deck.
+Không ghép evidence khác source.
+
+Hash xác nhận engine/protocol, UI/server, dữ liệu/review/evidence,
+ảnh/frame/back, deck nguồn, test cũ và golden nguyên byte. README giữ
+prefix cũ; capability default v6 không đổi. Chỉ thêm fixture/test/browser
+audit, hai mode validation, tăng timeout workflow và tài liệu.
+Lúc viết driver đã sửa luồng Fissure từ Set: UI gửi activation ngay khi
+nhấn Kích hoạt, không có form xác nhận thứ hai. Đồng thời phân biệt
+PlayerView effect-choice của Fissure với target của Faith, và tăng timeout
+riêng trace chín lượt lên 15 giây sau một lần quá 5 giây dưới tải đồng thời.
+Không sửa luật, review, UI hoặc state để đi qua ca kiểm thử.
+Commit chốt sau CI chỉ tài liệu [skip ci]; evidence code thuộc `3650a2d`.
+
+Dừng ở C4d. C4e tiếp theo đối chiếu đúng bảy điều kiện trong roadmap,
+chạy toàn bộ Linux cùng source đã có Windows evidence, xác định và sửa
+gap chặn nếu có trước khi đóng Chain. Dự kiến 1–2 chu kỳ nếu không có lỗi,
+cần cập nhật theo checklist thực tế. Không đòi audit new-game mọi root
+hoặc mở rộng C1. Sau đóng Chain giữ U1 bộ tạo bài riêng rồi W1 Windows 11
+desktop thực. windows11DesktopVerified=false; chưa đóng gói/bàn giao beta.
