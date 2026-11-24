@@ -165,3 +165,9 @@ review/default sang v6, giữ loader/manifest/capability legacy v5 rõ phiên
 bản và golden cũ. C4 audit nhiều lượt trên default v6 là bước tiếp theo;
 chưa đóng Chain/beta. Ước lượng C4 2–3 ngày công cần cập nhật theo lỗi tìm
 được; sau C4 vẫn là U1 và Windows 11 desktop thực.
+
+Cập nhật tiếp 24/11/2026: [C4a](default-chain-multiturn-audit.md) audit
+một hành trình default v6 qua lượt 3–5 sau fixture ban đầu, với Chain tám
+link rồi các Chain mới. C4 chưa hoàn tất; còn các nhánh/ma trận và trận
+new-game tự nhiên, reset/terminal/bảo toàn dữ liệu ở source cuối. U1 và
+Windows 11 desktop thực vẫn sau khi đóng Chain.
