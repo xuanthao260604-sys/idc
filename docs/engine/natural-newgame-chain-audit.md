@@ -44,7 +44,7 @@ Hai browser `--natural-chain=a|b` đi qua DOM/UI/HTTP thật. Mode A Main1 và
 owner concede; B Main2 và non-owner concede. Có 95/99 lệnh trước reset,
 Chain `[8,2]`, năm phí, tất cả Set/Draw thực hiện trong trận. Activity được
 thu theo duelId/stateVersion trước giới hạn 60 mục; command mới sau reset
-không ghi đè lịch sử trận cũ. Hai mode được thêm vào validation, dự kiến
+không ghi đè lịch sử trận cũ. Hai mode được thêm vào validation, artifact xác nhận
 132 bước/122 report; giữ các bước cũ và timeout workflow 25 phút.
 
 ## Điểm dừng
@@ -58,4 +58,50 @@ bàn giao beta, không dùng runner thay cho desktop W1.
 
 ## Bằng chứng
 
-Đang chốt hồi quy và CI đúng source; số dự kiến chưa là kết quả nghiệm thu.
+Code `a9a3aea5b03d44cdf2151f8c60414b7c52af274c` tại [CI 45353563068](https://github.com/xuanthao260604-sys/idc/actions/runs/45353563068), attempt 1.
+Ubuntu job `138305684815`, Windows job `138305685397` đều completed/success.
+Đã đọc log Ubuntu: checkout SHA khớp code; **6932/6932 test/74 file**,
+typecheck, cards:check/build và vanilla/mixed smoke đạt. Local đạt cùng
+**6932/6932 test/74 file**, typecheck, cards:check/build và hai smoke.
+Mười test mới gồm tám trace engine/adapter song song và hai ca HTTP disk;
+73 suite cũ giữ số ca, 163 migration case/142 golden nguyên byte.
+
+Linux local chạy đủ hai mode natural-chain-a/b, Chrome/154.0.8037.57,
+95/99 lệnh trước reset, Chain [8,2], năm phí, lượt cuối 4 và runtimeExceptions=0.
+Không chạy lại bộ 132 bước đầy đủ trên Linux local trong chu kỳ này;
+Ubuntu CI không chạy browser tổng hợp. Không lấy số Windows điền Linux.
+
+Artifact `windows-validation-45353563068-1`, ID `14903106161`;
+SHA-256 ZIP khớp metadata GitHub:
+`37534f02f2ac7876925581aaa8c9cd20236dc7b6f38597d7456f91c39a4ca549`.
+Report `2026-11-24T08-09-03-524Z-10100/report.json`.
+Windows win32/x64, OS 10.0.26100, Node 24.19.0,
+npm 11.17.0, Edg/157.0.4341.60: **6932/6932 test/74 file,
+132/132 bước, 122/122 browser report**, runtimeExceptions=0.
+
+Đã đọc đủ 132 raw step log, đối chiếu mọi JSON browser/report/platform.
+So baseline C4a `windows-validation-45347734575-1`, source `691a2bf`:
+giữ đủ 130 bước và 120 browser facts cũ khi bỏ riêng browserVersion;
+capabilities.log nguyên byte. Hai report mới Windows khớp Linux khi bỏ
+platform/browserVersion, gồm seed/deck đã chọn, LP 8000, [8,2], 95/99 lệnh,
+Set/Draw thật, concede owner/non-owner, reset và bảo toàn deck. ZIP baseline
+cũng khớp metadata đã lưu; không ghép evidence khác source.
+
+Hash xác nhận engine/protocol, UI/server, dữ liệu/review/evidence,
+ảnh/frame/back, deck nguồn, mọi test cũ và golden nguyên byte. README giữ
+prefix cũ; capability default v6 không đổi. Chỉ thêm fixture/test/browser
+audit, store test riêng, hai mode validation và tài liệu. Không thay luật
+hoặc review để làm hành trình đi qua.
+
+Lúc viết harness đã sửa driver theo hợp đồng có sẵn: Pass cửa sổ sau Draw
+đầu tiên, kiểm private key theo key chính xác (không dò chuỗi trong handle
+ngẫu nhiên), replay request đúng seat sau reset, collector chấp nhận HTTP
+rejection không có view. Không đổi engine/invariant hoặc bypass gameplay.
+Commit chốt sau CI chỉ cập nhật tài liệu [skip ci]; evidence code thuộc
+`a9a3aea`.
+
+Dừng ở C4b. Đây là createDuel nguyên vẹn với seed và deck order đầu vào
+được chọn để tái lập, không phải mẫu ngẫu nhiên bất kỳ. C4/Chain còn mở:
+còn new-game họ Phép/Counter, terminal/rejection khác và checklist cuối.
+Sau đóng Chain giữ bộ tạo bài riêng rồi Windows 11 desktop thực.
+Report windows11DesktopVerified=false; chưa đóng gói/bàn giao beta.
