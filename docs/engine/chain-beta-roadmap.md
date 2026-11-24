@@ -177,3 +177,9 @@ createDuel nguyên vẹn bằng input deck/seed tái lập, Set/rút qua lượt
 concede trong cleanup và reset giữ deck/file. C4 còn họ Phép/Counter ở
 new-game và các nhánh/checklist cuối; chưa đóng Chain. U1 và Windows 11
 thực vẫn sau khi đóng Chain, chưa bàn giao beta.
+
+Cập nhật tiếp 24/11/2026: [C4c](natural-spell-chain-audit.md) thêm audit
+new-game riêng Pot/Magic/Seven, hai parity và Faith dùng lại cùng Pot.
+C4 còn root lựa chọn/chi phí riêng, terminal/rejection và checklist cuối;
+không đồng nhất kiểm thành phần C3 với audit new-game đã chạy. Sau đóng
+Chain giữ U1 bộ tạo bài riêng và Windows 11 desktop thực, chưa bàn giao beta.
