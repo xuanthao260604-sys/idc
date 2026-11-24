@@ -171,3 +171,9 @@ một hành trình default v6 qua lượt 3–5 sau fixture ban đầu, với Ch
 link rồi các Chain mới. C4 chưa hoàn tất; còn các nhánh/ma trận và trận
 new-game tự nhiên, reset/terminal/bảo toàn dữ liệu ở source cuối. U1 và
 Windows 11 desktop thực vẫn sau khi đóng Chain.
+
+Cập nhật tiếp 24/11/2026: [C4b](natural-newgame-chain-audit.md) audit từ
+createDuel nguyên vẹn bằng input deck/seed tái lập, Set/rút qua lượt thật,
+concede trong cleanup và reset giữ deck/file. C4 còn họ Phép/Counter ở
+new-game và các nhánh/checklist cuối; chưa đóng Chain. U1 và Windows 11
+thực vẫn sau khi đóng Chain, chưa bàn giao beta.

@@ -1,3 +1,6 @@
+import {naturalChainStart} from '../dist/tools/fixtures/natural-chain-start.js';
+import {naturalChainBrowser} from './natural-chain-browser.mjs';
+import {createDeckStore} from '../dist/tools/deck-store.js';
 import {setupDefaultChainAudit} from '../dist/tools/fixtures/default-chain-audit.js';
 import {defaultChainAuditBrowser} from './default-chain-audit-browser.mjs';
 import {boundedBoundaryOptions} from '../dist/tools/fixtures/bounded-boundary.js';
@@ -30,6 +33,8 @@ import { setupSevenResponse } from '../dist/tools/fixtures/seven-response.js';
 import { setupThreeLinkInteractions } from '../dist/tools/fixtures/three-link-interactions.js';
 import { goat200508Format } from '../dist/packages/card-data/src/formats/goat-2005-08-17.js';
 const read = async p => JSON.parse(await readFile(join(projectRoot, p), 'utf8'));
+const naturalArg=process.argv.find(arg=>/^--natural-chain=[ab]$/.test(arg));
+const natural=naturalArg?.split('=')[1]??null;
 const defaultAuditArg=process.argv.find(arg=>/^--default-audit=[ab]$/.test(arg));
 const defaultAudit=defaultAuditArg?.split('=')[1]??null;
 const defaultChainArg=process.argv.find(arg=>/^--default-chain=[ab]$/.test(arg));
@@ -94,8 +99,8 @@ const reincarnationMode = reincarnationArg?.split('=')[1] ?? null;
 const deckDraftGuard = process.argv.includes('--deck-draft-guard');
 const deckSaveCheck = process.argv.includes('--deck-save-check');
 const deckOverview = deckSaveCheck || deckDraftGuard || process.argv.includes('--deck-overview');
-const expanded = defaultAudit !== null || defaultChain !== null || boundary !== null || bounded !== null || trapAudit !== null || trapFour !== null || fourInteractions !== null || fourLink !== null || sevenResponseInteractions !== null || sevenResponse !== null || threeInteractions !== null || threeLink !== null || cleanupOrder !== null || sevenInteractions !== null || sevenMode !== null || responseGuide !== null || magicInteractions !== null || magicMode !== null || ookaziInteractions !== null || ookazi !== null || choiceIdentities || graveyardFilters || handSorting || faithBattle !== null || magicianFaith || deckOverview || earthquake || blockAttack || reincarnationMode !== null || tributeDoomed || hammerShot || smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
-const r = defaultAudit !== null || defaultChain !== null ? loadCurrentRuntimeCatalog().registry : boundary !== null || bounded !== null ? boundedRegistry : expanded ? loadRuntimeCatalog().registry : createRegistry((await read('data/generated/pilot.json')).cards, goat200508Format, {},
+const expanded = natural !== null || defaultAudit !== null || defaultChain !== null || boundary !== null || bounded !== null || trapAudit !== null || trapFour !== null || fourInteractions !== null || fourLink !== null || sevenResponseInteractions !== null || sevenResponse !== null || threeInteractions !== null || threeLink !== null || cleanupOrder !== null || sevenInteractions !== null || sevenMode !== null || responseGuide !== null || magicInteractions !== null || magicMode !== null || ookaziInteractions !== null || ookazi !== null || choiceIdentities || graveyardFilters || handSorting || faithBattle !== null || magicianFaith || deckOverview || earthquake || blockAttack || reincarnationMode !== null || tributeDoomed || hammerShot || smashingGround || process.argv.includes('--expanded-catalog') || process.argv.includes('--expanded-duel') || lifePointsMode !== null;
+const r = natural !== null || defaultAudit !== null || defaultChain !== null ? loadCurrentRuntimeCatalog().registry : boundary !== null || bounded !== null ? boundedRegistry : expanded ? loadRuntimeCatalog().registry : createRegistry((await read('data/generated/pilot.json')).cards, goat200508Format, {},
   await read('data/reviews/pilot.spell-effects.json'), await read('data/reviews/pilot.flip-effects.json'), await read('data/reviews/pilot.trap-effects.json'));
 const deck = Object.keys(r.cards);
 if (threeLink !== null) deck.push('official:05053103');
@@ -125,7 +130,8 @@ const boundedFixture=bounded===null?null:setupBoundedLive({actor:bounded[0],phas
 const boundaryFixture=boundary===null?null:setupBoundedLive(boundedBoundaryOptions(boundary[0],boundary[1]));
 const defaultChainFixture=defaultChain===null?null:setupBoundedLive({actor:defaultChain,phase:defaultChain==='a'?'main1':'main2',...(defaultChain==='a'?{traps:3}:{spellId:'official:55144522'}),owners:Array.from({length:defaultChain==='a'?5:6},(_,i)=>i%2?(defaultChain==='a'?'b':'a'):defaultChain)},r);
 const defaultAuditFixture=defaultAudit===null?null:setupDefaultChainAudit(r,defaultAudit,defaultAudit==='a'?'main1':'main2');
-const s = defaultAuditFixture?structuredClone(defaultAuditFixture.state):defaultChainFixture?structuredClone(defaultChainFixture.state):boundaryFixture?structuredClone(boundaryFixture.state):boundedFixture?structuredClone(boundedFixture.state):trapAuditFixture?structuredClone(trapAuditFixture.state):trapFourFixture?structuredClone(trapFourFixture.state):fourInteractionFixture?structuredClone(fourInteractionFixture.state):fourFixture?structuredClone(fourFixture.state):responseInteractionFixture?structuredClone(responseInteractionFixture.state):responseFixture?structuredClone(responseFixture.state):interactionFixture?structuredClone(interactionFixture.state):structuredClone(createDuel(r, { duelId: fullDuel ? 'mixed-smoke' : 'browser-fixture', players: [{ id: 'a', deck }, { id: 'b', deck }], firstPlayerId: 'a', seedHex: fullDuel ? (expanded ? '5e' : '08').padStart(64, '0') : '12'.repeat(32) }).state);
+const naturalStart=natural===null?null:naturalChainStart(r,natural);
+const s = naturalStart?naturalStart.state:defaultAuditFixture?structuredClone(defaultAuditFixture.state):defaultChainFixture?structuredClone(defaultChainFixture.state):boundaryFixture?structuredClone(boundaryFixture.state):boundedFixture?structuredClone(boundedFixture.state):trapAuditFixture?structuredClone(trapAuditFixture.state):trapFourFixture?structuredClone(trapFourFixture.state):fourInteractionFixture?structuredClone(fourInteractionFixture.state):fourFixture?structuredClone(fourFixture.state):responseInteractionFixture?structuredClone(responseInteractionFixture.state):responseFixture?structuredClone(responseFixture.state):interactionFixture?structuredClone(interactionFixture.state):structuredClone(createDuel(r, { duelId: fullDuel ? 'mixed-smoke' : 'browser-fixture', players: [{ id: 'a', deck }, { id: 'b', deck }], firstPlayerId: 'a', seedHex: fullDuel ? (expanded ? '5e' : '08').padStart(64, '0') : '12'.repeat(32) }).state);
 // Trusted fixture setup BEFORE starting the server. No state-edit endpoint, seed flag or test mode in beta CLI.
 function move(name, owner, zone, slot = 0, down = false) {
   const d = Object.values(r.cards).find(c => c.name === name), p = s.players.find(p => p.id === owner);
@@ -230,7 +236,7 @@ if (chainView) {
   move('Man-Eater Bug','b','monster',0,true);
   s.turn.number=3;s.turn.phase='main1';s.timing.window='open';s.timing.priorityPlayer='a';s.timing.consecutivePasses=0;
 }
-if (defaultAudit===null && defaultChain===null && boundary===null && bounded===null && expanded && trapAudit === null && trapFour === null && fourInteractions === null && fourLink === null && sevenResponseInteractions === null && sevenResponse === null && threeInteractions === null && threeLink === null && cleanupOrder === null && sevenInteractions === null && sevenMode === null && responseGuide === null && magicInteractions === null && magicMode === null && ookaziInteractions === null && !fullDuel && lifePointsMode === null && !smashingGround && !hammerShot && !tributeDoomed && !blockAttack && !earthquake && !magicianFaith && !faithBattle && !handSorting && !graveyardFilters && !choiceIdentities && !deckOverview && reincarnationMode === null) {
+if (natural===null && defaultAudit===null && defaultChain===null && boundary===null && bounded===null && expanded && trapAudit === null && trapFour === null && fourInteractions === null && fourLink === null && sevenResponseInteractions === null && sevenResponse === null && threeInteractions === null && threeLink === null && cleanupOrder === null && sevenInteractions === null && sevenMode === null && responseGuide === null && magicInteractions === null && magicMode === null && ookaziInteractions === null && !fullDuel && lifePointsMode === null && !smashingGround && !hammerShot && !tributeDoomed && !blockAttack && !earthquake && !magicianFaith && !faithBattle && !handSorting && !graveyardFilters && !choiceIdentities && !deckOverview && reincarnationMode === null) {
   move('Gaia The Fierce Knight', 'a', 'hand');
   move('Battle Ox', 'a', 'monster', 0); move('Celtic Guardian', 'a', 'monster', 1, true);
   move('Curse of Dragon', 'a', 'hand');
@@ -355,9 +361,11 @@ if (deckOut !== null) {
   s.turn.phase = 'main1'; s.timing.window = 'open'; s.timing.consecutivePasses = 0;
 }
 assertDuelInvariants(s, r);
-const server = createBetaServer(r, undefined, newGame || concede || seatGuard || deckBuilder || deckOverview ? undefined : s), directory = await mkdtemp(join(tmpdir(), 'ygo-browser-'));
+const naturalStore=naturalStart?createDeckStore(r):undefined;
+if(naturalStart&&naturalStore)for(const p of naturalStart.input.players){const saved=await naturalStore.save(p.id,0,p.deck);if(!saved.ok)throw new Error('Invalid natural-game test deck');}
+const server = createBetaServer(r, undefined, newGame || concede || seatGuard || deckBuilder || deckOverview ? undefined : s,naturalStore), directory = await mkdtemp(join(tmpdir(), 'ygo-browser-'));
 let chrome, ws, closeBrowser, browser, dialogAnswer; const nativeDialogs = []; const pending = new Map(), errors = []; let nextId = 0;
-const timeout = setTimeout(() => { console.error('Browser regression timed out'); chrome?.kill(); server.closeAllConnections(); process.exit(1); }, fullDuel ? 240000 : defaultAudit!==null ? 180000 : 90000);
+const timeout = setTimeout(() => { console.error('Browser regression timed out'); chrome?.kill(); server.closeAllConnections(); process.exit(1); }, fullDuel ? 240000 : natural!==null || defaultAudit!==null ? 180000 : 90000);
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 try {
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
@@ -722,7 +730,9 @@ try {
   await send('Runtime.enable'); await send('Page.enable'); await send('Page.navigate', { url: `http://127.0.0.1:${server.address().port}` });
   await wait(`document.getElementById('seat-dialog')?.open`); await seat('a');
   await verifyResultSummary();
-  if(defaultAudit!==null){
+  if(natural!==null){
+    await naturalChainBrowser({f:naturalStart,evaluate,seat,click,actionClick,textButton,confirm,pass,wait,setDialogAnswer:value=>{dialogAnswer=value;},errors,browserVersion});
+  }else if(defaultAudit!==null){
     await defaultChainAuditBrowser({f:defaultAuditFixture,evaluate,seat,click,actionClick,textButton,confirm,pass,errors,browserVersion});
   }else if(defaultChain!==null){
     assert.equal(loadCurrentRuntimeCatalog().registry.counterContinuations['official:03819470'],'reviewed-bounded-counter-patterns-v6');
@@ -2821,7 +2831,7 @@ try {
     if(lifePointsMode==='normal')await verifyResultSummary();
     assert.equal(errors.length,0);
     console.log(JSON.stringify({platform:process.platform,browserVersion:browserVersion.product,mode:'life-points-'+lifePointsMode,resultSummary:lifePointsMode==='lethal',summaryHiddenWhenOngoing:lifePointsMode==='normal',gainFromOwnSet:lifePointsMode==='normal',lifePoints:await evaluate('view.players.map(p=>p.lifePoints)'),delayedUntilResolution:true,fixtureOnlyAtSetup:true,runtimeExceptions:errors.length}));
-  } else if (defaultAudit===null && defaultChain===null && boundary===null && bounded===null && expanded && !fullDuel && !deckOverview) {
+  } else if (natural===null && defaultAudit===null && defaultChain===null && boundary===null && bounded===null && expanded && !fullDuel && !deckOverview) {
     assert.equal(await evaluate('catalog.size'), 112);
     assert.match(await evaluate(`document.getElementById('catalog-count').textContent`), /112/);
     await click(`document.getElementById('deck-builder')`); await wait(`!busy && document.getElementById('deck-dialog').open`);
