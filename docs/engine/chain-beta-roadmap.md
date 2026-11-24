@@ -183,3 +183,11 @@ new-game riêng Pot/Magic/Seven, hai parity và Faith dùng lại cùng Pot.
 C4 còn root lựa chọn/chi phí riêng, terminal/rejection và checklist cuối;
 không đồng nhất kiểm thành phần C3 với audit new-game đã chạy. Sau đóng
 Chain giữ U1 bộ tạo bài riêng và Windows 11 desktop thực, chưa bàn giao beta.
+
+Cập nhật tiếp 24/11/2026: [C4d](natural-choice-cost-audit.md) audit new-game
+Fissure choice/Tribute cost-target qua lượt 1–9, Faith dùng lại root và
+Chain [7,3]. C4e tiếp theo đối chiếu đúng bảy điều kiện đóng Chain ở trên,
+gắn evidence hiện có và gap cụ thể, rồi kiểm đầy đủ Linux/Windows cùng
+source chốt; sửa gap chặn nếu có. Không tự mở rộng luật hoặc đòi mọi root
+có journey new-game giống nhau. U1 và W1 giữ thứ tự sau khi đóng Chain;
+chưa đóng gói/bàn giao beta.
