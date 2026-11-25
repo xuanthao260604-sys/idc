@@ -6,7 +6,7 @@ Game đấu bài hai người theo Goat Format Bắc Mỹ: cutoff 17/8/2005, ban
 
 ## Tiến độ hiện tại
 
-Mặc định hiện dùng Seven review v6 cho hai họ Chain hữu hạn đã pin, tối đa tám link theo giới hạn pool/copy/ô. V5 được giữ riêng cho hồi quy lịch sử; các mốc v1–v5 bên dưới ghi kết quả tại thời điểm đó. C4 audit nhiều lượt còn mở, chưa đóng Chain/beta. Xem [gate mặc định v6](docs/engine/default-bounded-counter.md).
+Mặc định hiện dùng Seven review v6 cho hai họ Chain hữu hạn đã pin, tối đa tám link theo giới hạn pool/copy/ô. V5 được giữ riêng cho hồi quy lịch sử; các mốc v1–v5 bên dưới ghi kết quả tại thời điểm đó. Đã nghiệm thu Chain C1–C4 trong scope hữu hạn; bước tiếp theo là U1. Chưa kiểm Windows 11 desktop hoặc đóng gói/bàn giao beta. Xem [gate mặc định v6](docs/engine/default-bounded-counter.md).
 
 Đã có bàn đấu hotseat hai người thay phiên cùng máy, catalog 112 loại và deck mẫu hợp lệ 40 lá; deck A/B tự xây vẫn được giữ.
 Core hỗ trợ 95 quái thường; 17 hiệu ứng Pot of Greed, Fissure, Trap Hole, Hane-Hane, Man-Eater Bug,
@@ -298,3 +298,5 @@ Catalog runtime nạp 19 bundle đang hoạt động từ danh sách đầu vào
 Đã thêm [C4d new-game choice/cost](docs/engine/natural-choice-cost-audit.md): Fissure đồng hạng tạm dừng/resume và Tribute trả discard/target, Chain `[7,3]` qua lượt 1–9; Faith lấy cùng root, nguồn/cost rút và Set thật. 16 trace engine/adapter, hai journey UI; tiếp theo C4e đối chiếu bảy điều kiện và kiểm chứng đầy đủ Linux/Windows cùng source chốt. Chưa đóng Chain/beta.
 
 Đã chốt C4d trên code `3650a2d`: [Windows/Ubuntu CI 45380797380](https://github.com/xuanthao260604-sys/idc/actions/runs/45380797380) đạt **6964 test/76 file**; Windows **136 bước/126 browser report**, runtimeExceptions=0. Hai journey Fissure/Tribute Windows khớp Linux, giữ 75 suite/124 browser facts cũ và capability default v6. C4e còn bảng đối chiếu bảy điều kiện và bộ Linux tổng hợp cùng source; chưa đóng Chain/beta hoặc kiểm Windows 11 desktop.
+
+Đã chốt [C4e — nghiệm thu Chain C1–C4](docs/engine/chain-beta-closure.md) ngày 25/11/2026 trên code `3650a2d`: Linux local đầy đủ và [Windows CI 45380797380](https://github.com/xuanthao260604-sys/idc/actions/runs/45380797380) cùng đạt **6964 test/76 file, 136 bước/126 browser report**, runtimeExceptions=0. Đủ bảy điều kiện roadmap; 126 bộ facts khớp khi tách platform/browser, dữ liệu/review/ảnh/deck giữ nguyên. Đóng riêng phần Chain hữu hạn; tiếp theo U1 bộ tạo bài riêng rồi Windows 11 desktop thực, chưa đóng gói/bàn giao beta.

@@ -4,6 +4,11 @@ Ngày lập: 09/11/2026. Trạng thái: đề xuất phạm vi và ước lượ
 review luật hoặc bằng chứng đã triển khai. Hoàn thành từng mốc rồi dừng báo
 cáo; không tự mở rộng sang mốc khác khi hướng thực hiện chưa rõ.
 
+Trạng thái ngày 25/11/2026: [C4e nghiệm thu](chain-beta-closure.md) đã đóng
+Chain C1–C4 trong scope hữu hạn. Mục kế tiếp U1; W1 desktop Windows 11
+vẫn chưa kiểm chứng, chưa đóng gói/bàn giao beta. Các mốc bên dưới giữ
+bối cảnh và ước lượng tại thời điểm lập/cập nhật.
+
 ## Điểm xuất phát đã xác nhận
 
 Nhánh work ở `11b7272`, cha trực tiếp là `ae2d567`. Commit chốt chỉ sửa
@@ -191,3 +196,11 @@ gắn evidence hiện có và gap cụ thể, rồi kiểm đầy đủ Linux/Wi
 source chốt; sửa gap chặn nếu có. Không tự mở rộng luật hoặc đòi mọi root
 có journey new-game giống nhau. U1 và W1 giữ thứ tự sau khi đóng Chain;
 chưa đóng gói/bàn giao beta.
+
+Cập nhật 25/11/2026: C4e đã đối chiếu đủ bảy điều kiện và full Linux/Windows
+cùng code `3650a2d`: 6964 test/76 file, 136 bước/126 browser report mỗi
+nền tảng; raw log/report/126 bộ facts khớp, dữ liệu/review/assets/deck giữ
+nguyên. Đóng Chain C1–C4 trong phạm vi C1; chuyển mục tiếp theo sang U1
+bộ tạo bài riêng giới hạn, 4–7 ngày công chia mốc nhỏ, rồi W1 Windows 11
+desktop thực 1–3 ngày công khi có môi trường. Không mở U1 trong chu kỳ
+C4e, không đóng gói hoặc bàn giao beta.
