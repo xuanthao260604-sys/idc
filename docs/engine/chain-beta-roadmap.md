@@ -204,3 +204,10 @@ nguyên. Đóng Chain C1–C4 trong phạm vi C1; chuyển mục tiếp theo san
 bộ tạo bài riêng giới hạn, 4–7 ngày công chia mốc nhỏ, rồi W1 Windows 11
 desktop thực 1–3 ngày công khi có môi trường. Không mở U1 trong chu kỳ
 C4e, không đóng gói hoặc bàn giao beta.
+
+Cập nhật 26/11/2026: bắt đầu [U1a nền tảng project](../editor/custom-card-project.md)
+sau khi Chain đã nghiệm thu. U1 chia U1a schema/store, U1b UI quái thường/
+ảnh, U1c pool/deck riêng/template capability và U1d audit. Tổng 4–7 ngày
+công; U1a chưa bật custom gameplay hoặc ảnh byte. Mỗi mốc dừng riêng;
+không sửa catalog official/review v6 để gán quyền custom. Sau U1 vẫn W1
+Windows 11 desktop thực; chưa đóng gói/bàn giao beta.
