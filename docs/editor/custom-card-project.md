@@ -96,5 +96,55 @@ xét lại bound; tám link C1 không phải giới hạn luật chung. Nội du
 
 ## Kiểm chứng và điểm dừng
 
-Đang chốt test/CI đúng source. U1a chưa hoàn tất nghiệm thu; không gọi các
-ca thư viện/import/disk là UI, xử lý ảnh thực hoặc gameplay custom.
+**U1a đạt trong phạm vi thư viện authoring/storage nêu trên. U1 tổng thể
+chưa hoàn tất; chưa có UI editor, ảnh byte hoặc gameplay custom.**
+Code `7c3fd608be9755b0ce1e4b726e97aeba1d711fb4` tại [CI 45779409222](https://github.com/xuanthao260604-sys/idc/actions/runs/45779409222), attempt 1.
+Ubuntu job `139770945523`, Windows job `139770945859` completed/success;
+đã đọc log checkout khớp SHA. Ubuntu đạt **7007/7007 test/77 file**,
+typecheck, cards:check/build, vanilla/mixed smoke. Local đạt cùng
+**7007/7007 test/77 file**, typecheck/build, cards:check và hai smoke.
+
+43 ca mới kiểm JSON/Unicode/plain text không thực thi, namespace/field/
+stat/asset reference, revision local, retired ID qua restart/import,
+input copy/freeze, revision conflict/cross-store lock, sửa file ngoài
+cửa sổ kể cả giữ revision, lỗi I/O/queue recovery, corrupt JSON/UTF-8,
+BOM, identity mismatch/overflow/size limit và file deck/frame cạnh bên.
+Cả Linux và Windows chạy cùng 43 ca filesystem/library, không tính đó
+là browser/editor/ảnh byte hoặc effect handler custom. 76 suite cũ giữ
+nguyên số ca; 163 migration/142 golden giữ nguyên, không tái sinh.
+
+Artifact `windows-validation-45779409222-1`, ID `15099237555`;
+ZIP SHA-256 khớp metadata GitHub:
+`cfafcac8e8f115ef63aedabae8e19df55f32a4528190d79921a5258c0fa180c0`.
+Report `2026-11-26T07-59-44-420Z-9500/report.json`.
+Windows win32/x64, OS 10.0.26100, Node 24.19.0,
+npm 11.17.0, Edg/157.0.4341.60: **7007/7007 test/77 file,
+136/136 bước, 126/126 browser report**, runtimeExceptions=0.
+Đã đọc đủ 136 raw step log; JSON browser khớp report/expected count/
+platform/version/exception. So baseline Chain source `3650a2d`, artifact
+`windows-validation-45380797380-1`: đủ 136 bước và 126 browser facts cũ
+khớp khi bỏ riêng browserVersion; capabilities.log nguyên byte. ZIP
+baseline cũng khớp metadata đã lưu. Không ghép evidence khác source.
+
+Bộ browser Windows này kiểm game hiện có, không phải giao diện U1a mới.
+Chu kỳ U1a không chạy lại 136 bước Linux tổng hợp hoặc thêm mode UI;
+Linux kiểm full unit/HTTP và 43 ca authoring mới, không lấy số Windows
+điền thay Linux. C4e full Linux/Windows của code Chain cũ giữ lịch sử
+riêng; không gọi bằng chứng C4e là đã chạy code module U1a mới.
+
+Hash cuối xác nhận mọi code runtime/engine/protocol/UI/server, test cũ,
+dữ liệu/review/evidence, deck nguồn, hình ảnh/frame/back và golden cũ
+nguyên byte so `12ab71c`. Capability không thêm custom effect/loại bài
+đã triển khai; vẫn 112 định nghĩa/95 quái thường/17 hiệu ứng/13 scope.
+Chỉ thêm thư viện, 43 ca test, kế hoạch/báo cáo và README/roadmap. Không
+chạm thư mục project/deck thật hoặc bật tự ghi file trong beta hiện tại.
+
+Lúc viết schema đã sửa kiểu optional để phù hợp exactOptionalPropertyTypes.
+Không sửa assertion cũ, review hoặc engine để cho test qua. Commit chốt
+sau CI chỉ tài liệu [skip ci]; bằng chứng code thuộc `7c3fd60`.
+
+Dừng sau U1a. Tiếp theo U1b là editor quái thường và ingest/lưu ảnh thực,
+có mở project riêng, hủy/giữ draft, xác nhận kết quả save, kiểm byte ảnh
+và quản lý vòng đời asset trước preview. U1c template/pool/runtime riêng
+và U1d audit còn mở. Sau U1 vẫn W1 Windows 11 desktop thực; report
+windows11DesktopVerified=false. Chưa đóng gói hoặc bàn giao beta.
